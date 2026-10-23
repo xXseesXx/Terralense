@@ -21,13 +21,14 @@ struct RailEntry {
 fn structure_rows(entries: &[Entry]) -> Vec<RailEntry> {
     let mut groups = std::collections::BTreeMap::<String, RailEntry>::new();
     for entry in entries {
+        let is_ruin = crate::structure_icons::ruin_topic(&entry.id).is_some();
         let (namespace, path) = entry.id.split_once(':').unwrap_or(("", entry.id.as_str()));
         let (parent, leaf) = path.rsplit_once('/').unwrap_or(("", path));
         let lower = leaf.to_ascii_lowercase();
         let tokens: Vec<_> = lower.split('_').collect();
         let has = |word: &str| tokens.contains(&word);
-        // Identify the object before its condition: a ruined castle is still a castle,
-        // and a ruined village remains in the village family, rather than generic ruins.
+        // Ruin classifier takes precedence over object type. This consolidates
+        // abandoned churches, towers, villages, and monuments into one control.
         let family = if lower == "unfinished_sloop" || lower.starts_with("unfinished_sloop_") {
             Some(("unfinished_sloop", "Unfinished sloops"))
         } else if lower == "unfinished_rowboat" || lower.starts_with("unfinished_rowboat_") {
@@ -78,11 +79,20 @@ fn structure_rows(entries: &[Entry]) -> Vec<RailEntry> {
                     },
                 )
             });
-        let key = format!("structure:{namespace}:{parent}/{family}");
+        let key = if is_ruin {
+            "structure:ruins".to_owned()
+        } else {
+            format!("structure:{namespace}:{parent}/{family}")
+        };
+        let label = if is_ruin { "Ruins".to_owned() } else { label };
         let group = groups.entry(key.clone()).or_insert_with(|| RailEntry {
             key,
             label,
-            icon_id: entry.id.clone(),
+            icon_id: if is_ruin {
+                "terralens:ruins".to_owned()
+            } else {
+                entry.id.clone()
+            },
             members: Vec::new(),
         });
         group.members.push(entry.id.clone());
@@ -531,7 +541,11 @@ impl State {
                                         prefs.solo_feature(
                                             &kind,
                                             rows.iter().flat_map(|row| row.members.iter().cloned()),
-                                            &entry.icon_id,
+                                            entry
+                                                .members
+                                                .first()
+                                                .map(String::as_str)
+                                                .unwrap_or(&entry.icon_id),
                                         );
                                         if !globally_visible {
                                             set_group_visible(
@@ -878,23 +892,25 @@ mod tests {
                 .find(|row| row.members.iter().any(|member| member == id))
                 .unwrap()
         };
-        assert_eq!(group("tfc_ruins:ruins").members.len(), 4);
-        assert_eq!(group("other:ruin_small").members.len(), 1);
-        assert_eq!(group("tfc_ruined_world:limestone_church").members.len(), 3);
-        assert_ne!(
-            group("tfc_ruined_world:towerhouse_1").key,
-            group("tfc_ruined_world:tower_1").key
-        );
-        assert_ne!(
-            group("tfc_ruined_world:towerhouse_1").key,
-            group("tfc_ruined_world:castle_1").key
-        );
-        assert_eq!(group("wan:desert_ruins").members.len(), 2);
-        assert_eq!(
-            group("wan:ruined_castle").members,
-            ["wan:ice_spike_castle", "wan:ruined_castle"]
-        );
-        assert_eq!(group("wan:abandoned_village").members.len(), 1);
+        let ruins = group("tfc_ruins:ruins");
+        assert_eq!(ruins.key, "structure:ruins");
+        assert_eq!(ruins.label, "Ruins");
+        assert_eq!(ruins.icon_id, "terralens:ruins");
+        assert_eq!(ruins.members.len(), 15);
+        for id in [
+            "tfc_ruins:ruin_rich",
+            "other:ruin_small",
+            "tfc_ruined_world:small_limestone_church_2",
+            "tfc_ruined_world:towerhouse_1",
+            "tfc_ruined_world:tower_1",
+            "tfc_ruined_world:castle_1",
+            "wan:desert_ruins_small",
+            "wan:ruined_castle",
+            "wan:abandoned_village",
+        ] {
+            assert_eq!(group(id).key, "structure:ruins", "{id}");
+        }
+        assert_ne!(group("wan:ice_spike_castle").key, "structure:ruins");
         assert_eq!(group("wan:mesa_temple").members.len(), 2);
     }
 
@@ -1024,14 +1040,17 @@ mod tests {
             .find(|g| g.label == "Unfinished rowboats")
             .unwrap();
         assert_eq!(rowboat.members, ["alekiships:unfinished_rowboat_oak"]);
-        let village = groups
-            .iter()
-            .find(|g| {
-                g.members
-                    .contains(&"wan_ancient_beasts:abandoned_village".to_owned())
-            })
-            .unwrap();
-        assert_eq!(village.members, ["wan_ancient_beasts:abandoned_village"]);
+        let ruins = groups.iter().find(|g| g.key == "structure:ruins").unwrap();
+        assert!(
+            ruins
+                .members
+                .contains(&"wan_ancient_beasts:abandoned_village".to_owned())
+        );
+        assert!(
+            ruins
+                .members
+                .contains(&"tfg:illagers/norse_village_ruined".to_owned())
+        );
         let tfg_villages = groups
             .iter()
             .find(|g| {
@@ -1039,7 +1058,7 @@ mod tests {
                     .contains(&"tfg:illagers/arabic_village".to_owned())
             })
             .unwrap();
-        assert_eq!(tfg_villages.members.len(), 3);
+        assert_eq!(tfg_villages.members.len(), 2);
         assert!(
             groups
                 .iter()
@@ -1068,5 +1087,46 @@ mod tests {
                 .iter()
                 .all(|id| !is_hidden(&prefs, &MarkerKind::Structure, id))
         );
+    }
+
+    #[test]
+    fn every_installed_tfc_ruin_profile_uses_the_single_ruins_group() {
+        let (_, catalog) = super::super::workspace::feature_catalog_for(Dimension::Overworld);
+        let installed: Vec<_> = catalog
+            .iter()
+            .filter(|(id, _)| id.starts_with("tfc_ruins:") || id.starts_with("tfc_ruined_world:"))
+            .map(|(id, label)| Entry {
+                id: id.clone(),
+                label: label.clone(),
+            })
+            .collect();
+        assert!(!installed.is_empty());
+        let rows = structure_rows(&installed);
+        assert_eq!(rows.len(), 1);
+        assert_eq!(rows[0].key, "structure:ruins");
+        assert_eq!(rows[0].members.len(), installed.len());
+        assert!(rows[0].members.iter().any(|id| id.contains("church")));
+        assert!(rows[0].members.iter().any(|id| id.contains("towerhouse")));
+        assert!(rows[0].members.iter().any(|id| id.contains("monument")));
+    }
+
+    #[test]
+    fn canonical_ruins_icon_never_becomes_a_preference_id_for_singleton_group() {
+        let entries = [entry("mod:abandoned_shrine")];
+        let rows = structure_rows(&entries);
+        assert_eq!(rows.len(), 1);
+        assert_eq!(rows[0].icon_id, "terralens:ruins");
+        assert_eq!(rows[0].members, ["mod:abandoned_shrine"]);
+        let mut prefs = DisplayPrefs::default();
+        prefs.solo_feature(
+            &MarkerKind::Structure,
+            rows.iter().flat_map(|row| row.members.iter().cloned()),
+            rows[0]
+                .members
+                .first()
+                .map(String::as_str)
+                .unwrap_or(&rows[0].icon_id),
+        );
+        assert!(prefs.hidden_structure_ids.is_empty());
     }
 }

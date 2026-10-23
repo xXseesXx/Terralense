@@ -1,7 +1,7 @@
 # Native validation
 
 The published release was checked on Linux against TFG Core 0.9.25, TFC 3.2.25, Beneath 1.0.6
-and Ad Astra 1.15.21. The Moon/Mars release passes **277 release tests**: 253 library, twelve engine-process, ten parity
+and Ad Astra 1.15.21. The current release passes **280 release tests**: 256 library, twelve engine-process, ten parity
 and two release-CLI checks. Formatting, the headless build and the opt-in diagnostic targets pass.
 This includes 39 Atlas tests covering cache reuse across zoom levels, refinement, family coverage,
 adjacent boundaries, split continuation, same-root panning and dimension-aware spawn/player pins.
@@ -66,6 +66,10 @@ See [planetary generation](PLANETARY-GENERATION.md) for the denominators and lim
   Catalog partition checks keep each vein selectable once, preserve dimensions and namespaces,
   and verify mixed-vein grouping against configured outputs. Spawn and player artwork stays
   separate from feature clusters and appears in composed PNG/CSV exports.
+- Ruined churches, towers, towerhouses, castles, ancient monuments and other ruined sites share
+  one expandable Ruins row across mod namespaces. Installed-catalog tests verify the consolidation,
+  retained individual IDs and singleton solo behavior. A shared classifier assigns cracked masonry,
+  broken chapel, shattered keep and standing-stone sprites in the rail, map and exports.
 - Native icon rendering was checked at 940×620 with 32px transparent structure sprites and larger
   raw ore artwork. Clusters use representative artwork and counts without a disc background.
   Sprite tests cover alpha, the mineshaft opening, TFG symbol routing and distinct vanilla textures

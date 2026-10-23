@@ -83,7 +83,9 @@ The resizable left control pane has **Search**, **Biomes**, and **Structures** t
 the **Seeds** shortlist and location finder; Ctrl+F opens **Features** search. The right icon rail
 switches between structure and ore types. Its group and individual controls hide or show features,
 including related structures such as ruins, churches, towers, castles, villages and unfinished
-sloops. Ores group by their configured primary mineral family, with individual vein types below.
+sloops. Ruined churches, towers, towerhouses, castles, ancient monuments and other ruined sites
+share one **Ruins** group across mods, with themed sprites for their building type.
+Ores group by their configured primary mineral family, with individual vein types below.
 Right-click either kind of group to expand its variants; click a child icon to toggle just that
 variant. Shift-click isolates a type or group. This changes display visibility; marker placement remains
 spatially anchored as you pan, and zoom progressively hides common or less prominent markers

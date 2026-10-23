@@ -21,6 +21,11 @@ mineshaft arch are original TerraLens pixel-art code in `src/structure_icons/tfg
 23 October 2026 under EUPL-1.2. Other original symbols remain in `src/structure_icons.rs`.
 They have transparent backgrounds, and their visible object silhouette defines the marker shape.
 
+Ruined churches use broken chapel masonry with an open arch, ruined towers/towerhouses/castles
+use a shattered stone keep, and ancient monuments use weathered standing stones. These original
+32px sprites live in `tfg.rs`; generic ruins and the shared Ruins group use cracked limestone.
+The group spans mod namespaces while its expanded children and map pins retain their topic icons.
+
 Moon bases use an original dark gray pressure-dome sprite, and Moon rabbit houses use an original
 rabbit-in-a-nest-box sprite. Both are crisp 32×32 pixel art in `src/structure_icons/tfg.rs` and are
 shared by map markers, the icon rail and exports.

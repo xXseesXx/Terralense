@@ -512,6 +512,296 @@ pub(super) fn cheese_wedge() -> RgbaImage {
     im
 }
 
+pub(super) fn ruined_church() -> RgbaImage {
+    let mut im = canvas();
+    let stone = [135, 131, 117, 255];
+    let stone_light = [190, 180, 153, 255];
+    let stone_shade = [87, 88, 79, 255];
+    let mortar = [112, 110, 99, 255];
+    let moss = [75, 111, 64, 255];
+    let moss_light = [119, 145, 76, 255];
+    let dark = [49, 54, 49, 255];
+
+    // Broken chapel front: the chipped roofline rises toward a small surviving cross.
+    poly(
+        &mut im,
+        &[
+            (3, 13),
+            (7, 11),
+            (10, 7),
+            (13, 10),
+            (17, 4),
+            (20, 8),
+            (23, 7),
+            (26, 12),
+            (29, 13),
+            (29, 28),
+            (26, 30),
+            (5, 30),
+            (3, 27),
+        ],
+        stone,
+    );
+    poly(
+        &mut im,
+        &[
+            (4, 14),
+            (8, 12),
+            (11, 9),
+            (13, 12),
+            (17, 6),
+            (19, 10),
+            (23, 9),
+            (27, 14),
+            (27, 27),
+            (24, 28),
+            (6, 28),
+        ],
+        stone_light,
+    );
+    line(&mut im, (5, 15), (26, 15), stone_shade, 1);
+    // Outer buttresses are deliberately separate from the arched opening.
+    poly(
+        &mut im,
+        &[(4, 17), (10, 17), (10, 27), (8, 30), (4, 29)],
+        stone,
+    );
+    poly(
+        &mut im,
+        &[(22, 17), (28, 17), (28, 29), (24, 30), (22, 27)],
+        stone,
+    );
+    fill(&mut im, 5, 18, 2, 9, stone_light);
+    fill(&mut im, 25, 19, 2, 8, stone_shade);
+    // Recessed pointed arch: empty pixels show the map through the ruin.
+    poly(
+        &mut im,
+        &[
+            (11, 28),
+            (11, 19),
+            (12, 15),
+            (15, 12),
+            (17, 11),
+            (20, 14),
+            (21, 18),
+            (21, 28),
+        ],
+        dark,
+    );
+    poly(
+        &mut im,
+        &[
+            (13, 28),
+            (13, 19),
+            (14, 16),
+            (16, 14),
+            (18, 15),
+            (19, 18),
+            (19, 28),
+        ],
+        CLEAR,
+    );
+    // Split mortar courses, missing stones and trailing moss break up the regular wall.
+    line(&mut im, (5, 21), (10, 21), mortar, 1);
+    line(&mut im, (22, 22), (27, 22), mortar, 1);
+    line(&mut im, (8, 15), (9, 19), stone_shade, 1);
+    line(&mut im, (24, 15), (23, 19), stone_shade, 1);
+    put(&mut im, 7, 13, CLEAR);
+    put(&mut im, 26, 11, CLEAR);
+    put(&mut im, 3, 16, CLEAR);
+    fill(&mut im, 5, 25, 3, 2, moss);
+    put(&mut im, 7, 24, moss_light);
+    fill(&mut im, 24, 26, 3, 2, moss);
+    put(&mut im, 25, 25, moss_light);
+    // Weathered cross fragment above the gable.
+    fill(&mut im, 16, 1, 2, 6, stone_shade);
+    fill(&mut im, 13, 3, 8, 2, stone_shade);
+    put(&mut im, 16, 1, stone_light);
+    im
+}
+
+pub(super) fn ruined_tower() -> RgbaImage {
+    let mut im = canvas();
+    let stone = [133, 133, 125, 255];
+    let light = [192, 185, 162, 255];
+    let shade = [78, 83, 79, 255];
+    let mortar = [105, 108, 101, 255];
+    let moss = [69, 105, 62, 255];
+    let moss_light = [118, 143, 75, 255];
+    let dark = [42, 48, 46, 255];
+
+    // Narrow medieval keep with a missing upper corner and an irregular crown of masonry.
+    poly(
+        &mut im,
+        &[
+            (7, 9),
+            (11, 7),
+            (13, 9),
+            (16, 5),
+            (19, 8),
+            (22, 6),
+            (25, 10),
+            (27, 28),
+            (24, 31),
+            (7, 30),
+            (5, 27),
+        ],
+        shade,
+    );
+    poly(
+        &mut im,
+        &[
+            (8, 11),
+            (12, 9),
+            (14, 11),
+            (17, 7),
+            (19, 10),
+            (23, 8),
+            (24, 11),
+            (25, 27),
+            (22, 29),
+            (8, 28),
+            (7, 25),
+        ],
+        stone,
+    );
+    // Highlighted broken blocks make the silhouette read as masonry rather than a rectangle.
+    fill(&mut im, 9, 12, 4, 2, light);
+    fill(&mut im, 16, 10, 4, 2, light);
+    fill(&mut im, 20, 12, 3, 2, light);
+    fill(&mut im, 8, 17, 3, 6, light);
+    fill(&mut im, 22, 19, 2, 5, shade);
+    line(&mut im, (9, 16), (23, 16), mortar, 1);
+    line(&mut im, (13, 13), (13, 16), mortar, 1);
+    line(&mut im, (18, 17), (18, 21), mortar, 1);
+    line(&mut im, (11, 23), (22, 23), mortar, 1);
+    // Deep open arrow slit / window leaves transparent holes, not a painted dark plaque.
+    fill(&mut im, 14, 14, 5, 11, dark);
+    fill(&mut im, 15, 13, 3, 2, dark);
+    fill(&mut im, 16, 12, 1, 1, CLEAR);
+    fill(&mut im, 15, 15, 3, 10, CLEAR);
+    // A crack reaches the base and moss threads into a few missing stones.
+    line(&mut im, (11, 18), (13, 21), shade, 1);
+    line(&mut im, (13, 21), (11, 25), shade, 1);
+    put(&mut im, 6, 10, CLEAR);
+    put(&mut im, 26, 8, CLEAR);
+    put(&mut im, 25, 12, CLEAR);
+    fill(&mut im, 8, 26, 4, 2, moss);
+    fill(&mut im, 19, 27, 4, 2, moss);
+    put(&mut im, 10, 25, moss_light);
+    put(&mut im, 21, 26, moss_light);
+    im
+}
+
+pub(super) fn ancient_monument_ruin() -> RgbaImage {
+    let mut im = canvas();
+    let stone = [139, 133, 111, 255];
+    let light = [199, 184, 145, 255];
+    let shade = [84, 85, 72, 255];
+    let seam = [109, 107, 87, 255];
+    let moss = [73, 110, 63, 255];
+    let moss_light = [120, 147, 75, 255];
+
+    // Fractured plinths sit apart as an archaeological ruin, not a complete building face.
+    poly(
+        &mut im,
+        &[(3, 26), (6, 23), (12, 24), (15, 27), (14, 30), (4, 30)],
+        shade,
+    );
+    poly(
+        &mut im,
+        &[(4, 25), (7, 23), (12, 24), (13, 27), (5, 28)],
+        stone,
+    );
+    poly(
+        &mut im,
+        &[(18, 27), (21, 23), (28, 24), (30, 27), (28, 30), (19, 30)],
+        shade,
+    );
+    poly(
+        &mut im,
+        &[(19, 26), (22, 24), (27, 25), (28, 27), (21, 28)],
+        stone,
+    );
+    line(&mut im, (7, 25), (12, 26), light, 1);
+    line(&mut im, (22, 26), (27, 26), light, 1);
+
+    // One tall standing stone, a broken center pillar and a shorter leaning marker.
+    poly(
+        &mut im,
+        &[
+            (5, 23),
+            (6, 8),
+            (9, 5),
+            (12, 7),
+            (13, 23),
+            (11, 25),
+            (7, 24),
+        ],
+        shade,
+    );
+    poly(
+        &mut im,
+        &[(7, 22), (7, 9), (9, 7), (10, 9), (11, 22), (9, 24)],
+        stone,
+    );
+    line(&mut im, (8, 10), (8, 20), light, 1);
+    line(&mut im, (10, 12), (9, 17), seam, 1);
+
+    poly(
+        &mut im,
+        &[
+            (14, 26),
+            (15, 13),
+            (18, 10),
+            (21, 12),
+            (22, 27),
+            (19, 29),
+            (15, 28),
+        ],
+        shade,
+    );
+    poly(
+        &mut im,
+        &[(16, 25), (16, 14), (18, 12), (19, 14), (20, 25), (18, 27)],
+        stone,
+    );
+    line(&mut im, (17, 15), (18, 22), light, 1);
+    // Naturally eroded notch and a carved, off-center mark distinguish the old monolith.
+    put(&mut im, 20, 14, CLEAR);
+    put(&mut im, 17, 18, shade);
+    line(&mut im, (17, 18), (19, 20), seam, 1);
+
+    poly(
+        &mut im,
+        &[
+            (22, 24),
+            (23, 12),
+            (25, 10),
+            (28, 13),
+            (29, 25),
+            (27, 28),
+            (23, 27),
+        ],
+        shade,
+    );
+    poly(
+        &mut im,
+        &[(24, 23), (24, 14), (26, 12), (27, 14), (27, 24), (25, 26)],
+        stone,
+    );
+    line(&mut im, (25, 15), (25, 21), light, 1);
+    put(&mut im, 28, 12, CLEAR);
+    // Moss gathers in lower cracks without hiding the weathered stone shapes.
+    fill(&mut im, 6, 22, 3, 2, moss);
+    fill(&mut im, 18, 25, 3, 2, moss);
+    fill(&mut im, 25, 23, 3, 2, moss);
+    put(&mut im, 7, 21, moss_light);
+    put(&mut im, 19, 24, moss_light);
+    put(&mut im, 26, 22, moss_light);
+    im
+}
+
 fn canvas() -> RgbaImage {
     RgbaImage::from_pixel(32, 32, Rgba(CLEAR))
 }
@@ -590,6 +880,9 @@ mod tests {
             moon_dome(),
             moon_rabbit_house(),
             cheese_wedge(),
+            ruined_church(),
+            ruined_tower(),
+            ancient_monument_ruin(),
         ] {
             assert_eq!(im.dimensions(), (32, 32));
             assert!(im.pixels().any(|p| p[3] == 0));
@@ -603,5 +896,18 @@ mod tests {
             "tunnel opening remains transparent"
         );
         assert_eq!(mine.get_pixel(16, 21)[3], 0, "center remains unobstructed");
+
+        let church = ruined_church();
+        assert_eq!(church.get_pixel(16, 20)[3], 0, "chapel arch remains open");
+        let tower = ruined_tower();
+        assert_eq!(tower.get_pixel(16, 18)[3], 0, "tower window remains open");
+        let monument = ancient_monument_ruin();
+        assert_eq!(
+            monument.get_pixel(13, 14)[3],
+            0,
+            "broken pillars remain separate"
+        );
+        assert_ne!(church.as_raw(), tower.as_raw());
+        assert_ne!(tower.as_raw(), monument.as_raw());
     }
 }

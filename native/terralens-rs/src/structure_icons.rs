@@ -6,6 +6,54 @@ mod tfg;
 pub const MAP_ICON_SIZE: u32 = 32;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+pub enum RuinTopic {
+    Masonry,
+    Church,
+    Tower,
+    Monument,
+}
+
+/// One ruin category across mods, with the original building topic retained for its sprite.
+pub fn ruin_topic(id: &str) -> Option<RuinTopic> {
+    let id = id.split('@').next().unwrap_or(id).to_ascii_lowercase();
+    let (namespace, path) = id.split_once(':').unwrap_or(("", id.as_str()));
+    let words: Vec<_> = path.split(|c: char| !c.is_ascii_alphanumeric()).collect();
+    let has = |word| words.contains(&word);
+    if has("living") || has("lived") {
+        return None;
+    }
+    let monument = has("monument") || has("monuments");
+    let ruined = matches!(namespace, "tfc_ruins" | "tfc_ruined_world")
+        || ["ruin", "ruins", "ruined", "abandoned"]
+            .into_iter()
+            .any(has)
+        || has("ancient") && monument;
+    if !ruined {
+        return None;
+    }
+    Some(if has("church") || has("churches") || has("chapel") {
+        RuinTopic::Church
+    } else if [
+        "tower",
+        "towers",
+        "towerhouse",
+        "towerhouses",
+        "castle",
+        "castles",
+        "fortress",
+    ]
+    .into_iter()
+    .any(has)
+    {
+        RuinTopic::Tower
+    } else if monument || has("temple") || has("temples") || has("aqueduct") || has("moai") {
+        RuinTopic::Monument
+    } else {
+        RuinTopic::Masonry
+    })
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 pub enum Family {
     WorldSpawn,
     Player,
@@ -123,6 +171,7 @@ enum Sprite {
     MoonCheese,
     MoonBase,
     MoonRabbitHouse,
+    Ruin(RuinTopic),
     Glyph(Family),
 }
 
@@ -135,10 +184,6 @@ fn sprite(id: &str) -> Sprite {
         _ => {}
     }
     let kind = family(&id);
-    // Mineshafts use the requested timber opening rather than Cubiomes' rail symbol.
-    if matches!(kind, Family::Mine | Family::Camp | Family::Church) {
-        return Sprite::Tfg(kind);
-    }
     let vanilla = id.strip_prefix("minecraft:").and_then(|path| match path {
         "world_spawn" => Some("spawn"),
         "fortress" | "nether_fortress" | "nether_complexes" => Some("fortress"),
@@ -169,6 +214,13 @@ fn sprite(id: &str) -> Sprite {
     });
     if let Some(name) = vanilla {
         return Sprite::Cubiomes(name);
+    }
+    if let Some(topic) = ruin_topic(&id) {
+        return Sprite::Ruin(topic);
+    }
+    // Intact TFG churches, camps and timber mine openings retain their own symbols.
+    if matches!(kind, Family::Mine | Family::Camp | Family::Church) {
+        return Sprite::Tfg(kind);
     }
     match kind {
         Family::Settlement | Family::Ruin => Sprite::Tfg(kind),
@@ -248,6 +300,10 @@ pub fn raster(id: &str, size: u32) -> RgbaImage {
         Sprite::MoonCheese => moon_cheese(),
         Sprite::MoonBase => tfg::moon_dome(),
         Sprite::MoonRabbitHouse => tfg::moon_rabbit_house(),
+        Sprite::Ruin(RuinTopic::Masonry) => tfg::cracked_limestone_brick(),
+        Sprite::Ruin(RuinTopic::Church) => tfg::ruined_church(),
+        Sprite::Ruin(RuinTopic::Tower) => tfg::ruined_tower(),
+        Sprite::Ruin(RuinTopic::Monument) => tfg::ancient_monument_ruin(),
         Sprite::Tfg(Family::Camp) => tfg::campfire(),
         Sprite::Tfg(Family::Settlement) => tfg::village_head(),
         Sprite::Tfg(Family::Ruin) => tfg::cracked_limestone_brick(),
@@ -500,6 +556,42 @@ impl IconCache {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn ruin_topics_follow_condition_and_building_type_across_mods() {
+        for (id, expected) in [
+            ("tfc_ruins:ruin_rich", RuinTopic::Masonry),
+            (
+                "tfc_ruined_world:small_limestone_church_2",
+                RuinTopic::Church,
+            ),
+            ("tfc_ruined_world:towerhouse_2", RuinTopic::Tower),
+            ("tfc_ruined_world:castle_1", RuinTopic::Tower),
+            ("tfc_ruined_world:ancient_monument_2", RuinTopic::Monument),
+            ("mod:ruins/stone_church@-31,84", RuinTopic::Church),
+            ("mod:ancient_monuments/stone_circle", RuinTopic::Monument),
+            ("wan_ancient_beasts:abandoned_village", RuinTopic::Masonry),
+        ] {
+            assert_eq!(ruin_topic(id), Some(expected), "{id}");
+            assert_eq!(sprite(id), Sprite::Ruin(expected), "{id}");
+        }
+        for id in [
+            "tfg:beneath/tower",
+            "mod:church",
+            "minecraft:monument",
+            "minecraft:ancient_city",
+            "tfg:illagers/arabic_village_living",
+            "tfg:moon/moonbase",
+            "tfg:earth/ancient_shield_volcano",
+        ] {
+            assert_eq!(ruin_topic(id), None, "{id}");
+        }
+        assert_eq!(
+            sprite("minecraft:ruined_portal"),
+            Sprite::Cubiomes("portal")
+        );
+    }
+
     #[test]
     fn requested_tfg_symbols_and_cubiomes_variants_keep_their_identity() {
         assert_eq!(sprite("tfg:moon/cheese_ores@-9,24"), Sprite::MoonCheese);
@@ -509,6 +601,7 @@ mod tests {
             Sprite::MoonRabbitHouse
         );
         assert_eq!(sprite("tfg:illagers/camps"), Sprite::Tfg(Family::Camp));
+        assert_eq!(sprite("example:church"), Sprite::Tfg(Family::Church));
         assert_eq!(
             sprite("tfg:illagers/illager_camps"),
             Sprite::Tfg(Family::Camp)
@@ -517,10 +610,13 @@ mod tests {
             sprite("tfg:illagers/norse_village_living"),
             Sprite::Tfg(Family::Settlement)
         );
-        assert_eq!(sprite("tfc_ruins:ruin_small"), Sprite::Tfg(Family::Ruin));
+        assert_eq!(
+            sprite("tfc_ruins:ruin_small"),
+            Sprite::Ruin(RuinTopic::Masonry)
+        );
         assert_eq!(
             sprite("tfc_ruined_world:limestone_church"),
-            Sprite::Tfg(Family::Church)
+            Sprite::Ruin(RuinTopic::Church)
         );
         assert_eq!(sprite("tfg:mineshaft/mineshaft"), Sprite::Tfg(Family::Mine));
         assert_eq!(sprite("minecraft:mineshaft"), Sprite::Tfg(Family::Mine));
@@ -546,6 +642,8 @@ mod tests {
             "tfg:moon/cheese_ores",
             "tfg:moon/moonbase",
             "tfg:moon/moon_rabbit_houses",
+            "tfc_ruined_world:towerhouse_1",
+            "tfc_ruined_world:ancient_monument_1",
         ] {
             let icon = raster(id, 32);
             assert!(icon.pixels().any(|pixel| pixel[3] == 0), "{id}");
@@ -554,7 +652,7 @@ mod tests {
                 assert_eq!(icon.get_pixel(x, y)[3], 0, "{id}");
             }
         }
-        let cross = raster("tfc_ruined_world:limestone_church", 32);
+        let cross = raster("example:church", 32);
         assert!(
             cross.pixels().filter(|pixel| pixel[3] != 0).count() < 400,
             "no common disc behind the cross"
@@ -607,6 +705,10 @@ mod tests {
             "tfg:moon/cheese_ores",
             "tfg:moon/moonbase",
             "tfg:moon/moon_rabbit_houses",
+            "tfc_ruined_world:limestone_church",
+            "tfc_ruined_world:towerhouse_1",
+            "tfc_ruined_world:ancient_monument_1",
+            "tfc_ruins:ruin_small",
         ];
         let images: Vec<_> = ids.iter().map(|id| raster(id, 32).into_raw()).collect();
         for i in 0..images.len() {
