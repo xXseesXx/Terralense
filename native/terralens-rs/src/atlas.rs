@@ -34,6 +34,7 @@ const TILE_CACHE: usize = 320;
 const MARKER_CELL: f64 = 512.0;
 const FEATURE_TILE_CACHE: usize = 256;
 const MIN_FEATURE_TILE_BLOCKS: f64 = 256.0;
+const MIN_FEATURE_COVERAGE_BLOCKS: f64 = 64.0;
 // Keep hover connectivity work small enough to stay comfortable inside a UI frame.
 const MAX_REGION_CELLS: usize = 16_384;
 
@@ -315,6 +316,7 @@ enum Reply {
     Structures(u64, Result<prism::StructureScan, String>),
     EngineError(String),
     Worlds(Result<Vec<crate::model::WorldInfo>, String>),
+    OpenedSource(u64, Result<crate::world_files::OpenedSource, String>),
     Analysis(u64, u64, Result<analysis::Report, String>),
     Locate(u64, u64, Result<analysis::LocationResults, String>),
     Export(u64, u64, Result<exports::Outcome, String>),
@@ -353,6 +355,13 @@ struct FeatureTileKey {
     scale: u8,
     ores: bool,
     structures: bool,
+}
+
+/// Candidate data survives zoom changes. The scan tier records how complete this
+/// spatial result is; a smaller tier means the scan included more feature families.
+struct FeatureTileData {
+    markers: Vec<Marker>,
+    scan_tier: u8,
 }
 
 impl FeatureTileKey {
@@ -420,6 +429,7 @@ impl FeatureTileKey {
         ]
     }
 
+    #[cfg(test)]
     fn root(self) -> Self {
         let divisor = 1_i64.checked_shl(self.scale as u32).unwrap_or(i64::MAX);
         Self {
@@ -485,6 +495,7 @@ fn feature_scans_ready(visible_tiles: usize, ready_tiles: usize) -> bool {
     visible_tiles > 0 && ready_tiles > 0 && ready_tiles >= visible_tiles.saturating_add(3) / 4
 }
 
+#[cfg(test)]
 fn next_missing_feature_tile(
     key: FeatureTileKey,
     splits: &HashSet<FeatureTileKey>,
@@ -506,6 +517,73 @@ fn next_missing_feature_tile(
     } else {
         Some(key)
     }
+}
+
+fn region_covered_at_tier(
+    requested: FeatureTileKey,
+    cached: &HashMap<FeatureTileKey, FeatureTileData>,
+) -> bool {
+    let bounds = requested.bounds();
+    cached.iter().any(|(key, data)| {
+        data.scan_tier <= requested.tier
+            && (!requested.ores || key.ores)
+            && (!requested.structures || key.structures)
+            && key.bounds().min_x <= bounds.min_x
+            && key.bounds().max_x >= bounds.max_x
+            && key.bounds().min_z <= bounds.min_z
+            && key.bounds().max_z >= bounds.max_z
+    })
+}
+
+fn next_uncovered_feature_tile(
+    key: FeatureTileKey,
+    splits: &HashSet<FeatureTileKey>,
+    cached: &HashMap<FeatureTileKey, FeatureTileData>,
+    center: Point,
+) -> Option<FeatureTileKey> {
+    if region_covered_at_tier(key, cached) {
+        return None;
+    }
+    let bounds = key.bounds();
+    let span = (bounds.max_x - bounds.min_x).max(bounds.max_z - bounds.min_z);
+    let has_finer_coverage = cached.iter().any(|(candidate, data)| {
+        if data.scan_tier > key.tier
+            || (key.ores && !candidate.ores)
+            || (key.structures && !candidate.structures)
+        {
+            return false;
+        }
+        let other = candidate.bounds();
+        other.max_x > bounds.min_x
+            && other.min_x < bounds.max_x
+            && other.max_z > bounds.min_z
+            && other.min_z < bounds.max_z
+    });
+    // A hard physical leaf limit prevents malformed/edge coverage from recursing
+    // indefinitely. Between this and the adaptive scan limit, only descend when
+    // cached tiles genuinely overlap and may jointly cover this region.
+    if span <= MIN_FEATURE_COVERAGE_BLOCKS {
+        return Some(key);
+    }
+    if span <= MIN_FEATURE_TILE_BLOCKS && !has_finer_coverage {
+        return Some(key);
+    }
+    // Keep the previous adaptive scan size for cold regions. Subdivide only after
+    // a scan was truncated or when cached coverage genuinely overlaps this region.
+    if !splits.contains(&key) && !has_finer_coverage {
+        return Some(key);
+    }
+    let mut children = key.children();
+    children.sort_unstable_by(|a, b| {
+        a.center()
+            .distance(center)
+            .total_cmp(&b.center().distance(center))
+    });
+    // Recursing even without an explicit truncation split lets fine scans already
+    // cached from a previous zoom cover a larger coarse tile.
+    children
+        .into_iter()
+        .find_map(|child| next_uncovered_feature_tile(child, splits, cached, center))
 }
 
 /// Spatial buckets keep repeated save/prediction deduplication and map queries local.
@@ -630,6 +708,8 @@ pub struct Atlas {
     out: Sender<Reply>,
     replies: Receiver<Reply>,
     discovered_worlds: Option<Result<Vec<crate::model::WorldInfo>, String>>,
+    open_source_pending: Option<u64>,
+    opened_source: Option<(u64, Result<crate::world_files::OpenedSource, String>)>,
     tiles: LruCache<TileKey, GpuTile>,
     pending: HashMap<TileKey, (u64, u64)>,
     uploads: VecDeque<CpuTile>,
@@ -641,12 +721,11 @@ pub struct Atlas {
     ores: bool,
     structures: bool,
     ore_filter: String,
-    feature_tiles: HashMap<FeatureTileKey, Vec<Marker>>,
+    feature_tiles: HashMap<FeatureTileKey, FeatureTileData>,
     feature_splits: HashSet<FeatureTileKey>,
     feature_truncated: HashSet<FeatureTileKey>,
     feature_lru: VecDeque<FeatureTileKey>,
     feature_visible_keys: Vec<FeatureTileKey>,
-    feature_visible_set: HashSet<FeatureTileKey>,
     feature_plan_key: Option<(u8, i64, i64, i64, i64, bool, bool)>,
     feature_serial: u64,
     feature_pending: bool,
@@ -737,6 +816,8 @@ impl Atlas {
             surface: surface::SurfaceView::default(),
             replies,
             discovered_worlds: None,
+            open_source_pending: None,
+            opened_source: None,
             tiles: LruCache::new(std::num::NonZeroUsize::new(TILE_CACHE).unwrap()),
             pending: HashMap::new(),
             uploads: VecDeque::new(),
@@ -753,7 +834,6 @@ impl Atlas {
             feature_truncated: HashSet::new(),
             feature_lru: VecDeque::new(),
             feature_visible_keys: Vec::new(),
-            feature_visible_set: HashSet::new(),
             feature_plan_key: None,
             feature_serial: 0,
             feature_pending: false,
@@ -858,7 +938,6 @@ impl Atlas {
         self.feature_truncated.clear();
         self.feature_lru.clear();
         self.feature_visible_keys.clear();
-        self.feature_visible_set.clear();
         self.feature_plan_key = None;
         self.feature_pending = false;
         self.probe = None;
@@ -928,6 +1007,25 @@ impl Atlas {
     }
     pub fn engine_error(&self) -> Option<&str> {
         self.engine_error.as_deref()
+    }
+    /// Resolve a saved-world source in the engine process, keeping filesystem work off the UI.
+    pub fn open_source(&mut self, path: PathBuf, serial: u64) {
+        if let Some(error) = &self.engine_error {
+            self.open_source_pending = None;
+            self.opened_source = Some((serial, Err(error.clone())));
+            return;
+        }
+        self.open_source_pending = Some(serial);
+        self.opened_source = None;
+        self.engine.open_source(path, serial);
+    }
+
+    /// Retrieve the latest completed world import, keyed by its caller-provided serial.
+    pub fn take_opened_source(
+        &mut self,
+    ) -> Option<(u64, Result<crate::world_files::OpenedSource, String>)> {
+        self.poll();
+        self.opened_source.take()
     }
     pub fn set_surface_options(&mut self, enabled: bool, path: Option<PathBuf>) {
         self.surface.set_options(
@@ -1219,7 +1317,6 @@ impl Atlas {
         self.feature_truncated.clear();
         self.feature_lru.clear();
         self.feature_visible_keys.clear();
-        self.feature_visible_set.clear();
         self.feature_plan_key = None;
         self.feature_pending = false;
         self.probe = None;
@@ -1527,22 +1624,14 @@ impl Atlas {
         let mut seen = HashSet::new();
         let mut markers = Vec::new();
         let mut incomplete = false;
-        for &root in &self.feature_visible_keys {
-            let mut stack = vec![root];
-            while let Some(key) = stack.pop() {
-                incomplete |= self.feature_truncated.contains(&key);
-                if let Some(found) = self.feature_tiles.get(&key) {
-                    markers.extend(
-                        found
-                            .iter()
-                            .filter(|marker| seen.insert(marker.id.clone()))
-                            .cloned(),
-                    );
-                }
-                if self.feature_splits.contains(&key) {
-                    stack.extend(key.children());
-                }
-            }
+        for (&key, data) in &self.feature_tiles {
+            incomplete |= self.feature_truncated.contains(&key) && self.feature_key_is_visible(key);
+            markers.extend(
+                data.markers
+                    .iter()
+                    .filter(|marker| seen.insert(marker.id.clone()))
+                    .cloned(),
+            );
         }
         self.predicted = markers;
         self.feature_limited = incomplete;
@@ -1550,7 +1639,14 @@ impl Atlas {
     }
 
     fn feature_key_is_visible(&self, key: FeatureTileKey) -> bool {
-        self.feature_visible_set.contains(&key.root())
+        let tile = key.bounds();
+        self.feature_visible_keys.iter().any(|root| {
+            let bounds = root.bounds();
+            tile.max_x >= bounds.min_x
+                && tile.min_x <= bounds.max_x
+                && tile.max_z >= bounds.min_z
+                && tile.min_z <= bounds.max_z
+        })
     }
 
     fn cache_feature_result(&mut self, key: FeatureTileKey, markers: Vec<Marker>, truncated: bool) {
@@ -1560,7 +1656,24 @@ impl Atlas {
             self.feature_lru.retain(|old| *old != key);
             self.feature_truncated.remove(&key);
         } else {
-            self.feature_tiles.insert(key, markers);
+            let entry = self
+                .feature_tiles
+                .entry(key)
+                .or_insert_with(|| FeatureTileData {
+                    markers: Vec::new(),
+                    scan_tier: key.tier,
+                });
+            let mut known = entry
+                .markers
+                .iter()
+                .map(|marker| marker.id.clone())
+                .collect::<HashSet<_>>();
+            entry.markers.extend(
+                markers
+                    .into_iter()
+                    .filter(|marker| known.insert(marker.id.clone())),
+            );
+            entry.scan_tier = entry.scan_tier.min(key.tier);
             self.feature_lru.retain(|old| *old != key);
             self.feature_lru.push_back(key);
             if truncated {
@@ -1591,8 +1704,6 @@ impl Atlas {
                 offscreen -= 1;
             }
         }
-        self.feature_splits
-            .retain(|split| self.feature_visible_set.contains(&split.root()));
         self.refresh_visible_features();
     }
 
@@ -1604,7 +1715,6 @@ impl Atlas {
         {
             if !self.feature_visible_keys.is_empty() || !self.predicted.is_empty() {
                 self.feature_visible_keys.clear();
-                self.feature_visible_set.clear();
                 self.feature_plan_key = None;
                 self.predicted.clear();
                 self.rebuild_markers();
@@ -1639,18 +1749,14 @@ impl Atlas {
             self.feature_plan_key = Some(plan_key);
             let wanted =
                 visible_feature_tiles(self.bounds, self.center, tier, self.ores, self.structures);
-            let wanted_set: HashSet<_> = wanted.iter().copied().collect();
-            self.feature_splits
-                .retain(|split| wanted_set.contains(&split.root()));
             self.feature_visible_keys = wanted;
-            self.feature_visible_set = wanted_set;
             self.refresh_visible_features();
         }
         if !settled || !coarse_ready || self.feature_pending {
             return;
         }
         let Some(key) = self.feature_visible_keys.iter().find_map(|root| {
-            next_missing_feature_tile(
+            next_uncovered_feature_tile(
                 *root,
                 &self.feature_splits,
                 &self.feature_tiles,
@@ -2009,6 +2115,12 @@ impl Atlas {
                     }
                 }
                 Reply::Worlds(result) => self.discovered_worlds = Some(result),
+                Reply::OpenedSource(serial, result) => {
+                    if self.open_source_pending == Some(serial) {
+                        self.open_source_pending = None;
+                        self.opened_source = Some((serial, result));
+                    }
+                }
                 Reply::EngineError(error) => {
                     self.surface.invalidate(false);
                     self.engine_error = Some(error.clone());
@@ -2020,6 +2132,9 @@ impl Atlas {
                     self.task_busy = false;
                     self.loading_scan = false;
                     self.scan_status = format!("Generation process: {error}");
+                    if let Some(serial) = self.open_source_pending.take() {
+                        self.opened_source = Some((serial, Err(error.clone())));
+                    }
                 }
                 Reply::Structures(epoch, result) => {
                     if epoch == self.scan_epoch {
@@ -3443,6 +3558,233 @@ mod tests {
         assert!(!feature_scans_ready(100, 24));
         assert!(feature_scans_ready(100, 25));
         assert!(feature_scans_ready(1, 1));
+    }
+
+    #[test]
+    fn feature_coverage_reuses_fine_spatial_results_across_lod_roots() {
+        let coarse = FeatureTileKey::at(Point { x: 0., z: 0. }, 2, true, true);
+        let mut cached = HashMap::new();
+        for fine in coarse.children() {
+            cached.insert(
+                fine,
+                FeatureTileData {
+                    markers: Vec::new(),
+                    scan_tier: 1,
+                },
+            );
+        }
+        assert!(
+            coarse
+                .children()
+                .iter()
+                .all(|key| region_covered_at_tier(*key, &cached))
+        );
+        assert!(
+            next_uncovered_feature_tile(coarse, &HashSet::new(), &cached, coarse.center())
+                .is_none(),
+            "a coarser zoom should reuse the union of complete fine scans"
+        );
+        let ores_only: HashMap<_, _> = cached
+            .iter()
+            .map(|(key, value)| {
+                let key = FeatureTileKey {
+                    structures: false,
+                    ..*key
+                };
+                (
+                    key,
+                    FeatureTileData {
+                        markers: Vec::new(),
+                        scan_tier: value.scan_tier,
+                    },
+                )
+            })
+            .collect();
+        assert!(
+            next_uncovered_feature_tile(coarse, &HashSet::new(), &ores_only, coarse.center(),)
+                .is_some(),
+            "an ore-only scan cannot satisfy requested structure coverage"
+        );
+
+        let fine = FeatureTileKey::at(Point { x: 0., z: 0. }, 1, true, true);
+        let mut coarse_only = HashMap::new();
+        coarse_only.insert(
+            coarse,
+            FeatureTileData {
+                markers: Vec::new(),
+                scan_tier: 2,
+            },
+        );
+        let enrichment =
+            next_uncovered_feature_tile(fine, &HashSet::new(), &coarse_only, fine.center());
+        assert!(enrichment.is_some(), "zooming in needs finer scan coverage");
+        coarse_only.insert(
+            fine,
+            FeatureTileData {
+                markers: Vec::new(),
+                scan_tier: 1,
+            },
+        );
+        assert!(
+            next_uncovered_feature_tile(fine, &HashSet::new(), &coarse_only, fine.center())
+                .is_none(),
+            "the enriched fine result must be reused when zooming back in"
+        );
+    }
+
+    #[test]
+    fn adjacent_feature_tile_edges_do_not_trigger_recursive_coverage_walks() {
+        let neighbor = FeatureTileKey::at(Point { x: 0., z: 0. }, 3, true, true);
+        let requested = FeatureTileKey::at(Point { x: 512., z: 0. }, 3, true, true);
+        let mut cached = HashMap::new();
+        cached.insert(
+            neighbor,
+            FeatureTileData {
+                markers: Vec::new(),
+                scan_tier: 3,
+            },
+        );
+        let next =
+            next_uncovered_feature_tile(requested, &HashSet::new(), &cached, requested.center())
+                .unwrap();
+        assert_eq!(next, requested, "touching edges have no shared scan area");
+    }
+
+    #[test]
+    fn cold_continental_feature_roots_keep_the_adaptive_scan_size() {
+        let root = FeatureTileKey::at(Point { x: 0., z: 0. }, 12, true, true);
+        let started = Instant::now();
+        let next =
+            next_uncovered_feature_tile(root, &HashSet::new(), &HashMap::new(), root.center());
+        assert_eq!(next, Some(root));
+        assert!(started.elapsed() < Duration::from_millis(10));
+
+        let split = HashSet::from([root]);
+        let child = next_uncovered_feature_tile(root, &split, &HashMap::new(), root.center());
+        assert!(root.children().contains(&child.unwrap()));
+    }
+
+    #[test]
+    fn cached_raw_markers_survive_lod_hide_and_reappear_without_rescanning() {
+        let mut atlas = Atlas::new(&egui::Context::default(), 7, Settings::default());
+        atlas.bounds = Bounds {
+            min_x: 0.,
+            min_z: 0.,
+            max_x: 16.,
+            max_z: 16.,
+        };
+        let marker = marker(12, MarkerKind::Ore, 8., 8., "tfg");
+        let mut marker = marker;
+        marker.id = "normal_native_gold@0,0".into();
+        atlas.feature_tiles.insert(
+            FeatureTileKey::at(Point::default(), 0, true, true),
+            FeatureTileData {
+                markers: vec![marker],
+                scan_tier: 0,
+            },
+        );
+        atlas.refresh_visible_features();
+        assert_eq!(atlas.predicted.len(), 1);
+        let prefs = DisplayPrefs::default();
+        assert!(!prefs.marker_visible(&atlas.predicted[0], 4096.));
+        assert!(prefs.marker_visible(&atlas.predicted[0], 0.5));
+
+        atlas.feature_plan_key = Some((13, 0, 0, 0, 0, true, true));
+        atlas.refresh_visible_features();
+        assert_eq!(atlas.predicted.len(), 1);
+        assert_eq!(
+            atlas.feature_tiles.len(),
+            1,
+            "LOD only changes display filtering"
+        );
+    }
+
+    #[test]
+    fn cached_markers_entering_the_view_within_a_root_need_no_new_scan() {
+        let mut atlas = Atlas::new(&egui::Context::default(), 7, Settings::default());
+        atlas.bounds = Bounds {
+            min_x: 0.,
+            min_z: 0.,
+            max_x: 16.,
+            max_z: 16.,
+        };
+        let marker = marker(13, MarkerKind::Structure, 20., 8., "tfg");
+        atlas.feature_tiles.insert(
+            FeatureTileKey::at(Point::default(), 0, true, true),
+            FeatureTileData {
+                markers: vec![marker.clone()],
+                scan_tier: 0,
+            },
+        );
+        atlas.refresh_visible_features();
+        assert!(
+            atlas
+                .visible_markers(atlas.bounds, true, true)
+                .iter()
+                .all(|visible| visible.id != marker.id)
+        );
+
+        // Pan remains inside the same feature roots, so no LOD plan change or scan is needed.
+        atlas.bounds = Bounds {
+            min_x: 16.,
+            min_z: 0.,
+            max_x: 32.,
+            max_z: 16.,
+        };
+        assert!(
+            atlas
+                .visible_markers(atlas.bounds, true, true)
+                .iter()
+                .any(|visible| visible.id == marker.id)
+        );
+    }
+
+    #[test]
+    fn cached_children_under_one_lod_root_remain_available_after_same_root_pan() {
+        let mut atlas = Atlas::new(&egui::Context::default(), 7, Settings::default());
+        let root = FeatureTileKey::at(Point::default(), 2, true, true);
+        atlas.feature_visible_keys = vec![root];
+        atlas.bounds = Bounds {
+            min_x: 0.,
+            min_z: 0.,
+            max_x: 16.,
+            max_z: 16.,
+        };
+        let entering = marker(14, MarkerKind::Structure, 200., 8., "tfg");
+        for child in root.children() {
+            atlas.feature_tiles.insert(
+                child,
+                FeatureTileData {
+                    markers: if child.x % 2 == 1 && child.z == 0 {
+                        vec![entering.clone()]
+                    } else {
+                        Vec::new()
+                    },
+                    scan_tier: 1,
+                },
+            );
+        }
+        atlas.refresh_visible_features();
+        assert!(
+            atlas
+                .visible_markers(atlas.bounds, true, true)
+                .iter()
+                .all(|visible| visible.id != entering.id)
+        );
+
+        atlas.bounds = Bounds {
+            min_x: 192.,
+            min_z: 0.,
+            max_x: 208.,
+            max_z: 16.,
+        };
+        assert!(
+            atlas
+                .visible_markers(atlas.bounds, true, true)
+                .iter()
+                .any(|visible| visible.id == entering.id),
+            "the canonical cache keeps sibling-child markers indexed during same-root pans"
+        );
     }
 
     #[test]

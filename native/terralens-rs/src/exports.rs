@@ -19,6 +19,8 @@ use std::{
 const MAX_SIDE: u32 = 4096;
 const MAX_PIXELS: u64 = 16_777_216;
 const WORLD_BORDER: f64 = 30_000_000.;
+const MAX_SEED_FILE: u64 = 1_048_576;
+const MAX_IMPORTED_SEEDS: usize = 128;
 static TEMP_ID: AtomicU64 = AtomicU64::new(0);
 static EXPORT_FONT: OnceLock<FontArc> = OnceLock::new();
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -50,6 +52,9 @@ pub enum Request {
         path: PathBuf,
     },
     ReadSession {
+        path: PathBuf,
+    },
+    ReadSeeds {
         path: PathBuf,
     },
 }
@@ -168,7 +173,257 @@ pub fn execute_with_display(
                 data: Some(value),
             })
         }
+        Request::ReadSeeds { path } => read_seeds(path, cancel),
     }
+}
+
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+pub struct ImportedSeed {
+    pub seed: i64,
+    pub name: String,
+}
+
+/// Parses a Cubiomes style seed list or JSON seed array without doing file I/O.
+pub fn parse_seed_list(input: &str) -> Result<Vec<ImportedSeed>, String> {
+    parse_seed_list_cancellable(input, || false)
+}
+
+fn read_seeds(path: &PathBuf, cancel: impl Fn() -> bool) -> Result<Outcome, String> {
+    if cancel() {
+        return Err("Cancelled".into());
+    }
+    let file = fs::File::open(path).map_err(|e| format!("Could not open seed list: {e}"))?;
+    if file.metadata().map_err(|e| e.to_string())?.len() > MAX_SEED_FILE {
+        return Err("Seed list exceeds 1 MiB".into());
+    }
+    let mut bytes = Vec::new();
+    let mut reader = file.take(MAX_SEED_FILE + 1);
+    let mut buf = [0u8; 16 * 1024];
+    loop {
+        if cancel() {
+            return Err("Cancelled".into());
+        }
+        let n = reader
+            .read(&mut buf)
+            .map_err(|e| format!("Could not read seed list: {e}"))?;
+        if n == 0 {
+            break;
+        }
+        bytes.extend_from_slice(&buf[..n]);
+        if bytes.len() as u64 > MAX_SEED_FILE {
+            return Err("Seed list exceeds 1 MiB".into());
+        }
+    }
+    let text = std::str::from_utf8(&bytes).map_err(|_| "Seed list must be UTF-8".to_string())?;
+    let seeds = parse_seed_list_cancellable(text, &cancel)?;
+    let data = serde_json::json!({"seedList": seeds});
+    Ok(Outcome {
+        path: path.clone(),
+        note: format!(
+            "Imported {} seeds",
+            data["seedList"].as_array().map_or(0, Vec::len)
+        ),
+        data: Some(data),
+    })
+}
+
+fn parse_seed_list_cancellable(
+    input: &str,
+    cancel: impl Fn() -> bool,
+) -> Result<Vec<ImportedSeed>, String> {
+    if cancel() {
+        return Err("Cancelled".into());
+    }
+    let trimmed = input.trim_start_matches('\u{feff}').trim();
+    if trimmed.is_empty() {
+        return Err("Seed list is empty".into());
+    }
+    if trimmed.starts_with('[') {
+        return parse_seed_json(trimmed, cancel);
+    }
+    parse_seed_lines(trimmed, cancel)
+}
+
+fn parse_seed_json(input: &str, cancel: impl Fn() -> bool) -> Result<Vec<ImportedSeed>, String> {
+    let value: serde_json::Value =
+        serde_json::from_str(input).map_err(|e| format!("Invalid seed JSON: {e}"))?;
+    let array = value
+        .as_array()
+        .ok_or_else(|| "Seed JSON must be an array".to_string())?;
+    let mut out = Vec::new();
+    let mut seen = std::collections::HashSet::new();
+    for (row, value) in array.iter().enumerate() {
+        if cancel() {
+            return Err("Cancelled".into());
+        }
+        let entry = match value {
+            serde_json::Value::Number(n) => ImportedSeed {
+                seed: parse_i64(&n.to_string(), row + 1)?,
+                name: String::new(),
+            },
+            serde_json::Value::String(s) => ImportedSeed {
+                seed: parse_i64(s, row + 1)?,
+                name: String::new(),
+            },
+            serde_json::Value::Object(obj) => {
+                let seed = obj
+                    .get("seed")
+                    .ok_or_else(|| format!("Seed JSON row {} has no seed", row + 1))?;
+                let seed = match seed {
+                    serde_json::Value::String(s) => parse_i64(s, row + 1)?,
+                    serde_json::Value::Number(n) => parse_i64(&n.to_string(), row + 1)?,
+                    _ => return Err(format!("Seed JSON row {} has invalid seed", row + 1)),
+                };
+                let name = obj
+                    .get("name")
+                    .map(|v| {
+                        v.as_str()
+                            .map(str::to_owned)
+                            .ok_or_else(|| format!("Seed JSON row {} has invalid name", row + 1))
+                    })
+                    .transpose()?
+                    .unwrap_or_default();
+                validate_seed_name(&name, row + 1)?;
+                ImportedSeed { seed, name }
+            }
+            _ => {
+                return Err(format!(
+                    "Seed JSON row {} must be a seed or object",
+                    row + 1
+                ));
+            }
+        };
+        insert_seed(entry, row + 1, &mut seen, &mut out)?;
+    }
+    Ok(out)
+}
+
+fn parse_seed_lines(input: &str, cancel: impl Fn() -> bool) -> Result<Vec<ImportedSeed>, String> {
+    let mut out = Vec::new();
+    let mut seen = std::collections::HashSet::new();
+    let mut csv = false;
+    let mut first_data = true;
+    for (index, raw) in input.lines().enumerate() {
+        if cancel() {
+            return Err("Cancelled".into());
+        }
+        let line_no = index + 1;
+        let line = raw.trim();
+        if line.is_empty() || line.starts_with('#') {
+            continue;
+        }
+        let fields = parse_csv_row(line).map_err(|e| format!("Seed list line {line_no}: {e}"))?;
+        if first_data {
+            first_data = false;
+            if fields.len() == 2
+                && fields[0].trim().eq_ignore_ascii_case("seed")
+                && fields[1].trim().eq_ignore_ascii_case("name")
+            {
+                csv = true;
+                continue;
+            }
+        }
+        let (seed_text, name) = if csv || fields.len() == 2 {
+            if fields.len() != 2 {
+                return Err(format!("Seed list line {line_no}: expected seed,name"));
+            }
+            (fields[0].trim(), fields[1].trim().to_owned())
+        } else if fields.len() == 1 {
+            (fields[0].trim(), String::new())
+        } else {
+            return Err(format!(
+                "Seed list line {line_no}: expected one seed or seed,name"
+            ));
+        };
+        let seed = parse_i64(seed_text, line_no)?;
+        validate_seed_name(&name, line_no)?;
+        insert_seed(ImportedSeed { seed, name }, line_no, &mut seen, &mut out)?;
+    }
+    if out.is_empty() {
+        return Err("Seed list contains no seeds".into());
+    }
+    Ok(out)
+}
+
+fn parse_csv_row(line: &str) -> Result<Vec<String>, String> {
+    let mut fields = Vec::new();
+    let mut field = String::new();
+    let mut chars = line.chars().peekable();
+    let mut quoted = false;
+    let mut closed = false;
+    while let Some(ch) = chars.next() {
+        if quoted {
+            if ch == '"' {
+                if chars.peek() == Some(&'"') {
+                    chars.next();
+                    field.push('"');
+                } else {
+                    quoted = false;
+                    closed = true;
+                }
+            } else {
+                field.push(ch);
+            }
+        } else if ch == ',' {
+            fields.push(std::mem::take(&mut field));
+            closed = false;
+        } else if ch == '"' && field.trim().is_empty() && !closed {
+            field.clear();
+            quoted = true;
+        } else if closed && !ch.is_whitespace() {
+            return Err("unexpected text after quoted field".into());
+        } else {
+            field.push(ch);
+        }
+    }
+    if quoted {
+        return Err("unterminated quoted field".into());
+    }
+    fields.push(field);
+    Ok(fields)
+}
+
+fn parse_i64(text: &str, row: usize) -> Result<i64, String> {
+    text.trim()
+        .parse::<i64>()
+        .map_err(|_| format!("Seed list row {row} has invalid signed 64-bit seed"))
+}
+fn validate_seed_name(name: &str, row: usize) -> Result<(), String> {
+    if name.chars().count() > 128 {
+        return Err(format!("Seed list row {row} name exceeds 128 characters"));
+    }
+    if name.chars().any(char::is_control) {
+        return Err(format!(
+            "Seed list row {row} name contains control characters"
+        ));
+    }
+    Ok(())
+}
+fn insert_seed(
+    seed: ImportedSeed,
+    row: usize,
+    seen: &mut std::collections::HashSet<i64>,
+    out: &mut Vec<ImportedSeed>,
+) -> Result<(), String> {
+    if seen.insert(seed.seed) {
+        if out.len() == MAX_IMPORTED_SEEDS {
+            return Err(format!(
+                "Seed list exceeds {MAX_IMPORTED_SEEDS} unique seeds"
+            ));
+        }
+        let name = if seed.name.is_empty() {
+            seed.seed.to_string()
+        } else {
+            seed.name
+        };
+        out.push(ImportedSeed {
+            seed: seed.seed,
+            name,
+        });
+    } else if row == 0 {
+        unreachable!();
+    }
+    Ok(())
 }
 fn export_map(
     world: &World,
@@ -1051,6 +1306,97 @@ mod tests {
         let read = execute(&w, &Request::ReadSession { path: path.clone() }, || false).unwrap();
         assert_eq!(read.data, Some(value));
         std::fs::remove_file(&path).unwrap();
+        std::fs::remove_dir(dir).unwrap();
+    }
+
+    #[test]
+    fn imports_plain_seed_lines_comments_and_full_signed_range() {
+        let seeds = parse_seed_list("# candidates\n-9223372036854775808\n0\n9223372036854775807\n")
+            .unwrap();
+        assert_eq!(
+            seeds.iter().map(|s| s.seed).collect::<Vec<_>>(),
+            [i64::MIN, 0, i64::MAX]
+        );
+        assert_eq!(seeds[0].name, i64::MIN.to_string());
+    }
+
+    #[test]
+    fn imports_csv_header_and_escaped_quoted_names() {
+        let seeds =
+            parse_seed_list("seed,name\n42,\"A, brave \"\"new\"\" world\"\n-8,Alpha\n").unwrap();
+        assert_eq!(
+            seeds,
+            [
+                ImportedSeed {
+                    seed: 42,
+                    name: "A, brave \"new\" world".into()
+                },
+                ImportedSeed {
+                    seed: -8,
+                    name: "Alpha".into()
+                },
+            ]
+        );
+    }
+
+    #[test]
+    fn imports_json_numbers_decimal_strings_and_objects_without_float_rounding() {
+        let seeds = parse_seed_list(
+            r#"[9223372036854775807,"-9223372036854775808",{"seed":"42","name":"named"}]"#,
+        )
+        .unwrap();
+        assert_eq!(seeds[0].seed, i64::MAX);
+        assert_eq!(seeds[1].seed, i64::MIN);
+        assert_eq!(seeds[2].name, "named");
+    }
+
+    #[test]
+    fn malformed_rows_and_overflow_reject_the_whole_list() {
+        assert!(
+            parse_seed_list("1\nnot-a-seed\n")
+                .unwrap_err()
+                .contains("row 2")
+        );
+        assert!(parse_seed_list("9223372036854775808").is_err());
+        assert!(parse_seed_list("seed,name\n1,\"unterminated\n").is_err());
+    }
+
+    #[test]
+    fn unique_seed_limit_and_cancellation_are_enforced() {
+        let rows = (0..129)
+            .map(|i| i.to_string())
+            .collect::<Vec<_>>()
+            .join("\n");
+        assert!(parse_seed_list(&rows).unwrap_err().contains("128 unique"));
+        let calls = std::cell::Cell::new(0);
+        let result = parse_seed_list_cancellable("1\n2\n3", || {
+            calls.set(calls.get() + 1);
+            calls.get() >= 3
+        });
+        assert_eq!(result.unwrap_err(), "Cancelled");
+    }
+
+    #[test]
+    fn read_seed_request_returns_data_and_rejects_oversized_input() {
+        let dir =
+            std::env::temp_dir().join(format!("terralens-seed-import-{}", std::process::id()));
+        std::fs::create_dir_all(&dir).unwrap();
+        let path = dir.join("seeds.txt");
+        std::fs::write(&path, "1\n2\n").unwrap();
+        let world = World::new(1, crate::model::Settings::default());
+        let outcome =
+            execute(&world, &Request::ReadSeeds { path: path.clone() }, || false).unwrap();
+        assert_eq!(
+            outcome.data.unwrap()["seedList"].as_array().unwrap().len(),
+            2
+        );
+        std::fs::write(&path, vec![b'1'; MAX_SEED_FILE as usize + 1]).unwrap();
+        assert!(
+            execute(&world, &Request::ReadSeeds { path: path.clone() }, || false)
+                .unwrap_err()
+                .contains("1 MiB")
+        );
+        std::fs::remove_file(path).unwrap();
         std::fs::remove_dir(dir).unwrap();
     }
     #[test]

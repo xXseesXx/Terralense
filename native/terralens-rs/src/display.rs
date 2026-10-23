@@ -43,6 +43,7 @@ pub struct DisplayPrefs {
     pub rainfall_max: f32,
     pub hidden_ore_ids: Vec<String>,
     pub hidden_structure_ids: Vec<String>,
+    pub feature_bar_ores: bool,
 }
 
 impl Default for DisplayPrefs {
@@ -60,11 +61,54 @@ impl Default for DisplayPrefs {
             rainfall_max: 500.,
             hidden_ore_ids: Vec::new(),
             hidden_structure_ids: Vec::new(),
+            feature_bar_ores: false,
         }
     }
 }
 
 impl DisplayPrefs {
+    /// Set one stable feature type's visibility. Occurrence coordinates are stripped so one
+    /// click applies to every generated or saved instance of that type.
+    pub fn set_feature_visible(&mut self, kind: &MarkerKind, id: &str, visible: bool) {
+        let id = id.split('@').next().unwrap_or(id);
+        let hidden = match kind {
+            MarkerKind::Ore => &mut self.hidden_ore_ids,
+            MarkerKind::Structure => &mut self.hidden_structure_ids,
+            _ => return,
+        };
+        if visible {
+            hidden.retain(|hidden_id| hidden_id != id);
+        } else if !hidden.iter().any(|hidden_id| hidden_id == id) {
+            hidden.push(id.to_owned());
+        }
+    }
+
+    /// Show only one type within its group; all other catalog types remain individually
+    /// available to restore. This does not alter the global group visibility switches.
+    pub fn solo_feature(
+        &mut self,
+        kind: &MarkerKind,
+        ids: impl IntoIterator<Item = String>,
+        id: &str,
+    ) {
+        let id = id.split('@').next().unwrap_or(id);
+        let hidden = match kind {
+            MarkerKind::Ore => &mut self.hidden_ore_ids,
+            MarkerKind::Structure => &mut self.hidden_structure_ids,
+            _ => return,
+        };
+        *hidden = ids
+            .into_iter()
+            .filter(|candidate| candidate != id)
+            .collect();
+    }
+
+    pub fn set_feature_group_visible(&mut self, kind: &MarkerKind, ids: &[String], visible: bool) {
+        for id in ids {
+            self.set_feature_visible(kind, id, visible);
+        }
+    }
+
     pub fn same_raster(&self, other: &Self) -> bool {
         self.palette == other.palette
             && self.highlighted_biomes == other.highlighted_biomes

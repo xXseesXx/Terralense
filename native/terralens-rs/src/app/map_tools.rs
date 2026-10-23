@@ -58,6 +58,16 @@ impl MapTools {
         self.selection
     }
 
+    pub fn set_selection(&mut self, bounds: Bounds) {
+        self.clear_selection();
+        self.selection = Some(Bounds {
+            min_x: bounds.min_x.min(bounds.max_x),
+            max_x: bounds.min_x.max(bounds.max_x),
+            min_z: bounds.min_z.min(bounds.max_z),
+            max_z: bounds.min_z.max(bounds.max_z),
+        });
+    }
+
     pub fn clear_selection(&mut self) {
         self.selection = None;
         self.ruler = None;

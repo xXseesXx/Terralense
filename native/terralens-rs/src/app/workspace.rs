@@ -21,7 +21,15 @@ impl TerraLensApp {
             bpp: self.prefs.blocks_per_point,
         }
     }
-    fn apply_view(&mut self, view: navigation::View, ctx: &egui::Context) {
+    pub(super) fn apply_view(&mut self, view: navigation::View, ctx: &egui::Context) {
+        let mut view = view;
+        if self.prefs.world_id == view.world_id {
+            if let Some(world) = self.selected.and_then(|index| self.worlds.get(index)) {
+                if !TerraLensApp::world_supports_dimension(world, view.dimension) {
+                    view.dimension = self.prefs.dimension;
+                }
+            }
+        }
         let context_changed = self.prefs.dimension != view.dimension
             || (view.dimension == Dimension::Beneath
                 && self.prefs.slice_y != beneath_band_top(view.slice_y));
@@ -75,62 +83,39 @@ impl TerraLensApp {
         {
             self.apply_view(view, ui.ctx());
         }
-        ui.menu_button("...", |ui| {
-            if ui.button("Copy session").clicked() {
-                if let Ok(json) = serde_json::to_string(&self.session_value()) {
-                    ui.ctx().copy_text(json);
-                }
-                ui.close();
-            }
-            if ui.button("Load / paste session…").clicked() {
-                self.session_open = true;
-                self.session_error = None;
-                ui.close();
-            }
-            if ui.button("Save session file · Ctrl+S").clicked() {
-                self.save_session_file();
-                ui.close();
-            }
-            if ui.button("Refresh saves").clicked() {
-                self.discovering = true;
-                if let Some(atlas) = &self.atlas {
-                    atlas.discover_worlds(self.instance.clone());
-                }
-                ui.close();
-            }
-            if ui.button("Go to saved position").clicked() {
-                if let Some(point) = self.selected.and_then(|i| self.worlds.get(i)).map(|w| {
-                    self.prefs
-                        .dimension_centers
-                        .get(&format!(
-                            "{}|{}",
-                            self.prefs.world_id,
-                            self.prefs.dimension.id()
-                        ))
-                        .copied()
-                        .unwrap_or(w.center)
-                }) {
-                    self.set_center(point);
-                }
-                ui.close();
-            }
-            if ui.button("Search visible area").clicked() {
-                self.search_visible();
-                ui.close();
-            }
-        })
-        .response
-        .on_hover_text(format!(
-            "Session and map actions · {} visited views",
-            self.prefs.navigation.history().len()
-        ));
     }
     pub(super) fn workspace_shortcuts(&mut self, ctx: &egui::Context) {
+        if ctx.input_mut(|input| input.consume_key(egui::Modifiers::COMMAND, egui::Key::N)) {
+            self.activate_seed(0, ctx);
+            self.seed_input = "0".into();
+        }
+        if ctx.input_mut(|i| {
+            i.consume_key(
+                egui::Modifiers::COMMAND | egui::Modifiers::SHIFT,
+                egui::Key::S,
+            )
+        }) {
+            self.request_file(file_dialogs::Kind::SaveSession);
+        }
+        if ctx.input_mut(|i| {
+            i.consume_key(
+                egui::Modifiers::COMMAND | egui::Modifiers::SHIFT,
+                egui::Key::O,
+            )
+        }) {
+            self.request_file(file_dialogs::Kind::OpenWorld);
+        }
+        if ctx.input_mut(|i| i.consume_key(egui::Modifiers::COMMAND, egui::Key::E)) {
+            self.request_file(file_dialogs::Kind::Export);
+        }
+        if ctx.input_mut(|i| i.consume_key(egui::Modifiers::COMMAND, egui::Key::W)) {
+            self.close_source(ctx);
+        }
         if ctx.input_mut(|i| i.consume_key(egui::Modifiers::COMMAND, egui::Key::S)) {
             self.save_session_file();
         }
         if ctx.input_mut(|i| i.consume_key(egui::Modifiers::COMMAND, egui::Key::O)) {
-            self.session_open = true;
+            self.request_file(file_dialogs::Kind::OpenSession);
         }
         let current = self.current_view();
         if ctx.input_mut(|i| i.consume_key(egui::Modifiers::COMMAND, egui::Key::D)) {
@@ -194,20 +179,6 @@ impl TerraLensApp {
                             .char_limit(1_048_576),
                     );
                     ui.horizontal(|ui| {
-                        ui.add(
-                            egui::TextEdit::singleline(&mut self.session_path)
-                                .hint_text("Session file path")
-                                .desired_width(280.),
-                        );
-                        if ui.button("Load file").clicked() {
-                            if let Some(atlas) = &mut self.atlas {
-                                atlas.export(exports::Request::ReadSession {
-                                    path: self.session_path.clone().into(),
-                                });
-                            }
-                        }
-                    });
-                    ui.horizontal(|ui| {
                         if ui.button("Restore pasted session").clicked() {
                             match serde_json::from_str::<serde_json::Value>(&self.session_input) {
                                 Ok(value) => self.restore_session(value, ctx),
@@ -224,7 +195,7 @@ impl TerraLensApp {
                 });
         }
     }
-    fn session_value(&self) -> serde_json::Value {
+    pub(super) fn session_value(&self) -> serde_json::Value {
         serde_json::json!({"app":"TerraLens","version":1,"preferences":self.prefs,"seed":self.current_view().seed})
     }
     fn restore_session(&mut self, value: serde_json::Value, ctx: &egui::Context) {
@@ -255,14 +226,23 @@ impl TerraLensApp {
             },
             bpp: prefs.blocks_per_point,
         };
-        let old_id = self.prefs.world_id.clone();
-        self.prefs = prefs;
-        self.legend.set_open(self.prefs.show_legend);
-        self.prefs.world_id = old_id;
-        self.apply_view(view, ctx);
+        if let Some(source) = prefs.source_path.clone() {
+            self.open_source_file(source, Some(view));
+            self.pending_preferences = Some(prefs);
+        } else {
+            let old_id = self.prefs.world_id.clone();
+            self.prefs = prefs;
+            self.legend.set_open(self.prefs.show_legend);
+            self.prefs.world_id = old_id;
+            self.apply_view(view, ctx);
+        }
         self.session_open = false;
     }
-    fn save_session_file(&mut self) {
+    pub(super) fn save_session_file(&mut self) {
+        if self.session_path.is_empty() {
+            self.request_file(file_dialogs::Kind::SaveSession);
+            return;
+        }
         let value = self.session_value();
         if let Some(atlas) = &mut self.atlas {
             atlas.export(exports::Request::Data {
@@ -274,19 +254,46 @@ impl TerraLensApp {
     pub(super) fn poll_export(&mut self, ctx: &egui::Context) {
         match self.atlas.as_mut().and_then(Atlas::take_export) {
             Some(Ok(outcome)) => {
+                if self
+                    .pending_session_write
+                    .as_ref()
+                    .is_some_and(|path| path == &outcome.path)
+                {
+                    self.session_path = outcome.path.to_string_lossy().into_owned();
+                    self.pending_session_write = None;
+                }
                 if let Some(data) = outcome.data {
-                    self.restore_session(data, ctx);
+                    if let Some(seeds) = data.get("seedList").and_then(serde_json::Value::as_array)
+                    {
+                        for item in seeds {
+                            if let Some(seed) = item["seed"].as_i64() {
+                                self.prefs
+                                    .seed_list
+                                    .add(item["name"].as_str().unwrap_or(""), seed);
+                            }
+                        }
+                        self.set_workspace(Some(Workspace::Seed));
+                    } else {
+                        self.session_error = None;
+                        self.restore_session(data, ctx);
+                        if self.pending_preferences.is_some() {
+                            self.pending_session_path = Some(outcome.path);
+                        } else if self.session_error.is_none() {
+                            self.session_path = outcome.path.to_string_lossy().into_owned();
+                        } else {
+                            self.document_error = self.session_error.clone();
+                        }
+                    }
                 }
             }
             Some(Err(error)) => {
-                if self.session_open {
-                    self.session_error = Some(error);
-                }
+                self.pending_session_write = None;
+                self.document_error = Some(error);
             }
             None => {}
         }
     }
-    fn search_visible(&mut self) {
+    pub(super) fn search_visible(&mut self) {
         let bounds = self.tools.selection().unwrap_or(self.last_bounds);
         let origin = Point {
             x: (bounds.min_x + bounds.max_x) / 2.,
@@ -458,172 +465,30 @@ impl TerraLensApp {
         }
     }
     pub(super) fn tools_panel(&mut self, ui: &mut egui::Ui) {
-        ui.add_space(8.);
-        ui.horizontal_wrapped(|ui| {
-            if self.prefs.dimension == crate::dimension::Dimension::Overworld {
-                ui.selectable_value(&mut self.tools_tab, 0, "Analyze");
-                ui.selectable_value(&mut self.tools_tab, 1, "Find site");
-            } else {
-                self.tools_tab = 2;
-            }
-            ui.selectable_value(&mut self.tools_tab, 2, "Export");
-        });
-        ui.separator();
-        ui.horizontal_wrapped(|ui| {
-            ui.checkbox(&mut self.prefs.tools.coordinate_grid, "Grid");
-            ui.checkbox(&mut self.prefs.tools.chunk_grid, "Chunks");
-            ui.checkbox(&mut self.prefs.tools.region_grid, "Regions");
-            ui.checkbox(&mut self.prefs.tools.scale_bar, "Scale");
-        });
-        ui.horizontal_wrapped(|ui| {
-            if ui
-                .button("Search area")
-                .on_hover_text("Search this view or the Alt-drag selection")
-                .clicked()
-            {
-                self.search_visible();
-            }
-            if self.tools.has_overlay() && ui.button("Clear selection").clicked() {
-                self.tools.clear_selection();
-            }
-        });
         let bounds = self.tools.selection().unwrap_or(self.last_bounds);
-        if self.tools_tab <= 1 {
-            if let Some(action) =
-                analysis_panel::show_controls(ui, &mut self.location_query, bounds, self.tools_tab)
-            {
-                if let Some(atlas) = &mut self.atlas {
-                    match action {
-                        analysis_panel::Action::Analyze(query) => {
-                            atlas.analyze(query);
-                        }
-                        analysis_panel::Action::Locate(mut query) => {
-                            query.origin = Point {
-                                x: (bounds.min_x + bounds.max_x) / 2.,
-                                z: (bounds.min_z + bounds.max_z) / 2.,
-                            };
-                            atlas.locate(query);
-                        }
-                    }
-                }
-            }
-        }
-        let mut destination = None;
-        if let Some(atlas) = &mut self.atlas {
-            if atlas.tasks_busy() && ui.button("Stop").clicked() {
-                atlas.cancel_tasks();
-            }
-            if !atlas.task_status().is_empty() {
-                ui.label(atlas.task_status());
-            }
-            if self.tools_tab == 0 {
-                analysis_panel::show_report(ui, atlas.analysis_report());
-            }
-            if self.tools_tab == 1 {
-                destination = analysis_panel::show_results(ui, atlas.locations());
-            }
-        }
-        if let Some(point) = destination {
-            self.selected_marker = self
-                .atlas
-                .as_ref()
-                .and_then(Atlas::locations)
-                .and_then(|r| r.candidates.iter().find(|c| c.point == point))
-                .map(|c| c.marker());
-            self.set_center(point);
-        }
-        if self.tools_tab == 0
-            && self
-                .atlas
-                .as_ref()
-                .and_then(Atlas::analysis_report)
-                .is_some()
-        {
-            ui.horizontal_wrapped(|ui| {
-                if ui.button("Copy JSON").clicked() {
-                    if let Some(r) = self.atlas.as_ref().and_then(Atlas::analysis_report) {
-                        if let Ok(json) = serde_json::to_string_pretty(r) {
-                            ui.ctx().copy_text(json);
-                        }
-                    }
-                }
-                if ui.button("Export JSON").clicked() {
-                    let value = self
-                        .atlas
-                        .as_ref()
-                        .and_then(Atlas::analysis_report)
-                        .and_then(|r| serde_json::to_value(r).ok());
-                    if let (Some(value), Some(atlas)) = (value, &mut self.atlas) {
-                        atlas.export(exports::Request::Data {
-                            value,
-                            path: exports::default_directory().join("analysis.json"),
-                        });
-                    }
-                }
+        let layer = Layer::ALL
+            .get(self.prefs.layer)
+            .copied()
+            .unwrap_or_default();
+        let markers = self.visible_export_markers(bounds);
+        let snapshot = self
+            .atlas
+            .as_mut()
+            .map(|atlas| atlas.legend_snapshot(layer).clone());
+        self.exporter.show(
+            ui,
+            bounds,
+            layer,
+            &markers,
+            self.selected_marker.as_ref(),
+            snapshot.as_ref(),
+            self.prefs.display.palette,
+        );
+        if let Some(picker) = self.exporter.take_picker() {
+            self.request_file(match picker {
+                export_panel::Picker::Map => file_dialogs::Kind::Export,
+                export_panel::Picker::Markers => file_dialogs::Kind::ExportMarkers,
             });
-        }
-        if self.tools_tab == 2 {
-            let layer = Layer::ALL
-                .get(self.prefs.layer)
-                .copied()
-                .unwrap_or_default();
-            let request = self.atlas.as_mut().and_then(|atlas| {
-                let legend_snapshot = atlas.legend_snapshot(layer).clone();
-                self.exporter.show(
-                    ui,
-                    bounds,
-                    layer,
-                    atlas.markers(),
-                    self.selected_marker.as_ref(),
-                    Some(&legend_snapshot),
-                    self.prefs.display.palette,
-                )
-            });
-            if let Some(mut request) = request {
-                let markers = match &mut request {
-                    exports::Request::Markers { markers, .. }
-                    | exports::Request::ComposedMap { markers, .. } => Some(markers),
-                    _ => None,
-                };
-                if let Some(markers) = markers {
-                    markers.retain(|m| {
-                        let visible_bounds = bounds.contains(m.x, m.z)
-                            || m.bounds.is_some_and(|b| {
-                                b.min_x as f64 <= bounds.max_x
-                                    && b.max_x as f64 + 1. >= bounds.min_x
-                                    && b.min_z as f64 <= bounds.max_z
-                                    && b.max_z as f64 + 1. >= bounds.min_z
-                            });
-                        let visible_band = if self.prefs.dimension == Dimension::Beneath {
-                            let (min, max) = self.prefs.dimension.band(self.prefs.slice_y);
-                            m.intersects_band(min, max)
-                        } else {
-                            true
-                        };
-                        visible_bounds
-                            && visible_band
-                            && self
-                                .prefs
-                                .display
-                                .marker_visible(m, self.prefs.blocks_per_point)
-                    });
-                }
-                if let Some(atlas) = &mut self.atlas {
-                    atlas.export(request);
-                }
-            }
-            ui.separator();
-            ui.add(
-                egui::TextEdit::singleline(&mut self.session_path)
-                    .desired_width(ui.available_width())
-                    .hint_text("Session file"),
-            );
-            if ui.button("Save session · Ctrl+S").clicked() {
-                self.save_session_file();
-            }
-            if ui.button("Load session · Ctrl+O").clicked() {
-                self.session_open = true;
-            }
         }
     }
     pub(super) fn run_qol_scenario(&mut self, ctx: &egui::Context) {
@@ -859,7 +724,7 @@ impl TerraLensApp {
     }
 }
 
-fn feature_catalog() -> &'static (Vec<(String, String)>, Vec<(String, String)>) {
+pub(super) fn feature_catalog() -> &'static (Vec<(String, String)>, Vec<(String, String)>) {
     static CATALOG: std::sync::OnceLock<(Vec<(String, String)>, Vec<(String, String)>)> =
         std::sync::OnceLock::new();
     CATALOG.get_or_init(|| {

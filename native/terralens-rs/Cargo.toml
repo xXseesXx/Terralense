@@ -29,6 +29,8 @@ crossbeam-channel = "0.5"
 lru = "0.16"
 image = { version = "0.25", default-features = false, features = ["png"] }
 md5 = "0.8"
+pollster = "0.4"
+rfd = { version = "0.17.2", default-features = false, features = ["xdg-portal", "wayland"] }
 
 [profile.release]
 debug = 0

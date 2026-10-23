@@ -350,6 +350,23 @@ fn read_world(path: &Path) -> WorldInfo {
     })
 }
 
+/// Load one world with an error result for import workflows that must reject malformed saves.
+pub(crate) fn load_world(path: &Path) -> Result<WorldInfo, String> {
+    if !path.join("level.dat").is_file() {
+        return Err(format!(
+            "{} is not a Minecraft world folder (level.dat missing)",
+            path.display()
+        ));
+    }
+    let world = read_world(path);
+    if let Some(warning) = &world.warning {
+        if warning.starts_with("Could not read level.dat:") {
+            return Err(warning.clone());
+        }
+    }
+    Ok(world)
+}
+
 fn discover_dimensions(
     world: &Path,
     configured: Option<&Nbt>,

@@ -2,7 +2,10 @@
 //! the quiet map-first interface, pointer interaction, search and user preferences.
 mod analysis_panel;
 mod display_panel;
+mod documents;
 mod export_panel;
+mod feature_bar;
+mod file_dialogs;
 mod icons;
 mod legend;
 mod map_tools;
@@ -14,12 +17,12 @@ mod seed_list;
 mod site_evidence;
 mod structure_bounds;
 mod tooltip;
+mod ui_shell;
 mod workspace;
 
 use crate::atlas::{Atlas, Layer};
 use crate::dimension::Dimension;
 use crate::model::{Marker, MarkerKind, Point, WorldInfo};
-use crate::prism;
 use crate::search::Scope;
 use eframe::egui::{
     self, Align, Align2, Color32, CornerRadius, FontId, Frame, Id, Layout, Pos2, Rect, RichText,
@@ -29,10 +32,10 @@ use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 use std::time::{Duration, Instant};
 
-const BG: Color32 = Color32::from_rgb(13, 19, 24);
-const PANEL: Color32 = Color32::from_rgb(20, 29, 35);
-const PANEL_RAISED: Color32 = Color32::from_rgb(27, 39, 46);
-const EDGE: Color32 = Color32::from_rgb(43, 59, 66);
+const BG: Color32 = Color32::from_rgb(29, 31, 34);
+const PANEL: Color32 = Color32::from_rgb(39, 41, 45);
+const PANEL_RAISED: Color32 = Color32::from_rgb(47, 50, 55);
+const EDGE: Color32 = Color32::from_rgb(66, 69, 75);
 const TEXT: Color32 = Color32::from_rgb(224, 235, 233);
 const MUTED: Color32 = Color32::from_rgb(137, 157, 160);
 const TEAL: Color32 = Color32::from_rgb(104, 218, 198);
@@ -80,6 +83,13 @@ struct Preferences {
     tools: map_tools::MapToolsPrefs,
     display: crate::display::DisplayPrefs,
     world_id: String,
+    source_path: Option<PathBuf>,
+    recent_sources: Vec<PathBuf>,
+    last_directory: Option<PathBuf>,
+    dock_tab: u8,
+    search_page: u8,
+    location_mode: u8,
+    control_dock: bool,
     #[serde(default)]
     dimension_centers: std::collections::HashMap<String, Point>,
     #[serde(default)]
@@ -111,6 +121,13 @@ impl Default for Preferences {
             tools: map_tools::MapToolsPrefs::default(),
             display: crate::display::DisplayPrefs::default(),
             world_id: String::new(),
+            source_path: None,
+            recent_sources: Vec::new(),
+            last_directory: None,
+            dock_tab: 0,
+            search_page: 1,
+            location_mode: 0,
+            control_dock: true,
             dimension_centers: std::collections::HashMap::new(),
             dimension: Dimension::Overworld,
             slice_y: 96,
@@ -153,6 +170,21 @@ pub struct TerraLensApp {
     session_open: bool,
     session_error: Option<String>,
     session_path: String,
+    file_dialogs: file_dialogs::Dialogs,
+    feature_bar: feature_bar::State,
+    feature_entries: ui_shell::FeatureEntries,
+    source_serial: u64,
+    pending_source: Option<(u64, PathBuf)>,
+    pending_source_view: Option<navigation::View>,
+    pending_preferences: Option<Preferences>,
+    pending_session_path: Option<PathBuf>,
+    pending_session_write: Option<PathBuf>,
+    pending_marker_export: Option<Vec<Marker>>,
+    document_error: Option<String>,
+    export_open: bool,
+    help_open: bool,
+    structure_query: String,
+    structure_whole_save: bool,
     instance: PathBuf,
     worlds: Vec<WorldInfo>,
     #[cfg(feature = "diagnostics")]
@@ -210,25 +242,49 @@ impl TerraLensApp {
             false
         }
     }
+    fn sync_workspace_flags(&mut self) {
+        let locations =
+            self.prefs.control_dock && self.prefs.dock_tab == 0 && self.prefs.search_page == 1;
+        let sites = locations
+            && self.prefs.location_mode == 1
+            && self.prefs.dimension == Dimension::Overworld;
+        self.show_search = locations && !sites;
+        self.show_seed =
+            self.prefs.control_dock && self.prefs.dock_tab == 0 && self.prefs.search_page == 0;
+        self.show_tools = self.prefs.control_dock && (self.prefs.dock_tab == 1 || sites);
+    }
+
     fn set_workspace(&mut self, workspace: Option<Workspace>) {
         self.show_search = workspace == Some(Workspace::Find);
         self.show_seed = workspace == Some(Workspace::Seed);
         self.show_preferences = workspace == Some(Workspace::Details);
         self.show_tools = workspace == Some(Workspace::Tools);
-    }
-
-    fn toggle_workspace(&mut self, workspace: Workspace) {
-        let is_open = match workspace {
-            Workspace::Find => self.show_search,
-            Workspace::Seed => self.show_seed,
-            Workspace::Details => self.show_preferences,
-            Workspace::Tools => self.show_tools,
-        };
-        self.set_workspace((!is_open).then_some(workspace));
-    }
-
-    fn has_workspace(&self) -> bool {
-        self.show_search || self.show_seed || self.show_preferences || self.show_tools
+        match workspace {
+            Some(Workspace::Find) => {
+                self.prefs.dock_tab = 0;
+                self.prefs.search_page = 1;
+                self.prefs.location_mode = 0;
+                self.prefs.control_dock = true;
+            }
+            Some(Workspace::Seed) => {
+                self.prefs.dock_tab = 0;
+                self.prefs.search_page = 0;
+                self.prefs.control_dock = true;
+            }
+            Some(Workspace::Tools) => {
+                if self.tools_tab == 0 {
+                    self.prefs.dock_tab = 1;
+                } else if self.tools_tab == 1 {
+                    self.prefs.dock_tab = 0;
+                    self.prefs.search_page = 1;
+                    self.prefs.location_mode = 1;
+                } else {
+                    self.export_open = true;
+                }
+                self.prefs.control_dock = true;
+            }
+            _ => {}
+        }
     }
 
     fn world_supports_dimension(world: &WorldInfo, dimension: Dimension) -> bool {
@@ -299,6 +355,14 @@ impl TerraLensApp {
 
     fn switch_dimension(&mut self, previous: Dimension) {
         let next = self.prefs.dimension;
+        if self
+            .selected
+            .and_then(|index| self.worlds.get(index))
+            .is_some_and(|world| !Self::world_supports_dimension(world, next))
+        {
+            self.prefs.dimension = previous;
+            return;
+        }
         let old_key = format!("{}|{}", self.prefs.world_id, previous.id());
         self.prefs
             .dimension_centers
@@ -385,16 +449,22 @@ impl TerraLensApp {
         }
         prefs.navigation.normalize();
         prefs.seed_list.normalize();
-        let instance = prism::default_instance();
+        // Only reopen an explicitly chosen source. A fresh launch is a seed viewer.
+        let instance = prefs.source_path.clone().unwrap_or_default();
         let worlds = Vec::new();
-        let preview_seed = prefs.seed_preview;
+        let restoring_source = config.source_path.is_none() && prefs.source_path.is_some();
+        let source = config
+            .source_path
+            .clone()
+            .or_else(|| prefs.source_path.clone())
+            .or_else(|| std::env::var_os("TERRALENS_INSTANCE").map(PathBuf::from));
+        let preview_seed = prefs.seed_preview.or_else(|| source.is_none().then_some(0));
         let selected = None;
         let atlas = Atlas::new(
             &cc.egui_ctx,
-            preview_seed.unwrap_or(7787531943268589495),
+            preview_seed.unwrap_or(0),
             crate::model::Settings::default(),
         );
-        atlas.discover_worlds(instance.clone());
         let screenshot_started_at = config.screenshot.as_ref().map(|_| Instant::now());
         let mut this = Self {
             ore_icons: crate::ore_icons::IconCache::default(),
@@ -414,10 +484,22 @@ impl TerraLensApp {
             session_input: String::new(),
             session_open: false,
             session_error: None,
-            session_path: crate::exports::default_directory()
-                .join("atlas-session.json")
-                .to_string_lossy()
-                .into_owned(),
+            session_path: String::new(),
+            file_dialogs: file_dialogs::Dialogs::default(),
+            feature_bar: feature_bar::State::default(),
+            feature_entries: ui_shell::FeatureEntries::default(),
+            source_serial: 0,
+            pending_source: None,
+            pending_source_view: None,
+            pending_preferences: None,
+            pending_session_path: None,
+            pending_session_write: None,
+            pending_marker_export: None,
+            document_error: None,
+            export_open: false,
+            help_open: false,
+            structure_query: String::new(),
+            structure_whole_save: false,
             instance,
             worlds,
             #[cfg(feature = "diagnostics")]
@@ -431,7 +513,7 @@ impl TerraLensApp {
             }),
             #[cfg(feature = "diagnostics")]
             diagnostic_searching: false,
-            discovering: true,
+            discovering: false,
             discovery_error: None,
             selected,
             atlas: Some(atlas),
@@ -488,75 +570,37 @@ impl TerraLensApp {
             this.set_workspace(Some(workspace));
         }
         this.legend.set_open(this.prefs.show_legend);
+        if let Some(path) = source {
+            let view = restoring_source.then(|| this.current_view());
+            this.open_source_file(path, view);
+        }
         this
     }
 
     fn poll_worlds(&mut self, ctx: &egui::Context) {
+        self.poll_source(ctx);
         if !self.discovering {
-            return;
-        }
-        let Some(result) = self.atlas.as_mut().and_then(Atlas::take_worlds) else {
-            if self.discovering {
-                ctx.request_repaint_after(Duration::from_millis(16));
+            if let Some((point, bpp)) = self.initial_view.take() {
+                self.prefs.center_x = point.x;
+                self.prefs.center_z = point.z;
+                self.prefs.blocks_per_point = bpp;
             }
-            return;
-        };
-        self.discovering = false;
-        match result {
-            Ok(worlds) => {
-                self.worlds = worlds;
-                if self.preview_seed.is_none() {
-                    let selected = self
-                        .worlds
-                        .iter()
-                        .position(|w| {
-                            w.id == self.prefs.world_id
-                                && Self::world_supports_dimension(w, self.prefs.dimension)
-                        })
-                        .or_else(|| {
-                            self.worlds.iter().position(|w| {
-                                Self::world_supports_dimension(w, self.prefs.dimension)
-                            })
-                        })
-                        .or_else(|| {
-                            self.worlds
-                                .iter()
-                                .position(|w| Self::world_supports_dimension(w, Dimension::Beneath))
-                        });
-                    if self.selected.is_none() {
-                        if let Some(i) = selected {
-                            if !Self::world_supports_dimension(
-                                &self.worlds[i],
-                                self.prefs.dimension,
-                            ) {
-                                self.prefs.dimension = Dimension::Beneath;
-                                self.prefs.layer = 0;
-                            }
-                            self.activate_world(i, ctx);
-                        }
-                    } else {
-                        self.selected = selected;
-                    }
-                }
-            }
-            Err(error) => self.discovery_error = Some(error),
-        }
-        if let Some((point, bpp)) = self.initial_view.take() {
-            self.prefs.center_x = point.x;
-            self.prefs.center_z = point.z;
-            self.prefs.blocks_per_point = bpp;
-            self.search_x = format!("{:.0}", point.x);
-            self.search_z = format!("{:.0}", point.z);
         }
     }
 
     fn activate_world(&mut self, index: usize, ctx: &egui::Context) {
+        self.cancel_pending_source();
         let Some(world) = self.worlds.get(index).cloned() else {
             self.selected = None;
             return;
         };
         if !Self::world_supports_dimension(&world, self.prefs.dimension) {
-            return;
+            self.prefs.dimension = if world.compatible {
+                Dimension::Overworld
+            } else {
+                Dimension::Beneath
+            };
+            self.prefs.layer = 0;
         }
         let changed_world = self.prefs.world_id != world.id;
         if changed_world && !self.prefs.world_id.is_empty() {
@@ -566,6 +610,7 @@ impl TerraLensApp {
         self.prefs.seed_preview = None;
         self.selected = Some(index);
         self.prefs.world_id = world.id.clone();
+        self.seed_input = world.seed.to_string();
         if changed_world || (self.prefs.center_x == 0. && self.prefs.center_z == 0.) {
             let key = format!("{}|{}", self.prefs.world_id, self.prefs.dimension.id());
             let point = self
@@ -606,6 +651,7 @@ impl TerraLensApp {
     }
 
     fn activate_seed(&mut self, seed: i64, ctx: &egui::Context) {
+        self.cancel_pending_source();
         let changed = self.preview_seed != Some(seed);
         if changed && !self.prefs.world_id.is_empty() {
             self.prefs.navigation.record(self.current_view());
@@ -803,254 +849,6 @@ impl TerraLensApp {
         ui.separator();
     }
 
-    fn navigation_and_workspaces(&mut self, ui: &mut egui::Ui) {
-        self.navigation_controls(ui);
-        ui.separator();
-        for (workspace, label, active, help) in [
-            (Workspace::Find, "Find", self.show_search, "Ctrl+F"),
-            (
-                Workspace::Seed,
-                "Seed",
-                self.show_seed,
-                "Compare saved seeds",
-            ),
-            (
-                Workspace::Details,
-                "Details",
-                self.show_preferences,
-                "Markers, display and hover options",
-            ),
-            (
-                Workspace::Tools,
-                "Tools",
-                self.show_tools,
-                "Shift-drag to measure · Alt-drag to fit an area",
-            ),
-        ] {
-            if ui
-                .selectable_label(active, label)
-                .on_hover_text(help)
-                .clicked()
-            {
-                self.toggle_workspace(workspace);
-            }
-        }
-    }
-
-    fn top_bar(&mut self, ctx: &egui::Context) {
-        egui::TopBottomPanel::top("topbar")
-            .frame(panel_frame())
-            .show(ctx, |ui| {
-                ui.add_space(3.0);
-                let compact = ui.available_width() < 1250.;
-                ui.horizontal_wrapped(|ui| {
-                    ui.add_space(9.0);
-                    let selected_name = self
-                        .preview_seed
-                        .map(|s| format!("Seed preview · {s}"))
-                        .unwrap_or_else(|| {
-                            self.selected
-                                .and_then(|i| self.worlds.get(i))
-                                .map(|w| w.name.clone())
-                                .unwrap_or_else(|| "Choose a save or seed".into())
-                        });
-                    egui::ComboBox::from_id_salt("world_selector")
-                        .selected_text(selected_name)
-                        .width(190.)
-                        .show_ui(ui, |ui| {
-                            for (i, world) in self.worlds.clone().iter().enumerate() {
-                                let label = format!("{}  ·  {}", world.name, world.seed);
-                                let usable = Self::world_supports_dimension(&world, self.prefs.dimension);
-                                let response = ui.add_enabled_ui(usable, |ui| {
-                                    ui.selectable_label(self.selected == Some(i), label)
-                                });
-                                if let Some(warning) = &world.warning {
-                                    response.response.on_hover_text(warning);
-                                }
-                                if response.inner.clicked() {
-                                    self.activate_world(i, ctx);
-                                }
-                                if !usable {
-                                    if let Some(warning) = &world.warning {
-                                        ui.label(
-                                            RichText::new(warning)
-                                                .size(9.)
-                                                .color(Color32::from_rgb(206, 142, 125)),
-                                        );
-                                    }
-                                }
-                            }
-                            if self.worlds.is_empty() {
-                                ui.label(
-                                    RichText::new(format!(
-                                        "{}",
-                                        if self.discovering {
-                                            "Reading Prism saves…".to_owned()
-                                        } else {
-                                            self.discovery_error.clone().unwrap_or_else(|| {
-                                                format!("No saves in {}", self.instance.display())
-                                            })
-                                        }
-                                    ))
-                                    .color(MUTED),
-                                );
-                            }
-                        });
-                    ui.separator();
-                    let before_dimension = self.prefs.dimension;
-                    egui::ComboBox::from_id_salt("dimension_selector")
-                        .selected_text(self.prefs.dimension.label())
-                        .width(100.)
-                        .show_ui(ui, |ui| {
-                            let has_beneath = self.selected.and_then(|i| self.worlds.get(i))
-                                .map(|w| Self::world_supports_dimension(w, Dimension::Beneath))
-                                .unwrap_or_else(|| self.worlds.iter().any(|w| Self::world_supports_dimension(w, Dimension::Beneath)));
-                            let has_overworld = self.selected.and_then(|i| self.worlds.get(i))
-                                .map(|w| Self::world_supports_dimension(w, Dimension::Overworld))
-                                .unwrap_or_else(|| self.worlds.iter().any(|w| Self::world_supports_dimension(w, Dimension::Overworld)));
-                            ui.add_enabled_ui(has_overworld, |ui| {
-                                ui.selectable_value(&mut self.prefs.dimension, Dimension::Overworld, "Overworld");
-                            });
-                            ui.add_enabled_ui(has_beneath, |ui| {
-                                ui.selectable_value(&mut self.prefs.dimension, Dimension::Beneath, "Beneath");
-                            });
-                        });
-                    if before_dimension != self.prefs.dimension {
-                        self.switch_dimension(before_dimension);
-                    }
-                    if self.prefs.dimension == Dimension::Beneath {
-                        let (base, top) = beneath_band_range(self.prefs.slice_y);
-                        let mut requested_top = top;
-                        if ui.small_button("‹").on_hover_text("Previous 16-block band · Page Up").clicked() {
-                            self.set_beneath_band((base - 16).max(0));
-                        }
-                        egui::ComboBox::from_id_salt("beneath_y_band")
-                            .selected_text(format!("Y {base}–{top}"))
-                            .width(78.)
-                            .show_ui(ui, |ui| {
-                                for band in 0..16 {
-                                    let low = band * 16;
-                                    let high = low + 15;
-                                    ui.selectable_value(&mut requested_top, high, format!("{low}–{high}"));
-                                }
-                            });
-                        if requested_top != top {
-                            self.set_beneath_band(requested_top);
-                        }
-                        if ui.small_button("›").on_hover_text("Next 16-block band · Page Down").clicked() {
-                            self.set_beneath_band((top + 1).min(255));
-                        }
-                        ui.menu_button("Bands", |ui| {
-                            for (label, y) in [("Bottom · 16–31", 31), ("Middle · 96–111", 111), ("Upper · 192–207", 207)] {
-                                if ui.button(label).clicked() {
-                                    self.set_beneath_band(y);
-                                    ui.close();
-                                }
-                            }
-                        });
-                    }
-                    ui.separator();
-                    let dimension = self.prefs.dimension;
-                    let active_layer = Layer::ALL
-                        .get(self.prefs.layer)
-                        .copied()
-                        .unwrap_or(Layer::Biomes);
-                    egui::ComboBox::from_id_salt("map_layer")
-                        .selected_text(active_layer.label())
-                        .width(135.)
-                        .show_ui(ui, |ui| {
-                            for (index, layer) in Layer::ALL.iter().enumerate().filter(|(_, layer)| dimension == Dimension::Overworld || **layer == Layer::Biomes) {
-                                ui.selectable_value(&mut self.prefs.layer, index, layer.label());
-                            }
-                        });
-                    if self.prefs.dimension == Dimension::Overworld {
-                        ui.add_enabled(self.prefs.allow_detail_rendering, egui::Checkbox::new(&mut self.prefs.surface_detail, "Detail"))
-                            .on_hover_text("Zoom below 0.5 blocks/px on the biome map for block-level surface detail. Saved blocks take priority over seed-generated terrain and vegetation predictions.");
-                    } else {
-                        let (_, band_top) = beneath_band_range(self.prefs.slice_y);
-                        let band_base = band_top - 15;
-                        ui.add_enabled(self.prefs.allow_detail_rendering, egui::Checkbox::new(&mut self.prefs.surface_detail, "Detail"))
-                            .on_hover_text(format!("Sample saved Beneath blocks from Y={band_base} to {band_top}."));
-                    }
-                    if !compact {
-                        self.navigation_and_workspaces(ui);
-                    }
-                });
-                if compact {
-                    ui.horizontal(|ui| self.navigation_and_workspaces(ui));
-                }
-                ui.add_space(4.);
-            });
-    }
-
-    fn side_panel(&mut self, ctx: &egui::Context) {
-        if !self.show_search
-            && !self.show_seed
-            && !self.show_preferences
-            && !self.show_tools
-            && self.selected_marker.is_none()
-        {
-            return;
-        }
-        egui::SidePanel::right("inspector")
-            .resizable(true)
-            .default_width(310.)
-            .width_range(280. ..=420.)
-            .frame(panel_frame())
-            .show_animated(
-                ctx,
-                self.show_search
-                    || self.show_seed
-                    || self.show_preferences
-                    || self.show_tools
-                    || self.selected_marker.is_some(),
-                |ui| {
-                    egui::ScrollArea::vertical()
-                        .id_salt("inspector-scroll")
-                        .show(ui, |ui| {
-                            ui.add_space(11.);
-                            self.selected_marker_panel(ui);
-                            if self.show_search {
-                                self.search_panel(ui);
-                            }
-                            if self.show_seed {
-                                self.seed_panel(ui, ctx);
-                            }
-                            if self.show_preferences {
-                                ui.checkbox(&mut self.prefs.show_ores, "Ore markers");
-                                ui.checkbox(&mut self.prefs.show_structures, "Structure markers");
-                                ui.checkbox(&mut self.prefs.allow_detail_rendering, "Block detail rendering")
-                                    .on_hover_text("Allow saved blocks and seed vegetation at close zooms. Disabling stops requesting and drawing detail in every dimension.");
-                                ui.checkbox(
-                                    &mut self.prefs.connected_highlight,
-                                    "Connected biome / continent",
-                                );
-                                ui.horizontal(|ui| {
-                                    ui.label(RichText::new("Ore contains").size(11.).color(MUTED));
-                                    ui.text_edit_singleline(&mut self.prefs.ore_filter);
-                                });
-                                ui.add_space(10.);
-                                if self.prefs.dimension == Dimension::Overworld {
-                                    self.prefs.tooltip.show_preferences(ui);
-                                }
-                                self.display_controls(ui);
-                                if let Some(atlas) = &mut self.atlas {
-                                    atlas.set_marker_options(
-                                        self.prefs.show_ores,
-                                        self.prefs.show_structures,
-                                        &self.prefs.ore_filter,
-                                    );
-                                }
-                            }
-                            if self.show_tools {
-                                self.tools_panel(ui);
-                            }
-                            ui.add_space(12.);
-                        });
-                },
-            );
-    }
-
     fn open_find(&mut self) {
         self.set_workspace(Some(Workspace::Find));
         self.search_focus = true;
@@ -1068,11 +866,10 @@ impl TerraLensApp {
             self.open_find();
         }
         if ctx.input_mut(|i| i.consume_key(egui::Modifiers::NONE, egui::Key::Escape)) {
-            if self.has_workspace() {
-                self.set_workspace(None);
-            } else {
-                self.selected_marker = None;
-            }
+            self.show_preferences = false;
+            self.export_open = false;
+            self.help_open = false;
+            self.selected_marker = None;
             self.search_focus = false;
             ctx.memory_mut(|m| m.surrender_focus(Id::new("atlas-find-query")));
             return;
@@ -1428,50 +1225,6 @@ impl TerraLensApp {
     }
 
     fn seed_panel(&mut self, ui: &mut egui::Ui, ctx: &egui::Context) {
-        ui.horizontal(|ui| {
-            let input_width = (ui.available_width() - 83.).max(80.);
-            ui.add(
-                egui::TextEdit::singleline(&mut self.seed_input)
-                    .hint_text("e.g. 7787531943268589495")
-                    .font(egui::TextStyle::Monospace)
-                    .desired_width(input_width),
-            );
-            if ui
-                .button("Preview")
-                .on_hover_text(
-                    "Preview a signed 64-bit seed with default TFG settings; saves stay read only",
-                )
-                .clicked()
-            {
-                match self.seed_input.trim().parse::<i64>() {
-                    Ok(seed) => {
-                        self.seed_invalid = false;
-                        self.activate_seed(seed, ctx);
-                    }
-                    Err(_) => self.seed_invalid = true,
-                }
-            }
-        });
-        if ui.button("Random seed").clicked() {
-            let stamp = std::time::SystemTime::now()
-                .duration_since(std::time::UNIX_EPOCH)
-                .unwrap_or_default()
-                .as_nanos();
-            let mut random = crate::random::Xoroshiro::from_state(
-                stamp as u64 ^ std::process::id() as u64,
-                (stamp >> 64) as u64 ^ 0x9e3779b97f4a7c15,
-            );
-            let seed = random.next_long();
-            self.seed_input = seed.to_string();
-            self.activate_seed(seed, ctx);
-        }
-        if self.seed_invalid {
-            ui.colored_label(
-                Color32::from_rgb(232, 142, 126),
-                "Enter a valid signed 64-bit integer seed.",
-            );
-        }
-        ui.separator();
         let current_seed = self.preview_seed.or_else(|| {
             self.selected
                 .and_then(|index| self.worlds.get(index))
@@ -1620,7 +1373,11 @@ impl TerraLensApp {
             self.prefs.blocks_per_point,
             atlas.locations(),
             self.selected_marker.as_ref(),
-            self.show_tools && self.tools_tab == 1,
+            self.prefs.control_dock
+                && self.prefs.dock_tab == 0
+                && self.prefs.search_page == 1
+                && self.prefs.location_mode == 1
+                && self.prefs.dimension == Dimension::Overworld,
         );
 
         let bounds = map_bounds(rect, center, self.prefs.blocks_per_point);
@@ -1904,6 +1661,8 @@ impl TerraLensApp {
         }
         let mut pending_fit = None;
         if response.drag_stopped() && self.selection_drag_active {
+            self.prefs.dock_tab = 1;
+            self.prefs.control_dock = true;
             self.show_search = false;
             self.show_seed = false;
             self.show_preferences = false;
@@ -2233,14 +1992,37 @@ impl eframe::App for TerraLensApp {
             self.diagnostic_searching = stress.search;
         }
         self.poll_worlds(ctx);
+        if let Some(path) = ctx.input(|input| {
+            input
+                .raw
+                .dropped_files
+                .iter()
+                .find_map(|file| file.path.clone())
+        }) {
+            if path
+                .extension()
+                .is_some_and(|extension| extension == "json")
+            {
+                if let Some(atlas) = &mut self.atlas {
+                    atlas.export(crate::exports::Request::ReadSession { path });
+                }
+            } else {
+                self.open_source_file(path, None);
+            }
+        }
         self.poll_export(ctx);
+        self.sync_workspace_flags();
         self.workspace_shortcuts(ctx);
         self.workspace_popups(ctx);
         self.find_shortcuts(ctx);
         self.update_display(ctx);
+        self.poll_file_dialogs(ctx);
         self.top_bar(ctx);
         self.status_bar(ctx);
+        self.feature_rail(ctx);
         self.side_panel(ctx);
+        self.sync_workspace_flags();
+        self.shell_windows(ctx);
         egui::CentralPanel::default()
             .frame(Frame::new().fill(BG).inner_margin(8.))
             .show(ctx, |ui| self.map_view(ui));
@@ -2306,6 +2088,7 @@ pub fn run() -> eframe::Result {
 
 #[derive(Default)]
 struct RunConfig {
+    source_path: Option<PathBuf>,
     window_size: Option<[f32; 2]>,
     workspace: Option<Workspace>,
     initial_seed: Option<i64>,
@@ -2326,7 +2109,20 @@ struct RunConfig {
 impl RunConfig {
     #[cfg(not(feature = "diagnostics"))]
     fn from_args() -> Self {
-        Self::default()
+        let mut args = std::env::args().skip(1);
+        let first = args.next();
+        Self {
+            source_path: first.and_then(|first| {
+                if first == "--open" {
+                    args.next().map(PathBuf::from)
+                } else if !first.starts_with('-') {
+                    Some(PathBuf::from(first))
+                } else {
+                    None
+                }
+            }),
+            ..Self::default()
+        }
     }
 
     #[cfg(feature = "diagnostics")]
@@ -2335,6 +2131,7 @@ impl RunConfig {
         let mut args = std::env::args().skip(1);
         while let Some(arg) = args.next() {
             match arg.as_str() {
+                "--open" => config.source_path = args.next().map(PathBuf::from),
                 "--inspect-structure" => {
                     config.smoke_test = true;
                     config.smoke_inspect = true;
@@ -2546,8 +2343,12 @@ fn install_style(ctx: &egui::Context) {
     style.visuals.widgets.hovered.fg_stroke.color = TEXT;
     style.visuals.widgets.active.bg_fill = Color32::from_rgb(38, 103, 95);
     style.visuals.widgets.noninteractive.fg_stroke.color = TEXT;
-    style.spacing.item_spacing = Vec2::new(7., 6.);
-    style.spacing.button_padding = Vec2::new(9., 5.);
+    style.spacing.item_spacing = Vec2::new(5., 4.);
+    style.spacing.button_padding = Vec2::new(6., 3.);
+    style.visuals.widgets.inactive.corner_radius = CornerRadius::same(2);
+    style.visuals.widgets.hovered.corner_radius = CornerRadius::same(2);
+    style.visuals.widgets.active.corner_radius = CornerRadius::same(2);
+    style.visuals.selection.bg_fill = Color32::from_rgb(53, 91, 133);
     ctx.set_style(style);
 }
 

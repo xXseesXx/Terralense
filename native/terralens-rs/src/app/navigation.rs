@@ -320,6 +320,19 @@ impl Navigation {
         &self.history
     }
 
+    /// Upgrade old folder-name identities after an explicit, unambiguous world import.
+    pub fn remap_world(&mut self, old: &str, new: &str) {
+        for view in self
+            .history
+            .iter_mut()
+            .chain(self.bookmarks.iter_mut().map(|bookmark| &mut bookmark.view))
+        {
+            if view.world_id == old {
+                view.world_id = new.to_owned();
+            }
+        }
+    }
+
     pub fn can_back(&self) -> bool {
         !self.history.is_empty() && self.cursor.min(self.history.len() - 1) > 0
     }

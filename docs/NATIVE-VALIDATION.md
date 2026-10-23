@@ -1,8 +1,10 @@
 # Native validation
 
 The published release was checked on Linux against TFG Core 0.9.25, TFC 3.2.25 and Beneath 1.0.6.
-The production source export passes **198 tests**: 177 library, nine engine-process, ten parity
+The desktop-shell refork passes **220 release tests**: 198 library, ten engine-process, ten parity
 and two release-CLI checks. Formatting, the headless build and the opt-in diagnostic targets pass.
+This includes 34 Atlas tests covering cache reuse across zoom levels, refinement, family coverage,
+adjacent boundaries, split continuation and same-root panning.
 
 ## Reproducible checks
 
@@ -31,8 +33,17 @@ the pinned earlier implementation; they are not independent evidence of Minecraf
 
 ## Viewer behavior
 
-- Native window checks covered 940×620 controls, Ctrl+F result navigation, legends and saved block
-  inspection in both supported dimensions. Heavy jobs remain in a separate process.
+- The refactored shell was rendered at 940×620 and 1280×800 on an isolated X11 virtual display,
+  including the Beneath Y96–111 band. Ctrl+F focused the search field and accepted a query; the
+  rail switched to raw ore artwork; Structures and editable analysis coordinates fit the dock.
+  Earlier release checks covered result navigation, legends and saved block inspection in both
+  dimensions. Heavy jobs remain in a separate process. These checks are not Wayland liveness proof.
+- Native asynchronous file picking was opened on the desktop. Portable source fixtures and a real
+  engine child test check source import and failure replies; they do not simulate an OS chooser.
+  File/folder world IDs agree, and same-named worlds from different locations remain distinct.
+- Imports accept arbitrary world, saves and Prism folders. Failed session-source opens retain the
+  current document; newer world/seed selections invalidate pending import replies. Structure CSV
+  export snapshots the filtered table, and Save As changes the session destination after success.
 - Structure reader fixtures cover arbitrary mod namespaces, dimension-root isolation, and boxes
   whose start point lies outside the visible map. The local reference save had bounds for all
   349 Overworld and 2,875 Beneath starts, with zero decode errors.

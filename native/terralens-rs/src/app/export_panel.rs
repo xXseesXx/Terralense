@@ -7,8 +7,14 @@ use crate::{
 };
 use eframe::egui::{self, Ui};
 use std::path::PathBuf;
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum Picker {
+    Map,
+    Markers,
+}
+
 pub struct State {
-    dir: String,
     width: u32,
     height: u32,
     keep_aspect: bool,
@@ -17,11 +23,11 @@ pub struct State {
     scale_bar: bool,
     layer_legend: bool,
     status: Option<String>,
+    pending_picker: Option<Picker>,
 }
 impl Default for State {
     fn default() -> Self {
         Self {
-            dir: exports::default_directory().to_string_lossy().into_owned(),
             width: 1600,
             height: 1000,
             keep_aspect: true,
@@ -30,6 +36,7 @@ impl Default for State {
             scale_bar: true,
             layer_legend: true,
             status: None,
+            pending_picker: None,
         }
     }
 }
@@ -38,13 +45,13 @@ impl State {
         &mut self,
         ui: &mut Ui,
         bounds: Bounds,
-        layer: Layer,
-        markers: &[Marker],
+        _layer: Layer,
+        _markers: &[Marker],
         selected: Option<&Marker>,
-        legend_snapshot: Option<&LegendSnapshot>,
-        palette: Palette,
+        _legend_snapshot: Option<&LegendSnapshot>,
+        _palette: Palette,
     ) -> Option<Request> {
-        let mut req = None;
+        let req = None;
         if self.keep_aspect && bounds.max_x > bounds.min_x && bounds.max_z > bounds.min_z {
             self.height = (self.width as f64 * (bounds.max_z - bounds.min_z)
                 / (bounds.max_x - bounds.min_x))
@@ -60,10 +67,6 @@ impl State {
                 ui.checkbox(&mut self.layer_legend, "Layer legend");
             });
         }
-        ui.horizontal(|ui| {
-            ui.label("Save to");
-            ui.add(egui::TextEdit::singleline(&mut self.dir).desired_width(ui.available_width()));
-        });
         ui.horizontal(|ui| {
             ui.label("PNG size");
             ui.add(
@@ -85,13 +88,72 @@ impl State {
             )
             .clicked()
         {
-            let file = if self.compose {
-                format!("map-{}-composed.png", layer_name(layer))
-            } else {
-                format!("map-{}.png", layer_name(layer))
-            };
-            let path = PathBuf::from(&self.dir).join(file);
-            req = Some(if self.compose {
+            self.update_height(bounds);
+            self.pending_picker = Some(Picker::Map);
+        }
+        ui.small("PNG uses fresh seed predictions; it does not include saved-block cutaways.");
+        if ui
+            .button("Export markers CSV")
+            .on_hover_text("Export markers currently shown on the map")
+            .clicked()
+        {
+            self.pending_picker = Some(Picker::Markers);
+        }
+        if let Some(m) = selected {
+            if ui
+                .button("Copy Xaero share text")
+                .on_hover_text("Paste this in Minecraft chat; Xaero players can add the waypoint")
+                .clicked()
+            {
+                let y = m.y.unwrap_or(64.).round().clamp(-2048., 4096.) as i32;
+                ui.ctx()
+                    .copy_text(exports::xaero_share(&m.label, m.point(), y, color_for(m)));
+                self.status = Some("Xaero share copied".into());
+            }
+        }
+        if let Some(s) = &self.status {
+            ui.label(s);
+        }
+        req
+    }
+
+    pub fn take_picker(&mut self) -> Option<Picker> {
+        self.pending_picker.take()
+    }
+
+    pub fn request_for_path(
+        &self,
+        picker: Picker,
+        path: PathBuf,
+        bounds: Bounds,
+        layer: Layer,
+        markers: &[Marker],
+        legend_snapshot: Option<&LegendSnapshot>,
+        palette: Palette,
+    ) -> Request {
+        match picker {
+            Picker::Markers => Request::Markers {
+                markers: markers.to_vec(),
+                path,
+            },
+            Picker::Map => {
+                let width = self.width.clamp(1, 4096);
+                let mut height = self.height.clamp(1, 4096);
+                if self.keep_aspect && bounds.max_x > bounds.min_x && bounds.max_z > bounds.min_z {
+                    height = (width as f64 * (bounds.max_z - bounds.min_z)
+                        / (bounds.max_x - bounds.min_x))
+                        .round()
+                        .clamp(1.0, 4096.0) as u32;
+                }
+                if !self.compose {
+                    return Request::Map {
+                        bounds,
+                        layer,
+                        width,
+                        height,
+                        path,
+                    };
+                }
                 let legend = if self.layer_legend {
                     match layer {
                         Layer::Biomes => legend_snapshot
@@ -144,8 +206,8 @@ impl State {
                 Request::ComposedMap {
                     bounds,
                     layer,
-                    width: self.width,
-                    height: self.height,
+                    width,
+                    height,
                     path,
                     markers: markers.to_vec(),
                     composition: Composition {
@@ -155,55 +217,17 @@ impl State {
                         scale,
                     },
                 }
-            } else {
-                Request::Map {
-                    bounds,
-                    layer,
-                    width: self.width,
-                    height: self.height,
-                    path,
-                }
-            });
-        }
-        ui.small("PNG uses fresh seed predictions; it does not include saved-block cutaways.");
-        if ui
-            .button("Export markers CSV")
-            .on_hover_text("Export markers currently shown on the map")
-            .clicked()
-        {
-            req = Some(Request::Markers {
-                markers: markers.to_vec(),
-                path: PathBuf::from(&self.dir).join("markers.csv"),
-            });
-        }
-        if let Some(m) = selected {
-            if ui
-                .button("Copy Xaero share text")
-                .on_hover_text("Paste this in Minecraft chat; Xaero players can add the waypoint")
-                .clicked()
-            {
-                let y = m.y.unwrap_or(64.).round().clamp(-2048., 4096.) as i32;
-                ui.ctx()
-                    .copy_text(exports::xaero_share(&m.label, m.point(), y, color_for(m)));
-                self.status = Some("Xaero share copied".into());
             }
         }
-        if let Some(s) = &self.status {
-            ui.label(s);
-        }
-        req
     }
-}
-fn layer_name(l: Layer) -> &'static str {
-    match l {
-        Layer::Biomes => "biomes",
-        Layer::Temperature => "temperature",
-        Layer::Rainfall => "rainfall",
-        Layer::Height => "height",
-        Layer::Water => "water",
-        Layer::Geology => "geology",
-        Layer::Forest => "forest",
-        Layer::Hotspots => "hotspots",
+
+    fn update_height(&mut self, bounds: Bounds) {
+        if self.keep_aspect && bounds.max_x > bounds.min_x && bounds.max_z > bounds.min_z {
+            self.height = (self.width as f64 * (bounds.max_z - bounds.min_z)
+                / (bounds.max_x - bounds.min_x))
+                .round()
+                .clamp(1.0, 4096.0) as u32;
+        }
     }
 }
 fn geology_names() -> Vec<String> {

@@ -22,7 +22,8 @@ Beneath **1.0.6**. The supported dimensions are **Overworld** and **Beneath / Ne
 - Close-up block detail from generated chunks, including structures, trees and crops. Missing
   Overworld chunks have a seed vegetation preview; missing Beneath chunks retain biome colors.
   **View blocks** inspects a saved structure inside its bounding box; **Full terrain** exits it.
-- Searchable biome/rock legends, palette and highlight controls, connected biome/continent hover,
+- Searchable interactive biome/rock legends, palette and highlight controls, connected
+  biome/continent hover,
   and configurable clean tooltips with optional tree-species estimates.
 - Named seed shortlists, saved spots and collections, sessions, navigation history, coordinate
   jump, grids, a scale bar, a distance ruler, and fit-to-selection.
@@ -52,8 +53,44 @@ cd Terralense
 ```
 
 `./install.sh` adds a user-local launcher and a `terralens` command; it needs no root privileges.
-Choose a Prism save in the toolbar or use **Seed** for a signed 64-bit seed. Set `TERRALENS_INSTANCE`
-to a different instance directory if automatic discovery does not find your installation.
+Fresh launch opens the seed viewer; there is no automatic Prism scan. Enter a signed 64-bit seed in
+the left dock, or open a world from the File menu. A source can also be opened from the command
+line:
+
+```sh
+terralens --open /path/to/level.dat
+terralens /path/to/world-or-prism-folder
+```
+
+The optional `TERRALENS_INSTANCE` environment variable opens the specified instance path at launch.
+
+## Opening worlds and using the desktop shell
+
+Use **File → Open world…** to choose a world's `level.dat`. **File → Open folder…** accepts a
+world folder, a Minecraft `saves` folder, or a Prism instance folder; TerraLens reads the selected
+path. Recent sources are available from **File → Recent worlds**. Saves are read-only.
+
+The resizable left control pane has **Search**, **Biomes**, and **Structures** tabs. Search contains
+the **Seeds** shortlist and location finder; Ctrl+F opens **Features** search. The right icon rail
+switches between structure and ore types. Its group and individual controls hide or show features,
+including related structure variants. This changes display visibility; marker placement remains
+spatially anchored as you pan, and zoom progressively hides common or less prominent markers
+before rare, important ones. The Structures tab lists visible-area or whole-save structures by
+distance and exports the filtered table. Biomes has editable area coordinates and **From visible**.
+Toggle the layer legend from **Map → Layer legend**; when hidden, its
+map-corner button opens it again.
+
+Import seeds with **File → Import seed list…** (TXT, CSV, or JSON). The named shortlist is included
+in saved sessions; an imported seed list is added to the shortlist. **File → Export options…** opens
+the map-export window. Map images and visible markers use native save dialogs, so you choose each
+output path. **File → Export map image…** exports the current map directly. Session files use
+**Ctrl+S** and **Ctrl+O**; **File → Save session as…** selects a new session path.
+
+Marker discovery is spatially cached. Panning and zooming reuse marker positions already found;
+progressive zoom filtering changes which markers are drawn. Finer views may scan additional area or
+detail for features, while less frequent and more prominent markers remain visible longer. There is
+no claim of full Cubiomes multi-seed condition-search parity: the seed list supports comparing
+selected seeds, while TFG location analysis remains a sampled search for the active seed.
 
 Normal release builds exclude the diagnostic CLI and the responsiveness recorder. Unknown or
 maintenance-only command-line options are rejected before opening a window. `--help` and
@@ -64,20 +101,20 @@ maintenance-only command-line options are rejected before opening a window. `--h
 | Action | Control |
 | --- | --- |
 | Pan / zoom | Drag / scroll around the pointer |
-| Search everything | Ctrl+F; Enter / Shift+Enter cycle results |
+| Search features | Ctrl+F; Enter / Shift+Enter cycle results |
 | Jump to coordinates | Ctrl+G |
 | Back / forward | Alt+Left / Alt+Right |
 | Save a spot | Ctrl+D |
 | Save / load a session | Ctrl+S / Ctrl+O |
+| Save session as / open world / export map | Ctrl+Shift+S / Ctrl+Shift+O / Ctrl+E |
 | Change Overworld layer | 1–8, outside text fields |
 | Change Beneath band | Page Up / Page Down |
 | Measure / select and fit an area | Shift-drag / Alt-drag |
 | Copy coordinates, waypoint, or search here | Right-click the map |
 
-**Details → Block detail rendering** persistently disables close-up block drawing and requests.
-The toolbar **Detail** switch toggles detail while that setting permits it. The legend can be
-hidden with × and reopened from the map corner. Search origin, radius, predictions and coverage
-are in Find's **…** menu.
+**Tools → Display and tooltip options…** contains **Block detail rendering** and **Detail at close
+zoom**. The first controls close-up block drawing and requests; the second toggles the surface
+detail overlay. Search origin, radius, predictions and coverage are in Features' **…** menu.
 
 ## Accuracy
 

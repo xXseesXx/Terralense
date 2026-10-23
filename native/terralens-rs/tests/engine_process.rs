@@ -331,6 +331,30 @@ fn isolated_engine_probe_preserves_seed_and_exact_climate() {
 }
 
 #[test]
+fn isolated_engine_resolves_import_sources_off_the_command_path_and_returns_errors_by_serial() {
+    let mut engine = launch();
+    let path = std::env::temp_dir().join(format!(
+        "terralens-source-does-not-exist-{}-{}",
+        std::process::id(),
+        Instant::now().elapsed().as_nanos()
+    ));
+    command(
+        &mut engine.0,
+        json!({"OpenSource":{"path":path,"serial":77}}),
+    );
+    let answer = reply(&mut engine.0);
+    assert_eq!(answer["OpenedSource"][0], 77);
+    assert!(
+        answer["OpenedSource"][1]["Err"]
+            .as_str()
+            .unwrap()
+            .contains("Cannot open")
+    );
+    drop(engine.0.stdin.take());
+    wait_exit(&mut engine.0);
+}
+
+#[test]
 fn isolated_engine_composes_png_without_a_display_and_returns_atomic_output() {
     use terralens::{
         atlas::Layer,

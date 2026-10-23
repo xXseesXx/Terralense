@@ -32,11 +32,13 @@ fn main() -> eframe::Result {
     {
         if args.as_slice() == ["--help"] || args.as_slice() == ["-h"] {
             println!(
-                "TerraLens — TerraFirmaGreg world atlas\n\nUsage: terralens [--help | --version]\n\nSet TERRALENS_INSTANCE to select another Prism instance.\nDeveloper commands require a build with --features diagnostics."
+                "TerraLens — TerraFirmaGreg world atlas\n\nUsage: terralens [--open PATH | PATH | --help | --version]\n\nOpen worlds and sessions through the File menu; drag a world onto the map to open it.\nDeveloper commands require a build with --features diagnostics."
             );
             return Ok(());
         }
-        if !args.is_empty() {
+        let opening_path = (args.len() == 2 && args[0] == "--open")
+            || (args.len() == 1 && !args[0].starts_with('-'));
+        if !args.is_empty() && !opening_path {
             eprintln!("This build does not enable diagnostic commands. Run terralens --help.");
             std::process::exit(2);
         }

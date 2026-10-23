@@ -55,6 +55,10 @@ enum CommandMessage {
     Discover {
         path: PathBuf,
     },
+    OpenSource {
+        path: PathBuf,
+        serial: u64,
+    },
     Shutdown,
 }
 
@@ -68,6 +72,7 @@ enum Control {
     Complete(u64, TileKey),
     Scan(u64, PathBuf),
     Discover(PathBuf),
+    OpenSource(PathBuf, u64),
     Shutdown,
 }
 
@@ -260,6 +265,9 @@ impl Client {
     pub(super) fn discover(&self, path: PathBuf) {
         let _ = self.control.try_send(Control::Discover(path));
     }
+    pub(super) fn open_source(&self, path: PathBuf, serial: u64) {
+        let _ = self.control.try_send(Control::OpenSource(path, serial));
+    }
     pub(super) fn pid(&self) -> Option<u32> {
         self.pid
     }
@@ -293,6 +301,7 @@ fn writer_loop(
                 Control::Complete(epoch, key) => CommandMessage::Complete { epoch, key },
                 Control::Scan(epoch, path) => CommandMessage::Scan { epoch, path },
                 Control::Discover(path) => CommandMessage::Discover { path },
+                Control::OpenSource(path, serial) => CommandMessage::OpenSource { path, serial },
                 Control::Shutdown => CommandMessage::Shutdown,
             })
         } else if let Ok(job) = high.try_recv() {
@@ -314,6 +323,7 @@ fn writer_loop(
                     Ok(Control::Complete(epoch, key)) => Some(CommandMessage::Complete { epoch, key }),
                     Ok(Control::Scan(epoch, path)) => Some(CommandMessage::Scan { epoch, path }),
                     Ok(Control::Discover(path)) => Some(CommandMessage::Discover { path }),
+                    Ok(Control::OpenSource(path, serial)) => Some(CommandMessage::OpenSource { path, serial }),
                     Ok(Control::Shutdown) => Some(CommandMessage::Shutdown), Err(_) => return,
                 },
                 recv(high) -> j => j.ok().map(CommandMessage::High),
@@ -378,6 +388,7 @@ pub(super) fn run() -> Result<(), String> {
     let (low_tx, low_rx) = bounded(8);
     let (out, out_rx) = bounded(24);
     let (scan_tx, scan_rx) = bounded::<(u64, PathBuf)>(1);
+    let (source_tx, source_rx) = bounded::<(u64, PathBuf)>(1);
     let (tile_work, tile_wake) = TileScheduler::new();
     let tile_work = Arc::new(tile_work);
     let epoch = Arc::new(AtomicU64::new(1));
@@ -399,6 +410,22 @@ pub(super) fn run() -> Result<(), String> {
             }
         })
         .map_err(|e| format!("create save scanner: {e}"))?;
+    let source_out = out.clone();
+    let source_queue = source_rx.clone();
+    thread::Builder::new()
+        .name("atlas-source-import".into())
+        .spawn(move || {
+            while let Ok((serial, path)) = source_queue.recv() {
+                let result = crate::world_files::resolve_source(&path);
+                if source_out
+                    .send(Reply::OpenedSource(serial, result))
+                    .is_err()
+                {
+                    break;
+                }
+            }
+        })
+        .map_err(|e| format!("create source importer: {e}"))?;
     let count = super::streaming::worker_count();
     for i in 0..count {
         let (hi, lo, tx, ep, tw, wake, sr, tr) = (
@@ -494,6 +521,12 @@ pub(super) fn run() -> Result<(), String> {
                         let worlds = crate::prism::discover_worlds(&path);
                         let _ = tx.send(Reply::Worlds(worlds));
                     });
+            }
+            CommandMessage::OpenSource { path, serial } => {
+                // Coalesce queued imports. The single source worker owns all filesystem
+                // reads, while the command reader stays available for cancellation/EOF.
+                let _ = source_rx.try_recv();
+                let _ = source_tx.try_send((serial, path));
             }
             CommandMessage::Shutdown => break,
         }
