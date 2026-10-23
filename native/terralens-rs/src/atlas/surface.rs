@@ -477,7 +477,9 @@ impl SurfaceView {
                 let norm = (dx * dx + dz * dz + 1.).sqrt().recip();
                 let light =
                     (0.86 + (-dx * -0.45 + 0.82 - dz * -0.38) * norm * 0.22).clamp(0.72, 1.15);
-                let base = if self.dimension == crate::dimension::Dimension::Beneath {
+                let base = if self.dimension == crate::dimension::Dimension::Beneath
+                    || self.dimension.is_planetary()
+                {
                     column.color
                 } else if let Some(tree) = column
                     .tree
@@ -553,6 +555,29 @@ mod tests {
             },
             source: SurfaceSource::Predicted,
         }
+    }
+
+    #[test]
+    fn planetary_saved_surface_raster_uses_block_tints_not_earth_tree_palettes() {
+        let mut view = SurfaceView::default();
+        view.dimension = crate::dimension::Dimension::Moon;
+        let mut data = dummy_chunk(0, 0);
+        data.source = SurfaceSource::Saved;
+        for column in &mut data.chunk.columns {
+            column.block = "ad_astra:moon_stone".into();
+            column.tree = Some("pine".into());
+            column.color = [80, 91, 95];
+        }
+        view.cache.put(
+            ChunkKey(0, 0),
+            Some(CachedChunk {
+                data,
+                texture: None,
+            }),
+        );
+        let lunar = view.rasterize(ChunkKey(0, 0))[0];
+        assert!(lunar.r() < lunar.g() && lunar.b() > lunar.r());
+        assert!(lunar.r() > 70 && lunar.b() > 80);
     }
 
     #[test]

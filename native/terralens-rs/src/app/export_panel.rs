@@ -1,6 +1,7 @@
 //! Compact export controls with functional labels and no decorative headings.
 use crate::{
     atlas::{self, Layer, LegendSnapshot},
+    dimension::Dimension,
     display::Palette,
     exports::{self, Composition, LegendChip, Request, ScaleLegend},
     model::{Bounds, Marker},
@@ -45,6 +46,7 @@ impl State {
         &mut self,
         ui: &mut Ui,
         bounds: Bounds,
+        _dimension: Dimension,
         _layer: Layer,
         _markers: &[Marker],
         selected: Option<&Marker>,
@@ -129,6 +131,7 @@ impl State {
         picker: Picker,
         path: PathBuf,
         bounds: Bounds,
+        dimension: Dimension,
         layer: Layer,
         markers: &[Marker],
         legend_snapshot: Option<&LegendSnapshot>,
@@ -189,13 +192,18 @@ impl State {
                                 percent: None,
                             })
                             .collect(),
+                        Layer::Water if dimension == Dimension::Mars => vec![LegendChip {
+                            color: [78, 119, 139],
+                            label: "River biome".into(),
+                            percent: None,
+                        }],
                         _ => Vec::new(),
                     }
                 } else {
                     Vec::new()
                 };
                 let scale = if self.layer_legend {
-                    atlas::layer_scale(layer, palette).map(|s| ScaleLegend {
+                    atlas::dimension_layer_scale(dimension, layer, palette).map(|s| ScaleLegend {
                         min: s.min,
                         max: s.max,
                         unit: s.unit.into(),

@@ -33,6 +33,14 @@ projects and their notices include:
 No mod JARs, player files, save chunks, account credentials or upstream Git history are distributed.
 The fixture observations are immutable numeric/block-ID captures used for verification.
 
+Moon/Mars profiles also use Ad Astra 1.15.21 data, copyright Alex Nijjar and contributors:
+https://github.com/terrarium-earth/Ad-Astra/tree/1.20.1 . Under the Terrarium License v1, files in
+`resources/data` are code covered by its MIT permission. A copy is retained in
+[licenses/AD-ASTRA-TERRARIUM.txt](licenses/AD-ASTRA-TERRARIUM.txt). Planetary configuration origins
+and hashes are recorded under `native/terralens-rs/src/planetary/{assets,feature-assets,crater-assets}`.
+No Ad Astra artwork is embedded by this addition. Minecraft 1.20.1 registry parameter data and
+small numeric oracle captures are used to validate the independently written Rust samplers.
+
 ## Ore artwork
 
 Unlike the original OutCrop distribution, TerraLens embeds small ore-marker PNGs from the installed

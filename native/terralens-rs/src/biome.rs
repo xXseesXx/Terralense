@@ -6,6 +6,9 @@ pub mod ids;
 pub mod layers;
 
 pub fn biome_name(id: u16) -> &'static str {
+    if id >= 2000 {
+        return crate::planetary::biome_name(id);
+    }
     if id >= 1000 {
         return crate::beneath::biome_name(id);
     }

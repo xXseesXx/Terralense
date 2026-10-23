@@ -58,6 +58,16 @@ pub fn predict_visible(
     blocks_per_point: f64,
     cancel: &impl Fn() -> bool,
 ) -> FeatureBatch {
+    if world.dimension.is_planetary() {
+        return crate::planetary::features::predict_visible(
+            world,
+            bounds,
+            ores,
+            structures,
+            blocks_per_point,
+            cancel,
+        );
+    }
     if !valid_bounds(bounds) || lod_tier(blocks_per_point) == 13 {
         return FeatureBatch::default();
     }
@@ -583,6 +593,14 @@ fn candidate_near_set(
 /// Largest map scale at which an automatically predicted feature should remain visible.
 /// The cutoffs align exactly with [`lod_tier`], so cached viewport tiles cannot miss features.
 pub fn marker_max_blocks_per_point(marker: &Marker) -> f64 {
+    if marker.kind == MarkerKind::Structure
+        || marker.id.starts_with("moon:")
+        || marker.id.starts_with("mars:")
+    {
+        if let Some(max) = crate::planetary::features::marker_max_blocks_per_point(marker) {
+            return max;
+        }
+    }
     let (base, valuable) = match marker.kind {
         MarkerKind::Ore => ore_visibility(marker.id.split('@').next().unwrap_or("")),
         MarkerKind::Structure => {

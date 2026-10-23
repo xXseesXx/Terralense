@@ -1,5 +1,4 @@
 //! Import saved worlds from arbitrary filesystem locations without modifying them.
-use crate::dimension::Dimension;
 use crate::model::WorldInfo;
 use serde::{Deserialize, Serialize};
 use std::fs;
@@ -102,14 +101,14 @@ fn import_world(path: &Path) -> Result<WorldInfo, String> {
     let canonical = fs::canonicalize(path)
         .map_err(|e| format!("Cannot resolve world {}: {e}", path.display()))?;
     let mut world = crate::prism::load_world(&canonical)?;
-    let beneat_supported = world
+    let alternate_supported = world
         .dimensions
         .iter()
-        .any(|dimension| dimension.id == Dimension::Beneath.id() && dimension.supported);
-    if !world.compatible && !beneat_supported {
+        .any(|dimension| dimension.id != "minecraft:overworld" && dimension.supported);
+    if !world.compatible && !alternate_supported {
         return Err(world.warning.clone().unwrap_or_else(|| {
             format!(
-                "{} does not match a supported TFG worldgen profile",
+                "{} does not match a supported TFG worldgen profile (Overworld, Beneath, Moon, or Mars)",
                 world.name
             )
         }));

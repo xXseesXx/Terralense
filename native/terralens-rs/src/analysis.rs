@@ -160,6 +160,9 @@ fn shares(counts: HashMap<String, usize>, denom: usize) -> Vec<Share> {
     v
 }
 pub fn analyze(w: &World, q: &Query, cancelled: impl Fn() -> bool) -> Option<Report> {
+    if w.dimension != crate::dimension::Dimension::Overworld {
+        return None;
+    }
     let b = q.bounds;
     if !valid_bounds(b) {
         return None;
@@ -288,7 +291,8 @@ pub fn locate(
     q: &LocationQuery,
     cancelled: impl Fn() -> bool,
 ) -> Option<LocationResults> {
-    if cancelled()
+    if w.dimension != crate::dimension::Dimension::Overworld
+        || cancelled()
         || !q.origin.x.is_finite()
         || !q.origin.z.is_finite()
         || !q.radius.is_finite()
@@ -525,6 +529,24 @@ impl LocationCandidate {
 mod tests {
     use super::*;
     use crate::{model::Settings, world::World};
+
+    #[test]
+    fn earth_conditions_are_not_analyzed_in_other_dimensions() {
+        for dimension in [
+            crate::dimension::Dimension::Beneath,
+            crate::dimension::Dimension::Moon,
+            crate::dimension::Dimension::Mars,
+        ] {
+            let world = World::for_dimension(0, Settings::default(), dimension, 64);
+            let query = Query {
+                bounds: bounds_at(Point::default(), 256.),
+                ..Query::default()
+            };
+            assert!(analyze(&world, &query, || false).is_none());
+            assert!(locate(&world, &LocationQuery::default(), || false).is_none());
+        }
+    }
+
     #[test]
     fn shares_exclude_ocean_and_sum_over_land() {
         let w = World::new(4241021225841912682, Settings::default());

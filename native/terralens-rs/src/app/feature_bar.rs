@@ -139,13 +139,70 @@ fn ore_rows(entries: &[Entry]) -> Vec<RailEntry> {
                 }
             }
         }
+        let planetary: serde_json::Value = serde_json::from_str(include_str!(
+            "../planetary/feature-assets/moon-mars-features.json"
+        ))
+        .expect("embedded planetary feature catalog");
+        for dimension in ["moon", "mars"] {
+            for (id, vein) in planetary[dimension]["veins"]
+                .as_object()
+                .into_iter()
+                .flatten()
+            {
+                let mut weights = std::collections::BTreeMap::<String, u64>::new();
+                for block_set in vein["config"]["blocks"].as_array().into_iter().flatten() {
+                    let prefixes: Vec<String> = block_set["replace"]
+                        .as_array()
+                        .into_iter()
+                        .flatten()
+                        .filter_map(serde_json::Value::as_str)
+                        .map(|host| {
+                            let leaf = host.rsplit([':', '/']).next().unwrap_or(host);
+                            format!("{leaf}_")
+                        })
+                        .collect();
+                    for output in block_set["with"].as_array().into_iter().flatten() {
+                        let Some(block) = output["block"].as_str() else {
+                            continue;
+                        };
+                        let mut material = block.rsplit(':').next().unwrap_or(block);
+                        if let Some(raw) = material
+                            .strip_prefix("raw_")
+                            .and_then(|v| v.strip_suffix("_block"))
+                        {
+                            material = raw;
+                        } else if let Some(ore) = material.strip_suffix("_ore") {
+                            material = prefixes
+                                .iter()
+                                .find_map(|prefix| ore.strip_prefix(prefix))
+                                .unwrap_or(ore);
+                        } else {
+                            continue;
+                        }
+                        *weights.entry(material.to_owned()).or_default() +=
+                            output["weight"].as_u64().unwrap_or(1);
+                    }
+                }
+                if let Some((material, _)) = weights
+                    .into_iter()
+                    .max_by(|a, b| a.1.cmp(&b.1).then_with(|| b.0.cmp(&a.0)))
+                {
+                    families.insert(
+                        format!("{dimension}:{id}"),
+                        mineral_family(&material).to_owned(),
+                    );
+                }
+            }
+        }
         families
     });
     let mut groups = std::collections::BTreeMap::<String, RailEntry>::new();
     for entry in entries {
         let (namespace, path) = entry.id.split_once(':').unwrap_or(("", entry.id.as_str()));
         let (parent, leaf) = path.rsplit_once('/').unwrap_or(("", path));
-        let dimension = if leaf.starts_with("beneath_") {
+        let dimension = if namespace == "moon" || namespace == "mars" {
+            namespace
+        } else if namespace == "beneath" || entry.id.starts_with("beneath_") {
             "beneath"
         } else {
             "overworld"
@@ -153,9 +210,12 @@ fn ore_rows(entries: &[Entry]) -> Vec<RailEntry> {
         let family = if leaf.ends_with("_dike") {
             "rock_dikes"
         } else {
-            families.get(&entry.id).map(String::as_str).unwrap_or(leaf)
+            crate::ore_icons::material_name(&entry.id)
+                .map(mineral_family)
+                .or_else(|| families.get(&entry.id).map(String::as_str))
+                .unwrap_or(leaf)
         };
-        let key = format!("ore:{namespace}:{parent}/{dimension}/{family}");
+        let key = format!("ore:{dimension}:{namespace}:{parent}/{family}");
         let group = groups.entry(key.clone()).or_insert_with(|| RailEntry {
             key,
             label: family.replace('_', " "),
@@ -183,14 +243,14 @@ fn mineral_family(material: &str) -> &str {
     match material {
         "copper" | "native_copper" | "chalcopyrite" | "chalcocite" | "bornite" | "malachite"
         | "tetrahedrite" => "copper",
-        "iron" | "goethite" | "yellow_limonite" | "limonite" | "hematite" | "magnetite"
-        | "vanadium_magnetite" => "iron",
+        "iron" | "goethite" | "yellow_limonite" | "yellow limonite" | "limonite" | "hematite"
+        | "magnetite" | "vanadium_magnetite" => "iron",
         "coal" | "lignite" | "anthracite" => "coal",
-        "cassiterite" | "cassiterite_sand" | "tin" => "tin",
+        "cassiterite" | "cassiterite_sand" | "cassiterite sand" | "tin" => "tin",
         "galena" | "lead" => "lead_and_silver",
         "sphalerite" | "zinc" => "zinc",
         "garnierite" | "pentlandite" | "nickel" => "nickel",
-        "quartz" | "quartzite" | "nether_quartz" => "quartz",
+        "quartz" | "quartzite" | "nether_quartz" | "nether quartz" => "quartz",
         "salt" | "rock_salt" | "sylvite" => "salt",
         "mica" | "phlogopite" => "mica",
         "apatite" | "tricalcium_phosphate" => "phosphate",
@@ -200,12 +260,12 @@ fn mineral_family(material: &str) -> &str {
 
 fn ore_icon_order(id: &str) -> (u8, &str) {
     (
-        if id.starts_with("normal_") {
+        if id.rsplit(':').next().unwrap_or(id).starts_with("normal_") {
             0
-        } else if id.starts_with("beneath_") {
-            1
-        } else if id.starts_with("surface_") {
+        } else if id.rsplit(':').next().unwrap_or(id).starts_with("surface_") {
             2
+        } else if crate::ore_icons::icon_png(id).is_some() {
+            1
         } else {
             3
         },
@@ -717,6 +777,28 @@ mod tests {
         assert!(!is_hidden(&prefs, &MarkerKind::Ore, "normal_copper"));
         assert!(is_hidden(&prefs, &MarkerKind::Ore, "surface_native_copper"));
         assert!(!is_hidden(&prefs, &MarkerKind::Ore, "normal_gold"));
+    }
+
+    #[test]
+    fn planetary_veins_group_by_actual_primary_output_with_dimension_separation() {
+        let entries = [
+            entry("mars:mars_hematite"),
+            entry("mars:mars_surface_hematite"),
+            entry("moon:moon_gold"),
+            entry("mars:mars_gold"),
+        ];
+        let rows = ore_rows(&entries);
+        let hematite = rows
+            .iter()
+            .find(|row| row.members.contains(&"mars:mars_hematite".to_owned()))
+            .unwrap();
+        assert_eq!(hematite.members.len(), 2);
+        let gold_groups = rows
+            .iter()
+            .filter(|row| row.members.iter().any(|id| id.ends_with("_gold")))
+            .collect::<Vec<_>>();
+        assert_eq!(gold_groups.len(), 2);
+        assert!(gold_groups.iter().all(|row| row.members.len() == 1));
     }
 
     #[test]

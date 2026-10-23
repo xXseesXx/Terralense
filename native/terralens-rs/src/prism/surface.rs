@@ -567,7 +567,15 @@ fn is_crop(block: &str) -> bool {
 fn tint(block: &str) -> [u8; 3] {
     let path = block.rsplit_once(':').map_or(block, |(_, p)| p);
     let s = path.rsplit('/').next().unwrap_or(path);
-    if s.contains("lava") {
+    // These representative values are averages of the shipped TFG / Ad Astra
+    // surface textures, used when rendering saved blocks without a GL atlas lookup.
+    if path.contains("moon_deepslate") {
+        [54, 61, 65]
+    } else if path.contains("moon") {
+        [80, 91, 95]
+    } else if path.contains("mars") || s == "red_sand" || s == "red_sandstone" {
+        [196, 126, 85]
+    } else if s.contains("lava") {
         [226, 91, 30]
     } else if s.contains("glowstone") || s.contains("shroomlight") {
         [226, 190, 103]
@@ -839,6 +847,47 @@ mod tests {
         );
         let empty = full_chunk(vec![section(0, vec![block("minecraft:air")], None)]);
         assert!(surface_chunk(&empty, 0, 0).is_none());
+    }
+
+    #[test]
+    fn planetary_saved_surface_projection_keeps_full_high_and_negative_section_range() {
+        let moon = surface_chunk(
+            &full_chunk(vec![section(23, vec![block("ad_astra:moon_stone")], None)]),
+            0,
+            0,
+        )
+        .unwrap();
+        assert!(moon.columns.iter().all(|column| column.y == 383));
+
+        let mars_high = surface_chunk(
+            &full_chunk(vec![section(21, vec![block("ad_astra:mars_stone")], None)]),
+            0,
+            0,
+        )
+        .unwrap();
+        assert!(mars_high.columns.iter().all(|column| column.y == 351));
+
+        let mars_negative = surface_chunk(
+            &full_chunk(vec![section(
+                -2,
+                vec![block("tfg:rock/hardened_mars_stone")],
+                None,
+            )]),
+            -1,
+            -1,
+        )
+        .unwrap();
+        assert!(mars_negative.columns.iter().all(|column| column.y == -17));
+    }
+
+    #[test]
+    fn planetary_block_tints_separate_lunar_gray_from_martian_rust() {
+        assert_eq!(tint("ad_astra:moon_stone"), [80, 91, 95]);
+        assert_eq!(tint("tfg:rock/gravel_moon"), [80, 91, 95]);
+        assert_eq!(tint("tfg:rock/gravel_moon_deepslate"), [54, 61, 65]);
+        assert_eq!(tint("ad_astra:mars_stone"), [196, 126, 85]);
+        assert_eq!(tint("tfg:rock/gravel_mars"), [196, 126, 85]);
+        assert_eq!(tint("minecraft:red_sand"), [196, 126, 85]);
     }
 
     #[test]

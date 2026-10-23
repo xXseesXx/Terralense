@@ -101,6 +101,9 @@ pub fn predict_cancelable(w: &World, q: &Query, cancelled: impl Fn() -> bool) ->
     if w.dimension == crate::dimension::Dimension::Beneath {
         return predict_beneath(w, q, cancelled);
     }
+    if w.dimension.is_planetary() {
+        return predict_planetary(w, q, cancelled);
+    }
     let mut markers = Vec::new();
     let mut limited = false;
     let mut notes = Vec::new();
@@ -246,6 +249,116 @@ pub fn predict_cancelable(w: &World, q: &Query, cancelled: impl Fn() -> bool) ->
         markers: rank(q.origin, q.radius, markers, 4096),
         limited,
         note: notes.join(" · "),
+    })
+}
+fn predict_planetary(w: &World, q: &Query, cancelled: impl Fn() -> bool) -> Option<Outcome> {
+    if cancelled() {
+        return None;
+    }
+    let ores = q.scope == Scope::Ores || q.scope == Scope::All && !q.text.trim().is_empty();
+    let structures = q.structures_predicted && matches!(q.scope, Scope::All | Scope::Structures);
+    let biomes =
+        matches!(q.scope, Scope::Biomes) || q.scope == Scope::All && !q.text.trim().is_empty();
+    if !ores && !structures && !biomes {
+        return Some(Outcome {
+            markers: Vec::new(),
+            limited: false,
+            note: format!("{} · no matching feature scope", w.dimension.label()),
+        });
+    }
+    let feature_radius = if ores || structures {
+        q.radius.min(if ores { 2048. } else { 8192. })
+    } else {
+        0.
+    };
+    let mut markers = Vec::new();
+    let mut limited = feature_radius > 0. && feature_radius < q.radius;
+    let mut notes = Vec::new();
+    if ores || structures {
+        let batch = crate::planetary::features::predict_matching(
+            w,
+            bounds(q.origin, feature_radius),
+            ores,
+            structures,
+            &q.text,
+            &cancelled,
+        );
+        if cancelled() {
+            return None;
+        }
+        limited |= batch.coverage.truncated;
+        markers.extend(batch.markers);
+        notes.push(format!(
+            "seed-derived ore/structure candidates ≤{:.1} km; generated placement is unconfirmed",
+            feature_radius / 1000.
+        ));
+    }
+    if biomes {
+        let radius = q.radius.min(4096.);
+        let step = 128.;
+        let cells = (radius / step).ceil() as i32;
+        let mut nearest = HashMap::<String, Marker>::new();
+        for dz in -cells..=cells {
+            if cancelled() {
+                return None;
+            }
+            for dx in -cells..=cells {
+                let point = Point {
+                    x: q.origin.x + dx as f64 * step,
+                    z: q.origin.z + dz as f64 * step,
+                };
+                if q.origin.distance(point) > radius
+                    || point.x.abs() > 30_000_000.
+                    || point.z.abs() > 30_000_000.
+                {
+                    continue;
+                }
+                let (x, z) = (point.x.floor() as i32, point.z.floor() as i32);
+                let biome = w.biome(x, z);
+                if !features::text_matches(&biome, &q.text) {
+                    continue;
+                }
+                let id = format!("{}:biome:{biome}", w.dimension.id());
+                if nearest
+                    .get(&id)
+                    .is_some_and(|old| q.origin.distance(old.point()) <= q.origin.distance(point))
+                {
+                    continue;
+                }
+                nearest.insert(
+                    id.clone(),
+                    Marker {
+                        id,
+                        label: biome.rsplit('/').next().unwrap_or(&biome).replace('_', " "),
+                        namespace: "tfg".into(),
+                        x: point.x,
+                        z: point.z,
+                        y: None,
+                        kind: MarkerKind::Biome,
+                        confirmed: false,
+                        min_y: None,
+                        max_y: None,
+                        bounds: None,
+                        detail: "Planetary biome sample · 128-block search grid".into(),
+                        color: [127, 192, 148],
+                    },
+                );
+            }
+        }
+        limited |= radius < q.radius;
+        markers.extend(nearest.into_values());
+        notes.push(format!(
+            "biome samples every 128 blocks ≤{:.1} km",
+            radius / 1000.
+        ));
+    }
+    if cancelled() {
+        return None;
+    }
+    Some(Outcome {
+        markers: rank(q.origin, q.radius, markers, 4096),
+        limited,
+        note: format!("{} · {}", w.dimension.label(), notes.join(" · ")),
     })
 }
 fn predict_beneath(w: &World, q: &Query, cancelled: impl Fn() -> bool) -> Option<Outcome> {
@@ -394,6 +507,63 @@ fn location(
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn planetary_biome_search_returns_dimension_scoped_nearest_samples() {
+        let world = World::for_dimension(
+            0,
+            crate::model::Settings::default(),
+            crate::dimension::Dimension::Moon,
+            64,
+        );
+        let query = Query {
+            origin: Point::default(),
+            radius: 1024.,
+            text: "lunar".into(),
+            scope: Scope::Biomes,
+            structures_predicted: false,
+        };
+        let outcome = predict(&world, &query);
+        assert!(!outcome.markers.is_empty());
+        assert!(
+            !predict(
+                &world,
+                &Query {
+                    text: String::new(),
+                    ..query.clone()
+                }
+            )
+            .markers
+            .is_empty()
+        );
+        for marker in &outcome.markers {
+            assert!(marker.id.starts_with("ad_astra:moon:biome:tfg:moon/"));
+            assert_eq!(
+                marker.id.trim_start_matches("ad_astra:moon:biome:"),
+                world.biome(marker.x.floor() as i32, marker.z.floor() as i32)
+            );
+            assert_eq!(marker.kind, MarkerKind::Biome);
+        }
+        assert!(predict_cancelable(&world, &query, || true).is_none());
+
+        let mars = World::for_dimension(
+            0,
+            crate::model::Settings::default(),
+            crate::dimension::Dimension::Mars,
+            88,
+        );
+        let mars_query = Query {
+            text: "martian".into(),
+            ..query
+        };
+        let outcome = predict(&mars, &mars_query);
+        assert!(!outcome.markers.is_empty());
+        assert!(
+            outcome
+                .markers
+                .iter()
+                .all(|marker| marker.id.starts_with("ad_astra:mars:biome:tfg:mars/"))
+        );
+    }
     #[test]
     fn ranks_every_marker_kind_by_distance() {
         let make = |kind, x| Marker {

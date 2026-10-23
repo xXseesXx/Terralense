@@ -68,7 +68,7 @@ impl TerraLensApp {
                     if ui.add_enabled(self.tools.has_overlay(),egui::Button::new("Clear measurement / selection")).clicked() {self.tools.clear_selection();ui.close();}
                 });
                 ui.menu_button("Layer", |ui| {
-                    for (index,layer) in Layer::ALL.iter().enumerate().filter(|(_,layer)|self.prefs.dimension==Dimension::Overworld || **layer==Layer::Biomes) {
+                    for (index,layer) in Layer::ALL.iter().enumerate().filter(|(_,layer)|TerraLensApp::layer_supported(self.prefs.dimension, **layer)) {
                         if ui.selectable_value(&mut self.prefs.layer,index,layer.label()).clicked() {ui.close();}
                     }
                 });
@@ -293,39 +293,16 @@ impl TerraLensApp {
             .map_or(0, |atlas| atlas.saved_structures().len());
         let key = (self.prefs.world_id.clone(), self.prefs.dimension, saved);
         if self.feature_entries.key.as_ref() != Some(&key) {
-            let (all_ores, all_structures) = workspace::feature_catalog();
-            let beneath = crate::features::beneath_feature_catalog();
-            let ore_items = if self.prefs.dimension == Dimension::Beneath {
-                beneath.0.iter().collect::<Vec<_>>()
-            } else {
-                all_ores
-                    .iter()
-                    .filter(|(id, _)| !id.starts_with("beneath_"))
-                    .collect()
-            };
-            self.feature_entries.ores = ore_items
-                .into_iter()
+            let (ores, structures) = workspace::feature_catalog_for(self.prefs.dimension);
+            self.feature_entries.ores = ores
+                .iter()
                 .map(|(id, label)| feature_bar::Entry {
                     id: id.clone(),
                     label: label.clone(),
                 })
                 .collect();
-            let structure_items = if self.prefs.dimension == Dimension::Beneath {
-                beneath.1.iter().collect::<Vec<_>>()
-            } else {
-                all_structures
-                    .iter()
-                    .filter(|(id, _)| {
-                        !id.contains("beneath")
-                            && !id.starts_with("ad_astra:")
-                            && !id.starts_with("minecraft:nether")
-                            && !id.contains("bastion")
-                            && !id.contains("fortress")
-                    })
-                    .collect()
-            };
-            let mut entries = structure_items
-                .into_iter()
+            let mut entries = structures
+                .iter()
                 .map(|(id, label)| (id.clone(), label.clone()))
                 .collect::<std::collections::BTreeMap<_, _>>();
             if let Some(atlas) = &self.atlas {
@@ -359,6 +336,10 @@ impl TerraLensApp {
     }
 
     fn biome_analysis(&mut self, ui: &mut egui::Ui) {
+        if !TerraLensApp::area_analysis_supported(self.prefs.dimension) {
+            ui.label("Area analysis is available in the Overworld.");
+            return;
+        }
         let mut bounds = self.tools.selection().unwrap_or(self.last_bounds);
         ui.horizontal(|ui| {
             if ui.button("From visible").clicked() {
@@ -408,10 +389,6 @@ impl TerraLensApp {
         if edited {
             self.tools.set_selection(bounds);
             bounds = self.tools.selection().unwrap_or(bounds);
-        }
-        if self.prefs.dimension == Dimension::Beneath {
-            ui.label("Regional analysis is available for Overworld climate and terrain.");
-            return;
         }
         if let Some(analysis_panel::Action::Analyze(query)) =
             analysis_panel::show_controls(ui, &mut self.location_query, bounds, 0)
@@ -561,7 +538,11 @@ impl TerraLensApp {
                         }
                     });
                     ui.checkbox(&mut self.prefs.surface_detail, "Detail at close zoom");
-                    self.prefs.tooltip.show_preferences(ui);
+                    if self.prefs.dimension.is_planetary() {
+                        ui.checkbox(&mut self.prefs.tooltip.height, "Elevation");
+                    } else {
+                        self.prefs.tooltip.show_preferences(ui);
+                    }
                     ui.separator();
                     self.display_controls(ui);
                 });

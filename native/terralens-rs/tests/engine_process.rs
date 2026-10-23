@@ -81,27 +81,69 @@ fn nbt_string_tag(out: &mut Vec<u8>, name: &str, value: &str) {
     out.extend_from_slice(value.as_bytes());
 }
 fn full_stone_chunk_nbt() -> Vec<u8> {
+    full_uniform_block_chunk_nbt(0, "minecraft:stone")
+}
+fn full_uniform_block_chunk_nbt(section_y: i8, block: &str) -> Vec<u8> {
     let mut out = vec![10, 0, 0]; // unnamed root compound
     nbt_string_tag(&mut out, "Status", "minecraft:full");
     out.push(9); // sections: list of compounds
     nbt_name(&mut out, "sections");
     out.push(10);
     out.extend_from_slice(&1i32.to_be_bytes());
-    out.push(1); // byte Y = 0
+    out.push(1); // byte Y
     nbt_name(&mut out, "Y");
-    out.push(0);
+    out.push(section_y as u8); // signed section value
     out.push(10); // block_states compound
     nbt_name(&mut out, "block_states");
     out.push(9); // palette list
     nbt_name(&mut out, "palette");
     out.push(10);
     out.extend_from_slice(&1i32.to_be_bytes());
-    nbt_string_tag(&mut out, "Name", "minecraft:stone");
+    nbt_string_tag(&mut out, "Name", block);
     out.push(0); // palette element end
     out.push(0); // block_states end
     out.push(0); // section end
     out.push(0); // root end
     out
+}
+fn planetary_surface_fixture() -> std::path::PathBuf {
+    let root = std::env::temp_dir().join(format!(
+        "terralens-planetary-surface-engine-{}-{}",
+        std::process::id(),
+        std::thread::current().name().unwrap_or("test")
+    ));
+    write_region(
+        &root.join("dimensions/ad_astra/moon"),
+        &[(0, full_uniform_block_chunk_nbt(23, "ad_astra:moon_stone"))],
+    );
+    write_region(
+        &root.join("dimensions/ad_astra/mars"),
+        &[
+            (
+                0,
+                full_uniform_block_chunk_nbt(-2, "tfg:rock/hardened_mars_stone"),
+            ),
+            (1, full_uniform_block_chunk_nbt(21, "ad_astra:mars_stone")),
+        ],
+    );
+    root
+}
+fn write_region(root: &std::path::Path, chunks: &[(usize, Vec<u8>)]) {
+    let region_dir = root.join("region");
+    fs::create_dir_all(&region_dir).unwrap();
+    let mut region = vec![0u8; (2 + chunks.len()) * 4096];
+    let mut sector = 2usize;
+    for (slot, nbt) in chunks {
+        let header = slot * 4;
+        region[header..header + 4].copy_from_slice(&[0, (sector >> 8) as u8, sector as u8, 1]);
+        let start = sector * 4096;
+        let length = (nbt.len() + 1) as u32;
+        region[start..start + 4].copy_from_slice(&length.to_be_bytes());
+        region[start + 4] = 3; // uncompressed NBT
+        region[start + 5..start + 5 + nbt.len()].copy_from_slice(nbt);
+        sector += 1;
+    }
+    fs::write(region_dir.join("r.0.0.mca"), region).unwrap();
 }
 fn saved_surface_fixture() -> std::path::PathBuf {
     let root = std::env::temp_dir().join(format!(
@@ -266,6 +308,128 @@ fn isolated_engine_structure_cutaway_respects_selected_y_bands_and_absence() {
         "the upper Beneath band has no saved blocks and must remain absent"
     );
     fs::remove_dir_all(save).unwrap();
+}
+
+#[test]
+fn isolated_engine_reads_planetary_saved_surfaces_at_high_and_negative_y() {
+    let save = planetary_surface_fixture();
+    assert_eq!(
+        terralens::prism::read_surface_tile(&save.join("dimensions/ad_astra/moon"), 0, 0)
+            .unwrap()
+            .unwrap()
+            .columns[0]
+            .y,
+        383
+    );
+    let mut engine = launch();
+    command(
+        &mut engine.0,
+        json!({"Reset":{"epoch":11,"search_revision":0}}),
+    );
+    command(
+        &mut engine.0,
+        json!({"Low":{"Surface":[
+            {"seed":0,"settings":Settings::default(),"epoch":11,"dimension":"ad_astra:moon","slice_y":64},
+            save.join("dimensions/ad_astra/moon"),[[0,0]],111
+        ]}}),
+    );
+    let moon = reply(&mut engine.0);
+    let column = &moon["Surface"][2][0][2]["Ok"]["chunk"]["columns"][0];
+    assert_eq!(column["y"], 383);
+    assert_eq!(column["block"], "ad_astra:moon_stone");
+    drop(engine.0.stdin.take());
+    wait_exit(&mut engine.0);
+
+    let mut engine = launch();
+    command(
+        &mut engine.0,
+        json!({"Reset":{"epoch":12,"search_revision":0}}),
+    );
+    command(
+        &mut engine.0,
+        json!({"Low":{"Surface":[
+            {"seed":0,"settings":Settings::default(),"epoch":12,"dimension":"ad_astra:mars","slice_y":88},
+            save.join("dimensions/ad_astra/mars"),[[0,0],[1,0]],112
+        ]}}),
+    );
+    let mars = reply(&mut engine.0);
+    let low = &mars["Surface"][2][0][2]["Ok"]["chunk"]["columns"][0];
+    let high = &mars["Surface"][2][1][2]["Ok"]["chunk"]["columns"][0];
+    assert_eq!(low["y"], -17);
+    assert_eq!(low["block"], "tfg:rock/hardened_mars_stone");
+    assert_eq!(high["y"], 351);
+    assert_eq!(high["block"], "ad_astra:mars_stone");
+
+    drop(engine.0.stdin.take());
+    wait_exit(&mut engine.0);
+    fs::remove_dir_all(save).unwrap();
+}
+
+#[test]
+fn isolated_planetary_probe_and_export_use_seed_zero_reference_locations() {
+    let fixture: Value =
+        serde_json::from_str(include_str!("../src/planetary/seed0_biomes.json")).unwrap();
+    assert_eq!(fixture["seed"], 0);
+    for (epoch, dimension_data) in fixture["dimensions"].as_array().unwrap().iter().enumerate() {
+        let dimension = dimension_data["dimension"].as_str().unwrap();
+        let sample = &dimension_data["samples"][0];
+        let (x, y, z) = (
+            sample["x"].as_i64().unwrap() as i32,
+            sample["y"].as_i64().unwrap() as i32,
+            sample["z"].as_i64().unwrap() as i32,
+        );
+        let dimension_kind = terralens::dimension::Dimension::from_id(dimension).unwrap();
+        let world = World::for_dimension(0, Settings::default(), dimension_kind, y);
+        assert_eq!(world.biome_at(x, y, z), sample["biome"].as_str().unwrap());
+
+        let mut engine = launch();
+        let epoch = 30 + epoch as u64;
+        command(
+            &mut engine.0,
+            json!({"Reset":{"epoch":epoch,"search_revision":0}}),
+        );
+        command(
+            &mut engine.0,
+            json!({"High":{"Probe":[
+                {"seed":0,"settings":Settings::default(),"epoch":epoch,"dimension":dimension,"slice_y":y},
+                {"x":x,"z":z},false,epoch
+            ]}}),
+        );
+        let answer = reply(&mut engine.0);
+        assert_eq!(answer["Probe"][0], epoch);
+        assert_eq!(answer["Probe"][2]["biome"], world.biome(x, z));
+        assert!(answer["Probe"][2]["height"].is_null());
+        drop(engine.0.stdin.take());
+        wait_exit(&mut engine.0);
+
+        let mut engine = launch();
+        command(
+            &mut engine.0,
+            json!({"Reset":{"epoch":epoch,"search_revision":0}}),
+        );
+        command(&mut engine.0, json!({"TaskRevision":{"serial":epoch}}));
+        let path = std::env::temp_dir().join(format!(
+            "terralens-planetary-export-{}-{epoch}.png",
+            std::process::id()
+        ));
+        let request = json!({"Map":{
+            "bounds":{"min_x":x-2,"min_z":z-2,"max_x":x+2,"max_z":z+2},
+            "layer":"Biomes","width":1,"height":1,"path":path
+        }});
+        command(
+            &mut engine.0,
+            json!({"Low":{"Export":[
+                {"seed":0,"settings":Settings::default(),"epoch":epoch},request,epoch
+            ]}}),
+        );
+        let answer = reply(&mut engine.0);
+        assert_eq!(answer["Export"][2]["Ok"]["note"], "1 × 1 · Biomes");
+        let image = image::open(&path).unwrap();
+        assert_eq!((image.width(), image.height()), (1, 1));
+        fs::remove_file(path).unwrap();
+        drop(engine.0.stdin.take());
+        wait_exit(&mut engine.0);
+    }
 }
 
 #[test]

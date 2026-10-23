@@ -116,12 +116,14 @@ pub fn show_probe(
             ui.set_max_width(252.0);
             ui.horizontal(|ui| {
                 ui.label(
-                    RichText::new(if dimension == crate::dimension::Dimension::Beneath {
-                        "BENEATH"
+                    RichText::new(if dimension.is_planetary() {
+                        dimension.label().to_ascii_uppercase()
+                    } else if dimension == crate::dimension::Dimension::Beneath {
+                        "BENEATH".to_owned()
                     } else if probe.ocean {
-                        "SEA"
+                        "SEA".to_owned()
                     } else {
-                        "LAND"
+                        "LAND".to_owned()
                     })
                     .size(9.0)
                     .strong()
@@ -159,7 +161,9 @@ pub fn show_probe(
                 });
             }
 
-            if dimension == crate::dimension::Dimension::Overworld && prefs.height {
+            if (dimension == crate::dimension::Dimension::Overworld || dimension.is_planetary())
+                && prefs.height
+            {
                 if let Some(height) = probe.height {
                     ui.add_space(6.0);
                     metric(ui, "Y", format!("{height:.0}"));

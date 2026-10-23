@@ -5,7 +5,8 @@ Browse seeds, find a base, prospect for ores, and inspect structures without sta
 The interface stays focused on the map, and your saves are opened only for reading.
 
 Validated against Minecraft **1.20.1**, Forge **47.4.13**, TFG Core **0.9.25**, TFC **3.2.25** and
-Beneath **1.0.6**. The supported dimensions are **Overworld** and **Beneath / Nether**.
+Beneath **1.0.6**, with Ad Astra **1.15.21**. The supported dimensions are **Overworld**,
+**Beneath / Nether**, **Moon**, and **Mars**.
 
 ![Temperature map with exported ore and structure markers](docs/native-qol-export.png)
 
@@ -14,6 +15,9 @@ Beneath **1.0.6**. The supported dimensions are **Overworld** and **Beneath / Ne
 - Overworld biome, temperature, rainfall, elevation, water/river, geology, forest and hotspot maps.
   Oceans retain their own colors on land-themed maps.
 - Beneath biome maps with **16-block vertical bands** and saved-block cave cutaways.
+- Moon and Mars biome and elevation maps from the pack's custom generation profiles, plus a Mars
+  river-biome layer, separate ore and structure catalogs, biome search, and saved-block detail. Planetary views omit TFC's
+  Overworld climate, forest and geology controls.
 - Unified **Ctrl+F** search for structures, ores and vein contents, biomes, rocks, forests and tree
   habitats. Results are ordered by distance from a configurable point. Enter / Shift+Enter visit
   the next / previous result. The default radius is 10 km.
@@ -25,14 +29,14 @@ Beneath **1.0.6**. The supported dimensions are **Overworld** and **Beneath / Ne
   their recorded coordinates across zoom levels and appear in Everything search and exports.
   Players are shown in their recorded dimension; these are last-saved positions, not live tracking.
 - Close-up block detail from generated chunks, including structures, trees and crops. Missing
-  Overworld chunks have a seed vegetation preview; missing Beneath chunks retain biome colors.
+  Overworld chunks have a seed vegetation preview; missing chunks in other dimensions retain biome colors.
   **View blocks** inspects a saved structure inside its bounding box; **Full terrain** exits it.
 - Searchable interactive biome/rock legends, palette and highlight controls, connected
   biome/continent hover,
   and configurable clean tooltips with optional tree-species estimates.
 - Named seed shortlists, saved spots and collections, sessions, navigation history, coordinate
   jump, grids, a scale bar, a distance ruler, and fit-to-selection.
-- Land-area analysis and a sampled site finder combining climate, rock and nearby predicted ore.
+- Land-area analysis and a sampled site finder combining climate, rock and nearby ore.
   Selected results show the locations supporting their rock and ore conditions.
 - Composed PNG maps with marker artwork, footprints, coordinates, scale and a key; raster-only
   PNG, marker CSV, analysis/session JSON and Xaero waypoint sharing.
@@ -136,12 +140,14 @@ looted or modified. Tree counts estimate generation attempts, and habitat search
 
 Structure bounds and block cutaways require saved structure data. Ungenerated jigsaw layouts are
 not simulated, so a structure without a recorded box keeps its placement location. Terrain-dependent placement,
-caves, aquifers and unseen structure blocks are not fully generated. Other dimensions, worldgen
-v0, and incompatible/custom generation profiles are not supported. Different pack versions need
+caves, aquifers and unseen structure blocks are not fully generated. Planetary ore starts use
+the installed vein settings; replacement host blocks are not checked throughout each vein.
+Other dimensions, Overworld worldgen v0, and incompatible/custom generation profiles are not supported. Different pack versions need
 separate validation.
 
 See [validation](docs/NATIVE-VALIDATION.md), [vegetation](docs/VEGETATION-GENERATION.md),
-[Beneath generation](docs/BENEATH-GENERATION.md), and [reference research](docs/QOL-RESEARCH.md).
+[Beneath generation](docs/BENEATH-GENERATION.md), [Moon and Mars generation](docs/PLANETARY-GENERATION.md),
+and [reference research](docs/QOL-RESEARCH.md).
 
 ## Development
 

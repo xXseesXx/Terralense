@@ -1,0 +1,1416 @@
+{
+  "moon": {
+    "id": "ad_astra:moon",
+    "seaLevel": 0,
+    "legacyRandomSource": false,
+    "minY": 0,
+    "height": 384,
+    "router": {
+      "temperature": 0,
+      "vegetation": {
+        "type": "minecraft:shifted_noise",
+        "noise": "minecraft:vegetation",
+        "xz_scale": 0.25,
+        "y_scale": 0,
+        "shift_x": {
+          "type": "minecraft:flat_cache",
+          "argument": {
+            "type": "minecraft:cache_2d",
+            "argument": {
+              "type": "minecraft:shift_a",
+              "argument": "minecraft:offset"
+            }
+          }
+        },
+        "shift_y": {
+          "type": "minecraft:constant",
+          "argument": 0
+        },
+        "shift_z": {
+          "type": "minecraft:flat_cache",
+          "argument": {
+            "type": "minecraft:cache_2d",
+            "argument": {
+              "type": "minecraft:shift_b",
+              "argument": "minecraft:offset"
+            }
+          }
+        }
+      },
+      "continents": {
+        "type": "minecraft:flat_cache",
+        "argument": {
+          "type": "minecraft:shifted_noise",
+          "noise": "minecraft:continentalness",
+          "shift_x": {
+            "type": "minecraft:flat_cache",
+            "argument": {
+              "type": "minecraft:cache_2d",
+              "argument": {
+                "type": "minecraft:shift_a",
+                "argument": "minecraft:offset"
+              }
+            }
+          },
+          "shift_y": {
+            "type": "minecraft:constant",
+            "argument": 0
+          },
+          "shift_z": {
+            "type": "minecraft:flat_cache",
+            "argument": {
+              "type": "minecraft:cache_2d",
+              "argument": {
+                "type": "minecraft:shift_b",
+                "argument": "minecraft:offset"
+              }
+            }
+          },
+          "xz_scale": 0.25,
+          "y_scale": 0
+        }
+      },
+      "erosion": 0,
+      "depth": 0,
+      "ridges": {
+        "type": "minecraft:flat_cache",
+        "argument": {
+          "type": "minecraft:shifted_noise",
+          "noise": "minecraft:ridge",
+          "shift_x": {
+            "type": "minecraft:flat_cache",
+            "argument": {
+              "type": "minecraft:cache_2d",
+              "argument": {
+                "type": "minecraft:shift_a",
+                "argument": "minecraft:offset"
+              }
+            }
+          },
+          "shift_y": {
+            "type": "minecraft:constant",
+            "argument": 0
+          },
+          "shift_z": {
+            "type": "minecraft:flat_cache",
+            "argument": {
+              "type": "minecraft:cache_2d",
+              "argument": {
+                "type": "minecraft:shift_b",
+                "argument": "minecraft:offset"
+              }
+            }
+          },
+          "xz_scale": 0.25,
+          "y_scale": 0
+        }
+      }
+    },
+    "noises": {
+      "minecraft:continentalness": {
+        "firstOctave": -9,
+        "amplitudes": [
+          1,
+          1,
+          2,
+          2,
+          2,
+          1,
+          1,
+          1,
+          1
+        ]
+      },
+      "minecraft:offset": {
+        "firstOctave": -3,
+        "amplitudes": [
+          1,
+          1,
+          1,
+          0
+        ]
+      },
+      "minecraft:ridge": {
+        "firstOctave": -7,
+        "amplitudes": [
+          1,
+          2,
+          1,
+          0,
+          0,
+          0
+        ]
+      },
+      "minecraft:vegetation": {
+        "firstOctave": -8,
+        "amplitudes": [
+          1,
+          1,
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "biomes": [
+      {
+        "biome": "tfg:moon/lunar_lights_dense",
+        "parameters": {
+          "temperature": 0,
+          "humidity": 0,
+          "continentalness": [
+            0.4,
+            1
+          ],
+          "erosion": 0,
+          "weirdness": [
+            0.4,
+            1
+          ],
+          "depth": 0,
+          "offset": 0
+        }
+      },
+      {
+        "biome": "tfg:moon/lunar_lights_sparse",
+        "parameters": {
+          "temperature": 0,
+          "humidity": 0,
+          "continentalness": [
+            0.2,
+            0.4
+          ],
+          "erosion": 0,
+          "weirdness": [
+            0.2,
+            0.4
+          ],
+          "depth": 0,
+          "offset": 0
+        }
+      },
+      {
+        "biome": "tfg:moon/lunar_asurine_dense",
+        "parameters": {
+          "temperature": 0,
+          "humidity": 0,
+          "continentalness": [
+            0.4,
+            1
+          ],
+          "erosion": 0,
+          "weirdness": [
+            -1,
+            -0.4
+          ],
+          "depth": 0,
+          "offset": 0
+        }
+      },
+      {
+        "biome": "tfg:moon/lunar_asurine_sparse",
+        "parameters": {
+          "temperature": 0,
+          "humidity": 0,
+          "continentalness": [
+            0.2,
+            0.4
+          ],
+          "erosion": 0,
+          "weirdness": [
+            -0.4,
+            -0.2
+          ],
+          "depth": 0,
+          "offset": 0
+        }
+      },
+      {
+        "biome": "tfg:moon/lunar_plains",
+        "parameters": {
+          "temperature": 0,
+          "humidity": -0.1,
+          "continentalness": [
+            -0.2,
+            0.2
+          ],
+          "erosion": 0,
+          "weirdness": [
+            -0.2,
+            0.2
+          ],
+          "depth": 0,
+          "offset": 0
+        }
+      },
+      {
+        "biome": "tfg:moon/lunar_sands",
+        "parameters": {
+          "temperature": 0,
+          "humidity": 0.2,
+          "continentalness": [
+            -0.2,
+            0.2
+          ],
+          "erosion": 0,
+          "weirdness": [
+            -0.2,
+            0.2
+          ],
+          "depth": 0,
+          "offset": 0
+        }
+      },
+      {
+        "biome": "tfg:moon/lunar_corals_sparse",
+        "parameters": {
+          "temperature": 0,
+          "humidity": 0,
+          "continentalness": [
+            -0.4,
+            -0.2
+          ],
+          "erosion": 0,
+          "weirdness": [
+            -0.4,
+            -0.2
+          ],
+          "depth": 0,
+          "offset": 0
+        }
+      },
+      {
+        "biome": "tfg:moon/lunar_corals_dense",
+        "parameters": {
+          "temperature": 0,
+          "humidity": 0,
+          "continentalness": [
+            -1,
+            -0.4
+          ],
+          "erosion": 0,
+          "weirdness": [
+            -1,
+            -0.4
+          ],
+          "depth": 0,
+          "offset": 0
+        }
+      },
+      {
+        "biome": "tfg:moon/lunar_chorus_sparse",
+        "parameters": {
+          "temperature": 0,
+          "humidity": 0,
+          "continentalness": [
+            -0.4,
+            -0.2
+          ],
+          "erosion": 0,
+          "weirdness": [
+            0.2,
+            0.4
+          ],
+          "depth": 0,
+          "offset": 0
+        }
+      },
+      {
+        "biome": "tfg:moon/lunar_chorus_dense",
+        "parameters": {
+          "temperature": 0,
+          "humidity": 0,
+          "continentalness": [
+            -1,
+            -0.4
+          ],
+          "erosion": 0,
+          "weirdness": [
+            0.4,
+            1
+          ],
+          "depth": 0,
+          "offset": 0
+        }
+      }
+    ],
+    "_meta": {
+      "tool": "tools/extract-dimension-climate.mjs",
+      "sources": [
+        "<local>/1.20.1.jar",
+        "<instance>/mods",
+        "<instance>/kubejs/data"
+      ],
+      "pack": "TerraFirmaGreg-Modern 0.13.8",
+      "constant_router_entries": [
+        "temperature",
+        "erosion",
+        "depth"
+      ],
+      "constant_router_entries_note": "Written as 0, not inlined: every biome claims the same interval on these axes, so they add the same distance to every biome and cannot change which one the climate search picks.",
+      "density_functions": [
+        "minecraft:overworld/continents",
+        "minecraft:overworld/ridges",
+        "minecraft:shift_x",
+        "minecraft:shift_z"
+      ]
+    }
+  },
+  "mars": {
+    "id": "ad_astra:mars",
+    "seaLevel": 88,
+    "legacyRandomSource": false,
+    "minY": -32,
+    "height": 384,
+    "router": {
+      "temperature": 0,
+      "vegetation": {
+        "type": "minecraft:shifted_noise",
+        "noise": "minecraft:vegetation",
+        "shift_x": {
+          "type": "minecraft:flat_cache",
+          "argument": {
+            "type": "minecraft:cache_2d",
+            "argument": {
+              "type": "minecraft:shift_a",
+              "argument": "minecraft:offset"
+            }
+          }
+        },
+        "shift_y": {
+          "type": "minecraft:constant",
+          "argument": 0
+        },
+        "shift_z": {
+          "type": "minecraft:flat_cache",
+          "argument": {
+            "type": "minecraft:cache_2d",
+            "argument": {
+              "type": "minecraft:shift_b",
+              "argument": "minecraft:offset"
+            }
+          }
+        },
+        "xz_scale": 0.25,
+        "y_scale": 0
+      },
+      "continents": {
+        "type": "minecraft:flat_cache",
+        "argument": {
+          "type": "minecraft:spline",
+          "spline": {
+            "coordinate": {
+              "type": "minecraft:shifted_noise",
+              "noise": "minecraft:continentalness",
+              "shift_x": {
+                "type": "minecraft:flat_cache",
+                "argument": {
+                  "type": "minecraft:cache_2d",
+                  "argument": {
+                    "type": "minecraft:shift_a",
+                    "argument": "minecraft:offset"
+                  }
+                }
+              },
+              "shift_y": {
+                "type": "minecraft:constant",
+                "argument": 0
+              },
+              "shift_z": {
+                "type": "minecraft:flat_cache",
+                "argument": {
+                  "type": "minecraft:cache_2d",
+                  "argument": {
+                    "type": "minecraft:shift_b",
+                    "argument": "minecraft:offset"
+                  }
+                }
+              },
+              "xz_scale": 0.25,
+              "y_scale": 0
+            },
+            "points": [
+              {
+                "location": -1,
+                "derivative": 1,
+                "value": -1
+              },
+              {
+                "location": 0.19,
+                "derivative": 1,
+                "value": -0.19
+              },
+              {
+                "location": 1,
+                "derivative": 1,
+                "value": 1
+              }
+            ]
+          }
+        }
+      },
+      "erosion": {
+        "type": "minecraft:flat_cache",
+        "argument": {
+          "type": "minecraft:shifted_noise",
+          "noise": "minecraft:erosion",
+          "shift_x": {
+            "type": "minecraft:flat_cache",
+            "argument": {
+              "type": "minecraft:cache_2d",
+              "argument": {
+                "type": "minecraft:shift_a",
+                "argument": "minecraft:offset"
+              }
+            }
+          },
+          "shift_y": {
+            "type": "minecraft:constant",
+            "argument": 0
+          },
+          "shift_z": {
+            "type": "minecraft:flat_cache",
+            "argument": {
+              "type": "minecraft:cache_2d",
+              "argument": {
+                "type": "minecraft:shift_b",
+                "argument": "minecraft:offset"
+              }
+            }
+          },
+          "xz_scale": 0.25,
+          "y_scale": 0
+        }
+      },
+      "depth": 0,
+      "ridges": {
+        "type": "minecraft:mul",
+        "argument1": {
+          "type": "minecraft:flat_cache",
+          "argument": {
+            "type": "minecraft:shifted_noise",
+            "noise": "minecraft:ridge",
+            "shift_x": {
+              "type": "minecraft:flat_cache",
+              "argument": {
+                "type": "minecraft:cache_2d",
+                "argument": {
+                  "type": "minecraft:shift_a",
+                  "argument": "minecraft:offset"
+                }
+              }
+            },
+            "shift_y": {
+              "type": "minecraft:constant",
+              "argument": 0
+            },
+            "shift_z": {
+              "type": "minecraft:flat_cache",
+              "argument": {
+                "type": "minecraft:cache_2d",
+                "argument": {
+                  "type": "minecraft:shift_b",
+                  "argument": "minecraft:offset"
+                }
+              }
+            },
+            "xz_scale": 0.25,
+            "y_scale": 0
+          }
+        },
+        "argument2": {
+          "type": "minecraft:spline",
+          "spline": {
+            "coordinate": {
+              "type": "minecraft:flat_cache",
+              "argument": {
+                "type": "minecraft:spline",
+                "spline": {
+                  "coordinate": {
+                    "type": "minecraft:shifted_noise",
+                    "noise": "minecraft:continentalness",
+                    "shift_x": {
+                      "type": "minecraft:flat_cache",
+                      "argument": {
+                        "type": "minecraft:cache_2d",
+                        "argument": {
+                          "type": "minecraft:shift_a",
+                          "argument": "minecraft:offset"
+                        }
+                      }
+                    },
+                    "shift_y": {
+                      "type": "minecraft:constant",
+                      "argument": 0
+                    },
+                    "shift_z": {
+                      "type": "minecraft:flat_cache",
+                      "argument": {
+                        "type": "minecraft:cache_2d",
+                        "argument": {
+                          "type": "minecraft:shift_b",
+                          "argument": "minecraft:offset"
+                        }
+                      }
+                    },
+                    "xz_scale": 0.25,
+                    "y_scale": 0
+                  },
+                  "points": [
+                    {
+                      "location": -1,
+                      "derivative": 1,
+                      "value": -1
+                    },
+                    {
+                      "location": 0.19,
+                      "derivative": 1,
+                      "value": -0.19
+                    },
+                    {
+                      "location": 1,
+                      "derivative": 1,
+                      "value": 1
+                    }
+                  ]
+                }
+              }
+            },
+            "points": [
+              {
+                "location": -1,
+                "derivative": 0,
+                "value": 0
+              },
+              {
+                "location": -0.12,
+                "derivative": 0,
+                "value": 0
+              },
+              {
+                "location": -0.1,
+                "derivative": 0,
+                "value": 1
+              },
+              {
+                "location": 1,
+                "derivative": 0,
+                "value": 1
+              }
+            ]
+          }
+        }
+      }
+    },
+    "noises": {
+      "minecraft:continentalness": {
+        "firstOctave": -9,
+        "amplitudes": [
+          1,
+          1,
+          2,
+          2,
+          2,
+          1,
+          1,
+          1,
+          1
+        ]
+      },
+      "minecraft:erosion": {
+        "firstOctave": -9,
+        "amplitudes": [
+          1,
+          1,
+          0,
+          1,
+          1
+        ]
+      },
+      "minecraft:offset": {
+        "firstOctave": -3,
+        "amplitudes": [
+          1,
+          1,
+          1,
+          0
+        ]
+      },
+      "minecraft:ridge": {
+        "firstOctave": -7,
+        "amplitudes": [
+          1,
+          2,
+          1,
+          0,
+          0,
+          0
+        ]
+      },
+      "minecraft:vegetation": {
+        "firstOctave": -8,
+        "amplitudes": [
+          1,
+          1,
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "biomes": [
+      {
+        "biome": "tfg:mars/martian_deep_desert",
+        "parameters": {
+          "continentalness": [
+            -1.2,
+            -0.455
+          ],
+          "depth": 0,
+          "erosion": [
+            -1,
+            1
+          ],
+          "humidity": [
+            -1,
+            1
+          ],
+          "offset": 0,
+          "temperature": [
+            -1,
+            1
+          ],
+          "weirdness": [
+            -1,
+            1
+          ]
+        }
+      },
+      {
+        "biome": "tfg:mars/martian_dunes",
+        "parameters": {
+          "continentalness": [
+            -0.455,
+            -0.19
+          ],
+          "depth": 0,
+          "erosion": [
+            -1,
+            1
+          ],
+          "humidity": [
+            -1,
+            1
+          ],
+          "offset": 0,
+          "temperature": [
+            -1,
+            1
+          ],
+          "weirdness": [
+            -1,
+            1
+          ]
+        }
+      },
+      {
+        "biome": "tfg:mars/martian_dune_edge",
+        "parameters": {
+          "continentalness": [
+            -0.19,
+            -0.16
+          ],
+          "depth": 0,
+          "erosion": [
+            -1,
+            1
+          ],
+          "humidity": [
+            -1,
+            1
+          ],
+          "offset": 0,
+          "temperature": [
+            -1,
+            1
+          ],
+          "weirdness": [
+            -1,
+            1
+          ]
+        }
+      },
+      {
+        "biome": "tfg:mars/amber_edge",
+        "parameters": {
+          "continentalness": [
+            -0.16,
+            -0.07
+          ],
+          "depth": 0,
+          "erosion": [
+            -1,
+            1
+          ],
+          "humidity": [
+            -1,
+            1
+          ],
+          "offset": 0,
+          "temperature": [
+            -1,
+            1
+          ],
+          "weirdness": [
+            0.3,
+            1
+          ]
+        }
+      },
+      {
+        "biome": "tfg:mars/rusticus_edge",
+        "parameters": {
+          "continentalness": [
+            -0.16,
+            -0.07
+          ],
+          "depth": 0,
+          "erosion": [
+            -1,
+            1
+          ],
+          "humidity": [
+            -1,
+            1
+          ],
+          "offset": 0,
+          "temperature": [
+            -1,
+            1
+          ],
+          "weirdness": [
+            -0.3,
+            0.3
+          ]
+        }
+      },
+      {
+        "biome": "tfg:mars/sangnum_edge",
+        "parameters": {
+          "continentalness": [
+            -0.16,
+            -0.07
+          ],
+          "depth": 0,
+          "erosion": [
+            -1,
+            1
+          ],
+          "humidity": [
+            -1,
+            1
+          ],
+          "offset": 0,
+          "temperature": [
+            -1,
+            1
+          ],
+          "weirdness": [
+            -1,
+            -0.3
+          ]
+        }
+      },
+      {
+        "biome": "tfg:mars/martian_river",
+        "parameters": {
+          "continentalness": [
+            -0.07,
+            0.65
+          ],
+          "depth": 0,
+          "erosion": [
+            0,
+            1
+          ],
+          "humidity": [
+            -1,
+            1
+          ],
+          "offset": 0,
+          "temperature": [
+            -1,
+            1
+          ],
+          "weirdness": [
+            -0.07,
+            0.07
+          ]
+        }
+      },
+      {
+        "biome": "tfg:mars/amber_plains",
+        "parameters": {
+          "continentalness": [
+            -0.07,
+            0.65
+          ],
+          "depth": 0,
+          "erosion": [
+            0,
+            1
+          ],
+          "humidity": [
+            -0.2,
+            0.2
+          ],
+          "offset": 0,
+          "temperature": [
+            -1,
+            1
+          ],
+          "weirdness": [
+            0.07,
+            1
+          ]
+        }
+      },
+      {
+        "biome": "tfg:mars/rusticus_plains",
+        "parameters": {
+          "continentalness": [
+            -0.07,
+            0.65
+          ],
+          "depth": 0,
+          "erosion": [
+            0,
+            1
+          ],
+          "humidity": [
+            -0.2,
+            0.2
+          ],
+          "offset": 0,
+          "temperature": [
+            -1,
+            1
+          ],
+          "weirdness": [
+            -1,
+            -0.07
+          ]
+        }
+      },
+      {
+        "biome": "tfg:mars/rusticus_plains",
+        "parameters": {
+          "continentalness": [
+            -0.07,
+            0.65
+          ],
+          "depth": 0,
+          "erosion": [
+            0,
+            1
+          ],
+          "humidity": [
+            -1,
+            -0.2
+          ],
+          "offset": 0,
+          "temperature": [
+            -1,
+            1
+          ],
+          "weirdness": [
+            0.07,
+            1
+          ]
+        }
+      },
+      {
+        "biome": "tfg:mars/sangnum_plains",
+        "parameters": {
+          "continentalness": [
+            -0.07,
+            0.65
+          ],
+          "depth": 0,
+          "erosion": [
+            0,
+            1
+          ],
+          "humidity": [
+            -1,
+            -0.2
+          ],
+          "offset": 0,
+          "temperature": [
+            -1,
+            1
+          ],
+          "weirdness": [
+            -1,
+            -0.07
+          ]
+        }
+      },
+      {
+        "biome": "tfg:mars/sangnum_plains",
+        "parameters": {
+          "continentalness": [
+            -0.07,
+            0.65
+          ],
+          "depth": 0,
+          "erosion": [
+            0,
+            1
+          ],
+          "humidity": [
+            0.2,
+            1
+          ],
+          "offset": 0,
+          "temperature": [
+            -1,
+            1
+          ],
+          "weirdness": [
+            0.07,
+            1
+          ]
+        }
+      },
+      {
+        "biome": "tfg:mars/amber_plains",
+        "parameters": {
+          "continentalness": [
+            -0.07,
+            0.65
+          ],
+          "depth": 0,
+          "erosion": [
+            0,
+            1
+          ],
+          "humidity": [
+            0.2,
+            1
+          ],
+          "offset": 0,
+          "temperature": [
+            -1,
+            1
+          ],
+          "weirdness": [
+            -1,
+            -0.07
+          ]
+        }
+      },
+      {
+        "biome": "tfg:mars/rusticus_hills",
+        "parameters": {
+          "continentalness": [
+            -0.07,
+            0.65
+          ],
+          "depth": 0,
+          "erosion": [
+            -1,
+            0
+          ],
+          "humidity": [
+            -0.2,
+            0.2
+          ],
+          "offset": 0,
+          "temperature": [
+            -1,
+            1
+          ],
+          "weirdness": [
+            0,
+            1
+          ]
+        }
+      },
+      {
+        "biome": "tfg:mars/sangnum_hills",
+        "parameters": {
+          "continentalness": [
+            -0.07,
+            0.65
+          ],
+          "depth": 0,
+          "erosion": [
+            -1,
+            0
+          ],
+          "humidity": [
+            -0.2,
+            0.2
+          ],
+          "offset": 0,
+          "temperature": [
+            -1,
+            1
+          ],
+          "weirdness": [
+            -1,
+            0
+          ]
+        }
+      },
+      {
+        "biome": "tfg:mars/sangnum_hills",
+        "parameters": {
+          "continentalness": [
+            -0.07,
+            0.65
+          ],
+          "depth": 0,
+          "erosion": [
+            -1,
+            0
+          ],
+          "humidity": [
+            -1,
+            -0.2
+          ],
+          "offset": 0,
+          "temperature": [
+            -1,
+            1
+          ],
+          "weirdness": [
+            0,
+            1
+          ]
+        }
+      },
+      {
+        "biome": "tfg:mars/amber_hills",
+        "parameters": {
+          "continentalness": [
+            -0.07,
+            0.65
+          ],
+          "depth": 0,
+          "erosion": [
+            -1,
+            0
+          ],
+          "humidity": [
+            -1,
+            -0.2
+          ],
+          "offset": 0,
+          "temperature": [
+            -1,
+            1
+          ],
+          "weirdness": [
+            -1,
+            0
+          ]
+        }
+      },
+      {
+        "biome": "tfg:mars/amber_hills",
+        "parameters": {
+          "continentalness": [
+            -0.07,
+            0.65
+          ],
+          "depth": 0,
+          "erosion": [
+            -1,
+            0
+          ],
+          "humidity": [
+            0.2,
+            1
+          ],
+          "offset": 0,
+          "temperature": [
+            -1,
+            1
+          ],
+          "weirdness": [
+            0,
+            1
+          ]
+        }
+      },
+      {
+        "biome": "tfg:mars/rusticus_hills",
+        "parameters": {
+          "continentalness": [
+            -0.07,
+            0.65
+          ],
+          "depth": 0,
+          "erosion": [
+            -1,
+            0
+          ],
+          "humidity": [
+            0.2,
+            1
+          ],
+          "offset": 0,
+          "temperature": [
+            -1,
+            1
+          ],
+          "weirdness": [
+            -1,
+            0
+          ]
+        }
+      },
+      {
+        "biome": "tfg:mars/rusticus_hills",
+        "parameters": {
+          "continentalness": [
+            0.65,
+            1
+          ],
+          "depth": 0,
+          "erosion": [
+            -1,
+            1
+          ],
+          "humidity": [
+            -0.2,
+            0.2
+          ],
+          "offset": 0,
+          "temperature": [
+            -1,
+            1
+          ],
+          "weirdness": [
+            0,
+            0.8
+          ]
+        }
+      },
+      {
+        "biome": "tfg:mars/sangnum_hills",
+        "parameters": {
+          "continentalness": [
+            0.65,
+            1
+          ],
+          "depth": 0,
+          "erosion": [
+            -1,
+            1
+          ],
+          "humidity": [
+            -0.2,
+            0.2
+          ],
+          "offset": 0,
+          "temperature": [
+            -1,
+            1
+          ],
+          "weirdness": [
+            -0.8,
+            0
+          ]
+        }
+      },
+      {
+        "biome": "tfg:mars/sangnum_hills",
+        "parameters": {
+          "continentalness": [
+            0.65,
+            1
+          ],
+          "depth": 0,
+          "erosion": [
+            -1,
+            1
+          ],
+          "humidity": [
+            -1,
+            -0.2
+          ],
+          "offset": 0,
+          "temperature": [
+            -1,
+            1
+          ],
+          "weirdness": [
+            0,
+            0.8
+          ]
+        }
+      },
+      {
+        "biome": "tfg:mars/amber_hills",
+        "parameters": {
+          "continentalness": [
+            0.65,
+            1
+          ],
+          "depth": 0,
+          "erosion": [
+            -1,
+            1
+          ],
+          "humidity": [
+            -1,
+            -0.2
+          ],
+          "offset": 0,
+          "temperature": [
+            -1,
+            1
+          ],
+          "weirdness": [
+            -0.8,
+            0
+          ]
+        }
+      },
+      {
+        "biome": "tfg:mars/amber_hills",
+        "parameters": {
+          "continentalness": [
+            0.65,
+            1
+          ],
+          "depth": 0,
+          "erosion": [
+            -1,
+            1
+          ],
+          "humidity": [
+            0.2,
+            1
+          ],
+          "offset": 0,
+          "temperature": [
+            -1,
+            1
+          ],
+          "weirdness": [
+            0,
+            0.8
+          ]
+        }
+      },
+      {
+        "biome": "tfg:mars/rusticus_hills",
+        "parameters": {
+          "continentalness": [
+            0.65,
+            1
+          ],
+          "depth": 0,
+          "erosion": [
+            -1,
+            1
+          ],
+          "humidity": [
+            0.2,
+            1
+          ],
+          "offset": 0,
+          "temperature": [
+            -1,
+            1
+          ],
+          "weirdness": [
+            -0.8,
+            0
+          ]
+        }
+      },
+      {
+        "biome": "tfg:mars/martian_mountains",
+        "parameters": {
+          "continentalness": [
+            0.65,
+            1
+          ],
+          "depth": 0,
+          "erosion": [
+            -1,
+            1
+          ],
+          "humidity": [
+            -1,
+            1
+          ],
+          "offset": 0,
+          "temperature": [
+            -1,
+            1
+          ],
+          "weirdness": [
+            -1,
+            -0.8
+          ]
+        }
+      },
+      {
+        "biome": "tfg:mars/martian_mountains",
+        "parameters": {
+          "continentalness": [
+            0.65,
+            1
+          ],
+          "depth": 0,
+          "erosion": [
+            -1,
+            1
+          ],
+          "humidity": [
+            -1,
+            1
+          ],
+          "offset": 0,
+          "temperature": [
+            -1,
+            1
+          ],
+          "weirdness": [
+            0.8,
+            1
+          ]
+        }
+      }
+    ],
+    "_meta": {
+      "tool": "tools/extract-dimension-climate.mjs",
+      "sources": [
+        "<local>/1.20.1.jar",
+        "<instance>/mods",
+        "<instance>/kubejs/data"
+      ],
+      "pack": "TerraFirmaGreg-Modern 0.13.8",
+      "constant_router_entries": [
+        "temperature",
+        "depth"
+      ],
+      "constant_router_entries_note": "Written as 0, not inlined: every biome claims the same interval on these axes, so they add the same distance to every biome and cannot change which one the climate search picks.",
+      "density_functions": [
+        "minecraft:shift_x",
+        "minecraft:shift_z",
+        "tfg:mars/continents",
+        "tfg:mars/erosion",
+        "tfg:mars/ridges_splined"
+      ]
+    }
+  }
+}

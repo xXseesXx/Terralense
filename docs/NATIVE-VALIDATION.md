@@ -1,7 +1,7 @@
 # Native validation
 
-The published release was checked on Linux against TFG Core 0.9.25, TFC 3.2.25 and Beneath 1.0.6.
-The desktop-shell refork passes **242 release tests**: 220 library, ten engine-process, ten parity
+The published release was checked on Linux against TFG Core 0.9.25, TFC 3.2.25, Beneath 1.0.6
+and Ad Astra 1.15.21. The Moon/Mars release passes **276 release tests**: 252 library, twelve engine-process, ten parity
 and two release-CLI checks. Formatting, the headless build and the opt-in diagnostic targets pass.
 This includes 39 Atlas tests covering cache reuse across zoom levels, refinement, family coverage,
 adjacent boundaries, split continuation, same-root panning and dimension-aware spawn/player pins.
@@ -35,6 +35,21 @@ Minecraft. The observation fixture contains 1,556 quart biomes and 371 climate/f
 The Beneath fixture checks 2,000 saved quart-biome samples. Conversion captures verify fidelity to
 the pinned earlier implementation; they are not independent evidence of Minecraft accuracy.
 
+Moon and Mars use the user's existing seed-0 world as an independent reference. All 8,192 saved
+biome samples match. Across all 4,096 height columns per planet, Moon mean absolute error is
+**0.61 blocks** and Mars **0.68 blocks**; the 95th-percentile error is two blocks for each. Maximum
+individual errors are 56 and 28 blocks, respectively. A regression requires mean error below one
+block separately for each planet. Exact saved-block decoding confirms the heightmap offset at
+64 distributed columns. Java 1.20.1 oracle vectors cover ImprovedNoise's Y smear, resource-seeded
+blended noise, biome-boundary tie ordering and all four crater candidate streams. Planetary height
+also varies under nonzero and negative seeds. These tests never consult fixtures at runtime.
+
+The planetary surface port includes density caves and Moon crater geodes, with configured cell
+heights, ordered feature RNG, biome eligibility and the WorldGenRegion write radius. It does not
+simulate every surface-opening carver, decoration or structure block. The 512 saved ore-block
+observations provide a bounded candidate-neighborhood cross-check, not block-exact vein parity.
+See [planetary generation](PLANETARY-GENERATION.md) for the denominators and limitations.
+
 ## Viewer behavior
 
 - The refactored shell was rendered at 940×620 and 1280×800 on an isolated X11 virtual display,
@@ -42,6 +57,10 @@ the pinned earlier implementation; they are not independent evidence of Minecraf
   rail switched to raw ore artwork; Structures and editable analysis coordinates fit the dock.
   Earlier release checks covered result navigation, legends and saved block inspection in both
   dimensions. Heavy jobs remain in a separate process. These checks are not Wayland liveness proof.
+- Moon and Mars were opened from world `0` and rendered at 940×620 on an isolated virtual display.
+  Biome coverage settled to 100%; each dimension showed its own structure rail, planetary legend
+  and saved markers. Portable child-process tests additionally cover their probes, PNG exports
+  and saved high/negative sections without requiring that local world or a display.
 - The 46px icon rail fits at 940×620, with structure/ore switches stacked above the type icons.
   Right-click expands grouped ores and structures, and child icons control individual variants.
   Catalog partition checks keep each vein selectable once, preserve dimensions and namespaces,

@@ -26,5 +26,6 @@ pub mod analysis;
 pub mod dimension;
 pub mod display;
 pub mod exports;
+pub mod planetary;
 pub mod vegetation;
 pub mod world_files;

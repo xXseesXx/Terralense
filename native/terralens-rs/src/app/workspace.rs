@@ -41,7 +41,11 @@ impl TerraLensApp {
         if view.dimension == Dimension::Beneath {
             self.prefs.slice_y = beneath_band_top(view.slice_y);
         }
-        if self.prefs.dimension == crate::dimension::Dimension::Beneath {
+        let layer = Layer::ALL
+            .get(self.prefs.layer)
+            .copied()
+            .unwrap_or(Layer::Biomes);
+        if !TerraLensApp::layer_supported(self.prefs.dimension, layer) {
             self.prefs.layer = 0;
         }
         if !TerraLensApp::scope_supported(self.prefs.dimension, self.prefs.search_scope) {
@@ -148,8 +152,9 @@ impl TerraLensApp {
             .enumerate()
             {
                 if ctx.input_mut(|i| i.consume_key(egui::Modifiers::NONE, key))
-                    && (self.prefs.dimension == crate::dimension::Dimension::Overworld
-                        || index == 0)
+                    && Layer::ALL.get(index).is_some_and(|layer| {
+                        TerraLensApp::layer_supported(self.prefs.dimension, *layer)
+                    })
                 {
                     self.prefs.layer = index;
                 }
@@ -394,6 +399,52 @@ impl TerraLensApp {
             });
             return;
         }
+        if self.prefs.dimension.is_planetary() {
+            ui.horizontal(|ui| {
+                ui.selectable_value(
+                    &mut self.prefs.display.palette,
+                    crate::display::Palette::Natural,
+                    "Natural colors",
+                );
+                ui.selectable_value(
+                    &mut self.prefs.display.palette,
+                    crate::display::Palette::Colorblind,
+                    "Colorblind colors",
+                );
+            });
+            let (ores, structures) = feature_catalog_for(self.prefs.dimension);
+            ui.menu_button("Ore visibility", |ui| {
+                for (id, label) in ores {
+                    let mut visible = !self.prefs.display.hidden_ore_ids.contains(id);
+                    if ui.checkbox(&mut visible, label).changed() {
+                        if visible {
+                            self.prefs
+                                .display
+                                .hidden_ore_ids
+                                .retain(|value| value != id);
+                        } else if !self.prefs.display.hidden_ore_ids.contains(id) {
+                            self.prefs.display.hidden_ore_ids.push(id.clone());
+                        }
+                    }
+                }
+            });
+            ui.menu_button("Structure visibility", |ui| {
+                for (id, label) in structures {
+                    let mut visible = !self.prefs.display.hidden_structure_ids.contains(id);
+                    if ui.checkbox(&mut visible, label).changed() {
+                        if visible {
+                            self.prefs
+                                .display
+                                .hidden_structure_ids
+                                .retain(|value| value != id);
+                        } else if !self.prefs.display.hidden_structure_ids.contains(id) {
+                            self.prefs.display.hidden_structure_ids.push(id.clone());
+                        }
+                    }
+                }
+            });
+            return;
+        }
         let biomes: Vec<_> = biome::ids::BIOME_IDS
             .iter()
             .enumerate()
@@ -479,6 +530,7 @@ impl TerraLensApp {
         self.exporter.show(
             ui,
             bounds,
+            self.prefs.dimension,
             layer,
             &markers,
             self.selected_marker.as_ref(),
@@ -783,6 +835,227 @@ pub(super) fn feature_catalog() -> &'static (Vec<(String, String)>, Vec<(String,
     })
 }
 
+pub(super) fn feature_catalog_for(
+    dimension: Dimension,
+) -> &'static (Vec<(String, String)>, Vec<(String, String)>) {
+    match dimension {
+        Dimension::Overworld => {
+            static CATALOG: std::sync::OnceLock<(Vec<(String, String)>, Vec<(String, String)>)> =
+                std::sync::OnceLock::new();
+            CATALOG.get_or_init(|| {
+                let (ores, structures) = feature_catalog();
+                let ores = ores
+                    .iter()
+                    .filter(|(id, _)| {
+                        !id.starts_with("beneath_")
+                            && !id.starts_with("moon:")
+                            && !id.starts_with("mars:")
+                    })
+                    .cloned()
+                    .collect();
+                let membership = installed_structure_dimensions();
+                let structures = structures
+                    .iter()
+                    .filter(|(id, _)| {
+                        membership
+                            .get(id)
+                            .is_some_and(|dimensions| dimensions.contains(&Dimension::Overworld))
+                    })
+                    .cloned()
+                    .collect();
+                (ores, structures)
+            })
+        }
+        Dimension::Beneath => crate::features::beneath_feature_catalog(),
+        Dimension::Moon | Dimension::Mars => crate::planetary::features::feature_catalog(dimension),
+    }
+}
+
+/// Dimensions are derived from the installed structure's biome profile, with
+/// TFG's extracted structure-set dimension kept as authoritative metadata.
+fn installed_structure_dimensions() -> &'static std::collections::BTreeMap<String, Vec<Dimension>> {
+    static MEMBERSHIP: std::sync::OnceLock<std::collections::BTreeMap<String, Vec<Dimension>>> =
+        std::sync::OnceLock::new();
+    MEMBERSHIP.get_or_init(|| {
+        use std::collections::{BTreeMap, HashSet};
+        let runtime: serde_json::Value = serde_json::from_str(include_str!(
+            "../../assets/data/tfg/installed-structure-runtime.json"
+        ))
+        .expect("embedded installed structure profiles");
+        let tfg: serde_json::Value =
+            serde_json::from_str(include_str!("../../assets/data/tfg/structures.json"))
+                .expect("embedded TFG structure profiles");
+
+        let mut tag_values = BTreeMap::<String, Vec<serde_json::Value>>::new();
+        for definition in runtime["definitions"].as_array().into_iter().flatten() {
+            if definition["kind"] == "biome_tag" {
+                if let (Some(id), Some(values)) = (
+                    definition["id"].as_str(),
+                    definition["data"]["values"].as_array(),
+                ) {
+                    tag_values.insert(id.to_owned(), values.clone());
+                }
+            }
+        }
+
+        fn add_profile_dimensions(
+            value: &serde_json::Value,
+            tags: &BTreeMap<String, Vec<serde_json::Value>>,
+            out: &mut HashSet<Dimension>,
+            depth: usize,
+        ) {
+            if depth > 8 {
+                return;
+            }
+            let Some(raw) = value
+                .as_str()
+                .or_else(|| value.get("id").and_then(|v| v.as_str()))
+            else {
+                return;
+            };
+            if let Some(tag) = raw.strip_prefix('#') {
+                if tag == "minecraft:is_overworld" {
+                    out.insert(Dimension::Overworld);
+                } else if tag == "minecraft:is_nether" {
+                    out.insert(Dimension::Beneath);
+                } else if tag == "minecraft:is_end" {
+                    // This tool has no End dimension profile.
+                } else if let Some(values) = tags.get(tag) {
+                    for nested in values {
+                        add_profile_dimensions(nested, tags, out, depth + 1);
+                    }
+                } else if tag.starts_with("minecraft:")
+                    || tag.starts_with("forge:")
+                    || tag.starts_with("c:")
+                {
+                    // Installed vanilla/Forge biome tags on these structure profiles
+                    // describe Overworld biomes (Nether profiles use is_nether or
+                    // a concrete Nether registry biome).
+                    out.insert(Dimension::Overworld);
+                }
+                return;
+            }
+            let dimension = if raw.starts_with("tfg:earth/") {
+                Some(Dimension::Overworld)
+            } else if raw.starts_with("tfg:nether/")
+                || matches!(
+                    raw,
+                    "minecraft:nether_wastes"
+                        | "minecraft:soul_sand_valley"
+                        | "minecraft:crimson_forest"
+                        | "minecraft:warped_forest"
+                        | "minecraft:basalt_deltas"
+                )
+            {
+                Some(Dimension::Beneath)
+            } else if raw.starts_with("tfg:moon/") || raw == "ad_astra:lunar_wastelands" {
+                Some(Dimension::Moon)
+            } else if raw.starts_with("tfg:mars/")
+                || matches!(
+                    raw,
+                    "ad_astra:martian_wastelands" | "ad_astra:martian_canyon_creek"
+                )
+            {
+                Some(Dimension::Mars)
+            } else if raw.starts_with("minecraft:")
+                && !matches!(raw, "minecraft:the_end" | "minecraft:end")
+            {
+                Some(Dimension::Overworld)
+            } else if raw.starts_with("tfc:") {
+                Some(Dimension::Overworld)
+            } else {
+                None
+            };
+            if let Some(dimension) = dimension {
+                out.insert(dimension);
+            }
+        }
+
+        let mut membership = BTreeMap::<String, HashSet<Dimension>>::new();
+        for definition in runtime["definitions"].as_array().into_iter().flatten() {
+            if definition["kind"] != "structure" {
+                continue;
+            }
+            let (Some(id), profile) = (definition["id"].as_str(), &definition["data"]["biomes"])
+            else {
+                continue;
+            };
+            let mut dimensions = HashSet::new();
+            match profile {
+                serde_json::Value::Array(values) => {
+                    for value in values {
+                        add_profile_dimensions(value, &tag_values, &mut dimensions, 0);
+                    }
+                }
+                serde_json::Value::String(_) => {
+                    add_profile_dimensions(profile, &tag_values, &mut dimensions, 0);
+                }
+                _ => {}
+            }
+            if !dimensions.is_empty() {
+                membership.insert(id.to_owned(), dimensions);
+            }
+        }
+        for definition in runtime["definitions"].as_array().into_iter().flatten() {
+            if definition["kind"] != "structure_set" {
+                continue;
+            }
+            let Some(set_id) = definition["id"].as_str() else {
+                continue;
+            };
+            let mut dimensions = HashSet::new();
+            for entry in definition["data"]["structures"]
+                .as_array()
+                .into_iter()
+                .flatten()
+            {
+                if let Some(id) = entry["structure"].as_str() {
+                    if let Some(found) = membership.get(id) {
+                        dimensions.extend(found.iter().copied());
+                    }
+                }
+            }
+            if !dimensions.is_empty() {
+                membership.insert(set_id.to_owned(), dimensions);
+            }
+        }
+        for set in tfg["sets"].as_array().into_iter().flatten() {
+            let dimension = match set["dimension"].as_str() {
+                Some("overworld") => Some(Dimension::Overworld),
+                Some("nether") => Some(Dimension::Beneath),
+                Some("moon") => Some(Dimension::Moon),
+                Some("mars") => Some(Dimension::Mars),
+                _ => None,
+            };
+            let Some(dimension) = dimension else { continue };
+            if let Some(id) = set["id"].as_str() {
+                membership
+                    .entry(id.to_owned())
+                    .or_default()
+                    .insert(dimension);
+            }
+            for structure in set["structures"].as_array().into_iter().flatten() {
+                if let Some(id) = structure["id"].as_str() {
+                    membership
+                        .entry(id.to_owned())
+                        .or_default()
+                        .insert(dimension);
+                }
+            }
+        }
+        membership
+            .into_iter()
+            .map(|(id, dimensions)| {
+                let ordered = Dimension::ALL
+                    .into_iter()
+                    .filter(|dimension| dimensions.contains(dimension))
+                    .collect();
+                (id, ordered)
+            })
+            .collect()
+    })
+}
+
 fn decode_session(value: serde_json::Value) -> Result<Preferences, String> {
     if value["app"] == "TerraLens" && value["version"] == 1 {
         serde_json::from_value(value["preferences"].clone())
@@ -810,5 +1083,56 @@ mod tests {
                 .unwrap();
         assert_eq!(decoded.world_id, "Ganymede");
         assert_eq!(decoded.center_x, -2244.);
+    }
+
+    #[test]
+    fn feature_catalogs_do_not_leak_between_dimensions() {
+        let overworld = feature_catalog_for(Dimension::Overworld);
+        assert!(
+            overworld
+                .0
+                .iter()
+                .all(|(id, _)| !id.starts_with("beneath_"))
+        );
+        assert!(
+            overworld
+                .1
+                .iter()
+                .all(|(id, _)| !id.contains("beneath") && !id.starts_with("minecraft:nether"))
+        );
+
+        let beneath = feature_catalog_for(Dimension::Beneath);
+        assert!(beneath.0.iter().all(|(id, _)| id.starts_with("beneath_")));
+        assert!(beneath
+            .1
+            .iter()
+            .all(|(id, _)| id.starts_with("tfg:beneath/") || id.starts_with("minecraft:nether")));
+
+        for (dimension, prefix) in [(Dimension::Moon, "moon:"), (Dimension::Mars, "mars:")] {
+            let catalog = feature_catalog_for(dimension);
+            assert!(catalog.0.iter().all(|(id, _)| id.starts_with(prefix)));
+            let other = if dimension == Dimension::Moon {
+                "mars"
+            } else {
+                "moon"
+            };
+            assert!(catalog.1.iter().all(|(id, _)| !id.contains(other)));
+        }
+
+        let profiles = installed_structure_dimensions();
+        let has = |dimension, id: &str| {
+            profiles
+                .get(id)
+                .is_some_and(|dimensions| dimensions.contains(&dimension))
+        };
+        assert!(has(Dimension::Overworld, "ae2:meteorite"));
+        assert!(!has(Dimension::Moon, "ae2:meteorite"));
+        assert!(has(Dimension::Beneath, "tfg:beneath/tower"));
+        assert!(has(Dimension::Moon, "ad_astra:moon_dungeon"));
+        assert!(!has(Dimension::Mars, "ad_astra:moon_dungeon"));
+        assert!(has(Dimension::Mars, "ad_astra:mars_temple"));
+        assert!(!has(Dimension::Moon, "ad_astra:mars_temple"));
+        assert!(!has(Dimension::Overworld, "ad_astra:pygro_tower"));
+        assert!(!has(Dimension::Overworld, "minecraft:end_city"));
     }
 }

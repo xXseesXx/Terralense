@@ -32,7 +32,7 @@ fn number(args: &[String], key: &str, default: f64) -> Result<f64, String> {
 pub(super) fn run(args: &[String]) -> Result<(), String> {
     if args.iter().any(|a| a == "--help" || a == "-h") {
         println!(
-            "TerraLens — native Rust TFG atlas\n\n  terralens                         Open the atlas\n  terralens --info                  Show detected Prism worlds\n  terralens --probe --x X --z Z      Sample one coordinate\n  terralens --render FILE.png        Render an offline PNG\n  terralens --find WORLD             Find atlas locations, nearest first\n\nCommon options: --seed I64 --x X --z Z\nDimension: --dimension overworld|beneath --slice-y 96\nRender: --layer biomes|temperature|rainfall|height|water|geology|forest|hotspots\n        --width 1200 --height 800 --bpp 32\nSearch: --scope structures|all|ores|biomes|rocks|forests|trees\n        --radius 10000 --query ruin --limit 50\nNative smoke: --smoke-test --screenshot FILE.png\nQoL smoke: --qol-smoke --screenshot FILE.png\nResponsiveness: --responsiveness REPORT.json\nSurface stress: --surface-stress REPORT.json\nBeneath stress: --beneath-stress REPORT.json\nViewer position: --view X Z BLOCKS_PER_PIXEL [--seed I64]\nTERRALENS_INSTANCE selects a different Prism instance."
+            "TerraLens — native Rust TFG atlas\n\n  terralens                         Open the atlas\n  terralens --info                  Show detected Prism worlds\n  terralens --probe --x X --z Z      Sample one coordinate\n  terralens --render FILE.png        Render an offline PNG\n  terralens --find WORLD             Find atlas locations, nearest first\n\nCommon options: --seed I64 --x X --z Z\nDimension: --dimension overworld|beneath|moon|mars --slice-y 96\nRender: --layer biomes|temperature|rainfall|height|water|geology|forest|hotspots\n        --width 1200 --height 800 --bpp 32\nSearch: --scope structures|all|ores|biomes|rocks|forests|trees\n        --radius 10000 --query ruin --limit 50\nNative smoke: --smoke-test --screenshot FILE.png\nQoL smoke: --qol-smoke --screenshot FILE.png\nResponsiveness: --responsiveness REPORT.json\nSurface stress: --surface-stress REPORT.json\nBeneath stress: --beneath-stress REPORT.json\nViewer position: --view X Z BLOCKS_PER_PIXEL [--seed I64]\nTERRALENS_INSTANCE selects a different Prism instance."
         );
         return Ok(());
     }
@@ -54,7 +54,7 @@ pub(super) fn run(args: &[String]) -> Result<(), String> {
     let slice_y = if dimension == Dimension::Beneath {
         dimension.band(requested_y).1
     } else {
-        64
+        dimension.default_y()
     };
     let point = Point {
         x: number(args, "--x", -2244.)?,

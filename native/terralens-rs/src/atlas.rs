@@ -117,6 +117,37 @@ pub struct LayerScale {
     pub high: &'static str,
 }
 
+fn planetary_height_stops(dimension: Dimension) -> &'static [[u8; 3]] {
+    if dimension == Dimension::Moon {
+        &[
+            [70, 72, 83],
+            [125, 127, 137],
+            [183, 183, 188],
+            [235, 234, 229],
+        ]
+    } else {
+        &[[85, 58, 59], [139, 84, 60], [197, 136, 83], [231, 191, 137]]
+    }
+}
+
+pub fn dimension_layer_scale(
+    dimension: Dimension,
+    layer: Layer,
+    palette: crate::display::Palette,
+) -> Option<LayerScale> {
+    if dimension.is_planetary() {
+        return (layer == Layer::Height).then(|| LayerScale {
+            min: 0.,
+            max: 192.,
+            unit: "m",
+            stops: planetary_height_stops(dimension).to_vec(),
+            low: "0 m",
+            high: "192 m",
+        });
+    }
+    layer_scale(layer, palette)
+}
+
 /// Numeric color ramps used by the map, exposed to keep legend swatches in sync.
 pub fn layer_scale(layer: Layer, palette: crate::display::Palette) -> Option<LayerScale> {
     let (mut min, mut max, unit, natural, accessible, low, high): (
@@ -1012,10 +1043,10 @@ impl Atlas {
         self.spec.slice_y
     }
     pub fn set_dimension(&mut self, dimension: Dimension, slice_y: i32) {
-        let slice_y = if dimension == Dimension::Overworld {
-            64
-        } else {
+        let slice_y = if dimension == Dimension::Beneath {
             dimension.band(slice_y).1
+        } else {
+            dimension.default_y()
         };
         if self.spec.dimension == dimension && self.spec.slice_y == slice_y {
             return;
@@ -1116,7 +1147,7 @@ impl Atlas {
         }
     }
     pub fn set_probe_options(&mut self, height: bool, trees: bool) {
-        let height = height && self.spec.dimension == Dimension::Overworld;
+        let height = height && self.spec.dimension != Dimension::Beneath;
         let trees = trees && self.spec.dimension == Dimension::Overworld;
         if self.probe_height != height || self.tree_sampling != trees {
             self.probe_height = height;
@@ -1225,7 +1256,9 @@ impl Atlas {
                     }
                 }
             }
-            let ids: Box<dyn Iterator<Item = u16>> = if dimension == Dimension::Beneath {
+            let ids: Box<dyn Iterator<Item = u16>> = if dimension.is_planetary() {
+                Box::new(crate::planetary::biome_ids(dimension).into_iter())
+            } else if dimension == Dimension::Beneath {
                 Box::new(1000..1011)
             } else {
                 Box::new(0..biome::ids::BIOME_IDS.len() as u16)
@@ -2732,7 +2765,7 @@ fn component_labels(
 
 fn sample_layer(w: &World, x: i32, z: i32, id: u16, layer: Layer) -> Probe {
     if w.dimension != Dimension::Overworld {
-        return w.sample(x, z, false);
+        return w.sample(x, z, layer == Layer::Height);
     }
     let ocean = biome::is_ocean(id);
     let mut p = Probe {
@@ -3065,7 +3098,16 @@ fn worker(
             }
             Job::Features(spec, key, serial) => {
                 let lod_bpp = features::lod_max_blocks_per_point(key.tier);
-                let batch = if spec.dimension == Dimension::Beneath {
+                let batch = if spec.dimension.is_planetary() {
+                    crate::planetary::features::predict_visible(
+                        w,
+                        key.bounds(),
+                        key.ores,
+                        key.structures,
+                        lod_bpp,
+                        &|| spec.epoch != epoch.load(Ordering::Relaxed),
+                    )
+                } else if spec.dimension == Dimension::Beneath {
                     features::predict_beneath_visible(
                         w,
                         key.bounds(),
@@ -3279,6 +3321,34 @@ mod tests {
             biome_legend_color(1000, Dimension::Beneath, &display),
             crate::beneath::biome_color(1000)
         );
+    }
+
+    #[test]
+    fn planetary_biome_rasters_match_their_legend_and_ignore_earth_filters() {
+        for dimension in [Dimension::Moon, Dimension::Mars] {
+            let world = World::for_dimension(0, Settings::default(), dimension, 64);
+            let probe = world.sample(338, 514, false);
+            let id = world.biome_id(338, 514);
+            for palette in [
+                crate::display::Palette::Natural,
+                crate::display::Palette::Colorblind,
+            ] {
+                let display = DisplayPrefs {
+                    palette,
+                    ..Default::default()
+                };
+                let pixel = display_color(&world, Layer::Biomes, id, &probe, &display, 338, 514);
+                assert_eq!(
+                    pixel.to_array()[..3],
+                    biome_legend_color(id, dimension, &display)
+                );
+                assert_eq!(
+                    display_color(&world, Layer::Temperature, id, &probe, &display, 338, 514),
+                    pixel,
+                    "A stale Earth layer cannot add synthetic climate colors to a planet"
+                );
+            }
+        }
     }
 
     #[test]
@@ -4512,6 +4582,27 @@ fn display_color(
     x: i32,
     z: i32,
 ) -> Color32 {
+    if world.dimension.is_planetary() {
+        let base = match layer {
+            Layer::Height if sample.height.is_some() => {
+                let h = sample.height.unwrap();
+                ramp(h / 192., planetary_height_stops(world.dimension))
+            }
+            Layer::Water => {
+                if sample.biome.ends_with("martian_river") {
+                    Color32::from_rgb(78, 119, 139)
+                } else {
+                    mix_color(
+                        planetary_biome_color(id, display.palette),
+                        Color32::from_gray(117),
+                        0.48,
+                    )
+                }
+            }
+            _ => planetary_biome_color(id, display.palette),
+        };
+        return highlighted_biome_color(base, id, display, false);
+    }
     if world.dimension == Dimension::Beneath {
         let base = beneath_biome_color(id, display.palette);
         return highlighted_biome_color(base, id, display, false);
@@ -4613,6 +4704,31 @@ fn highlighted_biome_color(
     }
 }
 
+fn planetary_biome_color(id: u16, palette: crate::display::Palette) -> Color32 {
+    let rgb = if palette == crate::display::Palette::Colorblind {
+        const COLORS: [[u8; 3]; 14] = [
+            [230, 159, 0],
+            [86, 180, 233],
+            [0, 158, 115],
+            [240, 228, 66],
+            [0, 114, 178],
+            [213, 94, 0],
+            [204, 121, 167],
+            [172, 181, 178],
+            [141, 106, 28],
+            [65, 160, 175],
+            [114, 84, 157],
+            [211, 168, 213],
+            [156, 204, 180],
+            [226, 187, 144],
+        ];
+        COLORS[id as usize % COLORS.len()]
+    } else {
+        crate::planetary::biome_color(id)
+    };
+    Color32::from_rgb(rgb[0], rgb[1], rgb[2])
+}
+
 fn beneath_biome_color(id: u16, palette: crate::display::Palette) -> Color32 {
     const ACCESSIBLE: [[u8; 3]; 11] = [
         [230, 159, 0],
@@ -4637,7 +4753,14 @@ fn beneath_biome_color(id: u16, palette: crate::display::Palette) -> Color32 {
 
 /// Base map color for a biome legend swatch, using the same palette as raster rendering.
 pub fn biome_legend_color(id: u16, dimension: Dimension, display: &DisplayPrefs) -> [u8; 3] {
-    let c = if dimension == Dimension::Beneath {
+    let c = if dimension.is_planetary() {
+        highlighted_biome_color(
+            planetary_biome_color(id, display.palette),
+            id,
+            display,
+            false,
+        )
+    } else if dimension == Dimension::Beneath {
         highlighted_biome_color(beneath_biome_color(id, display.palette), id, display, false)
     } else if display.palette == crate::display::Palette::Colorblind {
         const COLORS: [[u8; 3]; 8] = [

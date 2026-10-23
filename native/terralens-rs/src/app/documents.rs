@@ -102,11 +102,12 @@ impl TerraLensApp {
                     })
                     .unwrap_or(0);
                 if !Self::world_supports_dimension(&self.worlds[selected], self.prefs.dimension) {
-                    self.prefs.dimension = if self.worlds[selected].compatible {
-                        Dimension::Overworld
-                    } else {
-                        Dimension::Beneath
-                    };
+                    self.prefs.dimension = Dimension::ALL
+                        .into_iter()
+                        .find(|dimension| {
+                            Self::world_supports_dimension(&self.worlds[selected], *dimension)
+                        })
+                        .unwrap_or(Dimension::Overworld);
                     self.prefs.layer = 0;
                 }
                 if let Some(view) = &mut restore {
@@ -244,6 +245,7 @@ impl TerraLensApp {
             picker,
             path,
             bounds,
+            self.prefs.dimension,
             layer,
             &markers,
             snapshot.as_ref(),

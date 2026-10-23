@@ -163,6 +163,34 @@ const ICONS: &[(&str, &[u8])] = &[
         include_bytes!("../assets/ore-icons/normal_cassiterite.png"),
     ),
     (
+        "planet_silver",
+        include_bytes!("../assets/ore-icons/normal_native_silver.png"),
+    ),
+    (
+        "planet_graphite",
+        include_bytes!("../assets/ore-icons/graphite.png"),
+    ),
+    (
+        "planet_gypsum",
+        include_bytes!("../assets/ore-icons/gypsum.png"),
+    ),
+    (
+        "planet_pyrite",
+        include_bytes!("../assets/ore-icons/pyrite.png"),
+    ),
+    (
+        "planet_emerald",
+        include_bytes!("../assets/ore-icons/emerald.png"),
+    ),
+    (
+        "planet_topaz",
+        include_bytes!("../assets/ore-icons/topaz.png"),
+    ),
+    (
+        "planet_lapis",
+        include_bytes!("../assets/ore-icons/lapis_lazuli.png"),
+    ),
+    (
         "beneath_realgar",
         include_bytes!("../assets/ore-icons/beneath_realgar.png"),
     ),
@@ -586,7 +614,9 @@ impl IconCache {
     /// Returns a cached GPU texture for the stable part of an ore marker's id.
     pub fn get(&mut self, ctx: &egui::Context, vein_id: &str) -> Option<&TextureHandle> {
         let vein_id = vein_id.split('@').next().unwrap_or(vein_id);
-        let lookup = beneath_icon(vein_id).unwrap_or(vein_id);
+        let lookup = beneath_icon(vein_id)
+            .or_else(|| planetary_icon(vein_id))
+            .unwrap_or(vein_id);
         let (key, bytes) = ICONS.iter().find(|(key, _)| *key == lookup)?;
         self.textures.entry(*key).or_insert_with(|| {
             let rgba = image::load_from_memory(bytes)
@@ -607,7 +637,9 @@ impl IconCache {
 /// Bundled PNG bytes for a vein icon, usable by both the viewer and headless exporters.
 pub fn icon_png(vein_id: &str) -> Option<&'static [u8]> {
     let id = vein_id.split('@').next().unwrap_or(vein_id);
-    let lookup = beneath_icon(id).unwrap_or(id);
+    let lookup = beneath_icon(id)
+        .or_else(|| planetary_icon(id))
+        .unwrap_or(id);
     ICONS
         .iter()
         .find(|(key, _)| *key == lookup)
@@ -618,6 +650,9 @@ pub fn icon_png(vein_id: &str) -> Option<&'static [u8]> {
 pub fn material_name(vein_id: &str) -> Option<&'static str> {
     let vein_id = vein_id.split('@').next().unwrap_or(vein_id);
     if let Some((_, material)) = BENEATH_MATERIALS.iter().find(|(id, _)| *id == vein_id) {
+        return Some(material);
+    }
+    if let Some((_, material)) = PLANETARY_MATERIALS.iter().find(|(id, _)| *id == vein_id) {
         return Some(material);
     }
     match vein_id {
@@ -705,6 +740,64 @@ pub fn material_name(vein_id: &str) -> Option<&'static str> {
         _ => None,
     }
 }
+
+/// Exact in-game raw mineral art available for planetary veins. Configurations whose dominant
+/// output has no matching bundled raw-material sprite intentionally return `None`.
+fn planetary_icon(id: &str) -> Option<&'static str> {
+    match id {
+        "moon:moon_gold" | "mars:mars_gold" => Some("normal_gold"),
+        "moon:moon_silver" => Some("planet_silver"),
+        "moon:moon_graphite" | "mars:mars_graphite" => Some("planet_graphite"),
+        "moon:moon_beryllium" | "mars:mars_beryllium" => Some("planet_emerald"),
+        "moon:moon_gypsum" => Some("planet_gypsum"),
+        "moon:moon_sphalerite" => Some("normal_sphalerite"),
+        "moon:moon_tetrahedrite" | "mars:mars_stibnite" | "mars:mars_surface_tetrahedrite" => {
+            Some("normal_tetrahedrite")
+        }
+        "moon:moon_redstone" => Some("beneath_redstone"),
+        "moon:moon_topaz" => Some("planet_topaz"),
+        "moon:moon_cassiterite" | "mars:mars_surface_cassiterite" => Some("normal_tin"),
+        "mars:mars_coal" => Some("bituminous_coal"),
+        "mars:mars_galena" | "mars:mars_surface_nickel_galena" => Some("normal_galena"),
+        "mars:mars_hematite" | "mars:mars_surface_hematite" => Some("surface_hematite"),
+        "mars:mars_nickel" | "moon:moon_garnierite" => Some("normal_garnierite"),
+        "mars:mars_lapis" => Some("planet_lapis"),
+        "mars:mars_salt" => Some("normal_spodumene"),
+        "mars:mars_sulfur" => Some("planet_pyrite"),
+        "mars:mars_surface_bismuthinite" => Some("normal_bismuth"),
+        _ => None,
+    }
+}
+
+const PLANETARY_MATERIALS: &[(&str, &str)] = &[
+    ("moon:moon_gold", "gold"),
+    ("mars:mars_gold", "gold"),
+    ("moon:moon_silver", "silver"),
+    ("moon:moon_graphite", "graphite"),
+    ("mars:mars_graphite", "graphite"),
+    ("moon:moon_beryllium", "emerald"),
+    ("mars:mars_beryllium", "emerald"),
+    ("moon:moon_gypsum", "gypsum"),
+    ("moon:moon_sphalerite", "sphalerite"),
+    ("moon:moon_tetrahedrite", "tetrahedrite"),
+    ("mars:mars_stibnite", "tetrahedrite"),
+    ("mars:mars_surface_tetrahedrite", "tetrahedrite"),
+    ("moon:moon_redstone", "redstone"),
+    ("moon:moon_topaz", "topaz"),
+    ("moon:moon_cassiterite", "cassiterite"),
+    ("mars:mars_surface_cassiterite", "cassiterite"),
+    ("mars:mars_coal", "coal"),
+    ("mars:mars_galena", "galena"),
+    ("mars:mars_surface_nickel_galena", "galena"),
+    ("mars:mars_hematite", "hematite"),
+    ("mars:mars_surface_hematite", "hematite"),
+    ("mars:mars_nickel", "garnierite"),
+    ("moon:moon_garnierite", "garnierite"),
+    ("mars:mars_lapis", "lazurite"),
+    ("mars:mars_salt", "spodumene"),
+    ("mars:mars_sulfur", "pyrite"),
+    ("mars:mars_surface_bismuthinite", "bismuthinite"),
+];
 
 // The normal UI and the Beneath share the bundled, in-game raw mineral sprites. IDs resolve to
 // their dominant vein mineral; composite secondary ores remain listed in the marker tooltip.
@@ -822,5 +915,22 @@ mod tests {
             assert_eq!(resolved, id);
             assert!(ICONS.iter().any(|(key, _)| *key == resolved));
         }
+    }
+
+    #[test]
+    fn planetary_ore_icons_use_only_known_raw_material_art() {
+        for id in [
+            "moon:moon_gold@1,2",
+            "moon:moon_silver@1,2",
+            "mars:mars_graphite@1,2",
+            "mars:mars_hematite@1,2",
+        ] {
+            assert!(
+                icon_png(id).is_some(),
+                "missing known planetary art for {id}"
+            );
+            assert!(material_name(id).is_some(), "missing material for {id}");
+        }
+        assert!(icon_png("moon:moon_apatite@1,2").is_none());
     }
 }

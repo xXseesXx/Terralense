@@ -299,10 +299,10 @@ impl TerraLensApp {
     fn world_supports_dimension(world: &WorldInfo, dimension: Dimension) -> bool {
         match dimension {
             Dimension::Overworld => world.compatible,
-            Dimension::Beneath => world
+            Dimension::Beneath | Dimension::Moon | Dimension::Mars => world
                 .dimensions
                 .iter()
-                .any(|d| d.id == Dimension::Beneath.id() && d.supported),
+                .any(|d| d.id == dimension.id() && d.supported),
         }
     }
 
@@ -314,7 +314,23 @@ impl TerraLensApp {
             )
     }
 
+    pub(super) fn layer_supported(dimension: Dimension, layer: Layer) -> bool {
+        match dimension {
+            Dimension::Overworld => true,
+            Dimension::Beneath => layer == Layer::Biomes,
+            Dimension::Moon => matches!(layer, Layer::Biomes | Layer::Height),
+            Dimension::Mars => matches!(layer, Layer::Biomes | Layer::Height | Layer::Water),
+        }
+    }
+
+    pub(super) fn area_analysis_supported(dimension: Dimension) -> bool {
+        dimension == Dimension::Overworld
+    }
+
     fn set_beneath_band(&mut self, y: i32) {
+        if self.prefs.dimension != Dimension::Beneath {
+            return;
+        }
         let top = beneath_band_top(y);
         if self.prefs.slice_y == top {
             return;
@@ -379,7 +395,9 @@ impl TerraLensApp {
         self.prefs.dimension = previous;
         self.prefs.navigation.record(self.current_view());
         self.prefs.dimension = next;
-        self.prefs.slice_y = beneath_band_top(self.prefs.slice_y);
+        if next == Dimension::Beneath {
+            self.prefs.slice_y = beneath_band_top(self.prefs.slice_y);
+        }
         let next_key = format!("{}|{}", self.prefs.world_id, next.id());
         let restored = self
             .prefs
@@ -404,7 +422,13 @@ impl TerraLensApp {
             self.prefs.center_x = point.x;
             self.prefs.center_z = point.z;
         }
-        self.prefs.layer = 0;
+        let selected_layer = Layer::ALL
+            .get(self.prefs.layer)
+            .copied()
+            .unwrap_or(Layer::Biomes);
+        if !Self::layer_supported(next, selected_layer) {
+            self.prefs.layer = 0;
+        }
         if !Self::scope_supported(next, self.prefs.search_scope) {
             self.prefs.search_scope = Scope::All;
         }
@@ -451,11 +475,17 @@ impl TerraLensApp {
             prefs.allow_detail_rendering = true;
             prefs.show_ores = true;
         }
-        if prefs.dimension == Dimension::Beneath {
+        if !Self::layer_supported(
+            prefs.dimension,
+            Layer::ALL
+                .get(prefs.layer)
+                .copied()
+                .unwrap_or(Layer::Biomes),
+        ) {
             prefs.layer = 0;
-            if !Self::scope_supported(prefs.dimension, prefs.search_scope) {
-                prefs.search_scope = Scope::All;
-            }
+        }
+        if !Self::scope_supported(prefs.dimension, prefs.search_scope) {
+            prefs.search_scope = Scope::All;
         }
         prefs.navigation.normalize();
         prefs.seed_list.normalize();
@@ -605,11 +635,10 @@ impl TerraLensApp {
             return;
         };
         if !Self::world_supports_dimension(&world, self.prefs.dimension) {
-            self.prefs.dimension = if world.compatible {
-                Dimension::Overworld
-            } else {
-                Dimension::Beneath
-            };
+            self.prefs.dimension = Dimension::ALL
+                .into_iter()
+                .find(|dimension| Self::world_supports_dimension(&world, *dimension))
+                .unwrap_or(Dimension::Overworld);
             self.prefs.layer = 0;
         }
         let changed_world = self.prefs.world_id != world.id;
@@ -1015,13 +1044,10 @@ impl TerraLensApp {
                 .selected_text(self.prefs.search_scope.label())
                 .width((ui.available_width() - 96.).max(110.))
                 .show_ui(ui, |ui| {
-                    for scope in Scope::ALL.into_iter().filter(|scope| {
-                        self.prefs.dimension == Dimension::Overworld
-                            || matches!(
-                                scope,
-                                Scope::All | Scope::Structures | Scope::Biomes | Scope::Ores
-                            )
-                    }) {
+                    for scope in Scope::ALL
+                        .into_iter()
+                        .filter(|scope| Self::scope_supported(self.prefs.dimension, *scope))
+                    {
                         changed |= ui
                             .selectable_value(&mut self.prefs.search_scope, scope, scope.label())
                             .changed();
@@ -1621,7 +1647,8 @@ impl TerraLensApp {
             &self.prefs.ore_filter,
         );
         atlas.set_probe_options(
-            self.prefs.dimension == Dimension::Overworld && self.prefs.tooltip.height,
+            (self.prefs.dimension == Dimension::Overworld || self.prefs.dimension.is_planetary())
+                && self.prefs.tooltip.height,
             self.prefs.dimension == Dimension::Overworld && self.prefs.tooltip.trees,
         );
         atlas.hover(
@@ -2510,5 +2537,51 @@ mod interaction_tests {
         let result = screen_to_world(rect, center, 8., screen);
         assert!((result.x - point.x).abs() < 0.01);
         assert!((result.z - point.z).abs() < 0.01);
+    }
+
+    #[test]
+    fn planetary_layers_allow_only_real_planetary_views() {
+        for dimension in [Dimension::Moon, Dimension::Mars] {
+            assert!(TerraLensApp::layer_supported(dimension, Layer::Biomes));
+            assert!(TerraLensApp::layer_supported(dimension, Layer::Height));
+            for layer in [
+                Layer::Temperature,
+                Layer::Rainfall,
+                Layer::Geology,
+                Layer::Forest,
+                Layer::Hotspots,
+            ] {
+                assert!(!TerraLensApp::layer_supported(dimension, layer));
+            }
+        }
+        assert!(!TerraLensApp::layer_supported(
+            Dimension::Moon,
+            Layer::Water
+        ));
+        assert!(TerraLensApp::layer_supported(Dimension::Mars, Layer::Water));
+    }
+
+    #[test]
+    fn non_overworld_search_scopes_exclude_tfc_only_layers() {
+        for dimension in [Dimension::Beneath, Dimension::Moon, Dimension::Mars] {
+            for scope in [Scope::All, Scope::Structures, Scope::Ores, Scope::Biomes] {
+                assert!(TerraLensApp::scope_supported(dimension, scope));
+            }
+            for scope in [Scope::Geology, Scope::Forests, Scope::Trees] {
+                assert!(!TerraLensApp::scope_supported(dimension, scope));
+            }
+        }
+        assert!(TerraLensApp::scope_supported(
+            Dimension::Overworld,
+            Scope::Forests
+        ));
+    }
+
+    #[test]
+    fn area_analysis_requires_overworld_climate_and_terrain() {
+        assert!(TerraLensApp::area_analysis_supported(Dimension::Overworld));
+        for dimension in [Dimension::Beneath, Dimension::Moon, Dimension::Mars] {
+            assert!(!TerraLensApp::area_analysis_supported(dimension));
+        }
     }
 }

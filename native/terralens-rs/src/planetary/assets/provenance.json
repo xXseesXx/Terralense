@@ -1,0 +1,138 @@
+{
+  "minecraft": "1.20.1 (client-1.20.1-20230612.114412-srg.jar)",
+  "forge": "47.4.13",
+  "tfg_core": "0.9.25",
+  "tfc": "3.2.25",
+  "ad_astra": "1.15.21",
+  "profile": "TerraFirmaGreg-Modern installed KubeJS + Prism mod datapacks",
+  "dimension_config_sha256": {
+    "moon": "980277c40714b0795d76c9f3dd88cb24eb431a953ed100b62fe017bb160b540a",
+    "mars": "3a8238436be4d2b3ba5104102209e6be5e91cb896c2085ae4a6bb6b66cdc4567"
+  },
+  "noise_root_sha256": {
+    "tfg:moon_noise": "d42800699df130ef53aa179fca7411d62a325783b8734e31a7e17fc4f6139459",
+    "tfg:mars_noise": "cbb87979d35b6d6b5428702669121cea468a8ed9c870953ed7a311ec93c63987"
+  },
+  "resources_counts": {
+    "density_functions": 19,
+    "noises": 6,
+    "noise_settings": 2
+  },
+  "resource_sources": {
+    "density_functions": {
+      "ad_astra:base_3d_noise": "ad_astra-forge-1.20.1-1.15.21.jar!/data/ad_astra/worldgen/density_function/base_3d_noise.json",
+      "ad_astra:depth": "ad_astra-forge-1.20.1-1.15.21.jar!/data/ad_astra/worldgen/density_function/depth.json",
+      "ad_astra:factor": "ad_astra-forge-1.20.1-1.15.21.jar!/data/ad_astra/worldgen/density_function/factor.json",
+      "ad_astra:sloped_cheese": "ad_astra-forge-1.20.1-1.15.21.jar!/data/ad_astra/worldgen/density_function/sloped_cheese.json",
+      "tfg:mars/base_3d_noise": "KubeJS data/tfg/worldgen/density_function/mars/base_3d_noise.json",
+      "tfg:mars/caves/noodle": "KubeJS data/tfg/worldgen/density_function/mars/caves/noodle.json",
+      "tfg:mars/continents": "KubeJS data/tfg/worldgen/density_function/mars/continents.json",
+      "tfg:mars/depth": "KubeJS data/tfg/worldgen/density_function/mars/depth.json",
+      "tfg:mars/dune": "KubeJS data/tfg/worldgen/density_function/mars/dune.json",
+      "tfg:mars/dunes_offset_x": "KubeJS data/tfg/worldgen/density_function/mars/dunes_offset_x.json",
+      "tfg:mars/dunes_offset_z": "KubeJS data/tfg/worldgen/density_function/mars/dunes_offset_z.json",
+      "tfg:mars/erosion": "KubeJS data/tfg/worldgen/density_function/mars/erosion.json",
+      "tfg:mars/factor": "KubeJS data/tfg/worldgen/density_function/mars/factor.json",
+      "tfg:mars/jaggedness": "KubeJS data/tfg/worldgen/density_function/mars/jaggedness.json",
+      "tfg:mars/offset": "KubeJS data/tfg/worldgen/density_function/mars/offset.json",
+      "tfg:mars/ridges": "KubeJS data/tfg/worldgen/density_function/mars/ridges.json",
+      "tfg:mars/ridges_folded": "KubeJS data/tfg/worldgen/density_function/mars/ridges_folded.json",
+      "tfg:mars/ridges_splined": "KubeJS data/tfg/worldgen/density_function/mars/ridges_splined.json",
+      "tfg:mars/sloped_cheese": "KubeJS data/tfg/worldgen/density_function/mars/sloped_cheese.json"
+    },
+    "noises": {
+      "tfg:mars_dunes_offset": "KubeJS data/tfg/worldgen/noise/mars_dunes_offset.json",
+      "tfg:mars_dunes_size": "KubeJS data/tfg/worldgen/noise/mars_dunes_size.json",
+      "tfg:stone_layer_mars_1": "KubeJS data/tfg/worldgen/noise/stone_layer_mars_1.json",
+      "tfg:stone_layer_mars_2": "KubeJS data/tfg/worldgen/noise/stone_layer_mars_2.json",
+      "tfg:stone_layer_moon_1": "KubeJS data/tfg/worldgen/noise/stone_layer_moon_1.json",
+      "tfg:stone_layer_moon_2": "KubeJS data/tfg/worldgen/noise/stone_layer_moon_2.json"
+    },
+    "noise_settings": {
+      "tfg:mars_noise": "KubeJS data/tfg/worldgen/noise_settings/mars_noise.json",
+      "tfg:moon_noise": "KubeJS data/tfg/worldgen/noise_settings/moon_noise.json"
+    }
+  },
+  "resource_types": {
+    "kubejs_tfc:rock": 14,
+    "minecraft:above_preliminary_surface": 4,
+    "minecraft:abs": 7,
+    "minecraft:add": 44,
+    "minecraft:biome": 10,
+    "minecraft:blend_alpha": 9,
+    "minecraft:blend_density": 2,
+    "minecraft:blend_offset": 1,
+    "minecraft:block": 106,
+    "minecraft:cache_2d": 11,
+    "minecraft:cache_once": 7,
+    "minecraft:clamp": 6,
+    "minecraft:condition": 162,
+    "minecraft:cube": 1,
+    "minecraft:flat_cache": 10,
+    "minecraft:half_negative": 2,
+    "minecraft:interpolated": 6,
+    "minecraft:max": 3,
+    "minecraft:min": 5,
+    "minecraft:mul": 47,
+    "minecraft:noise": 14,
+    "minecraft:noise_threshold": 65,
+    "minecraft:not": 7,
+    "minecraft:old_blended_noise": 2,
+    "minecraft:quarter_negative": 4,
+    "minecraft:range_choice": 7,
+    "minecraft:sequence": 76,
+    "minecraft:shifted_noise": 10,
+    "minecraft:spline": 19,
+    "minecraft:square": 1,
+    "minecraft:squeeze": 2,
+    "minecraft:stone_depth": 66,
+    "minecraft:vertical_gradient": 8,
+    "minecraft:water": 3,
+    "minecraft:y_above": 6,
+    "minecraft:y_clamped_gradient": 8,
+    "tfg:needs_post_processing": 6
+  },
+  "unresolved": {},
+  "resource_counts": {
+    "density_functions": 19,
+    "noises": 6,
+    "noise_settings": 2,
+    "dimension_types": 2,
+    "climate_profiles": 2
+  },
+  "dimension_type_source": "ad_astra-forge-1.20.1-1.15.21.jar",
+  "dimension_type_ids": [
+    "ad_astra:moon",
+    "ad_astra:mars"
+  ],
+  "source_artifacts": {
+    "mods/ad_astra-forge-1.20.1-1.15.21.jar": "d84dc1182b4c570d955df67b80703dc058ce944c7d9b0702e3577934c96d864c",
+    "mods/TerraFirmaGreg-Core-Modern-0.9.25.jar": "fdf9a3521a08870eae8f43a5aea1c5ea2f8e07884f516445837c0fdc2a648ec1",
+    "kubejs/data/tfg/worldgen/noise_settings/moon_noise.json": "d42800699df130ef53aa179fca7411d62a325783b8734e31a7e17fc4f6139459",
+    "kubejs/data/tfg/worldgen/noise_settings/mars_noise.json": "cbb87979d35b6d6b5428702669121cea468a8ed9c870953ed7a311ec93c63987"
+  },
+  "active_noise_ranges": {
+    "tfg:mars_noise": {
+      "min_y": -32,
+      "height": 384
+    },
+    "tfg:moon_noise": {
+      "min_y": 0,
+      "height": 384
+    }
+  },
+  "dimension_type_note": "Bundled ad_astra:moon and ad_astra:mars dimension_type resources both declare min_y=-64,height=384. Installed Moon wrapper declares type tfg:moon; active generator noise ranges are min_y=0 for Moon and -32 for Mars.",
+  "climate_profiles_source": "upstream/src/data/tfg/dimensions/{moon,mars}.json; profile files include their own extractor and source-provenance metadata",
+  "builtin_density_functions": [
+    "minecraft:overworld/continents",
+    "minecraft:overworld/erosion",
+    "minecraft:overworld/ridges",
+    "minecraft:shift_x",
+    "minecraft:shift_z"
+  ],
+  "builtin_density_function_note": "These are Minecraft 1.20.1 bootstrap registry density functions referenced by the noise routers. They have no standalone data/<namespace>/worldgen/density_function JSON to copy; definitions are engine built-ins.",
+  "builtin_terrain_dependencies": {
+    "minecraft_1_20_1_builtin_cave_density.json": "17b9aedd4bce1668bcd5eeafb7504601906550a47c7dba0c2a4251803ca2c24d",
+    "minecraft_1_20_1_noise_parameters.json": "e613c6f328f7e44a711e88aee3cb3a2d4da2fe135f55ef8de362f804d331bcbe"
+  }
+}

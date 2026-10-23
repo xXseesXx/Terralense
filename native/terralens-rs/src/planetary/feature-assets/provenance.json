@@ -1,0 +1,249 @@
+{
+  "source_instance": "TerraFirmaGreg-Modern",
+  "minecraft": "1.20.1",
+  "mods": {
+    "tfg_core": "0.9.25",
+    "tfc": "3.2.25",
+    "ad_astra": "1.15.21"
+  },
+  "installed_kubejs_files": [
+    {
+      "path": "kubejs/data/tfg/worldgen/configured_feature/moon/vein/moon_apatite.json",
+      "sha256": "af63eaeeed620ad5298155e0b29c076d28c9f23696bedb28f1a2bd280afdb801"
+    },
+    {
+      "path": "kubejs/data/tfg/worldgen/configured_feature/moon/vein/moon_bauxite.json",
+      "sha256": "090082b9cd15e0f611ad13a68ba314cab27b6526b546f7bc3700daf011ba41c7"
+    },
+    {
+      "path": "kubejs/data/tfg/worldgen/configured_feature/moon/vein/moon_beryllium.json",
+      "sha256": "c10f8df0c64887a8074d454d8fca9d5fa65c2fcae59badef3fb1cd5adc4fd934"
+    },
+    {
+      "path": "kubejs/data/tfg/worldgen/configured_feature/moon/vein/moon_cassiterite.json",
+      "sha256": "1de7e9ba9aeac0cc8ecdbce7f09fe0cc1a2a49ac31dc09315d1ee09098a56b11"
+    },
+    {
+      "path": "kubejs/data/tfg/worldgen/configured_feature/moon/vein/moon_desh.json",
+      "sha256": "2dde19d6226c3f6b596d9c0c5d55909da406f26eafc9d8cc3bbe806c1457cb0f"
+    },
+    {
+      "path": "kubejs/data/tfg/worldgen/configured_feature/moon/vein/moon_garnet.json",
+      "sha256": "893743c1051556751af1d22ab8f7cc52e7b1258a7e779b86044927d9b1aa4ffc"
+    },
+    {
+      "path": "kubejs/data/tfg/worldgen/configured_feature/moon/vein/moon_garnierite.json",
+      "sha256": "30a366e4a4a80b3a263d2e4b0e9641a3afa82e3bf205b4181490bbcbee84b451"
+    },
+    {
+      "path": "kubejs/data/tfg/worldgen/configured_feature/moon/vein/moon_gold.json",
+      "sha256": "049003ca105610b20345015df127360e5c2d648082918f2d9c37a9121852d705"
+    },
+    {
+      "path": "kubejs/data/tfg/worldgen/configured_feature/moon/vein/moon_graphite.json",
+      "sha256": "95a29b2c97d0f58b7d648db83da38ea6f48d23e08ff33b0bf58fe0b4c6049e1f"
+    },
+    {
+      "path": "kubejs/data/tfg/worldgen/configured_feature/moon/vein/moon_gypsum.json",
+      "sha256": "4ef055024825623b4d5b93209a4789a357034015c6ba80f4a49fab5485cfee27"
+    },
+    {
+      "path": "kubejs/data/tfg/worldgen/configured_feature/moon/vein/moon_lubricant.json",
+      "sha256": "a4f1f78df437da8f6cf40a9a6eeacac095c2d6552298f6e14650220ba997d546"
+    },
+    {
+      "path": "kubejs/data/tfg/worldgen/configured_feature/moon/vein/moon_magnetite.json",
+      "sha256": "cd0ff18d1cf95f9db837aeae57c5828fbcde091d45fa16ac83e022f96bfac8f3"
+    },
+    {
+      "path": "kubejs/data/tfg/worldgen/configured_feature/moon/vein/moon_manganese.json",
+      "sha256": "b4929eb50ce1b8b652b5da0032cee29f030cf64ee59535247c8108b16cbcf5b1"
+    },
+    {
+      "path": "kubejs/data/tfg/worldgen/configured_feature/moon/vein/moon_mica.json",
+      "sha256": "9772c6f351441b5d2015e34bc13030019490897279e1bdc3259745a3d78a31a5"
+    },
+    {
+      "path": "kubejs/data/tfg/worldgen/configured_feature/moon/vein/moon_molybdenum.json",
+      "sha256": "8a84790ec155a7c10038c9f7f7606ad9bec6309053a22e2a94a72e5f39ffae8c"
+    },
+    {
+      "path": "kubejs/data/tfg/worldgen/configured_feature/moon/vein/moon_monazite.json",
+      "sha256": "69b968d7393579a8890e3ed67d920dd1451bea559238b99f5ea016e6136a5b76"
+    },
+    {
+      "path": "kubejs/data/tfg/worldgen/configured_feature/moon/vein/moon_pyrolusite.json",
+      "sha256": "6915941eb0a99088dc35d615f53c3308184fd9c65bae797184c90a55346a943c"
+    },
+    {
+      "path": "kubejs/data/tfg/worldgen/configured_feature/moon/vein/moon_quartz.json",
+      "sha256": "5d8ce06d07e533196b734042745568a51937120200d561d307207451b3a656b1"
+    },
+    {
+      "path": "kubejs/data/tfg/worldgen/configured_feature/moon/vein/moon_redstone.json",
+      "sha256": "e3235a7d5cce349f909e9f6db43e018a563801e4f33db756d5d8c0d63574fbd3"
+    },
+    {
+      "path": "kubejs/data/tfg/worldgen/configured_feature/moon/vein/moon_saltpeter.json",
+      "sha256": "85eef50dd47a955b50ef97a3231c0b284bdaf48ca4b67041aaeb8acfca9ca57a"
+    },
+    {
+      "path": "kubejs/data/tfg/worldgen/configured_feature/moon/vein/moon_sapphire.json",
+      "sha256": "75c8adb47423412eb32ec8d877e3f15e13f3526c149ba04a191d95e1754f211d"
+    },
+    {
+      "path": "kubejs/data/tfg/worldgen/configured_feature/moon/vein/moon_scheelite.json",
+      "sha256": "a521ab5c7da227813b4a5f3f91a912037fcde46e5149f33d59548aa463974ba9"
+    },
+    {
+      "path": "kubejs/data/tfg/worldgen/configured_feature/moon/vein/moon_sheldonite.json",
+      "sha256": "a4b215c6b044f741f46d5aa31fa5f294e59a120b512d1cf94b1d2237497798fb"
+    },
+    {
+      "path": "kubejs/data/tfg/worldgen/configured_feature/moon/vein/moon_silver.json",
+      "sha256": "db4576c28d4fd7c16b63b71a0ce0d3c714d7c58a26fbd213f6f42633bc94055b"
+    },
+    {
+      "path": "kubejs/data/tfg/worldgen/configured_feature/moon/vein/moon_sphalerite.json",
+      "sha256": "a250d0ee9ffdbb9996e1eaa340e010919ce92a07a8ad96a5aeb1b551cde63b6a"
+    },
+    {
+      "path": "kubejs/data/tfg/worldgen/configured_feature/moon/vein/moon_tetrahedrite.json",
+      "sha256": "3f4615621eef63771eec9de815ca6a78637fc564fec8855a4408d8b24fbe8161"
+    },
+    {
+      "path": "kubejs/data/tfg/worldgen/configured_feature/moon/vein/moon_topaz.json",
+      "sha256": "d94b2b6db9fbc99a2c052f5c916696f9323e9228b13a194b72ed6435903e7364"
+    },
+    {
+      "path": "kubejs/data/tfg/worldgen/configured_feature/mars/vein/deep_mars_chromite.json",
+      "sha256": "94640e11506a62b2cf5b2283b820ea8019bdac17b51a4510904c0d8f74c36c8a"
+    },
+    {
+      "path": "kubejs/data/tfg/worldgen/configured_feature/mars/vein/deep_mars_pitchblende.json",
+      "sha256": "4386ed54279e2fa73f92d03c1023b291fea0dd09e054baee5884d5badad616c1"
+    },
+    {
+      "path": "kubejs/data/tfg/worldgen/configured_feature/mars/vein/deep_mars_sheldonite.json",
+      "sha256": "f53be1991074835e98c4b0d530be943d42a31b5aa34e2b9b49e45afe55e17996"
+    },
+    {
+      "path": "kubejs/data/tfg/worldgen/configured_feature/mars/vein/mars_almandine.json",
+      "sha256": "e26821abf2b48f4893cf8d3778d7b57de0b451ad92e4a569ade015465b72879f"
+    },
+    {
+      "path": "kubejs/data/tfg/worldgen/configured_feature/mars/vein/mars_apatite.json",
+      "sha256": "7e7f3b32d23a5e179686421c0e0d445b79e360c783b059457c43c798bb3d3886"
+    },
+    {
+      "path": "kubejs/data/tfg/worldgen/configured_feature/mars/vein/mars_beryllium.json",
+      "sha256": "a4f48b551330a5de2f26f4e01ec4712f8f741d8ba07638bfa383ae9db00fa498"
+    },
+    {
+      "path": "kubejs/data/tfg/worldgen/configured_feature/mars/vein/mars_coal.json",
+      "sha256": "f23f2a82fc38cd2142726b9e92e43d82ce1f002d14a6d6aadecb87df7dc3a2ed"
+    },
+    {
+      "path": "kubejs/data/tfg/worldgen/configured_feature/mars/vein/mars_copper.json",
+      "sha256": "2537ec17ccb642e2afd5b1e74e46fa29f16948c1d09181bfb2177e6a51aa704a"
+    },
+    {
+      "path": "kubejs/data/tfg/worldgen/configured_feature/mars/vein/mars_galena.json",
+      "sha256": "790129b9bfdb23cf53dafb12eabf5a00549bacdb7f6424c91ced70640bd80585"
+    },
+    {
+      "path": "kubejs/data/tfg/worldgen/configured_feature/mars/vein/mars_gold.json",
+      "sha256": "09a7935cabab0ad9626811d767753acced3f15ff01c647148b632d81b70507b9"
+    },
+    {
+      "path": "kubejs/data/tfg/worldgen/configured_feature/mars/vein/mars_graphite.json",
+      "sha256": "215be09b09d748085f01a999023c2e5faa715b3b3372c3382dcf7d28998eefad"
+    },
+    {
+      "path": "kubejs/data/tfg/worldgen/configured_feature/mars/vein/mars_hematite.json",
+      "sha256": "931a47c23914b2a953dd26b81ea76da0f28ef0672ca1e17748ad27f5ecd8246e"
+    },
+    {
+      "path": "kubejs/data/tfg/worldgen/configured_feature/mars/vein/mars_lapis.json",
+      "sha256": "e9248910f6694aaa7b3ead4554e51ebfcd2167307a22c8be4b7c75dfb968eea0"
+    },
+    {
+      "path": "kubejs/data/tfg/worldgen/configured_feature/mars/vein/mars_lubricant.json",
+      "sha256": "731073cd238fd6afd0fd3f26c12b8f210c0b003bf8e508959a88a1160245979b"
+    },
+    {
+      "path": "kubejs/data/tfg/worldgen/configured_feature/mars/vein/mars_neodynium.json",
+      "sha256": "519f0c0b5e9060b38ff86dc1c3b4b489277716f0e83a010f41ab20d3530e4b5c"
+    },
+    {
+      "path": "kubejs/data/tfg/worldgen/configured_feature/mars/vein/mars_nickel.json",
+      "sha256": "59935898b68971e110a92728b449f01bcfb9bd7806c4be58b7d6634ddd5fc908"
+    },
+    {
+      "path": "kubejs/data/tfg/worldgen/configured_feature/mars/vein/mars_pitchblende.json",
+      "sha256": "890de1b4881c43d56aa2f86423e1a2348a6f3ef891579e6943387e48bdcaf5b0"
+    },
+    {
+      "path": "kubejs/data/tfg/worldgen/configured_feature/mars/vein/mars_quartzite.json",
+      "sha256": "f1fafc641ed1cbea91d38b4c88e81949d70cfebdf51e9f8fdb850232c4bc5af0"
+    },
+    {
+      "path": "kubejs/data/tfg/worldgen/configured_feature/mars/vein/mars_salt.json",
+      "sha256": "e39f4f46a0117caf0d496841ab444b0a3fd676fda7ddfd537102790c4077381d"
+    },
+    {
+      "path": "kubejs/data/tfg/worldgen/configured_feature/mars/vein/mars_stibnite.json",
+      "sha256": "12120a32019ac46251c1804b0f3b5972f3494d6e6555b34f8af8b072fce35660"
+    },
+    {
+      "path": "kubejs/data/tfg/worldgen/configured_feature/mars/vein/mars_sulfur.json",
+      "sha256": "9ef439601450e3cb3382045998f1a7b7a7812a4f70799b496c554ec0ecbe65c9"
+    },
+    {
+      "path": "kubejs/data/tfg/worldgen/configured_feature/mars/vein/mars_surface_bismuthinite.json",
+      "sha256": "8ec4c4c9a531279add9777c5f8b96e727b101fb16686d74961893a2d4e0adf27"
+    },
+    {
+      "path": "kubejs/data/tfg/worldgen/configured_feature/mars/vein/mars_surface_cassiterite.json",
+      "sha256": "d752f47f7af5276ea00d134df92f7308c7361b168c947021469c1dfec66e184c"
+    },
+    {
+      "path": "kubejs/data/tfg/worldgen/configured_feature/mars/vein/mars_surface_hematite.json",
+      "sha256": "99e805d420a675c1adc935c42b24dd2fd743f278b371bba22056cf76fbce33b1"
+    },
+    {
+      "path": "kubejs/data/tfg/worldgen/configured_feature/mars/vein/mars_surface_nickel_galena.json",
+      "sha256": "11e9b036c2ee8576a76ab3f759adfba4a55d5bb664df57d3303676f0553dd55d"
+    },
+    {
+      "path": "kubejs/data/tfg/worldgen/configured_feature/mars/vein/mars_surface_tetrahedrite.json",
+      "sha256": "61004cbb976c3bcf090e4d9b8d72188cf2c1ba95f06ad6a652181f82ebc1823f"
+    },
+    {
+      "path": "kubejs/data/tfg/worldgen/configured_feature/mars/vein/mars_tantalite.json",
+      "sha256": "f614b063e5f89eef0b5147650ac6271ee6fef321d4e8146fb5d3cb412d4a1ece"
+    },
+    {
+      "path": "kubejs/data/tfg/worldgen/configured_feature/mars/vein/mars_tungsten.json",
+      "sha256": "2a04fee392e8da3d9b7e007b6deff26fdc3db9a4baa75dc06188d3320234fae6"
+    },
+    {
+      "path": "kubejs/data/tfg/worldgen/structure_set/moon/cheese_ores.json",
+      "sha256": "5ea9dd5087a3881d9c8cf522a90d7bf26084509f412adb82cfb39ce331e7fed8"
+    },
+    {
+      "path": "kubejs/data/tfg/worldgen/structure_set/moon/meteors.json",
+      "sha256": "bc574fa4be1be28b14d3ef75c00f6292e6c62ccea1ac6e668fc4670057eb6238"
+    },
+    {
+      "path": "kubejs/data/tfg/worldgen/structure_set/moon/moon_rabbit_houses.json",
+      "sha256": "fcecd90d80abee0b942d22c266931a174dd74e571f67e928218baecf6d193ce7"
+    },
+    {
+      "path": "kubejs/data/tfg/worldgen/structure_set/moon/moonbase.json",
+      "sha256": "abaacbfc62bdf832966e592310331adf72c9edfe03f27497f903ef9dc7b402bd"
+    }
+  ],
+  "additional_runtime_source": "assets/data/tfg/installed-structure-runtime.json",
+  "notes": "Configured feature and Moon structure-set definitions are copied from active KubeJS data. Ad Astra Moon dungeon and Mars temple sets, definitions, and biome tags are normalized from the existing installed runtime registry extraction. Mod jars were not executed."
+}

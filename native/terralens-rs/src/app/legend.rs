@@ -68,13 +68,15 @@ impl State {
             .open(&mut open)
             .show(ctx, |ui| {
                 ui.horizontal(|ui| {
-                    if dimension == Dimension::Overworld {
+                    if dimension != Dimension::Beneath {
                         let mut selected = layer;
                         egui::ComboBox::from_id_salt("terralens-legend-layer")
                             .selected_text(layer.label())
                             .width(160.0)
                             .show_ui(ui, |ui| {
-                                for candidate in Layer::ALL {
+                                for candidate in Layer::ALL.into_iter().filter(|candidate| {
+                                    super::TerraLensApp::layer_supported(dimension, *candidate)
+                                }) {
                                     ui.selectable_value(
                                         &mut selected,
                                         candidate,
@@ -97,13 +99,13 @@ impl State {
                     show_geology(ui, display, &mut self.filter);
                 } else if layer == Layer::Forest {
                     show_forest(ui, display.palette);
-                } else if layer == Layer::Water {
+                } else if dimension == Dimension::Mars && layer == Layer::Water {
                     ui.horizontal(|ui| {
-                        swatch(ui, Color32::from_rgb(71, 157, 178), "Rivers and lakes");
-                        ui.separator();
-                        swatch(ui, Color32::from_rgb(185, 188, 158), "Land");
+                        swatch(ui, Color32::from_rgb(78, 119, 139), "River biome");
                     });
-                } else if let Some(scale) = atlas::layer_scale(layer, display.palette) {
+                } else if let Some(scale) =
+                    atlas::dimension_layer_scale(dimension, layer, display.palette)
+                {
                     show_scale(ui, &scale);
                 } else {
                     ui.label("No category scale for this layer");
@@ -153,7 +155,9 @@ fn show_biomes(
                     .next()
                     .unwrap_or(&entry.name)
                     .replace('_', " ");
-                let ocean = dimension == Dimension::Overworld && crate::biome::is_ocean(entry.id);
+                let ocean = !dimension.is_planetary()
+                    && dimension == Dimension::Overworld
+                    && crate::biome::is_ocean(entry.id);
                 let percent = (snapshot.loaded > 0)
                     .then(|| format!("{:.1}%", entry.percent(snapshot.loaded)));
                 let selected = display.biome_highlighted(entry.id);

@@ -1,0 +1,111 @@
+{
+  "source": {
+    "pack_instance": "TerraFirmaGreg-Modern",
+    "minecraft": "1.20.1",
+    "minecraft_client_srg_sha256": "e2e940fe7ca0a9fba5a5c11ad2cf3e2f7df91bbf51d12af22cdde7af18adc344",
+    "feature_order": [
+      "tfg:moon/crater/extra_large",
+      "tfg:moon/crater/large",
+      "tfg:moon/crater/medium",
+      "tfg:moon/crater/small"
+    ],
+    "feature_step": 1,
+    "biome_tag_script": {
+      "path": "kubejs/server_scripts/tfg/moon/tags.moon.js",
+      "sha256": "4fe8730a6d0d0d6440499fee165da111d1a286d23d442cc1332ded96f5a50945"
+    },
+    "biome_exception": "tfg:moon/lunar_chorus_dense has no step-1 crater features",
+    "configured_features": {
+      "tfg:moon/crater/extra_large": {
+        "path": "kubejs/data/tfg/worldgen/configured_feature/moon/crater/extra_large.json",
+        "sha256": "f67e16c1abec38cb7d924d44cbff5a4289ced8d9ae47a35dacdc8e3624561bef",
+        "wrapped_geode": "tfg:moon/crater/extra_large_bowl"
+      },
+      "tfg:moon/crater/large": {
+        "path": "kubejs/data/tfg/worldgen/configured_feature/moon/crater/large.json",
+        "sha256": "5c00b1f675fab6adf3bf7c2bfd6116ac6bc2b10f99ce51269730e25338c89b05",
+        "wrapped_geode": "tfg:moon/crater/large_bowl"
+      },
+      "tfg:moon/crater/medium": {
+        "path": "kubejs/data/tfg/worldgen/configured_feature/moon/crater/medium.json",
+        "sha256": "914e22d23597d6cc80488359e25a3568772aa2b4d6c62117c6eb1b48246310cb"
+      },
+      "tfg:moon/crater/small": {
+        "path": "kubejs/data/tfg/worldgen/configured_feature/moon/crater/small.json",
+        "sha256": "d3f193746e5ff51ee306f1659d42550c50c486eb0e8c42508508803a6627c085"
+      },
+      "tfg:moon/crater/extra_large_bowl": {
+        "path": "kubejs/data/tfg/worldgen/configured_feature/moon/crater/extra_large_bowl.json",
+        "sha256": "8fdf1d3bd7db4e553a326b6e6822d71f7b3a9e04f4415bc9ab4e6f1edfc32e96"
+      },
+      "tfg:moon/crater/large_bowl": {
+        "path": "kubejs/data/tfg/worldgen/configured_feature/moon/crater/large_bowl.json",
+        "sha256": "73a0b0c9a56ed30a81bf5aac6ec7d1e87f0c310aa3f5864ed887f73b86730624"
+      }
+    },
+    "placed_features": {
+      "tfg:moon/crater/extra_large": {
+        "path": "kubejs/data/tfg/worldgen/placed_feature/moon/crater/extra_large.json",
+        "sha256": "d6500c1630fc1fe86572e62b2a5ab9463785cc4cbf9bd47ddcf63f1d36936939"
+      },
+      "tfg:moon/crater/large": {
+        "path": "kubejs/data/tfg/worldgen/placed_feature/moon/crater/large.json",
+        "sha256": "47539f350050c6fa253b74aadd7d4ad6ad100a633e2946b06f7f5fc4b240ea8c"
+      },
+      "tfg:moon/crater/medium": {
+        "path": "kubejs/data/tfg/worldgen/placed_feature/moon/crater/medium.json",
+        "sha256": "aad548a62f4ff1181c0fee331d578f85b94601dc553da10fc2f8c6ec7cdd0f81"
+      },
+      "tfg:moon/crater/small": {
+        "path": "kubejs/data/tfg/worldgen/placed_feature/moon/crater/small.json",
+        "sha256": "d26acbe6cf3a0b542db41b6c2b552aaad2c6302ebac989349568dbbd92db5d22"
+      }
+    }
+  },
+  "oracle": {
+    "method": "Standalone Java class using WorldgenRandom(XoroshiroRandomSource), setDecorationSeed(worldSeed, chunkMinX, chunkMinZ), setFeatureSeed(decorationSeed, featureIndex, decorationStep), RarityFilter nextFloat, and GeodeFeature IntProvider sampling. Rust tests compare all four crater variants with the oracle vectors below.",
+    "vectors": [
+      {
+        "world_seed": 0,
+        "chunk": [-91, -100],
+        "feature_index": 0,
+        "decoration_step": 1,
+        "decoration_seed": 4045003120682367216,
+        "rarity_float": 0.013813853,
+        "distribution_point_count": 4,
+        "points_dx_dy_dz_weight": [[4, 4, 5, 2], [6, 4, 4, 2], [6, 5, 4, 1], [4, 5, 4, 2]]
+      },
+      {
+        "world_seed": 0,
+        "chunk": [-100, -100],
+        "feature_index": 1,
+        "decoration_step": 1,
+        "decoration_seed": 9153056640495968256,
+        "rarity_float": 0.008414745,
+        "distribution_point_count": 3,
+        "points_dx_dy_dz_weight": [[4, 5, 6, 2], [5, 6, 5, 2], [5, 6, 5, 1]]
+      },
+      {
+        "world_seed": 0,
+        "chunk": [-94, -100],
+        "feature_index": 2,
+        "decoration_step": 1,
+        "decoration_seed": 5747687627286900896,
+        "rarity_float": 0.014242232,
+        "distribution_point_count": 3,
+        "points_dx_dy_dz_weight": [[6, 4, 4, 2], [5, 6, 5, 2], [4, 5, 6, 1]]
+      },
+      {
+        "world_seed": 0,
+        "chunk": [-91, -100],
+        "feature_index": 3,
+        "decoration_step": 1,
+        "decoration_seed": 4045003120682367216,
+        "rarity_float": 0.033251524,
+        "distribution_point_count": 4,
+        "points_dx_dy_dz_weight": [[5, 5, 5, 1], [5, 6, 4, 1], [4, 4, 4, 2], [6, 5, 5, 2]]
+      }
+    ],
+    "rust_test": "planetary::craters::tests::crater_candidates_match_minecraft_1201_worldgenrandom_oracle"
+  }
+}

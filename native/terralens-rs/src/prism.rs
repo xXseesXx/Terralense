@@ -418,8 +418,13 @@ fn discover_dimensions(
         let storage = dimension_storage(world, &id)?;
         let cfg = configured.and_then(|c| c.get(&id));
         let generator = cfg.and_then(|c| c.get("generator"));
-        let nether_settings = generator.is_some_and(contains_tfg_nether_settings);
-        let supported = id == "minecraft:overworld" || (id == "minecraft:the_nether" && nether_settings);
+        let supported = match Dimension::from_id(&id) {
+            Some(Dimension::Overworld) => true,
+            Some(Dimension::Beneath) => has_wrapped_noise_settings(generator, "tfg:nether_noise"),
+            Some(Dimension::Moon) => has_wrapped_noise_settings(generator, "tfg:moon_noise"),
+            Some(Dimension::Mars) => has_wrapped_noise_settings(generator, "tfg:mars_noise"),
+            None => false,
+        };
         let (generated, coverage_center) = region_coverage(&storage);
         let player_matches = player.and_then(|p| p.get("Dimension")).and_then(Nbt::string).is_some_and(|d| d == id || (id == "minecraft:overworld" && d == "overworld"));
         let pos = player_matches.then(|| player.and_then(|p| p.get("Pos")).and_then(Nbt::list)).flatten();
@@ -428,8 +433,10 @@ fn discover_dimensions(
         };
         let name = Dimension::from_id(&id).map(|d| d.label().to_owned()).unwrap_or_else(|| id.clone());
         let warning = (!supported).then(|| format!("Dimension {id} is recognized, but seed preview is not supported for its generator yet."));
-        let is_beneath = Dimension::from_id(&id) == Some(Dimension::Beneath);
-        Some(DimensionInfo { id, name, path: storage, generated, center, min_y: if is_beneath { 0 } else { -64 }, height: if is_beneath { 256 } else { 384 }, supported, warning })
+        let dimension = Dimension::from_id(&id);
+        let min_y = dimension.map_or(-64, Dimension::min_y);
+        let height = dimension.map_or(384, Dimension::height);
+        Some(DimensionInfo { id, name, path: storage, generated, center, min_y, height, supported, warning })
     }).collect()
 }
 
@@ -455,17 +462,18 @@ fn dimension_storage(world: &Path, id: &str) -> Option<PathBuf> {
     Some(world.join("dimensions").join(namespace).join(path))
 }
 
-fn contains_tfg_nether_settings(n: &Nbt) -> bool {
-    if n.get("settings")
-        .and_then(Nbt::string)
-        .is_some_and(|s| s == "tfg:nether_noise")
-    {
-        return true;
+fn has_wrapped_noise_settings(generator: Option<&Nbt>, expected_settings: &str) -> bool {
+    let Some(generator) = generator else {
+        return false;
+    };
+    if generator.get("type").and_then(Nbt::string) != Some("kubejs_tfc:wrapped") {
+        return false;
     }
-    n.compound()
-        .is_some_and(|m| m.values().any(contains_tfg_nether_settings))
-        || n.list()
-            .is_some_and(|v| v.iter().any(contains_tfg_nether_settings))
+    let Some(inner) = generator.get("generator") else {
+        return false;
+    };
+    inner.get("type").and_then(Nbt::string) == Some("minecraft:noise")
+        && inner.get("settings").and_then(Nbt::string) == Some(expected_settings)
 }
 
 fn region_coverage(storage: &Path) -> (bool, Point) {
@@ -1256,28 +1264,125 @@ mod tests {
     use std::io::Write;
 
     #[test]
-    fn beneath_generator_support_requires_tfg_noise_settings_and_paths_are_confined() {
-        let wrapped = Nbt::Compound(HashMap::from([(
-            "generator".into(),
-            Nbt::Compound(HashMap::from([(
-                "settings".into(),
-                Nbt::String("tfg:nether_noise".into()),
-            )])),
+    fn supported_planets_require_exact_wrapped_tfg_noise_profiles() {
+        let generator = |settings: &str| {
+            Nbt::Compound(HashMap::from([
+                ("type".into(), Nbt::String("kubejs_tfc:wrapped".into())),
+                (
+                    "generator".into(),
+                    Nbt::Compound(HashMap::from([
+                        ("type".into(), Nbt::String("minecraft:noise".into())),
+                        ("settings".into(), Nbt::String(settings.into())),
+                    ])),
+                ),
+            ]))
+        };
+        assert!(has_wrapped_noise_settings(
+            Some(&generator("tfg:nether_noise")),
+            "tfg:nether_noise"
+        ));
+        assert!(has_wrapped_noise_settings(
+            Some(&generator("tfg:moon_noise")),
+            "tfg:moon_noise"
+        ));
+        assert!(has_wrapped_noise_settings(
+            Some(&generator("tfg:mars_noise")),
+            "tfg:mars_noise"
+        ));
+        assert!(!has_wrapped_noise_settings(
+            Some(&generator("ad_astra:moon")),
+            "tfg:moon_noise"
+        ));
+        assert!(!has_wrapped_noise_settings(
+            Some(&generator("tfg:mars_noise")),
+            "tfg:moon_noise"
+        ));
+        assert!(!has_wrapped_noise_settings(None, "tfg:moon_noise"));
+        let missing_inner = Nbt::Compound(HashMap::from([(
+            "type".into(),
+            Nbt::String("kubejs_tfc:wrapped".into()),
         )]));
-        let vanilla = Nbt::Compound(HashMap::from([(
-            "settings".into(),
-            Nbt::String("minecraft:nether".into()),
-        )]));
-        let tfc_only = Nbt::String("tfc:nether_noise".into());
-        assert!(contains_tfg_nether_settings(&wrapped));
-        assert!(!contains_tfg_nether_settings(&vanilla));
-        assert!(!contains_tfg_nether_settings(&tfc_only));
+        assert!(!has_wrapped_noise_settings(
+            Some(&missing_inner),
+            "tfg:moon_noise"
+        ));
+        let stock = Nbt::Compound(HashMap::from([
+            ("type".into(), Nbt::String("minecraft:noise".into())),
+            ("settings".into(), Nbt::String("minecraft:moon".into())),
+        ]));
+        assert!(!has_wrapped_noise_settings(Some(&stock), "tfg:moon_noise"));
+        let wrong_inner = Nbt::Compound(HashMap::from([
+            ("type".into(), Nbt::String("kubejs_tfc:wrapped".into())),
+            (
+                "generator".into(),
+                Nbt::Compound(HashMap::from([
+                    ("type".into(), Nbt::String("ad_astra:moon".into())),
+                    ("settings".into(), Nbt::String("tfg:moon_noise".into())),
+                ])),
+            ),
+        ]));
+        assert!(!has_wrapped_noise_settings(
+            Some(&wrong_inner),
+            "tfg:moon_noise"
+        ));
         let world = Path::new("/tmp/save");
         assert_eq!(
             dimension_storage(world, "minecraft:the_nether"),
             Some(world.join("DIM-1"))
         );
         assert!(dimension_storage(world, "minecraft:../../outside").is_none());
+    }
+
+    #[test]
+    fn dimension_discovery_applies_planet_profiles_storage_paths_and_heights() {
+        let world =
+            std::env::temp_dir().join(format!("terralens-planet-dim-test-{}", std::process::id()));
+        fs::create_dir_all(&world).unwrap();
+        let wrapped = |settings: &str| {
+            Nbt::Compound(HashMap::from([
+                ("type".into(), Nbt::String("kubejs_tfc:wrapped".into())),
+                (
+                    "generator".into(),
+                    Nbt::Compound(HashMap::from([
+                        ("type".into(), Nbt::String("minecraft:noise".into())),
+                        ("settings".into(), Nbt::String(settings.into())),
+                    ])),
+                ),
+            ]))
+        };
+        let dimension =
+            |generator: Nbt| Nbt::Compound(HashMap::from([("generator".into(), generator)]));
+        let configured = Nbt::Compound(HashMap::from([
+            ("ad_astra:moon".into(), dimension(wrapped("tfg:moon_noise"))),
+            ("ad_astra:mars".into(), dimension(wrapped("tfg:mars_noise"))),
+            (
+                "ad_astra:moon_orbit".into(),
+                dimension(wrapped("tfg:moon_noise")),
+            ),
+            (
+                "ad_astra:venus".into(),
+                dimension(wrapped("ad_astra:venus")),
+            ),
+        ]));
+        let infos = discover_dimensions(&world, Some(&configured), None);
+        let get = |id: &str| infos.iter().find(|info| info.id == id).unwrap();
+        assert!(get("ad_astra:moon").supported);
+        assert_eq!(
+            get("ad_astra:moon").path,
+            world.join("dimensions/ad_astra/moon")
+        );
+        assert_eq!(
+            (get("ad_astra:moon").min_y, get("ad_astra:moon").height),
+            (0, 384)
+        );
+        assert!(get("ad_astra:mars").supported);
+        assert_eq!(
+            (get("ad_astra:mars").min_y, get("ad_astra:mars").height),
+            (-64, 384)
+        );
+        assert!(!get("ad_astra:moon_orbit").supported);
+        assert!(!get("ad_astra:venus").supported);
+        fs::remove_dir_all(world).unwrap();
     }
     fn name(v: &str) -> Vec<u8> {
         let mut b = (v.len() as u16).to_be_bytes().to_vec();

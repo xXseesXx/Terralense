@@ -47,7 +47,7 @@ pub(super) fn paint(
         if bpp > 8. && !selected {
             continue;
         }
-        let active = dimension == Dimension::Overworld || bounds.intersects_band(band.0, band.1);
+        let active = dimension != Dimension::Beneath || bounds.intersects_band(band.0, band.1);
         let footprint = Rect::from_min_max(
             world_to_screen(
                 rect,

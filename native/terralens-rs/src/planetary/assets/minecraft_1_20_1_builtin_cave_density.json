@@ -1,0 +1,380 @@
+{
+  "definitions": {
+    "minecraft:overworld/caves/entrances": {
+      "argument": {
+        "argument1": {
+          "argument1": {
+            "argument1": 0.37,
+            "argument2": {
+              "noise": "minecraft:cave_entrance",
+              "type": "minecraft:noise",
+              "xz_scale": 0.75,
+              "y_scale": 0.5
+            },
+            "type": "minecraft:add"
+          },
+          "argument2": {
+            "from_value": 0.3,
+            "from_y": -10,
+            "to_value": 0.0,
+            "to_y": 30,
+            "type": "minecraft:y_clamped_gradient"
+          },
+          "type": "minecraft:add"
+        },
+        "argument2": {
+          "argument1": "minecraft:overworld/caves/spaghetti_roughness_function",
+          "argument2": {
+            "input": {
+              "argument1": {
+                "argument1": {
+                  "input": {
+                    "argument": {
+                      "noise": "minecraft:spaghetti_3d_rarity",
+                      "type": "minecraft:noise",
+                      "xz_scale": 2.0,
+                      "y_scale": 1.0
+                    },
+                    "type": "minecraft:cache_once"
+                  },
+                  "noise": "minecraft:spaghetti_3d_1",
+                  "rarity_value_mapper": "type_1",
+                  "type": "minecraft:weird_scaled_sampler"
+                },
+                "argument2": {
+                  "input": {
+                    "argument": {
+                      "noise": "minecraft:spaghetti_3d_rarity",
+                      "type": "minecraft:noise",
+                      "xz_scale": 2.0,
+                      "y_scale": 1.0
+                    },
+                    "type": "minecraft:cache_once"
+                  },
+                  "noise": "minecraft:spaghetti_3d_2",
+                  "rarity_value_mapper": "type_1",
+                  "type": "minecraft:weird_scaled_sampler"
+                },
+                "type": "minecraft:max"
+              },
+              "argument2": {
+                "argument1": -0.0765,
+                "argument2": {
+                  "argument1": -0.011499999999999996,
+                  "argument2": {
+                    "noise": "minecraft:spaghetti_3d_thickness",
+                    "type": "minecraft:noise",
+                    "xz_scale": 1.0,
+                    "y_scale": 1.0
+                  },
+                  "type": "minecraft:mul"
+                },
+                "type": "minecraft:add"
+              },
+              "type": "minecraft:add"
+            },
+            "max": 1.0,
+            "min": -1.0,
+            "type": "minecraft:clamp"
+          },
+          "type": "minecraft:add"
+        },
+        "type": "minecraft:min"
+      },
+      "type": "minecraft:cache_once"
+    },
+    "minecraft:overworld/caves/noodle": {
+      "input": {
+        "argument": {
+          "input": "minecraft:y",
+          "max_exclusive": 321.0,
+          "min_inclusive": -60.0,
+          "type": "minecraft:range_choice",
+          "when_in_range": {
+            "noise": "minecraft:noodle",
+            "type": "minecraft:noise",
+            "xz_scale": 1.0,
+            "y_scale": 1.0
+          },
+          "when_out_of_range": -1.0
+        },
+        "type": "minecraft:interpolated"
+      },
+      "max_exclusive": 0.0,
+      "min_inclusive": -1000000.0,
+      "type": "minecraft:range_choice",
+      "when_in_range": 64.0,
+      "when_out_of_range": {
+        "argument1": {
+          "argument": {
+            "input": "minecraft:y",
+            "max_exclusive": 321.0,
+            "min_inclusive": -60.0,
+            "type": "minecraft:range_choice",
+            "when_in_range": {
+              "argument1": -0.07500000000000001,
+              "argument2": {
+                "argument1": -0.025,
+                "argument2": {
+                  "noise": "minecraft:noodle_thickness",
+                  "type": "minecraft:noise",
+                  "xz_scale": 1.0,
+                  "y_scale": 1.0
+                },
+                "type": "minecraft:mul"
+              },
+              "type": "minecraft:add"
+            },
+            "when_out_of_range": 0.0
+          },
+          "type": "minecraft:interpolated"
+        },
+        "argument2": {
+          "argument1": 1.5,
+          "argument2": {
+            "argument1": {
+              "argument": {
+                "argument": {
+                  "input": "minecraft:y",
+                  "max_exclusive": 321.0,
+                  "min_inclusive": -60.0,
+                  "type": "minecraft:range_choice",
+                  "when_in_range": {
+                    "noise": "minecraft:noodle_ridge_a",
+                    "type": "minecraft:noise",
+                    "xz_scale": 2.6666666666666665,
+                    "y_scale": 2.6666666666666665
+                  },
+                  "when_out_of_range": 0.0
+                },
+                "type": "minecraft:interpolated"
+              },
+              "type": "minecraft:abs"
+            },
+            "argument2": {
+              "argument": {
+                "argument": {
+                  "input": "minecraft:y",
+                  "max_exclusive": 321.0,
+                  "min_inclusive": -60.0,
+                  "type": "minecraft:range_choice",
+                  "when_in_range": {
+                    "noise": "minecraft:noodle_ridge_b",
+                    "type": "minecraft:noise",
+                    "xz_scale": 2.6666666666666665,
+                    "y_scale": 2.6666666666666665
+                  },
+                  "when_out_of_range": 0.0
+                },
+                "type": "minecraft:interpolated"
+              },
+              "type": "minecraft:abs"
+            },
+            "type": "minecraft:max"
+          },
+          "type": "minecraft:mul"
+        },
+        "type": "minecraft:add"
+      }
+    },
+    "minecraft:overworld/caves/pillars": {
+      "argument": {
+        "argument1": {
+          "argument1": {
+            "argument1": 2.0,
+            "argument2": {
+              "noise": "minecraft:pillar",
+              "type": "minecraft:noise",
+              "xz_scale": 25.0,
+              "y_scale": 0.3
+            },
+            "type": "minecraft:mul"
+          },
+          "argument2": {
+            "argument1": -1.0,
+            "argument2": {
+              "argument1": -1.0,
+              "argument2": {
+                "noise": "minecraft:pillar_rareness",
+                "type": "minecraft:noise",
+                "xz_scale": 1.0,
+                "y_scale": 1.0
+              },
+              "type": "minecraft:mul"
+            },
+            "type": "minecraft:add"
+          },
+          "type": "minecraft:add"
+        },
+        "argument2": {
+          "argument": {
+            "argument1": 0.55,
+            "argument2": {
+              "argument1": 0.55,
+              "argument2": {
+                "noise": "minecraft:pillar_thickness",
+                "type": "minecraft:noise",
+                "xz_scale": 1.0,
+                "y_scale": 1.0
+              },
+              "type": "minecraft:mul"
+            },
+            "type": "minecraft:add"
+          },
+          "type": "minecraft:cube"
+        },
+        "type": "minecraft:mul"
+      },
+      "type": "minecraft:cache_once"
+    },
+    "minecraft:overworld/caves/spaghetti_2d": {
+      "input": {
+        "argument1": {
+          "argument1": {
+            "input": {
+              "noise": "minecraft:spaghetti_2d_modulator",
+              "type": "minecraft:noise",
+              "xz_scale": 2.0,
+              "y_scale": 1.0
+            },
+            "noise": "minecraft:spaghetti_2d",
+            "rarity_value_mapper": "type_2",
+            "type": "minecraft:weird_scaled_sampler"
+          },
+          "argument2": {
+            "argument1": 0.083,
+            "argument2": "minecraft:overworld/caves/spaghetti_2d_thickness_modulator",
+            "type": "minecraft:mul"
+          },
+          "type": "minecraft:add"
+        },
+        "argument2": {
+          "argument": {
+            "argument1": {
+              "argument": {
+                "argument1": {
+                  "argument1": 0.0,
+                  "argument2": {
+                    "argument1": 8.0,
+                    "argument2": {
+                      "noise": "minecraft:spaghetti_2d_elevation",
+                      "type": "minecraft:noise",
+                      "xz_scale": 1.0,
+                      "y_scale": 0.0
+                    },
+                    "type": "minecraft:mul"
+                  },
+                  "type": "minecraft:add"
+                },
+                "argument2": {
+                  "from_value": 8.0,
+                  "from_y": -64,
+                  "to_value": -40.0,
+                  "to_y": 320,
+                  "type": "minecraft:y_clamped_gradient"
+                },
+                "type": "minecraft:add"
+              },
+              "type": "minecraft:abs"
+            },
+            "argument2": "minecraft:overworld/caves/spaghetti_2d_thickness_modulator",
+            "type": "minecraft:add"
+          },
+          "type": "minecraft:cube"
+        },
+        "type": "minecraft:max"
+      },
+      "max": 1.0,
+      "min": -1.0,
+      "type": "minecraft:clamp"
+    },
+    "minecraft:overworld/caves/spaghetti_2d_thickness_modulator": {
+      "argument": {
+        "argument1": -0.95,
+        "argument2": {
+          "argument1": -0.35000000000000003,
+          "argument2": {
+            "noise": "minecraft:spaghetti_2d_thickness",
+            "type": "minecraft:noise",
+            "xz_scale": 2.0,
+            "y_scale": 1.0
+          },
+          "type": "minecraft:mul"
+        },
+        "type": "minecraft:add"
+      },
+      "type": "minecraft:cache_once"
+    },
+    "minecraft:overworld/caves/spaghetti_roughness_function": {
+      "argument": {
+        "argument1": {
+          "argument1": -0.05,
+          "argument2": {
+            "argument1": -0.05,
+            "argument2": {
+              "noise": "minecraft:spaghetti_roughness_modulator",
+              "type": "minecraft:noise",
+              "xz_scale": 1.0,
+              "y_scale": 1.0
+            },
+            "type": "minecraft:mul"
+          },
+          "type": "minecraft:add"
+        },
+        "argument2": {
+          "argument1": -0.4,
+          "argument2": {
+            "argument": {
+              "noise": "minecraft:spaghetti_roughness",
+              "type": "minecraft:noise",
+              "xz_scale": 1.0,
+              "y_scale": 1.0
+            },
+            "type": "minecraft:abs"
+          },
+          "type": "minecraft:add"
+        },
+        "type": "minecraft:mul"
+      },
+      "type": "minecraft:cache_once"
+    },
+    "minecraft:y": {
+      "from_value": -4064.0,
+      "from_y": -4064,
+      "to_value": 4062.0,
+      "to_y": 4062,
+      "type": "minecraft:y_clamped_gradient"
+    }
+  },
+  "density_function_dependency_ids": [
+    "minecraft:overworld/caves/spaghetti_2d_thickness_modulator",
+    "minecraft:y"
+  ],
+  "minecraft_version": "1.20.1",
+  "noise_dependency_ids": [
+    "minecraft:cave_entrance",
+    "minecraft:noodle",
+    "minecraft:noodle_ridge_a",
+    "minecraft:noodle_ridge_b",
+    "minecraft:noodle_thickness",
+    "minecraft:pillar",
+    "minecraft:pillar_rareness",
+    "minecraft:pillar_thickness",
+    "minecraft:spaghetti_2d_elevation",
+    "minecraft:spaghetti_2d_modulator",
+    "minecraft:spaghetti_2d_thickness",
+    "minecraft:spaghetti_3d_rarity",
+    "minecraft:spaghetti_3d_thickness",
+    "minecraft:spaghetti_roughness",
+    "minecraft:spaghetti_roughness_modulator"
+  ],
+  "requested_ids": [
+    "minecraft:overworld/caves/entrances",
+    "minecraft:overworld/caves/noodle",
+    "minecraft:overworld/caves/pillars",
+    "minecraft:overworld/caves/spaghetti_2d",
+    "minecraft:overworld/caves/spaghetti_roughness_function"
+  ],
+  "source": "Unmodified vanilla Minecraft 1.20.1 client data pack resources from local Prism library JAR; JSON schemas are the DensityFunction codec input used by MC, with holder references recursively closed. No game/server launched.",
+  "source_jar": "Minecraft 1.20.1 official client JAR (data/minecraft/worldgen/density_function)"
+}
