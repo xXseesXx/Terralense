@@ -105,8 +105,12 @@ impl State {
                 .clicked()
             {
                 let y = m.y.unwrap_or(64.).round().clamp(-2048., 4096.) as i32;
-                ui.ctx()
-                    .copy_text(exports::xaero_share(&m.label, m.point(), y, color_for(m)));
+                ui.ctx().copy_text(exports::xaero_share(
+                    &m.label,
+                    m.map_point(),
+                    y,
+                    color_for(m),
+                ));
                 self.status = Some("Xaero share copied".into());
             }
         }

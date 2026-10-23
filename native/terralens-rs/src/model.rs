@@ -92,6 +92,14 @@ pub struct StructureBounds {
     pub max_z: i32,
 }
 impl StructureBounds {
+    /// Center of the inclusive block footprint, represented in block-coordinate space.
+    pub fn center(self) -> Point {
+        Point {
+            x: (self.min_x as f64 + self.max_x as f64 + 1.0) * 0.5,
+            z: (self.min_z as f64 + self.max_z as f64 + 1.0) * 0.5,
+        }
+    }
+
     pub fn intersects_band(self, min_y: i32, max_y: i32) -> bool {
         self.min_y <= max_y && self.max_y >= min_y
     }
@@ -106,6 +114,16 @@ impl Marker {
             z: self.z,
         }
     }
+    /// The map/search destination. Structure markers use their footprint center while
+    /// `point()` retains the original saved start position for identity and provenance.
+    pub fn map_point(&self) -> Point {
+        if self.kind == MarkerKind::Structure {
+            if let Some(bounds) = self.bounds {
+                return bounds.center();
+            }
+        }
+        self.point()
+    }
     pub fn key(&self) -> String {
         format!("{}@{},{}", self.id, self.x as i64, self.z as i64)
     }
@@ -119,6 +137,85 @@ impl Marker {
             self.y
                 .is_none_or(|y| y >= min_y as f64 && y <= max_y as f64)
         }
+    }
+}
+
+#[cfg(test)]
+mod structure_bounds_tests {
+    use super::*;
+
+    #[test]
+    fn inclusive_footprint_center_handles_negative_odd_even_and_extreme_coordinates() {
+        assert_eq!(
+            StructureBounds {
+                min_x: 0,
+                max_x: 0,
+                min_y: 0,
+                max_y: 0,
+                min_z: 0,
+                max_z: 0
+            }
+            .center(),
+            Point { x: 0.5, z: 0.5 }
+        );
+        assert_eq!(
+            StructureBounds {
+                min_x: -4,
+                max_x: -2,
+                min_y: 0,
+                max_y: 0,
+                min_z: -8,
+                max_z: -5
+            }
+            .center(),
+            Point { x: -2.5, z: -6.0 }
+        );
+        assert_eq!(
+            StructureBounds {
+                min_x: i32::MIN,
+                max_x: i32::MAX,
+                min_y: 0,
+                max_y: 0,
+                min_z: i32::MIN,
+                max_z: i32::MAX
+            }
+            .center(),
+            Point { x: 0.0, z: 0.0 }
+        );
+    }
+
+    #[test]
+    fn map_point_is_structure_footprint_center_without_changing_start_identity() {
+        let marker = Marker {
+            id: "mod:structure".into(),
+            label: "structure".into(),
+            namespace: "mod".into(),
+            x: 100.0,
+            z: -50.0,
+            y: None,
+            kind: MarkerKind::Structure,
+            confirmed: true,
+            min_y: None,
+            max_y: None,
+            detail: String::new(),
+            color: [0; 3],
+            bounds: Some(StructureBounds {
+                min_x: 0,
+                max_x: 2,
+                min_y: 4,
+                max_y: 8,
+                min_z: -4,
+                max_z: -2,
+            }),
+        };
+        assert_eq!(marker.point(), Point { x: 100.0, z: -50.0 });
+        assert_eq!(marker.key(), "mod:structure@100,-50");
+        assert_eq!(marker.map_point(), Point { x: 1.5, z: -2.5 });
+        let mut non_structure = marker.clone();
+        non_structure.kind = MarkerKind::Player;
+        assert_eq!(non_structure.map_point(), non_structure.point());
+        non_structure.bounds = None;
+        assert_eq!(non_structure.map_point(), non_structure.point());
     }
 }
 #[derive(Clone, Debug, Default, Serialize, Deserialize)]

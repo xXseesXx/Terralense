@@ -74,12 +74,15 @@ pub fn rank(
 ) -> Vec<Marker> {
     let mut values: Vec<_> = markers
         .into_iter()
-        .filter(|m| m.x.is_finite() && m.z.is_finite() && origin.distance(m.point()) <= radius)
+        .filter(|m| {
+            let point = m.map_point();
+            point.x.is_finite() && point.z.is_finite() && origin.distance(point) <= radius
+        })
         .collect();
     values.sort_by(|a, b| {
         origin
-            .distance(a.point())
-            .total_cmp(&origin.distance(b.point()))
+            .distance(a.map_point())
+            .total_cmp(&origin.distance(b.map_point()))
             .then_with(|| b.confirmed.cmp(&a.confirmed))
             .then_with(|| a.key().cmp(&b.key()))
     });
@@ -422,6 +425,36 @@ mod tests {
             v.iter().map(|m| m.x).collect::<Vec<_>>(),
             vec![5., 10., 30.]
         );
+    }
+    #[test]
+    fn structure_radius_and_order_use_inclusive_footprint_center() {
+        let structure = Marker {
+            id: "minecraft:large_ruin".into(),
+            label: "Large ruin".into(),
+            namespace: "minecraft".into(),
+            x: 0.,
+            z: 0.,
+            y: None,
+            kind: MarkerKind::Structure,
+            confirmed: true,
+            min_y: None,
+            max_y: None,
+            detail: String::new(),
+            color: [0; 3],
+            bounds: Some(crate::model::StructureBounds {
+                min_x: 99,
+                min_y: 0,
+                min_z: -1,
+                max_x: 100,
+                max_y: 10,
+                max_z: 0,
+            }),
+        };
+        assert_eq!(structure.point(), Point { x: 0., z: 0. });
+        assert_eq!(structure.map_point(), Point { x: 100., z: 0. });
+        assert!(rank(Point { x: 100., z: 0. }, 0.5, [structure.clone()], 5).len() == 1);
+        assert!(rank(Point::default(), 50., [structure.clone()], 5).is_empty());
+        assert!(rank(Point { x: 100., z: 0. }, 0.5, [structure], 5).len() == 1);
     }
     #[test]
     fn supports_material_aliases_and_multiword_names() {

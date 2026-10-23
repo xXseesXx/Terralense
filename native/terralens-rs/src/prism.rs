@@ -1192,23 +1192,30 @@ fn structure_marker(sid: &str, tag: &Nbt) -> Option<Marker> {
 
 fn structure_bounds(tag: &Nbt) -> Option<crate::model::StructureBounds> {
     let parse = |node: &Nbt| -> Option<[i32; 6]> {
-        if let Some(values) = node.int_array() {
+        let values: [i32; 6] = if let Some(values) = node.int_array() {
             if values.len() == 6 {
-                return Some(values.try_into().ok()?);
+                values.try_into().ok()?
+            } else {
+                return None;
             }
-        }
-        let values = node.list()?;
-        if values.len() != 6 {
+        } else {
+            let values = node.list()?;
+            if values.len() != 6 {
+                return None;
+            }
+            [
+                values[0].i64()?.try_into().ok()?,
+                values[1].i64()?.try_into().ok()?,
+                values[2].i64()?.try_into().ok()?,
+                values[3].i64()?.try_into().ok()?,
+                values[4].i64()?.try_into().ok()?,
+                values[5].i64()?.try_into().ok()?,
+            ]
+        };
+        if values[0] > values[3] || values[1] > values[4] || values[2] > values[5] {
             return None;
         }
-        Some([
-            values[0].i64()?.try_into().ok()?,
-            values[1].i64()?.try_into().ok()?,
-            values[2].i64()?.try_into().ok()?,
-            values[3].i64()?.try_into().ok()?,
-            values[4].i64()?.try_into().ok()?,
-            values[5].i64()?.try_into().ok()?,
-        ])
+        Some(values)
     };
     let direct = tag.get("BB").and_then(parse);
     let aggregate = || {
@@ -1638,5 +1645,38 @@ mod tests {
                 max_z: 14
             })
         );
+    }
+
+    #[test]
+    fn malformed_direct_structure_bounds_fall_back_to_valid_children_and_skip_bad_pieces() {
+        let invalid_direct = Nbt::IntArray(vec![10, 8, 0, -10, 4, 2]);
+        let good = Nbt::Compound(HashMap::from([(
+            "BB".into(),
+            Nbt::IntArray(vec![-4, 12, -2, 6, 24, 8]),
+        )]));
+        let invalid_piece = Nbt::Compound(HashMap::from([(
+            "BB".into(),
+            Nbt::IntArray(vec![20, 9, 0, 10, 30, 2]),
+        )]));
+        let tag = Nbt::Compound(HashMap::from([
+            ("BB".into(), invalid_direct),
+            ("Children".into(), Nbt::List(vec![invalid_piece, good])),
+        ]));
+        assert_eq!(
+            structure_bounds(&tag),
+            Some(crate::model::StructureBounds {
+                min_x: -4,
+                min_y: 12,
+                min_z: -2,
+                max_x: 6,
+                max_y: 24,
+                max_z: 8
+            })
+        );
+        let invalid_only = Nbt::Compound(HashMap::from([(
+            "BB".into(),
+            Nbt::IntArray(vec![0, 0, 0, -1, 1, 1]),
+        )]));
+        assert!(structure_bounds(&invalid_only).is_none());
     }
 }

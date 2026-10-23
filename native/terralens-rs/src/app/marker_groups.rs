@@ -22,14 +22,15 @@ pub(super) fn groups(markers: &[&Marker], bpp: f64, selected: Option<&Marker>) -
     let mut pinned = Vec::new();
     for (index, marker) in markers.iter().enumerate() {
         if matches!(marker.kind, MarkerKind::Spawn | MarkerKind::Player)
+            || (marker.kind == MarkerKind::Structure && marker.bounds.is_some() && bpp <= 8.)
             || selected.is_some_and(|pin| pin.id == marker.id && pin.point() == marker.point())
         {
             pinned.push(index);
         } else {
             groups
                 .entry((
-                    (marker.x / span).floor() as i64,
-                    (marker.z / span).floor() as i64,
+                    (marker.map_point().x / span).floor() as i64,
+                    (marker.map_point().z / span).floor() as i64,
                 ))
                 .or_default()
                 .push(index);
@@ -41,9 +42,9 @@ pub(super) fn groups(markers: &[&Marker], bpp: f64, selected: Option<&Marker>) -
 }
 
 pub(super) fn center(markers: &[&Marker], members: &[usize]) -> Point {
-    let first = markers[members[0]].point();
+    let first = markers[members[0]].map_point();
     let (x, z) = members.iter().fold((0., 0.), |(x, z), index| {
-        let point = markers[*index].point();
+        let point = markers[*index].map_point();
         (x + point.x - first.x, z + point.z - first.z)
     });
     Point {
@@ -73,6 +74,37 @@ mod tests {
             bounds: None,
         }
     }
+    #[test]
+    fn bounded_structures_keep_their_own_box_centers_at_footprint_zoom() {
+        let mut values = [marker(8., 8.), marker(8., 8.)];
+        for (index, value) in values.iter_mut().enumerate() {
+            value.kind = MarkerKind::Structure;
+            let offset = index as i32 * 12;
+            value.bounds = Some(crate::model::StructureBounds {
+                min_x: offset,
+                min_y: 60,
+                min_z: -12,
+                max_x: offset + 7,
+                max_y: 75,
+                max_z: -5,
+            });
+            value.id = format!("mod:structure/{index}");
+        }
+        let markers: Vec<_> = values.iter().collect();
+        for bpp in [0.125, 1., 4., 8.] {
+            let groups = groups(&markers, bpp, None);
+            assert_eq!(groups.len(), 2);
+            for (index, group) in groups.iter().enumerate() {
+                assert_eq!(group.len(), 1);
+                assert_eq!(center(&markers, group), markers[index].map_point());
+                assert_ne!(center(&markers, group), markers[index].point());
+            }
+        }
+        let distant = groups(&markers, 32., None);
+        assert_eq!(distant, vec![vec![0, 1]]);
+        assert_eq!(center(&markers, &distant[0]), Point { x: 10., z: -8. });
+    }
+
     #[test]
     fn spawn_and_players_stay_at_their_positions_outside_feature_clusters() {
         let mut values = [

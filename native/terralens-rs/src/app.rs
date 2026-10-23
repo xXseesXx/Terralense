@@ -53,13 +53,7 @@ fn beneath_band_range(top: i32) -> (i32, i32) {
 }
 
 fn marker_destination(marker: &Marker) -> Point {
-    marker
-        .bounds
-        .map(|bounds| Point {
-            x: (bounds.min_x as f64 + bounds.max_x as f64) * 0.5,
-            z: (bounds.min_z as f64 + bounds.max_z as f64) * 0.5,
-        })
-        .unwrap_or_else(|| marker.point())
+    marker.map_point()
 }
 
 #[derive(Clone)]
@@ -783,8 +777,8 @@ impl TerraLensApp {
                 } else {
                     format!(" · {classification}")
                 },
-                marker.x as i64,
-                marker.z as i64,
+                marker.map_point().x.floor() as i64,
+                marker.map_point().z.floor() as i64,
                 if y.is_empty() {
                     String::new()
                 } else {
@@ -843,8 +837,11 @@ impl TerraLensApp {
                     ui.close();
                 }
                 if ui.button("Copy coordinates").clicked() {
-                    ui.ctx()
-                        .copy_text(format!("{}, {}", marker.x as i64, marker.z as i64));
+                    ui.ctx().copy_text(format!(
+                        "{}, {}",
+                        marker.map_point().x.floor() as i64,
+                        marker.map_point().z.floor() as i64
+                    ));
                     ui.close();
                 }
                 if ui.button("Copy Xaero waypoint").clicked() {
@@ -964,13 +961,7 @@ impl TerraLensApp {
             }
             self.search_selected = Some(index);
             self.search_scroll = true;
-            let center = marker
-                .bounds
-                .map(|b| Point {
-                    x: (b.min_x as f64 + b.max_x as f64) * 0.5,
-                    z: (b.min_z as f64 + b.max_z as f64) * 0.5,
-                })
-                .unwrap_or_else(|| marker.point());
+            let center = marker.map_point();
             self.set_center(center);
             self.selected_marker = Some(marker);
             if self.smoke_test {
@@ -1139,7 +1130,7 @@ impl TerraLensApp {
             scroll.show_rows(ui, 44., results.len(), |ui, range| {
                 for index in range {
                     let marker = &results[index];
-                    let distance = marker.point().distance(self.search_origin);
+                    let distance = marker.map_point().distance(self.search_origin);
                     let (row, response) = ui
                         .allocate_exact_size(Vec2::new(ui.available_width(), 42.), Sense::click());
                     let fill = if self.search_selected == Some(index) {
@@ -1233,7 +1224,9 @@ impl TerraLensApp {
                     );
                     let response = response.on_hover_text(format!(
                         "{}, {}\n{}",
-                        marker.x as i64, marker.z as i64, marker.detail
+                        marker.map_point().x.floor() as i64,
+                        marker.map_point().z.floor() as i64,
+                        marker.detail
                     ));
                     if self.search_selected == Some(index)
                         && ui.input(|i| i.key_pressed(egui::Key::Enter))
@@ -1429,7 +1422,7 @@ impl TerraLensApp {
                     .marker_visible(m, self.prefs.blocks_per_point)
         });
         if let Some(marker) = &self.selected_marker {
-            if bounds.contains(marker.x, marker.z)
+            if bounds.contains(marker.map_point().x, marker.map_point().z)
                 || marker.bounds.is_some_and(|b| {
                     b.min_x as f64 <= bounds.max_x
                         && b.max_x as f64 + 1. >= bounds.min_x
@@ -1459,7 +1452,7 @@ impl TerraLensApp {
             .map(|&m| {
                 (
                     m,
-                    world_to_screen(rect, center, self.prefs.blocks_per_point, m.point()),
+                    world_to_screen(rect, center, self.prefs.blocks_per_point, m.map_point()),
                 )
             })
             .collect();
@@ -1792,7 +1785,11 @@ impl TerraLensApp {
             painter.text(
                 tooltip_rect.left_top() + Vec2::new(11., 49.),
                 Align2::LEFT_TOP,
-                format!("{}, {}  ·  click to pin", marker.x as i64, marker.z as i64),
+                format!(
+                    "{}, {}  ·  click to pin",
+                    marker.map_point().x.floor() as i64,
+                    marker.map_point().z.floor() as i64
+                ),
                 FontId::monospace(10.),
                 MUTED,
             );
@@ -2224,15 +2221,7 @@ impl TerraLensApp {
                         .or_else(|| atlas.markers().first())
                         .cloned();
                     if let Some(marker) = selected {
-                        self.set_center(
-                            marker
-                                .bounds
-                                .map(|b| Point {
-                                    x: (b.min_x as f64 + b.max_x as f64) * 0.5,
-                                    z: (b.min_z as f64 + b.max_z as f64) * 0.5,
-                                })
-                                .unwrap_or(marker.point()),
-                        );
+                        self.set_center(marker.map_point());
                         self.selected_marker = Some(marker);
                         self.smoke_selection_frame = Some(self.screenshot_frame);
                     }

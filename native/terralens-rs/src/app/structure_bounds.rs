@@ -129,7 +129,7 @@ mod tests {
         ] {
             let marker = structure(id);
             let (center, band) = inspection_view(&marker, Dimension::Overworld, 111).unwrap();
-            assert_eq!(center, Point { x: 10., z: -20. });
+            assert_eq!(center, Point { x: 10.5, z: -19.5 });
             assert_eq!(band, None);
         }
     }

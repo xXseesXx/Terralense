@@ -1576,7 +1576,14 @@ pub fn nearest_structures(
         .iter()
         .chain(candidates.iter())
         .filter(|m| matches!(m.kind, MarkerKind::Structure))
-        .map(|m| (point.distance(m.point()), !m.confirmed, m.key(), m.clone()))
+        .map(|m| {
+            (
+                point.distance(m.map_point()),
+                !m.confirmed,
+                m.key(),
+                m.clone(),
+            )
+        })
         .filter(|(d, _, _, _)| *d <= radius)
         .collect();
     ranked.sort_by(|a, b| a.0.total_cmp(&b.0).then(a.1.cmp(&b.1)).then(a.2.cmp(&b.2)));
@@ -2446,6 +2453,42 @@ mod tests {
         let got = nearest_structures(p, 5., &[predicted.clone(), far], &[confirmed.clone()], 10);
         assert_eq!(got.len(), 1);
         assert!(got[0].confirmed);
+    }
+    #[test]
+    fn nearest_search_uses_saved_structure_footprint_center_but_keeps_start_identity() {
+        let structure = |id: &str, start_x: f64, min_x: i32, max_x: i32| Marker {
+            id: id.into(),
+            label: id.into(),
+            namespace: "tfc_ruined_world".into(),
+            x: start_x,
+            z: 0.,
+            y: None,
+            kind: MarkerKind::Structure,
+            confirmed: true,
+            min_y: Some(40.),
+            max_y: Some(80.),
+            bounds: Some(crate::model::StructureBounds {
+                min_x,
+                min_y: 40,
+                min_z: -2,
+                max_x,
+                max_y: 80,
+                max_z: 2,
+            }),
+            detail: String::new(),
+            color: [0; 3],
+        };
+        let footprint_near = structure("near-footprint", 1_000., 7, 12);
+        let anchor_near = structure("near-anchor", 0., 500, 510);
+        let point = Point { x: 0., z: 0. };
+        let found = nearest_structures(point, 20., &[footprint_near.clone(), anchor_near], &[], 10);
+        assert_eq!(found.len(), 1);
+        assert_eq!(found[0].id, "near-footprint");
+        // The destination uses the footprint center, while persistence/dedup identity remains
+        // tied to the original structure-start coordinates.
+        assert_eq!(found[0].map_point().x, 10.0);
+        assert_eq!(found[0].point().x, 1_000.0);
+        assert_eq!(found[0].key(), "near-footprint@1000,0");
     }
     #[test]
     fn java_y_range_matches_feature_shrink_behavior() {

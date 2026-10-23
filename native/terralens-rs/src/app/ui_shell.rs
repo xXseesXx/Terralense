@@ -495,9 +495,9 @@ impl TerraLensApp {
         });
         let origin = self.current_center();
         markers.sort_by(|a, b| {
-            a.point()
+            a.map_point()
                 .distance(origin)
-                .total_cmp(&b.point().distance(origin))
+                .total_cmp(&b.map_point().distance(origin))
         });
         ui.label(
             RichText::new(format!("{} structures", markers.len()))
@@ -517,7 +517,7 @@ impl TerraLensApp {
                         let text = format!(
                             "{} · {:.1} km",
                             tooltip::display_marker_name(&marker.label),
-                            marker.point().distance(origin) / 1000.
+                            marker.map_point().distance(origin) / 1000.
                         );
                         if ui
                             .add(egui::Button::new(text).truncate())

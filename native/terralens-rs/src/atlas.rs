@@ -591,6 +591,7 @@ fn next_uncovered_feature_tile(
 #[derive(Default)]
 struct MarkerIndex {
     cells: HashMap<(i64, i64), Vec<usize>>,
+    structure_start_cells: HashMap<(i64, i64), Vec<usize>>,
 }
 
 impl MarkerIndex {
@@ -600,9 +601,16 @@ impl MarkerIndex {
             if marker.x.is_finite() && marker.z.is_finite() {
                 index
                     .cells
-                    .entry(Self::cell(marker.point()))
+                    .entry(Self::cell(marker.map_point()))
                     .or_default()
                     .push(i);
+                if marker.kind == MarkerKind::Structure {
+                    index
+                        .structure_start_cells
+                        .entry(Self::cell(marker.point()))
+                        .or_default()
+                        .push(i);
+                }
             }
         }
         index
@@ -619,7 +627,7 @@ impl MarkerIndex {
         let (cx, cz) = Self::cell(marker.point());
         for x in cx - 1..=cx + 1 {
             for z in cz - 1..=cz + 1 {
-                if let Some(indices) = self.cells.get(&(x, z)) {
+                if let Some(indices) = self.structure_start_cells.get(&(x, z)) {
                     if indices.iter().any(|&i| {
                         let saved = &markers[i];
                         saved.namespace == marker.namespace
@@ -670,7 +678,8 @@ impl MarkerIndex {
                         MarkerKind::Spawn | MarkerKind::Player => true,
                         _ => false,
                     };
-                    if shown && bounds.contains(marker.x, marker.z) {
+                    let point = marker.map_point();
+                    if shown && bounds.contains(point.x, point.z) {
                         visible.push((i, marker));
                     }
                 }
@@ -1134,7 +1143,8 @@ impl Atlas {
             .visible(&self.markers, bounds, ores, structures);
         if structures {
             for marker in &self.markers {
-                if marker.kind != MarkerKind::Structure || bounds.contains(marker.x, marker.z) {
+                let point = marker.map_point();
+                if marker.kind != MarkerKind::Structure || bounds.contains(point.x, point.z) {
                     continue;
                 }
                 if marker.bounds.is_some_and(|b| {
@@ -3621,6 +3631,66 @@ mod tests {
         };
         assert_eq!(atlas.visible_markers(view, false, true).len(), 1);
         assert!(atlas.visible_markers(view, true, false).is_empty());
+    }
+
+    #[test]
+    fn structure_marker_is_indexed_at_bounds_center_while_start_stays_identity_anchor() {
+        let mut atlas = Atlas::new(&egui::Context::default(), 7, Settings::default());
+        let mut structure = marker(1, MarkerKind::Structure, 10_000., 10_000., "saved");
+        structure.bounds = Some(crate::model::StructureBounds {
+            min_x: 0,
+            min_y: 0,
+            min_z: 0,
+            max_x: 20,
+            max_y: 20,
+            max_z: 20,
+        });
+        assert_eq!(
+            structure.point(),
+            Point {
+                x: 10_000.,
+                z: 10_000.
+            }
+        );
+        assert_eq!(structure.map_point(), Point { x: 10.5, z: 10.5 });
+        atlas.markers.push(structure.clone());
+        atlas.marker_index = MarkerIndex::build(&atlas.markers);
+
+        let view = Bounds {
+            min_x: 9.,
+            min_z: 9.,
+            max_x: 12.,
+            max_z: 12.,
+        };
+        let visible = atlas.visible_markers(view, false, true);
+        assert_eq!(visible.len(), 1);
+        assert_eq!(visible[0].point(), structure.point());
+        assert_eq!(visible[0].map_point(), Point { x: 10.5, z: 10.5 });
+        assert_eq!(visible[0].key(), structure.key());
+    }
+
+    #[test]
+    fn saved_structure_dedup_uses_start_anchor_even_when_bounds_centers_differ() {
+        let mut saved = marker(1, MarkerKind::Structure, 100., 100., "mod:a");
+        saved.bounds = Some(crate::model::StructureBounds {
+            min_x: 10_000,
+            min_y: 0,
+            min_z: 10_000,
+            max_x: 10_100,
+            max_y: 20,
+            max_z: 10_100,
+        });
+        let index = MarkerIndex::build(&[saved.clone()]);
+        let mut predicted = marker(2, MarkerKind::Structure, 120., 100., "mod:a");
+        predicted.bounds = Some(crate::model::StructureBounds {
+            min_x: -10_000,
+            min_y: 0,
+            min_z: -10_000,
+            max_x: -9_900,
+            max_y: 20,
+            max_z: -9_900,
+        });
+        assert!(index.has_structure_near(&[saved], &predicted));
     }
 
     #[test]

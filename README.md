@@ -18,7 +18,9 @@ Beneath **1.0.6**. The supported dimensions are **Overworld** and **Beneath / Ne
   habitats. Results are ordered by distance from a configurable point. Enter / Shift+Enter visit
   the next / previous result. The default radius is 10 km.
 - Interactive raw-ore artwork, Cubiomes Viewer structure icons and custom TFG sprites, recorded structure footprints, pin
-  details, and zoom-dependent visibility. Marker groups stay anchored while you pan.
+  details, and zoom-dependent visibility. Structure pins use the exact center of recorded bounds;
+  close views keep them separate instead of moving them into a cluster. Marker groups stay anchored
+  while you pan.
 - World-spawn and saved-player pins, with cached player names where available. They remain at
   their recorded coordinates across zoom levels and appear in Everything search and exports.
   Players are shown in their recorded dimension; these are last-saved positions, not live tracking.
@@ -132,7 +134,8 @@ fixtures. Elevation is an estimate. Ore pins and outlined/unconfirmed structure 
 predictions; saved structure starts confirm recorded generation, not whether a structure has been
 looted or modified. Tree counts estimate generation attempts, and habitat search is sampled.
 
-Structure bounds and block cutaways require saved structure data. Terrain-dependent placement,
+Structure bounds and block cutaways require saved structure data. Ungenerated jigsaw layouts are
+not simulated, so a structure without a recorded box keeps its placement location. Terrain-dependent placement,
 caves, aquifers and unseen structure blocks are not fully generated. Other dimensions, worldgen
 v0, and incompatible/custom generation profiles are not supported. Different pack versions need
 separate validation.

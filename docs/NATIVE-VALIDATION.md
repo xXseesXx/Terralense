@@ -1,12 +1,14 @@
 # Native validation
 
 The published release was checked on Linux against TFG Core 0.9.25, TFC 3.2.25 and Beneath 1.0.6.
-The desktop-shell refork passes **233 release tests**: 211 library, ten engine-process, ten parity
+The desktop-shell refork passes **242 release tests**: 220 library, ten engine-process, ten parity
 and two release-CLI checks. Formatting, the headless build and the opt-in diagnostic targets pass.
-This includes 37 Atlas tests covering cache reuse across zoom levels, refinement, family coverage,
+This includes 39 Atlas tests covering cache reuse across zoom levels, refinement, family coverage,
 adjacent boundaries, split continuation, same-root panning and dimension-aware spawn/player pins.
 Saved-location fixtures cover spawn, UUID deduplication, multiple players and dimensions, malformed
-files, and both player-name cache formats. Defaults migrate once and preserve subsequent choices.
+files, and both player-name cache formats. Structure regressions cover off-anchor box centers,
+negative/inclusive coordinates, start-based identity and deduplication, viewport queries,
+close-zoom clustering, search radius/ranking, and centered PNG/CSV/Xaero export destinations. Defaults migrate once and preserve subsequent choices.
 
 ## Reproducible checks
 
@@ -55,9 +57,15 @@ the pinned earlier implementation; they are not independent evidence of Minecraf
 - Imports accept arbitrary world, saves and Prism folders. Failed session-source opens retain the
   current document; newer world/seed selections invalidate pending import replies. Structure CSV
   export snapshots the filtered table, and Save As changes the session destination after success.
+- Structure map destinations use the midpoint of inclusive saved bounds, including the final
+  block's full area. Raw start coordinates remain available for identity and CSV provenance;
+  close views (≤8 blocks/px) draw bounded structures individually. This is constant-time per
+  marker. A close-view native check used one unchanged mineshaft chunk copied into a temporary
+  read-only-source fixture and confirmed the arch at the drawn box center. Unknown jigsaw layouts
+  are not materialized and have no fabricated bounds.
 - Structure reader fixtures cover arbitrary mod namespaces, dimension-root isolation, and boxes
   whose start point lies outside the visible map. The local reference save had bounds for all
-  349 Overworld and 2,875 Beneath starts, with zero decode errors.
+  356 Overworld and 2,875 Beneath starts, with zero decode errors.
 - Cutaway checks prove an Overworld Y0–7 inspection excludes a roof at Y15; Beneath intersects
   structure height with its selected band and leaves missing blocks unknown. Disabled detail
   cannot request or probe chunks. Stale replies cannot mix cutaway contexts.

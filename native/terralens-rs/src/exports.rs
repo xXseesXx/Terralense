@@ -563,7 +563,8 @@ fn compose_map(
         if !marker.x.is_finite() || !marker.z.is_finite() {
             continue;
         }
-        let center_visible = bounds.contains(marker.x, marker.z);
+        let map_point = marker.map_point();
+        let center_visible = bounds.contains(map_point.x, map_point.z);
         if let Some(bb) = marker
             .bounds
             .filter(|_| matches!(&marker.kind, crate::model::MarkerKind::Structure))
@@ -579,8 +580,8 @@ fn compose_map(
         if !center_visible {
             continue;
         }
-        let px = project_x(marker.x, bounds, width);
-        let py = project_z(marker.z, bounds, height);
+        let px = project_x(map_point.x, bounds, width);
+        let py = project_z(map_point.z, bounds, height);
         if matches!(
             &marker.kind,
             crate::model::MarkerKind::Structure
@@ -905,7 +906,7 @@ fn export_markers(
     cancel: impl Fn() -> bool,
 ) -> Result<Outcome, String> {
     let mut csv = String::from(
-        "name,kind,namespace,id,x,z,y,confirmed,detail,bbox_min_x,bbox_min_y,bbox_min_z,bbox_max_x,bbox_max_y,bbox_max_z\r\n",
+        "name,kind,namespace,id,x,z,y,confirmed,detail,bbox_min_x,bbox_min_y,bbox_min_z,bbox_max_x,bbox_max_y,bbox_max_z,placement_x,placement_z\r\n",
     );
     for m in ms {
         if cancel() {
@@ -927,8 +928,8 @@ fn export_markers(
             kind.into(),
             m.namespace.clone(),
             m.id.clone(),
-            m.x.to_string(),
-            m.z.to_string(),
+            m.map_point().x.to_string(),
+            m.map_point().z.to_string(),
             m.y.map(|v| v.to_string()).unwrap_or_default(),
             m.confirmed.to_string(),
             m.detail.clone(),
@@ -938,12 +939,14 @@ fn export_markers(
             bb.map(|b| b.max_x.to_string()).unwrap_or_default(),
             bb.map(|b| b.max_y.to_string()).unwrap_or_default(),
             bb.map(|b| b.max_z.to_string()).unwrap_or_default(),
+            m.x.to_string(),
+            m.z.to_string(),
         ];
         for (i, f) in fields.iter().enumerate() {
             if i > 0 {
                 csv.push(',')
             }
-            if matches!(i, 4..=7 | 9..=14) {
+            if matches!(i, 4..=7 | 9..=16) {
                 csv.push_str(&format!("\"{}\"", f.replace('"', "\"\"")));
             } else {
                 csv.push_str(&csv_field(f));
@@ -1127,8 +1130,9 @@ mod tests {
         };
         export_markers(&[marker], &path, || false).unwrap();
         let csv = std::fs::read_to_string(&path).unwrap();
-        assert!(csv.contains("\"-1234\",\"-987\",\"72\""));
+        assert!(csv.contains("\"-1229.5\",\"-979.5\",\"72\""));
         assert!(csv.contains("\"-1240\",\"65\",\"-990\",\"-1220\",\"90\",\"-970\""));
+        assert!(csv.contains("\"-1234\",\"-987\""));
         std::fs::remove_file(path).unwrap();
     }
 
@@ -1186,6 +1190,59 @@ mod tests {
         assert_ne!(spawn_rect.as_raw(), player_rect.as_raw());
         assert_eq!(spawn_rect.get_pixel(0, 0).0, [20, 40, 60, 255]);
         assert_eq!(player_rect.get_pixel(0, 0).0, [20, 40, 60, 255]);
+    }
+    #[test]
+    fn composed_structure_glyph_is_placed_at_footprint_center() {
+        let mut image = ImageBuffer::from_pixel(160, 100, Rgba([20, 40, 60, 255]));
+        let marker = Marker {
+            id: "minecraft:ruined_portal".into(),
+            label: "Large portal".into(),
+            namespace: "minecraft".into(),
+            x: 12.,
+            z: 40.,
+            y: Some(64.),
+            kind: crate::model::MarkerKind::Structure,
+            confirmed: true,
+            min_y: None,
+            max_y: None,
+            detail: String::new(),
+            color: [255; 3],
+            bounds: Some(crate::model::StructureBounds {
+                min_x: 79,
+                min_y: 50,
+                min_z: 39,
+                max_x: 120,
+                max_y: 100,
+                max_z: 60,
+            }),
+        };
+        let bounds = Bounds {
+            min_x: 0.,
+            min_z: 0.,
+            max_x: 160.,
+            max_z: 100.,
+        };
+        assert_eq!(marker.map_point(), Point { x: 100., z: 50. });
+        compose_map(
+            &mut image,
+            bounds,
+            Layer::Biomes,
+            &[marker],
+            &Composition {
+                coordinates: false,
+                scale_bar: false,
+                legend: Vec::new(),
+                scale: None,
+            },
+            &|| false,
+        )
+        .unwrap();
+        // Inclusive center is (100, 50), rendered at map pixel (100, 50); generator start is
+        // near (12, 40) and should not get the structure glyph.
+        assert!(
+            (84..=116).any(|x| (34..=66).any(|z| image.get_pixel(x, z).0 != [20, 40, 60, 255]))
+        );
+        assert_eq!(image.get_pixel(12, 40).0, [20, 40, 60, 255]);
     }
     #[test]
     fn cancelled_png_export_keeps_existing_target() {
