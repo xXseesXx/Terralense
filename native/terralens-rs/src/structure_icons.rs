@@ -1,12 +1,17 @@
-//! Original, dependency-light structure pins shared by the live map and composed exports.
-//! The glyphs use simple vector silhouettes rather than copied game or third-party art.
+//! Transparent Cubiomes Viewer sprites and original TFG symbols shared by the map and exports.
+//! Upstream images retain GPL-3.0 licensing; see assets/structure-icons/README.md.
 use image::{ImageBuffer, Rgba, RgbaImage, imageops};
+mod tfg;
+
+pub const MAP_ICON_SIZE: u32 = 32;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 pub enum Family {
     WorldSpawn,
     Player,
     Settlement,
+    Camp,
+    Church,
     Vessel,
     Temple,
     Tower,
@@ -37,6 +42,10 @@ pub fn family(id: &str) -> Family {
         Family::WorldSpawn
     } else if id.starts_with("player/") {
         Family::Player
+    } else if id.contains("church") {
+        Family::Church
+    } else if id.contains("camp") {
+        Family::Camp
     } else if id.contains("portal") || id.contains("gateway") {
         Family::Portal
     } else if id.contains("fossil") {
@@ -107,45 +116,193 @@ pub fn family(id: &str) -> Family {
     }
 }
 
-/// Render a transparent 32px vector glyph at a requested raster size.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+enum Sprite {
+    Cubiomes(&'static str),
+    Tfg(Family),
+    Glyph(Family),
+}
+
+fn sprite(id: &str) -> Sprite {
+    let kind = family(id);
+    // Mineshafts use the requested timber opening rather than Cubiomes' rail symbol.
+    if matches!(kind, Family::Mine | Family::Camp | Family::Church) {
+        return Sprite::Tfg(kind);
+    }
+    let id = id.split('@').next().unwrap_or(id).to_ascii_lowercase();
+    let vanilla = id.strip_prefix("minecraft:").and_then(|path| match path {
+        "world_spawn" => Some("spawn"),
+        "fortress" | "nether_fortress" | "nether_complexes" => Some("fortress"),
+        "bastion_remnant" | "bastion" => Some("bastion"),
+        "stronghold" | "strongholds" => Some("stronghold"),
+        "mansion" | "woodland_mansion" => Some("mansion"),
+        "village" => Some("village"),
+        path if path.starts_with("village_") => Some("village"),
+        "desert_pyramid" | "desert_temple" => Some("desert"),
+        "jungle_pyramid" | "jungle_temple" => Some("jungle"),
+        "swamp_hut" | "witch_hut" => Some("hut"),
+        "shipwreck" | "shipwreck_beached" => Some("shipwreck"),
+        "ocean_ruin" | "ocean_ruin_cold" | "ocean_ruin_warm" | "ocean_ruins" => Some("ruins"),
+        "monument" | "ocean_monument" => Some("monument"),
+        "ruined_portal" => Some("portal"),
+        path if path.starts_with("ruined_portal_") => Some("portal"),
+        "end_city" | "endcity" => Some("endcity"),
+        "end_gateway" => Some("gateway"),
+        "pillager_outpost" | "outpost" => Some("outpost"),
+        "ancient_city" => Some("ancient_city"),
+        "trial_chambers" => Some("chambers"),
+        "trail_ruins" => Some("trails"),
+        "buried_treasure" => Some("treasure"),
+        "igloo" => Some("igloo"),
+        "desert_well" => Some("well"),
+        "amethyst_geode" => Some("geode"),
+        _ => None,
+    });
+    if let Some(name) = vanilla {
+        return Sprite::Cubiomes(name);
+    }
+    match kind {
+        Family::Settlement | Family::Ruin => Sprite::Tfg(kind),
+        Family::Vessel => Sprite::Cubiomes("shipwreck"),
+        Family::Temple => Sprite::Cubiomes("desert"),
+        Family::Tower | Family::Outpost => Sprite::Cubiomes("outpost"),
+        Family::Fortress => Sprite::Cubiomes("stronghold"),
+        Family::Portal => Sprite::Cubiomes("portal"),
+        Family::Dungeon => Sprite::Cubiomes("chambers"),
+        Family::Treasure => Sprite::Cubiomes("treasure"),
+        Family::Igloo => Sprite::Cubiomes("igloo"),
+        Family::Well => Sprite::Cubiomes("well"),
+        Family::WorldSpawn => Sprite::Cubiomes("spawn"),
+        _ => Sprite::Glyph(kind),
+    }
+}
+
+fn cubiomes_png(name: &str) -> &'static [u8] {
+    match name {
+        "village" => include_bytes!("../assets/structure-icons/cubiomes/village.png"),
+        "fortress" => include_bytes!("../assets/structure-icons/cubiomes/fortress.png"),
+        "portal" => include_bytes!("../assets/structure-icons/cubiomes/portal.png"),
+        "monument" => include_bytes!("../assets/structure-icons/cubiomes/monument.png"),
+        "shipwreck" => include_bytes!("../assets/structure-icons/cubiomes/shipwreck.png"),
+        "stronghold" => include_bytes!("../assets/structure-icons/cubiomes/stronghold.png"),
+        "spawn" => include_bytes!("../assets/structure-icons/cubiomes/spawn.png"),
+        "bastion" => include_bytes!("../assets/structure-icons/cubiomes/bastion.png"),
+        "outpost" => include_bytes!("../assets/structure-icons/cubiomes/outpost.png"),
+        "endcity" => include_bytes!("../assets/structure-icons/cubiomes/endcity.png"),
+        "mansion" => include_bytes!("../assets/structure-icons/cubiomes/mansion.png"),
+        "hut" => include_bytes!("../assets/structure-icons/cubiomes/hut.png"),
+        "igloo" => include_bytes!("../assets/structure-icons/cubiomes/igloo.png"),
+        "ruins" => include_bytes!("../assets/structure-icons/cubiomes/ruins.png"),
+        "treasure" => include_bytes!("../assets/structure-icons/cubiomes/treasure.png"),
+        "ancient_city" => include_bytes!("../assets/structure-icons/cubiomes/ancient_city.png"),
+        "geode" => include_bytes!("../assets/structure-icons/cubiomes/geode.png"),
+        "well" => include_bytes!("../assets/structure-icons/cubiomes/well.png"),
+        "trails" => include_bytes!("../assets/structure-icons/cubiomes/trails.png"),
+        "chambers" => include_bytes!("../assets/structure-icons/cubiomes/chambers.png"),
+        "gateway" => include_bytes!("../assets/structure-icons/cubiomes/gateway.png"),
+        "desert" => include_bytes!("../assets/structure-icons/cubiomes/desert.png"),
+        "jungle" => include_bytes!("../assets/structure-icons/cubiomes/jungle.png"),
+        _ => unreachable!("known embedded Cubiomes icon"),
+    }
+}
+
+fn cubiomes_image(name: &str) -> RgbaImage {
+    let mut image = image::load_from_memory(cubiomes_png(name))
+        .expect("embedded Cubiomes PNG")
+        .to_rgba8();
+    for pixel in image.pixels_mut() {
+        if pixel[3] < 16 {
+            pixel[3] = 0;
+        }
+    }
+    // Some upstream block symbols have a solid two-pixel black frame. Keep the
+    // original files intact, but omit that frame when drawing background-free markers.
+    let frame = image.width() > 4
+        && image.height() > 4
+        && image
+            .enumerate_pixels()
+            .filter(|(x, y, _)| {
+                *x < 2 || *y < 2 || *x >= image.width() - 2 || *y >= image.height() - 2
+            })
+            .all(|(_, _, p)| p[3] == 255 && p[0] < 12 && p[1] < 12 && p[2] < 12);
+    if frame {
+        imageops::crop_imm(&image, 2, 2, image.width() - 4, image.height() - 4).to_image()
+    } else {
+        image
+    }
+}
+
+/// Draw each object's silhouette on alpha, preserving the original pixel-art edges.
 pub fn raster(id: &str, size: u32) -> RgbaImage {
-    let size = size.clamp(8, 128);
+    let image = match sprite(id) {
+        Sprite::Cubiomes(name) => cubiomes_image(name),
+        Sprite::Tfg(Family::Camp) => tfg::campfire(),
+        Sprite::Tfg(Family::Settlement) => tfg::village_head(),
+        Sprite::Tfg(Family::Ruin) => tfg::cracked_limestone_brick(),
+        Sprite::Tfg(Family::Church) => tfg::church_cross(),
+        Sprite::Tfg(Family::Mine) => tfg::mineshaft_arch(),
+        Sprite::Tfg(_) => unreachable!("known TFG icon"),
+        Sprite::Glyph(kind) => glyph(kind),
+    };
+    fit_silhouette(&image, size.clamp(8, 128))
+}
+
+fn fit_silhouette(image: &RgbaImage, size: u32) -> RgbaImage {
+    let mut bounds = (image.width(), image.height(), 0, 0);
+    for (x, y, _) in image.enumerate_pixels().filter(|(_, _, p)| p[3] != 0) {
+        bounds = (
+            bounds.0.min(x),
+            bounds.1.min(y),
+            bounds.2.max(x + 1),
+            bounds.3.max(y + 1),
+        );
+    }
+    let mut canvas = ImageBuffer::from_pixel(size, size, Rgba([0, 0, 0, 0]));
+    if bounds.2 <= bounds.0 || bounds.3 <= bounds.1 {
+        return canvas;
+    }
+    let cropped = imageops::crop_imm(
+        image,
+        bounds.0,
+        bounds.1,
+        bounds.2 - bounds.0,
+        bounds.3 - bounds.1,
+    )
+    .to_image();
+    let scale = (size - 2) as f64 / cropped.width().max(cropped.height()) as f64;
+    let width = (cropped.width() as f64 * scale).round().max(1.) as u32;
+    let height = (cropped.height() as f64 * scale).round().max(1.) as u32;
+    let scaled = imageops::resize(&cropped, width, height, imageops::FilterType::Nearest);
+    imageops::overlay(
+        &mut canvas,
+        &scaled,
+        ((size - width) / 2) as i64,
+        ((size - height) / 2) as i64,
+    );
+    canvas
+}
+
+fn glyph(kind: Family) -> RgbaImage {
     let mut im = ImageBuffer::from_pixel(32, 32, Rgba([0, 0, 0, 0]));
-    let accent = color(family(id));
-    // Dark circular plaque and fine pale rim keep icons legible on every biome palette.
-    circle(&mut im, 16, 16, 15, [18, 29, 37, 242]);
-    circle_ring(&mut im, 16, 16, 14, [218, 227, 224, 230]);
-    match family(id) {
-        Family::Settlement => settlement(&mut im, accent),
-        Family::Vessel => vessel(&mut im, accent),
-        Family::Temple => temple(&mut im, accent),
-        Family::Tower => tower(&mut im, accent),
-        Family::Fortress => fortress(&mut im, accent),
-        Family::Ruin => ruin(&mut im, accent),
+    let accent = color(kind);
+    match kind {
         Family::DigSite => digsite(&mut im, accent),
         Family::Nest => nest(&mut im, accent),
-        Family::Dungeon => dungeon(&mut im, accent),
-        Family::Portal => portal(&mut im, accent),
-        Family::Mine => mine(&mut im, accent),
         Family::Monument => monument(&mut im, accent),
-        Family::Well => well(&mut im, accent),
         Family::Impact => impact(&mut im, accent),
         Family::Fossil => fossil(&mut im, accent),
-        Family::Treasure => treasure(&mut im, accent),
-        Family::Igloo => igloo(&mut im, accent),
-        Family::Outpost => outpost(&mut im, accent),
-        Family::WorldSpawn => spawn(&mut im, accent),
         Family::Player => player(&mut im, accent),
         Family::Landmark => landmark(&mut im, accent),
+        _ => unreachable!("family uses embedded or custom sprite"),
     }
-    imageops::resize(&im, size, size, imageops::FilterType::Lanczos3)
+    im
 }
 
 fn color(f: Family) -> [u8; 4] {
     match f {
         Family::WorldSpawn => [255, 220, 112, 255],
         Family::Player => [137, 207, 255, 255],
-        Family::Settlement => [229, 183, 111, 255],
+        Family::Settlement | Family::Camp | Family::Church => [229, 183, 111, 255],
         Family::Vessel => [100, 190, 211, 255],
         Family::Temple => [238, 202, 126, 255],
         Family::Tower => [191, 210, 222, 255],
@@ -215,67 +372,12 @@ fn circle(im: &mut RgbaImage, cx: i32, cy: i32, r: i32, c: [u8; 4]) {
         }
     }
 }
-fn circle_ring(im: &mut RgbaImage, cx: i32, cy: i32, r: i32, c: [u8; 4]) {
-    for y in -r..=r {
-        for x in -r..=r {
-            let d = x * x + y * y;
-            if (r - 1) * (r - 1) <= d && d <= r * r {
-                px(im, cx + x, cy + y, c);
-            }
-        }
-    }
-}
+
 fn roof(im: &mut RgbaImage, x: i32, y: i32, w: i32, h: i32, c: [u8; 4]) {
     line(im, x, y + h, x + w / 2, y, c, 1);
     line(im, x + w / 2, y, x + w, y + h, c, 1);
 }
-fn settlement(im: &mut RgbaImage, c: [u8; 4]) {
-    rect(im, 8, 20, 23, 23, c);
-    roof(im, 8, 12, 9, 6, c);
-    roof(im, 16, 10, 8, 7, c);
-    rect(im, 11, 18, 13, 22, [18, 29, 37, 255]);
-    rect(im, 19, 17, 21, 20, [18, 29, 37, 255]);
-}
-fn vessel(im: &mut RgbaImage, c: [u8; 4]) {
-    line(im, 7, 20, 24, 20, c, 1);
-    line(im, 9, 21, 22, 21, c, 1);
-    line(im, 11, 22, 20, 22, c, 1);
-    line(im, 16, 8, 16, 20, c, 1);
-    line(im, 16, 9, 22, 16, c, 1);
-    line(im, 15, 11, 10, 17, c, 1);
-}
-fn temple(im: &mut RgbaImage, c: [u8; 4]) {
-    line(im, 8, 12, 24, 12, c, 1);
-    roof(im, 8, 7, 16, 5, c);
-    for x in [10, 14, 18, 22] {
-        line(im, x, 13, x, 21, c, 1);
-    }
-    line(im, 7, 22, 25, 22, c, 1);
-    line(im, 9, 24, 23, 24, c, 1);
-}
-fn tower(im: &mut RgbaImage, c: [u8; 4]) {
-    rect(im, 11, 13, 21, 24, c);
-    rect(im, 13, 9, 19, 12, c);
-    line(im, 12, 8, 16, 5, c, 1);
-    line(im, 16, 5, 20, 8, c, 1);
-    rect(im, 15, 18, 17, 23, [18, 29, 37, 255]);
-    rect(im, 14, 15, 15, 17, [18, 29, 37, 255]);
-    rect(im, 18, 15, 19, 17, [18, 29, 37, 255]);
-}
-fn fortress(im: &mut RgbaImage, c: [u8; 4]) {
-    rect(im, 8, 13, 24, 23, c);
-    for x in [8, 12, 17, 21] {
-        rect(im, x, 9, x + 2, 12, c);
-    }
-    rect(im, 14, 17, 18, 23, [18, 29, 37, 255]);
-}
-fn ruin(im: &mut RgbaImage, c: [u8; 4]) {
-    rect(im, 8, 17, 12, 23, c);
-    rect(im, 13, 20, 17, 23, c);
-    rect(im, 18, 14, 22, 23, c);
-    line(im, 9, 15, 12, 15, c, 1);
-    line(im, 19, 12, 22, 12, c, 1);
-}
+
 fn digsite(im: &mut RgbaImage, c: [u8; 4]) {
     line(im, 12, 9, 20, 17, c, 2);
     line(im, 20, 17, 20, 21, c, 1);
@@ -289,28 +391,7 @@ fn nest(im: &mut RgbaImage, c: [u8; 4]) {
     }
     circle(im, 16, 16, 3, c);
 }
-fn dungeon(im: &mut RgbaImage, c: [u8; 4]) {
-    line(im, 9, 23, 9, 16, c, 1);
-    line(im, 9, 16, 12, 12, c, 1);
-    line(im, 12, 12, 20, 12, c, 1);
-    line(im, 20, 12, 23, 16, c, 1);
-    line(im, 23, 16, 23, 23, c, 1);
-    line(im, 9, 23, 23, 23, c, 1);
-    rect(im, 14, 18, 18, 23, c);
-}
-fn portal(im: &mut RgbaImage, c: [u8; 4]) {
-    for r in [9, 6, 3] {
-        circle_ring(im, 16, 16, r, c);
-    }
-    line(im, 9, 24, 23, 24, c, 1);
-}
-fn mine(im: &mut RgbaImage, c: [u8; 4]) {
-    roof(im, 9, 12, 14, 8, c);
-    line(im, 11, 18, 11, 23, c, 1);
-    line(im, 21, 18, 21, 23, c, 1);
-    line(im, 12, 19, 20, 19, c, 1);
-    line(im, 13, 22, 19, 22, c, 1);
-}
+
 fn monument(im: &mut RgbaImage, c: [u8; 4]) {
     rect(im, 11, 11, 21, 22, c);
     rect(im, 9, 9, 23, 10, c);
@@ -319,14 +400,7 @@ fn monument(im: &mut RgbaImage, c: [u8; 4]) {
     }
     rect(im, 14, 23, 18, 25, c);
 }
-fn well(im: &mut RgbaImage, c: [u8; 4]) {
-    rect(im, 10, 16, 22, 22, c);
-    rect(im, 13, 18, 19, 20, [64, 156, 190, 255]);
-    line(im, 9, 15, 23, 15, c, 1);
-    line(im, 11, 12, 11, 15, c, 1);
-    line(im, 21, 12, 21, 15, c, 1);
-    line(im, 11, 12, 21, 12, c, 1);
-}
+
 fn impact(im: &mut RgbaImage, c: [u8; 4]) {
     circle(im, 16, 18, 7, c);
     circle(im, 16, 18, 3, [18, 29, 37, 255]);
@@ -348,37 +422,7 @@ fn fossil(im: &mut RgbaImage, c: [u8; 4]) {
     line(im, 14, 11, 11, 17, c, 0);
     line(im, 18, 15, 15, 21, c, 0);
 }
-fn treasure(im: &mut RgbaImage, c: [u8; 4]) {
-    rect(im, 8, 13, 24, 23, c);
-    line(im, 8, 16, 24, 16, [18, 29, 37, 255], 0);
-    rect(im, 14, 15, 18, 19, [245, 236, 188, 255]);
-    rect(im, 15, 16, 17, 18, [18, 29, 37, 255]);
-    roof(im, 8, 9, 16, 4, c);
-}
-fn igloo(im: &mut RgbaImage, c: [u8; 4]) {
-    circle(im, 16, 20, 10, c);
-    rect(im, 6, 23, 26, 30, [18, 29, 37, 255]);
-    line(im, 7, 22, 25, 22, c, 1);
-    rect(im, 14, 18, 18, 23, [18, 29, 37, 255]);
-    line(im, 8, 16, 24, 16, [102, 153, 177, 255], 0);
-}
-fn outpost(im: &mut RgbaImage, c: [u8; 4]) {
-    rect(im, 11, 10, 21, 16, c);
-    roof(im, 8, 6, 16, 4, c);
-    line(im, 12, 16, 10, 24, c, 1);
-    line(im, 20, 16, 22, 24, c, 1);
-    line(im, 10, 22, 21, 18, c, 0);
-    rect(im, 14, 11, 18, 14, [18, 29, 37, 255]);
-}
-fn spawn(im: &mut RgbaImage, c: [u8; 4]) {
-    // Compass rose with a highlighted north point and center.
-    line(im, 16, 7, 16, 25, c, 1);
-    line(im, 7, 16, 25, 16, c, 1);
-    line(im, 10, 10, 22, 22, c, 1);
-    line(im, 22, 10, 10, 22, c, 1);
-    line(im, 16, 7, 13, 13, [255, 245, 190, 255], 1);
-    circle(im, 16, 16, 2, [255, 245, 190, 255]);
-}
+
 fn player(im: &mut RgbaImage, c: [u8; 4]) {
     // Clear head-and-shoulders silhouette, distinct from generated structures.
     circle(im, 16, 11, 4, c);
@@ -394,7 +438,7 @@ fn player(im: &mut RgbaImage, c: [u8; 4]) {
 
 #[cfg(feature = "gui")]
 pub struct IconCache {
-    textures: std::collections::HashMap<Family, eframe::egui::TextureHandle>,
+    textures: std::collections::HashMap<Sprite, eframe::egui::TextureHandle>,
 }
 #[cfg(feature = "gui")]
 impl Default for IconCache {
@@ -407,8 +451,8 @@ impl Default for IconCache {
 #[cfg(feature = "gui")]
 impl IconCache {
     pub fn get(&mut self, ctx: &eframe::egui::Context, id: &str) -> &eframe::egui::TextureHandle {
-        let family = family(id);
-        self.textures.entry(family).or_insert_with(|| {
+        let sprite = sprite(id);
+        self.textures.entry(sprite).or_insert_with(|| {
             let im = raster(id, 32);
             let pixels = im
                 .pixels()
@@ -416,9 +460,9 @@ impl IconCache {
                 .collect();
             let data = eframe::egui::ColorImage::new([32, 32], pixels);
             ctx.load_texture(
-                format!("structure-icon-{family:?}"),
+                format!("structure-icon-{sprite:?}"),
                 data,
-                eframe::egui::TextureOptions::LINEAR,
+                eframe::egui::TextureOptions::NEAREST,
             )
         })
     }
@@ -427,6 +471,64 @@ impl IconCache {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn requested_tfg_symbols_and_cubiomes_variants_keep_their_identity() {
+        assert_eq!(sprite("tfg:illagers/camps"), Sprite::Tfg(Family::Camp));
+        assert_eq!(
+            sprite("tfg:illagers/illager_camps"),
+            Sprite::Tfg(Family::Camp)
+        );
+        assert_eq!(
+            sprite("tfg:illagers/norse_village_living"),
+            Sprite::Tfg(Family::Settlement)
+        );
+        assert_eq!(sprite("tfc_ruins:ruin_small"), Sprite::Tfg(Family::Ruin));
+        assert_eq!(
+            sprite("tfc_ruined_world:limestone_church"),
+            Sprite::Tfg(Family::Church)
+        );
+        assert_eq!(sprite("tfg:mineshaft/mineshaft"), Sprite::Tfg(Family::Mine));
+        assert_eq!(sprite("minecraft:mineshaft"), Sprite::Tfg(Family::Mine));
+        assert_ne!(
+            sprite("minecraft:village"),
+            sprite("tfg:illagers/norse_village_living")
+        );
+        assert_ne!(
+            sprite("minecraft:desert_pyramid"),
+            sprite("minecraft:jungle_pyramid")
+        );
+        assert_ne!(
+            raster("minecraft:desert_pyramid", 32),
+            raster("minecraft:jungle_pyramid", 32)
+        );
+        for id in [
+            "tfg:illagers/camps",
+            "tfg:illagers/norse_village_living",
+            "tfc_ruins:ruin_small",
+            "tfc_ruined_world:limestone_church",
+            "tfg:mineshaft/mineshaft",
+            "minecraft:stronghold",
+        ] {
+            let icon = raster(id, 32);
+            assert!(icon.pixels().any(|pixel| pixel[3] == 0), "{id}");
+            assert!(icon.pixels().any(|pixel| pixel[3] == 255), "{id}");
+            for (x, y) in [(0, 0), (31, 0), (0, 31), (31, 31)] {
+                assert_eq!(icon.get_pixel(x, y)[3], 0, "{id}");
+            }
+        }
+        let cross = raster("tfc_ruined_world:limestone_church", 32);
+        assert!(
+            cross.pixels().filter(|pixel| pixel[3] != 0).count() < 400,
+            "no common disc behind the cross"
+        );
+        let gate = raster("minecraft:mineshaft", 32);
+        assert_eq!(
+            gate.get_pixel(16, 16)[3],
+            0,
+            "the tunnel opening stays transparent"
+        );
+    }
+
     #[test]
     fn installed_catalog_gets_family_icons_and_fallback_is_visible() {
         let data: serde_json::Value = serde_json::from_str(include_str!(

@@ -1,6 +1,10 @@
 # TerraLens notices
 
-TerraLens is distributed under the European Union Public Licence, version 1.2. See [LICENSE](LICENSE).
+TerraLens's original source is under the European Union Public Licence, version 1.2; see
+[LICENSE](LICENSE). Builds containing the Cubiomes Viewer icon assets are distributed as a combined
+work under [GPL-3.0](licenses/GPL-3.0.txt), using EUPL-1.2 article 5 and its compatible-license
+appendix. The original source retains its EUPL notices. The full corresponding source, original
+art files, and build scripts are available at https://github.com/xXseesXx/Terralense.
 Native Rust conversion, Prism import, renderer and viewer additions were made on 22–23 October 2026.
 The changes include isolated generation workers, dimension-aware save reading, search, cutaways,
 vegetation preview, map tools, original structure icons and export composition.
@@ -43,8 +47,25 @@ GTCEu credits Gregtech: Refreshed / ULSTICK, Ghostipedia, ZedTech contributors, 
 and other contributors for its artwork; its full credited-works list is at
 https://github.com/GregTechCEu/GregTech-Modern/blob/v7.5.3-1.20.1/README.md.
 Copies of LGPL-3.0 and GPL-3.0 are in `licenses/`; the source projects remain available at the
-links above. The structure marker glyphs and application icon are original TerraLens artwork.
-No Cubiomes Viewer or Amidst textures were copied.
+links above. The application icon and TFG-specific landmark sprites are original TerraLens artwork.
+
+## Cubiomes Viewer structure artwork
+
+The vanilla structure and world-spawn PNGs are copied from **Cubiomes Viewer**, copyright Cubitect
+and contributors, at commit `3acc863245b30c655498d60323c50da0865e0199`, under GPL-3.0. Its README
+credits Amidst for biome-color and icon inspiration. The image files are unmodified; TerraLens's
+renderer scales them and omits any solid black rectangular frame. The custom TFG firepit, village
+head, cracked limestone masonry, cross and mineshaft arch were added on 23 October 2026.
+
+The original sources, exact asset paths, file checksums, rendering changes and retained licensing
+are documented in [the icon notice](native/terralens-rs/assets/structure-icons/README.md) and its
+`cubiomes/provenance.json`. Upstream source and license:
+https://github.com/Cubitect/cubiomes-viewer/tree/3acc863245b30c655498d60323c50da0865e0199
+
+These works are provided without warranty. Recipients may copy, modify and redistribute the
+combined application under GPL-3.0; the complete license is in `licenses/GPL-3.0.txt`.
+The EUPL compatibility mechanism is described by the European Commission at
+https://interoperable-europe.ec.europa.eu/collection/eupl/how-use-eupl.
 
 ## Fonts and Rust dependencies
 

@@ -587,7 +587,8 @@ fn compose_map(
                 | crate::model::MarkerKind::Spawn
                 | crate::model::MarkerKind::Player
         ) {
-            let icon = crate::structure_icons::raster(&marker.id, 24);
+            let icon =
+                crate::structure_icons::raster(&marker.id, crate::structure_icons::MAP_ICON_SIZE);
             composite_center(image, &icon, px as i32, py as i32);
             continue;
         }
@@ -596,8 +597,8 @@ fn compose_map(
                 if let Ok(icon) = image::load_from_memory(bytes) {
                     let icon = image::imageops::resize(
                         &icon.to_rgba8(),
-                        20,
-                        20,
+                        28,
+                        28,
                         image::imageops::FilterType::Nearest,
                     );
                     composite_center(image, &icon, px as i32, py as i32);
@@ -1132,8 +1133,8 @@ mod tests {
     }
 
     #[test]
-    fn composed_map_uses_distinct_spawn_and_player_icons() {
-        let mut image = ImageBuffer::from_pixel(100, 100, Rgba([20, 40, 60, 255]));
+    fn composed_map_keeps_spawn_and_player_icons_distinct_and_transparent() {
+        let mut image = ImageBuffer::from_pixel(140, 100, Rgba([20, 40, 60, 255]));
         let marker = |id: &str, label: &str, x, z, kind| Marker {
             id: id.into(),
             label: label.into(),
@@ -1152,22 +1153,22 @@ mod tests {
         let bounds = Bounds {
             min_x: 0.,
             min_z: 0.,
-            max_x: 100.,
+            max_x: 160.,
             max_z: 100.,
         };
         let markers = [
             marker(
                 "minecraft:world_spawn",
                 "World spawn",
-                25.,
-                25.,
+                50.,
+                50.,
                 crate::model::MarkerKind::Spawn,
             ),
             marker(
                 "minecraft:player/abc",
                 "Player",
-                75.,
-                75.,
+                110.,
+                90.,
                 crate::model::MarkerKind::Player,
             ),
         ];
@@ -1180,11 +1181,11 @@ mod tests {
             &|| false,
         )
         .unwrap();
-        let spawn = image.get_pixel(25, 25).0;
-        let player = image.get_pixel(75, 78).0;
-        assert!(spawn[0] > 245 && spawn[1] > 235 && spawn[2] > 175);
-        assert!(player[0] < 160 && player[1] > 185 && player[2] > 235);
-        assert_ne!(spawn, player);
+        let spawn_rect = image::imageops::crop_imm(&image, 34, 34, 32, 32).to_image();
+        let player_rect = image::imageops::crop_imm(&image, 94, 74, 32, 32).to_image();
+        assert_ne!(spawn_rect.as_raw(), player_rect.as_raw());
+        assert_eq!(spawn_rect.get_pixel(0, 0).0, [20, 40, 60, 255]);
+        assert_eq!(player_rect.get_pixel(0, 0).0, [20, 40, 60, 255]);
     }
     #[test]
     fn cancelled_png_export_keeps_existing_target() {

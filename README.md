@@ -17,7 +17,7 @@ Beneath **1.0.6**. The supported dimensions are **Overworld** and **Beneath / Ne
 - Unified **Ctrl+F** search for structures, ores and vein contents, biomes, rocks, forests and tree
   habitats. Results are ordered by distance from a configurable point. Enter / Shift+Enter visit
   the next / previous result. The default radius is 10 km.
-- Interactive raw-ore artwork and original structure icons, recorded structure footprints, pin
+- Interactive raw-ore artwork, Cubiomes Viewer structure icons and custom TFG sprites, recorded structure footprints, pin
   details, and zoom-dependent visibility. Marker groups stay anchored while you pan.
 - World-spawn and saved-player pins, with cached player names where available. They remain at
   their recorded coordinates across zoom levels and appear in Everything search and exports.
@@ -162,9 +162,12 @@ crate; the retired prototypes and local upstream checkout are not part of the bu
 
 ## License and attribution
 
-TerraLens is **EUPL-1.2**. Its native generator derives from
+TerraLens's original source is **EUPL-1.2**. Builds containing the reused Cubiomes Viewer icons are
+distributed under **GPL-3.0** through EUPL's compatible-license clause. Its native generator derives from
 [OutCrop](https://github.com/PauAixala/outcropmap) by Pau Aixalà and the pinned TFC/TFG algorithms.
 See [LICENSE](LICENSE), [NOTICE](NOTICE.md), and the retained
 [upstream attribution](licenses/OUTCROP-NOTICE.md). Bundled ore art and fonts retain their upstream
-licenses; the structure icons are original code-drawn artwork. TerraLens is an independent tool,
+licenses. Cubiomes Viewer PNGs retain GPL-3.0; TFG firepit, village-head, cracked-brick, cross and
+mineshaft sprites are original artwork. Their [source and provenance](native/terralens-rs/assets/structure-icons/README.md)
+are included. TerraLens is an independent tool,
 not an official Minecraft, TerraFirmaCraft, TerraFirmaGreg, Cubiomes or Amidst project.

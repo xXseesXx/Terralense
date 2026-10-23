@@ -1,0 +1,99 @@
+{
+  "repository": "https://github.com/Cubitect/cubiomes-viewer",
+  "commit": "3acc863245b30c655498d60323c50da0865e0199",
+  "license": "GPL-3.0-only",
+  "files": {
+    "village.png": {
+      "source": "rc/icons/village.png",
+      "sha256": "0fc9296cd8fc2e012ca8b00e2fb20869ce8b1afa286d72874455b25f1389f613"
+    },
+    "fortress.png": {
+      "source": "rc/icons/fortress.png",
+      "sha256": "1bbedb1879a0af3db2b726cb1d3bf3c480ca6079b512f99dccbbb5bfb57e83d0"
+    },
+    "portal.png": {
+      "source": "rc/icons/portal.png",
+      "sha256": "f52cecdb85b7faf064c2dac53dfcb8b7b2a55bc5b5e17cb1ec74494bae2c86f2"
+    },
+    "monument.png": {
+      "source": "rc/icons/monument.png",
+      "sha256": "8eac03a77e9b8c8803735fcca92e5f7193f6b07ce22f3d596e4ba6c252f00b3e"
+    },
+    "shipwreck.png": {
+      "source": "rc/icons/shipwreck.png",
+      "sha256": "6a734f513c125004b80cfe586f68823770b71fbcc4bf702e32f44dcb5b55b831"
+    },
+    "stronghold.png": {
+      "source": "rc/icons/stronghold.png",
+      "sha256": "1ccfc40a228039069315e48127869afa6813a10734ba77fa8a39453035a9a4af"
+    },
+    "spawn.png": {
+      "source": "rc/icons/spawn.png",
+      "sha256": "f169db5bbd1eea24114dcb9289c0b7906fcda19bc132bc8a7eb4ef18d2f4f598"
+    },
+    "bastion.png": {
+      "source": "rc/icons/bastion.png",
+      "sha256": "2f5f853aabf0c92898661f362c2b8e522912908f94b05bc63b8880be5463c37b"
+    },
+    "outpost.png": {
+      "source": "rc/icons/outpost.png",
+      "sha256": "6a2fd48bf54ebd9e744116a85952bc73c276ae709098dad3e2903138464b3032"
+    },
+    "endcity.png": {
+      "source": "rc/icons/endcity.png",
+      "sha256": "937b573f5af4e8810e494d2dc997784e72ea536f2f298acce7f414b096838fc8"
+    },
+    "mansion.png": {
+      "source": "rc/icons/mansion.png",
+      "sha256": "d2d0ea9585553d4e6c9d1b5df5cabd83da878dcab55dea01155685de2317bcf2"
+    },
+    "hut.png": {
+      "source": "rc/icons/hut.png",
+      "sha256": "4cffced742f50783942611fb1965498599da26f5c4b4d4558a344fdd3628d5a8"
+    },
+    "igloo.png": {
+      "source": "rc/icons/igloo.png",
+      "sha256": "72c020f65db8995c9ffe3d7fe1bc0009543871082886e6ff9dfb331ca9c8a339"
+    },
+    "ruins.png": {
+      "source": "rc/icons/ruins.png",
+      "sha256": "97e6a3f495cefb66470d1e6c9b944d9beac56424f45e004bf2f71f75301ceb4e"
+    },
+    "treasure.png": {
+      "source": "rc/icons/treasure.png",
+      "sha256": "1989111f1f3f3cf31559c30643a393c14b59994c7824b32c8363fdb3f1543c06"
+    },
+    "ancient_city.png": {
+      "source": "rc/icons/ancient_city.png",
+      "sha256": "e4f9bf3e5cd8aa8ab1273a41e36435b25f54888ef5fb520a703a8b3ce8da5c7a"
+    },
+    "geode.png": {
+      "source": "rc/icons/geode.png",
+      "sha256": "f1746a097072eaf0dacc6c1b669db7b50d379416d92d5b7f8035ba5fdc2e40e6"
+    },
+    "well.png": {
+      "source": "rc/icons/well.png",
+      "sha256": "8892dda155f29bcee6f2bcdabcefec5adb514339c857680c454cfba0cc1c233c"
+    },
+    "trails.png": {
+      "source": "rc/icons/trails.png",
+      "sha256": "915ed335ac8394d93e7bc3780a0a6ebd990ab34ae85cce72ea9739041f3a5446"
+    },
+    "chambers.png": {
+      "source": "rc/icons/chambers.png",
+      "sha256": "ce591d5654c08e9f14a0c850840ed7c04c54526ef5642777ceb3783b152c828e"
+    },
+    "gateway.png": {
+      "source": "rc/icons/gateway.png",
+      "sha256": "9902e3ccf4e3c53f4e9391f2639445f0f893f1ae1ab6b7f0e497c6a69f8d220f"
+    },
+    "desert.png": {
+      "source": "rc/icons/desert.png",
+      "sha256": "ef18e1d3291bba375bddf3ebc69da762ce5706bd50123e327036ff2fee617b48"
+    },
+    "jungle.png": {
+      "source": "rc/icons/jungle.png",
+      "sha256": "bc34ee7d9fcbdae81a113ba1b6bd1aa9f7bc545115ceaf8eed042ea51a671ff8"
+    }
+  }
+}

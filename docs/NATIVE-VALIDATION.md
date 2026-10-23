@@ -1,7 +1,7 @@
 # Native validation
 
 The published release was checked on Linux against TFG Core 0.9.25, TFC 3.2.25 and Beneath 1.0.6.
-The desktop-shell refork passes **231 release tests**: 209 library, ten engine-process, ten parity
+The desktop-shell refork passes **233 release tests**: 211 library, ten engine-process, ten parity
 and two release-CLI checks. Formatting, the headless build and the opt-in diagnostic targets pass.
 This includes 37 Atlas tests covering cache reuse across zoom levels, refinement, family coverage,
 adjacent boundaries, split continuation, same-root panning and dimension-aware spawn/player pins.
@@ -43,8 +43,12 @@ the pinned earlier implementation; they are not independent evidence of Minecraf
 - The 46px icon rail fits at 940×620, with structure/ore switches stacked above the type icons.
   Right-click expands grouped ores and structures, and child icons control individual variants.
   Catalog partition checks keep each vein selectable once, preserve dimensions and namespaces,
-  and verify mixed-vein grouping against configured outputs. Spawn and
-  player artwork is separate from feature clusters and appears in composed PNG/CSV exports.
+  and verify mixed-vein grouping against configured outputs. Spawn and player artwork stays
+  separate from feature clusters and appears in composed PNG/CSV exports.
+- Native icon rendering was checked at 940×620 with 32px transparent structure sprites and larger
+  raw ore artwork. Clusters use representative artwork and counts without a disc background.
+  Sprite tests cover alpha, the mineshaft opening, TFG symbol routing and distinct vanilla textures
+  sharing a structure family. Export tests check transparent icon corners on the map image.
 - Native asynchronous file picking was opened on the desktop. Portable source fixtures and a real
   engine child test check source import and failure replies; they do not simulate an OS chooser.
   File/folder world IDs agree, and same-named worlds from different locations remain distinct.

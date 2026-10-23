@@ -1487,56 +1487,54 @@ impl TerraLensApp {
                 } else {
                     Color32::from_rgb(238, 190, 112)
                 };
-                let ore_texture = if all_ore {
-                    let representative =
-                        indices.iter().map(|i| screen_markers[*i].0).max_by(|a, b| {
-                            crate::features::marker_max_blocks_per_point(a)
-                                .total_cmp(&crate::features::marker_max_blocks_per_point(b))
-                                .then_with(|| a.id.cmp(&b.id))
-                                .then_with(|| a.x.total_cmp(&b.x))
-                                .then_with(|| a.z.total_cmp(&b.z))
-                        });
-                    representative
-                        .and_then(|m| self.ore_icons.get(ui.ctx(), &m.id))
-                        .map(|t| t.id())
-                } else {
-                    None
-                };
-                if let Some(texture) = ore_texture {
-                    let icon_rect = Rect::from_center_size(average, Vec2::splat(26.));
+                let representative = indices.iter().map(|i| screen_markers[*i].0).max_by(|a, b| {
+                    crate::features::marker_max_blocks_per_point(a)
+                        .total_cmp(&crate::features::marker_max_blocks_per_point(b))
+                        .then_with(|| a.confirmed.cmp(&b.confirmed))
+                        .then_with(|| a.id.cmp(&b.id))
+                        .then_with(|| a.x.total_cmp(&b.x))
+                        .then_with(|| a.z.total_cmp(&b.z))
+                });
+                let texture = representative.and_then(|marker| match marker.kind {
+                    MarkerKind::Ore => self.ore_icons.get(ui.ctx(), &marker.id).map(|t| t.id()),
+                    MarkerKind::Structure => {
+                        Some(self.structure_icons.get(ui.ctx(), &marker.id).id())
+                    }
+                    _ => None,
+                });
+                if let Some(texture) = texture {
+                    let icon_rect = Rect::from_center_size(average, Vec2::splat(34.));
                     ui.painter().image(
                         texture,
                         icon_rect,
                         Rect::from_min_max(Pos2::ZERO, Pos2::new(1., 1.)),
                         Color32::WHITE,
                     );
-                    let badge = average + Vec2::new(11., 10.);
-                    ui.painter().circle_filled(badge, 8., BG);
-                    ui.painter().text(
-                        badge,
-                        Align2::CENTER_CENTER,
-                        cluster_count(count),
-                        FontId::monospace(9.),
-                        TEXT,
-                    );
-                } else {
-                    ui.painter().circle_filled(
-                        average,
-                        11.,
-                        Color32::from_rgba_unmultiplied(10, 17, 19, 235),
-                    );
-                    ui.painter()
-                        .circle_stroke(average, 10., Stroke::new(1.5_f32, color));
-                    ui.painter().text(
-                        average,
-                        Align2::CENTER_CENTER,
-                        cluster_count(count),
-                        FontId::monospace(9.),
-                        TEXT,
-                    );
                 }
+                let badge = average
+                    + if texture.is_some() {
+                        Vec2::new(13., 12.)
+                    } else {
+                        Vec2::ZERO
+                    };
+                let text = cluster_count(count);
+                // A tiny text shadow keeps counts readable without adding a badge shape.
+                ui.painter().text(
+                    badge + Vec2::splat(1.),
+                    Align2::CENTER_CENTER,
+                    &text,
+                    FontId::monospace(11.),
+                    Color32::BLACK,
+                );
+                ui.painter().text(
+                    badge,
+                    Align2::CENTER_CENTER,
+                    text,
+                    FontId::monospace(11.),
+                    color,
+                );
                 if let Some(pointer) = pointer_pos {
-                    if let Some(d) = hit_distance(pointer, average, 15.)
+                    if let Some(d) = hit_distance(pointer, average, 21.)
                         && hit.as_ref().is_none_or(|(old, _)| d < *old)
                     {
                         hit = Some((d, MapHit::Cluster(group_point, count)));
@@ -1555,7 +1553,7 @@ impl TerraLensApp {
             match &marker.kind {
                 MarkerKind::Ore => {
                     let icon_rect =
-                        Rect::from_center_size(pos, Vec2::splat(if selected { 28. } else { 22. }));
+                        Rect::from_center_size(pos, Vec2::splat(if selected { 34. } else { 28. }));
                     if let Some(texture) = self.ore_icons.get(ui.ctx(), &marker.id) {
                         ui.painter().image(
                             texture.id(),
@@ -1566,17 +1564,16 @@ impl TerraLensApp {
                     } else {
                         ui.painter().circle_filled(pos, size - 1., color);
                     }
-                    if selected {
-                        ui.painter().circle_stroke(
-                            pos,
-                            icon_rect.width() * 0.5 + 3.,
-                            Stroke::new(1.5_f32, TEXT),
-                        );
-                    }
                 }
                 MarkerKind::Structure | MarkerKind::Spawn | MarkerKind::Player => {
-                    let icon_rect =
-                        Rect::from_center_size(pos, Vec2::splat(if selected { 30. } else { 24. }));
+                    let icon_rect = Rect::from_center_size(
+                        pos,
+                        Vec2::splat(if selected {
+                            38.
+                        } else {
+                            crate::structure_icons::MAP_ICON_SIZE as f32
+                        }),
+                    );
                     let painter = ui.painter();
                     let texture = self.structure_icons.get(ui.ctx(), &marker.id);
                     painter.image(
@@ -1585,21 +1582,6 @@ impl TerraLensApp {
                         Rect::from_min_max(Pos2::ZERO, Pos2::new(1., 1.)),
                         Color32::WHITE,
                     );
-                    if selected {
-                        painter.circle_stroke(
-                            pos,
-                            icon_rect.width() * 0.5 + 2.,
-                            Stroke::new(1.5_f32, TEXT),
-                        );
-                    } else if marker.kind == MarkerKind::Structure && !marker.confirmed {
-                        // A hollow corner badge distinguishes seed candidates from recorded starts.
-                        painter.circle_filled(icon_rect.right_bottom(), 4., BG);
-                        painter.circle_stroke(
-                            icon_rect.right_bottom(),
-                            3.,
-                            Stroke::new(1_f32, color),
-                        );
-                    }
                 }
                 _ => {
                     ui.painter().circle_filled(pos, size + 3., PANEL);
@@ -1619,7 +1601,7 @@ impl TerraLensApp {
                             | MarkerKind::Spawn
                             | MarkerKind::Player
                     ) {
-                        17.
+                        if selected { 21. } else { 18. }
                     } else {
                         13.
                     },

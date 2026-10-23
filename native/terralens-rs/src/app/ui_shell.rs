@@ -78,7 +78,16 @@ impl TerraLensApp {
                     if ui.button("Display and tooltip options…").clicked() {self.show_preferences=true;ui.close();}
                     if ui.button("Paste session…").clicked() {self.session_open=true;ui.close();}
                 });
-                ui.menu_button("Help", |ui| { if ui.button("Controls").clicked() {self.help_open=true;ui.close();} });
+                ui.menu_button("Help", |ui| {
+                    if ui.button("Controls").clicked() {self.help_open=true;ui.close();}
+                    ui.menu_button("Licenses", |ui| {
+                        ui.label("© 2026 TerraLens contributors");
+                        ui.label("Cubiomes Viewer icons · Cubitect and contributors");
+                        ui.label("GPL-3.0 combined distribution · no warranty");
+                        ui.hyperlink_to("Source, artwork credits and licenses", "https://github.com/xXseesXx/Terralense/blob/main/NOTICE.md");
+                        ui.hyperlink_to("GNU General Public License v3", "https://github.com/xXseesXx/Terralense/blob/main/licenses/GPL-3.0.txt");
+                    });
+                });
                 ui.with_layout(Layout::right_to_left(Align::Center), |ui| {
                     if self.file_dialogs.busy() || self.discovering {ui.spinner();}
                     if !self.prefs.control_dock && ui.small_button("Controls").clicked() {self.prefs.control_dock=true;}

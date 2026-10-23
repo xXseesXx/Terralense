@@ -3,7 +3,7 @@ name = "terralens"
 version = "0.3.0"
 edition = "2024"
 rust-version = "1.88"
-license = "EUPL-1.2"
+license = "EUPL-1.2 AND GPL-3.0-only"
 repository = "https://github.com/xXseesXx/Terralense"
 description = "Native Rust TerraFirmaGreg seed atlas"
 

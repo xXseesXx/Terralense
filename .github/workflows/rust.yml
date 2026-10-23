@@ -36,3 +36,5 @@ jobs:
             licenses/
             native/terralens-rs/assets/export-font-source.txt
             native/terralens-rs/assets/ore-icons/README.md
+            native/terralens-rs/assets/structure-icons/README.md
+            native/terralens-rs/assets/structure-icons/cubiomes/provenance.json
