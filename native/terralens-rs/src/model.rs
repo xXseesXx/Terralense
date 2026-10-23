@@ -49,6 +49,8 @@ impl Bounds {
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub enum MarkerKind {
     Structure,
+    Spawn,
+    Player,
     Ore,
     Biome,
     Rock,
@@ -71,6 +73,12 @@ pub struct Marker {
     pub color: [u8; 3],
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bounds: Option<StructureBounds>,
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct WorldLocation {
+    pub dimension: String,
+    pub marker: Marker,
 }
 
 /// Inclusive saved structure bounds, as recorded by Minecraft structure starts/pieces.
@@ -154,4 +162,6 @@ pub struct WorldInfo {
     pub warning: Option<String>,
     #[serde(default)]
     pub dimensions: Vec<crate::dimension::DimensionInfo>,
+    #[serde(default)]
+    pub map_locations: Vec<WorldLocation>,
 }

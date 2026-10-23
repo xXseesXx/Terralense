@@ -667,6 +667,7 @@ impl MarkerIndex {
                     let shown = match &marker.kind {
                         MarkerKind::Ore => ores,
                         MarkerKind::Structure => structures,
+                        MarkerKind::Spawn | MarkerKind::Player => true,
                         _ => false,
                     };
                     if shown && bounds.contains(marker.x, marker.z) {
@@ -716,6 +717,7 @@ pub struct Atlas {
     markers: Vec<Marker>,
     predicted: Vec<Marker>,
     saved: Vec<Marker>,
+    world_locations: Vec<crate::model::WorldLocation>,
     saved_index: MarkerIndex,
     marker_index: MarkerIndex,
     ores: bool,
@@ -824,6 +826,7 @@ impl Atlas {
             markers: vec![],
             predicted: vec![],
             saved: vec![],
+            world_locations: vec![],
             saved_index: MarkerIndex::default(),
             marker_index: MarkerIndex::default(),
             ores: true,
@@ -894,7 +897,21 @@ impl Atlas {
         self.discovered_worlds.take()
     }
     pub fn set_world(&mut self, seed: i64, settings: Settings, save: Option<PathBuf>) {
+        self.world_locations.clear();
         self.reset_world(seed, settings, save, false);
+    }
+
+    /// Set source metadata locations independently from the saved structure scan.
+    /// They survive dimension and vertical-slice changes.
+    pub fn set_world_locations(&mut self, locations: Vec<crate::model::WorldLocation>) {
+        self.world_locations = locations
+            .into_iter()
+            .filter(|location| {
+                matches!(location.marker.kind, MarkerKind::Spawn | MarkerKind::Player)
+            })
+            .collect();
+        self.rebuild_markers();
+        self.update_search(false);
     }
     fn reset_world(
         &mut self,
@@ -976,9 +993,8 @@ impl Atlas {
                 self.engine
                     .scan(self.scan_epoch, self.spec.dimension.storage(&save));
             }
-        } else {
-            self.rebuild_markers();
         }
+        self.rebuild_markers();
     }
     pub fn dimension(&self) -> Dimension {
         self.spec.dimension
@@ -1567,10 +1583,20 @@ impl Atlas {
             })
             .cloned()
             .collect();
+        let locations = self
+            .world_locations
+            .iter()
+            .filter(|location| location.dimension == self.spec.dimension.id())
+            .map(|location| &location.marker)
+            .filter(|marker| {
+                search.scope.accepts(marker) && crate::search::matches_query(marker, &q)
+            })
+            .cloned()
+            .collect::<Vec<_>>();
         self.search_results = crate::search::rank(
             search.origin,
             search.radius,
-            saved.into_iter().chain(candidates),
+            saved.into_iter().chain(candidates).chain(locations),
             4096,
         );
         self.search_status = format!(
@@ -1586,8 +1612,6 @@ impl Atlas {
             },
             if truncated {
                 " · candidate search limited"
-            } else if search.predictions {
-                " · includes predictions"
             } else {
                 ""
             }
@@ -1604,6 +1628,12 @@ impl Atlas {
             .filter(|_| self.structures)
             .cloned()
             .collect();
+        self.markers.extend(
+            self.world_locations
+                .iter()
+                .filter(|location| location.dimension == self.spec.dimension.id())
+                .map(|location| location.marker.clone()),
+        );
         for m in &self.predicted {
             let visible = match m.kind {
                 MarkerKind::Ore => self.ores && query_matches(m, &self.ore_filter.to_lowercase()),
@@ -3410,6 +3440,123 @@ mod tests {
             color: [255, 255, 255],
             bounds: None,
         }
+    }
+
+    fn world_location(
+        id: usize,
+        dimension: &str,
+        kind: MarkerKind,
+        x: f64,
+        z: f64,
+        y: f64,
+    ) -> crate::model::WorldLocation {
+        let mut marker = marker(id, kind, x, z, "world-info");
+        marker.y = Some(y);
+        crate::model::WorldLocation {
+            dimension: dimension.into(),
+            marker,
+        }
+    }
+
+    #[test]
+    fn world_locations_follow_dimension_and_survive_beneath_slice_changes() {
+        let mut atlas = Atlas::new(&egui::Context::default(), 7, Settings::default());
+        atlas.set_world_locations(vec![
+            world_location(1, "minecraft:overworld", MarkerKind::Spawn, 2., 3., 64.),
+            world_location(2, "minecraft:the_nether", MarkerKind::Player, 8., 9., -20.),
+        ]);
+        assert_eq!(
+            atlas
+                .markers()
+                .iter()
+                .map(|m| m.id.as_str())
+                .collect::<Vec<_>>(),
+            ["1"]
+        );
+
+        atlas.set_dimension(Dimension::Beneath, 200);
+        assert_eq!(
+            atlas
+                .markers()
+                .iter()
+                .map(|m| m.id.as_str())
+                .collect::<Vec<_>>(),
+            ["2"]
+        );
+        assert_eq!(atlas.markers()[0].y, Some(-20.));
+        atlas.set_dimension(Dimension::Beneath, 32);
+        assert_eq!(
+            atlas
+                .markers()
+                .iter()
+                .map(|m| m.id.as_str())
+                .collect::<Vec<_>>(),
+            ["2"]
+        );
+        atlas.set_dimension(Dimension::Overworld, 64);
+        assert_eq!(
+            atlas
+                .markers()
+                .iter()
+                .map(|m| m.id.as_str())
+                .collect::<Vec<_>>(),
+            ["1"]
+        );
+    }
+
+    #[test]
+    fn world_locations_are_spatially_visible_with_ore_and_structure_layers_off() {
+        let mut atlas = Atlas::new(&egui::Context::default(), 7, Settings::default());
+        atlas.set_world_locations(vec![
+            world_location(1, "minecraft:overworld", MarkerKind::Spawn, 5., 6., 64.),
+            world_location(
+                2,
+                "minecraft:overworld",
+                MarkerKind::Player,
+                500.,
+                600.,
+                64.,
+            ),
+        ]);
+        atlas.set_marker_options(false, false, "");
+        let visible = atlas.visible_markers(
+            Bounds {
+                min_x: 0.,
+                min_z: 0.,
+                max_x: 10.,
+                max_z: 10.,
+            },
+            false,
+            false,
+        );
+        assert_eq!(visible.len(), 1);
+        assert_eq!(visible[0].kind, MarkerKind::Spawn);
+    }
+
+    #[test]
+    fn world_locations_clear_on_world_switch_and_participate_in_everything_search() {
+        let mut atlas = Atlas::new(&egui::Context::default(), 7, Settings::default());
+        atlas.set_world_locations(vec![world_location(
+            1,
+            "minecraft:overworld",
+            MarkerKind::Spawn,
+            10.,
+            0.,
+            64.,
+        )]);
+        atlas.find(
+            Point { x: 0., z: 0. },
+            100.,
+            "marker 1".into(),
+            false,
+            crate::search::Scope::All,
+        );
+        assert_eq!(atlas.search_results().len(), 1);
+        assert_eq!(atlas.search_results()[0].kind, MarkerKind::Spawn);
+
+        atlas.set_world(8, Settings::default(), None);
+        assert!(atlas.markers().is_empty());
+        assert!(atlas.world_locations.is_empty());
     }
 
     #[test]

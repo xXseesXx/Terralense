@@ -205,6 +205,7 @@ impl TerraLensApp {
         }
     }
     fn restore_preferences(&mut self, mut prefs: Preferences, ctx: &egui::Context) {
+        prefs.upgrade_defaults();
         if !prefs.center_x.is_finite()
             || !prefs.center_z.is_finite()
             || !prefs.blocks_per_point.is_finite()

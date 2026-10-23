@@ -80,6 +80,8 @@ enum Workspace {
 #[serde(default)]
 struct Preferences {
     navigation: navigation::Navigation,
+    #[serde(default)]
+    defaults_version: u8,
     tools: map_tools::MapToolsPrefs,
     display: crate::display::DisplayPrefs,
     world_id: String,
@@ -118,6 +120,7 @@ impl Default for Preferences {
     fn default() -> Self {
         Self {
             navigation: navigation::Navigation::default(),
+            defaults_version: 1,
             tools: map_tools::MapToolsPrefs::default(),
             display: crate::display::DisplayPrefs::default(),
             world_id: String::new(),
@@ -141,9 +144,9 @@ impl Default for Preferences {
             show_predictions: false,
             search_scope: Scope::All,
             seed_preview: None,
-            connected_highlight: true,
-            surface_detail: true,
-            allow_detail_rendering: true,
+            connected_highlight: false,
+            surface_detail: false,
+            allow_detail_rendering: false,
             show_legend: true,
             tooltip: tooltip::TooltipPrefs::default(),
             seed_list: seed_list::SeedShortlist::default(),
@@ -229,6 +232,18 @@ pub struct TerraLensApp {
     smoke_started: bool,
     smoke_started_at: Option<Instant>,
     smoke_selection_frame: Option<u32>,
+}
+
+impl Preferences {
+    /// Apply the requested quieter defaults once to existing installations.
+    fn upgrade_defaults(&mut self) {
+        if self.defaults_version < 1 {
+            self.connected_highlight = false;
+            self.surface_detail = false;
+            self.allow_detail_rendering = false;
+            self.defaults_version = 1;
+        }
+    }
 }
 
 impl TerraLensApp {
@@ -417,6 +432,7 @@ impl TerraLensApp {
             .storage
             .and_then(|s| eframe::get_value::<Preferences>(s, "preferences"))
             .unwrap_or_default();
+        prefs.upgrade_defaults();
         if let Some(seed) = config.initial_seed {
             prefs.seed_preview = Some(seed);
         }
@@ -523,7 +539,7 @@ impl TerraLensApp {
             pointer_world: None,
             search_x: String::new(),
             search_z: String::new(),
-            search_radius: "100000".into(),
+            search_radius: "10000".into(),
             search_query: String::new(),
             search_focus: false,
             search_dirty: None,
@@ -639,6 +655,7 @@ impl TerraLensApp {
         if let Some(atlas) = &mut self.atlas {
             atlas.set_world(world.seed, world.settings, Some(world.path));
             atlas.set_dimension(self.prefs.dimension, self.prefs.slice_y);
+            atlas.set_world_locations(world.map_locations);
         }
         self.selected_marker = None;
         self.search_selected = None;
@@ -736,7 +753,8 @@ impl TerraLensApp {
         });
         let classification = match marker.kind {
             MarkerKind::Structure if marker.confirmed => "saved",
-            MarkerKind::Structure | MarkerKind::Ore => "predicted",
+            MarkerKind::Structure | MarkerKind::Ore => "",
+            MarkerKind::Spawn | MarkerKind::Player => "saved position",
             MarkerKind::Tree => "sampled habitat",
             _ => "sampled",
         };
@@ -758,8 +776,13 @@ impl TerraLensApp {
             });
         ui.label(
             RichText::new(format!(
-                "{} · {classification} · {}, {}{}",
+                "{}{} · {}, {}{}",
                 marker.namespace,
+                if classification.is_empty() {
+                    String::new()
+                } else {
+                    format!(" · {classification}")
+                },
                 marker.x as i64,
                 marker.z as i64,
                 if y.is_empty() {
@@ -1036,10 +1059,7 @@ impl TerraLensApp {
                 });
                 if matches!(self.prefs.search_scope, Scope::All | Scope::Structures) {
                     changed |= ui
-                        .checkbox(
-                            &mut self.prefs.show_predictions,
-                            "Predict unexplored structures",
-                        )
+                        .checkbox(&mut self.prefs.show_predictions, "unexplored structures")
                         .changed();
                 }
                 if let Some(atlas) = &self.atlas {
@@ -1057,7 +1077,7 @@ impl TerraLensApp {
                 );
             })
             .response
-            .on_hover_text("Search origin, radius, predictions and coverage");
+            .on_hover_text("Search origin, radius and coverage");
         });
         ui.label(
             RichText::new(format!("From {}, {}", self.search_x, self.search_z))
@@ -1146,7 +1166,10 @@ impl TerraLensApp {
                                 Color32::WHITE,
                             );
                         }
-                    } else if marker.kind == MarkerKind::Structure {
+                    } else if matches!(
+                        marker.kind,
+                        MarkerKind::Structure | MarkerKind::Spawn | MarkerKind::Player
+                    ) {
                         let texture = self.structure_icons.get(ui.ctx(), &marker.id);
                         painter.image(
                             texture.id(),
@@ -1161,12 +1184,14 @@ impl TerraLensApp {
                     }
                     let source = match marker.kind {
                         MarkerKind::Structure if marker.confirmed => "Saved",
-                        MarkerKind::Structure => "Predicted",
-                        MarkerKind::Ore => "Predicted ore",
+                        MarkerKind::Structure => "",
+                        MarkerKind::Ore => "ore",
                         MarkerKind::Biome => "Biome",
                         MarkerKind::Rock => "Rock",
                         MarkerKind::Forest => "Forest",
                         MarkerKind::Tree => "Tree habitat",
+                        MarkerKind::Spawn => "World spawn",
+                        MarkerKind::Player => "Saved player",
                     };
                     let vertical = if let (Some(low), Some(high)) = (marker.min_y, marker.max_y) {
                         format!("Y {:.0}–{:.0}", low, high)
@@ -1189,7 +1214,9 @@ impl TerraLensApp {
                     painter.text(
                         Pos2::new(name_rect.left(), row.top() + 23.),
                         Align2::LEFT_TOP,
-                        if vertical.is_empty() {
+                        if source.is_empty() {
+                            vertical.clone()
+                        } else if vertical.is_empty() {
                             source.to_owned()
                         } else {
                             format!("{source} · {vertical}")
@@ -1387,7 +1414,9 @@ impl TerraLensApp {
             self.prefs.show_structures,
         );
         visible_markers.retain(|m| {
-            let in_band = if self.prefs.dimension == Dimension::Beneath {
+            let in_band = if self.prefs.dimension == Dimension::Beneath
+                && !matches!(m.kind, MarkerKind::Spawn | MarkerKind::Player)
+            {
                 let (min, max) = self.prefs.dimension.band(self.prefs.slice_y);
                 m.intersects_band(min, max)
             } else {
@@ -1475,11 +1504,6 @@ impl TerraLensApp {
                 };
                 if let Some(texture) = ore_texture {
                     let icon_rect = Rect::from_center_size(average, Vec2::splat(26.));
-                    ui.painter().rect_filled(
-                        icon_rect.expand(2.),
-                        5.,
-                        Color32::from_rgba_unmultiplied(10, 17, 19, 200),
-                    );
                     ui.painter().image(
                         texture,
                         icon_rect,
@@ -1532,11 +1556,6 @@ impl TerraLensApp {
                 MarkerKind::Ore => {
                     let icon_rect =
                         Rect::from_center_size(pos, Vec2::splat(if selected { 28. } else { 22. }));
-                    ui.painter().rect_filled(
-                        icon_rect.expand(2.),
-                        5.,
-                        Color32::from_rgba_unmultiplied(10, 17, 19, 180),
-                    );
                     if let Some(texture) = self.ore_icons.get(ui.ctx(), &marker.id) {
                         ui.painter().image(
                             texture.id(),
@@ -1548,28 +1567,17 @@ impl TerraLensApp {
                         ui.painter().circle_filled(pos, size - 1., color);
                     }
                     if selected {
-                        ui.painter().rect_stroke(
-                            icon_rect.expand(3.),
-                            5.,
+                        ui.painter().circle_stroke(
+                            pos,
+                            icon_rect.width() * 0.5 + 3.,
                             Stroke::new(1.5_f32, TEXT),
-                            egui::StrokeKind::Outside,
                         );
                     }
                 }
-                MarkerKind::Structure => {
+                MarkerKind::Structure | MarkerKind::Spawn | MarkerKind::Player => {
                     let icon_rect =
                         Rect::from_center_size(pos, Vec2::splat(if selected { 30. } else { 24. }));
                     let painter = ui.painter();
-                    painter.rect_filled(
-                        icon_rect.expand(2.),
-                        5.,
-                        Color32::from_rgba_unmultiplied(
-                            10,
-                            17,
-                            19,
-                            if marker.confirmed { 235 } else { 170 },
-                        ),
-                    );
                     let texture = self.structure_icons.get(ui.ctx(), &marker.id);
                     painter.image(
                         texture.id(),
@@ -1577,17 +1585,13 @@ impl TerraLensApp {
                         Rect::from_min_max(Pos2::ZERO, Pos2::new(1., 1.)),
                         Color32::WHITE,
                     );
-                    if selected || marker.confirmed {
-                        painter.rect_stroke(
-                            icon_rect.expand(2.),
-                            5.,
-                            Stroke::new(
-                                if selected { 1.5_f32 } else { 1_f32 },
-                                if selected { TEXT } else { color },
-                            ),
-                            egui::StrokeKind::Outside,
+                    if selected {
+                        painter.circle_stroke(
+                            pos,
+                            icon_rect.width() * 0.5 + 2.,
+                            Stroke::new(1.5_f32, TEXT),
                         );
-                    } else {
+                    } else if marker.kind == MarkerKind::Structure && !marker.confirmed {
                         // A hollow corner badge distinguishes seed candidates from recorded starts.
                         painter.circle_filled(icon_rect.right_bottom(), 4., BG);
                         painter.circle_stroke(
@@ -1608,7 +1612,13 @@ impl TerraLensApp {
                 if let Some(d) = hit_distance(
                     pointer,
                     pos,
-                    if matches!(marker.kind, MarkerKind::Ore | MarkerKind::Structure) {
+                    if matches!(
+                        marker.kind,
+                        MarkerKind::Ore
+                            | MarkerKind::Structure
+                            | MarkerKind::Spawn
+                            | MarkerKind::Player
+                    ) {
                         17.
                     } else {
                         13.
@@ -1789,15 +1799,11 @@ impl TerraLensApp {
             painter.text(
                 tooltip_rect.left_top() + Vec2::new(11., 30.),
                 Align2::LEFT_TOP,
-                format!(
-                    "{}  ·  {}",
-                    marker.namespace,
-                    if marker.confirmed {
-                        "confirmed"
-                    } else {
-                        "predicted"
-                    }
-                ),
+                if marker.confirmed {
+                    format!("{} · confirmed", marker.namespace)
+                } else {
+                    marker.namespace.clone()
+                },
                 FontId::proportional(10.),
                 MUTED,
             );
@@ -2430,6 +2436,31 @@ fn screen_to_world(rect: Rect, center: Point, bpp: f64, p: Pos2) -> Point {
 #[cfg(test)]
 mod interaction_tests {
     use super::*;
+
+    #[test]
+    fn quieter_defaults_migrate_once_and_preserve_later_choices() {
+        let mut prefs: Preferences = serde_json::from_value(serde_json::json!({
+            "world_id": "kept", "connected_highlight": true,
+            "surface_detail": true, "allow_detail_rendering": true
+        }))
+        .unwrap();
+        prefs.upgrade_defaults();
+        assert!(
+            !prefs.connected_highlight && !prefs.surface_detail && !prefs.allow_detail_rendering
+        );
+        assert_eq!(prefs.world_id, "kept");
+        prefs.connected_highlight = true;
+        prefs.surface_detail = true;
+        prefs.allow_detail_rendering = true;
+        let mut restored: Preferences =
+            serde_json::from_value(serde_json::to_value(prefs).unwrap()).unwrap();
+        restored.upgrade_defaults();
+        assert!(
+            restored.connected_highlight
+                && restored.surface_detail
+                && restored.allow_detail_rendering
+        );
+    }
 
     #[test]
     fn ctrl_f_is_consumed_once_without_matching_plain_f() {

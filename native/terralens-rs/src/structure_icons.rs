@@ -4,6 +4,8 @@ use image::{ImageBuffer, Rgba, RgbaImage, imageops};
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 pub enum Family {
+    WorldSpawn,
+    Player,
     Settlement,
     Vessel,
     Temple,
@@ -30,7 +32,12 @@ pub enum Family {
 pub fn family(id: &str) -> Family {
     let id = id.to_ascii_lowercase();
     let id = id.rsplit_once(':').map_or(id.as_str(), |(_, path)| path);
-    if id.contains("portal") || id.contains("gateway") {
+    // These point annotations are deliberately kept out of structure families.
+    if id == "world_spawn" {
+        Family::WorldSpawn
+    } else if id.starts_with("player/") {
+        Family::Player
+    } else if id.contains("portal") || id.contains("gateway") {
         Family::Portal
     } else if id.contains("fossil") {
         Family::Fossil
@@ -127,6 +134,8 @@ pub fn raster(id: &str, size: u32) -> RgbaImage {
         Family::Treasure => treasure(&mut im, accent),
         Family::Igloo => igloo(&mut im, accent),
         Family::Outpost => outpost(&mut im, accent),
+        Family::WorldSpawn => spawn(&mut im, accent),
+        Family::Player => player(&mut im, accent),
         Family::Landmark => landmark(&mut im, accent),
     }
     imageops::resize(&im, size, size, imageops::FilterType::Lanczos3)
@@ -134,6 +143,8 @@ pub fn raster(id: &str, size: u32) -> RgbaImage {
 
 fn color(f: Family) -> [u8; 4] {
     match f {
+        Family::WorldSpawn => [255, 220, 112, 255],
+        Family::Player => [137, 207, 255, 255],
         Family::Settlement => [229, 183, 111, 255],
         Family::Vessel => [100, 190, 211, 255],
         Family::Temple => [238, 202, 126, 255],
@@ -359,6 +370,27 @@ fn outpost(im: &mut RgbaImage, c: [u8; 4]) {
     line(im, 10, 22, 21, 18, c, 0);
     rect(im, 14, 11, 18, 14, [18, 29, 37, 255]);
 }
+fn spawn(im: &mut RgbaImage, c: [u8; 4]) {
+    // Compass rose with a highlighted north point and center.
+    line(im, 16, 7, 16, 25, c, 1);
+    line(im, 7, 16, 25, 16, c, 1);
+    line(im, 10, 10, 22, 22, c, 1);
+    line(im, 22, 10, 10, 22, c, 1);
+    line(im, 16, 7, 13, 13, [255, 245, 190, 255], 1);
+    circle(im, 16, 16, 2, [255, 245, 190, 255]);
+}
+fn player(im: &mut RgbaImage, c: [u8; 4]) {
+    // Clear head-and-shoulders silhouette, distinct from generated structures.
+    circle(im, 16, 11, 4, c);
+    for y in 16..=24 {
+        let half = if y < 19 { 4 + (y - 16) } else { 7 };
+        for x in 16 - half..=16 + half {
+            if (x - 16) * (x - 16) + (y - 19) * (y - 19) <= 64 {
+                px(im, x, y, c);
+            }
+        }
+    }
+}
 
 #[cfg(feature = "gui")]
 pub struct IconCache {
@@ -420,6 +452,8 @@ mod tests {
         assert_eq!(family("minecraft:nether_fossil"), Family::Fossil);
         assert_eq!(family("tfg:beneath/outpost"), Family::Outpost);
         assert_eq!(family("newmod:unknown_architecture"), Family::Landmark);
+        assert_eq!(family("minecraft:world_spawn"), Family::WorldSpawn);
+        assert_eq!(family("minecraft:player/1234-abcd"), Family::Player);
     }
     #[test]
     fn icon_families_are_visually_distinct() {
@@ -437,5 +471,14 @@ mod tests {
                 assert_ne!(images[i], images[j]);
             }
         }
+    }
+
+    #[test]
+    fn spawn_and_player_icons_are_transparent_and_distinct() {
+        let spawn = raster("minecraft:world_spawn", 32);
+        let player = raster("minecraft:player/1234-abcd", 32);
+        assert_ne!(spawn.as_raw(), player.as_raw());
+        assert_eq!(spawn.get_pixel(0, 0)[3], 0);
+        assert_eq!(player.get_pixel(0, 0)[3], 0);
     }
 }

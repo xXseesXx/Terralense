@@ -479,12 +479,7 @@ pub fn locate(
         requested_radius: requested,
         query: Some(q.clone()),
         note: format!(
-            "{radius:.0}-block radius · {step:.0}-block sampled grid{}{} · nearest first",
-            if ore_query.is_some() {
-                " · ore predictions; verify by prospecting"
-            } else {
-                ""
-            },
+            "{radius:.0}-block radius · {step:.0}-block sampled grid{} · nearest first",
             if ores.coverage.truncated {
                 " · ore candidate scan limited"
             } else {
@@ -517,7 +512,7 @@ impl LocationCandidate {
                 self.nearest_ore
                     .as_ref()
                     .zip(self.ore_distance)
-                    .map(|(ore, d)| format!(" · {ore} predicted ~{d:.0} blocks"))
+                    .map(|(ore, d)| format!(" · {ore} ~{d:.0} blocks"))
                     .unwrap_or_default()
             ),
             color: [130, 224, 191],

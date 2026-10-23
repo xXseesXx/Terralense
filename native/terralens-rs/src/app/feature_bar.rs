@@ -27,15 +27,36 @@ fn structure_rows(entries: &[Entry]) -> Vec<RailEntry> {
             Some(parent) => format!("{namespace}:{parent}/{leaf}"),
             None => format!("{namespace}:{leaf}"),
         };
-        let digsite = leaf == "digsite" || leaf.starts_with("digsite_");
+        let leaf_lower = leaf.to_ascii_lowercase();
+        let digsite = leaf_lower == "digsite" || leaf_lower.starts_with("digsite_");
+        let family = if leaf_lower.starts_with("unfinished_sloop_") {
+            Some(("unfinished_sloop", "Unfinished sloops"))
+        } else if leaf_lower.starts_with("unfinished_rowboat_") {
+            Some(("unfinished_rowboat", "Unfinished rowboats"))
+        } else if leaf_lower.starts_with("village_")
+            || leaf_lower.contains("_village")
+            || leaf_lower == "village"
+        {
+            Some(("village", "Villages"))
+        } else if leaf_lower == "desert_ruins_small" {
+            Some(("desert_ruins", "Desert ruins"))
+        } else if leaf_lower == "mesa_temple_small" {
+            Some(("mesa_temple", "Mesa temples"))
+        } else {
+            None
+        };
         let numbered = leaf
             .rsplit_once('_')
             .filter(|(_, suffix)| !suffix.is_empty() && suffix.bytes().all(|b| b.is_ascii_digit()));
         let (key, label) = if digsite {
-            (
-                format!("{namespace}:digsite"),
-                format!("{} dig sites", namespace.replace('_', " ")),
-            )
+            (path_key("digsite"), "Dig sites".to_owned())
+        } else if let Some((base, label)) = family {
+            (path_key(base), label.to_owned())
+        } else if let Some(base) = ["_small", "_large"]
+            .iter()
+            .find_map(|suffix| leaf_lower.strip_suffix(suffix))
+        {
+            (path_key(base), base.replace('_', " "))
         } else if let Some((base, _)) = numbered {
             (path_key(base), base.replace('_', " "))
         } else {
@@ -61,6 +82,7 @@ pub(super) enum Mode {
 #[derive(Default)]
 pub struct State {
     group: Mode,
+    expanded: std::collections::HashSet<String>,
 }
 
 impl State {
@@ -93,19 +115,20 @@ impl State {
         self.set_ores_mode(prefs.feature_bar_ores);
         egui::SidePanel::right("feature-icon-rail")
             .resizable(false)
-            .exact_width(76.)
+            .exact_width(46.)
             .frame(
                 egui::Frame::side_top_panel(&ctx.style())
-                    .inner_margin(egui::Margin::symmetric(5, 8)),
+                    .inner_margin(egui::Margin::symmetric(4, 8)),
             )
             .show(ctx, |ui| {
+                ui.spacing_mut().button_padding = Vec2::splat(2.);
+                ui.spacing_mut().item_spacing = Vec2::splat(2.);
                 ui.with_layout(Layout::top_down(Align::Center), |ui| {
-                    ui.horizontal(|ui| {
-                        ui.spacing_mut().item_spacing.x = 2.;
+                    ui.vertical(|ui| {
                         let icon = structure_cache.get(ctx, "minecraft:village");
                         let response = ui.add_sized(
-                            Vec2::splat(30.),
-                            egui::Button::image(egui::Image::new((icon.id(), Vec2::splat(24.))))
+                            Vec2::splat(34.),
+                            egui::Button::image(egui::Image::new((icon.id(), Vec2::splat(28.))))
                                 .selected(self.group == Mode::Structures),
                         );
                         if response.on_hover_text("Structures").clicked() {
@@ -114,18 +137,15 @@ impl State {
                         }
                         let response = if let Some(icon) = ore_cache.get(ctx, "normal_gold") {
                             ui.add_sized(
-                                Vec2::splat(30.),
+                                Vec2::splat(34.),
                                 egui::Button::image(egui::Image::new((
                                     icon.id(),
-                                    Vec2::splat(24.),
+                                    Vec2::splat(28.),
                                 )))
                                 .selected(self.group == Mode::Ores),
                             )
                         } else {
-                            ui.add_sized(
-                                Vec2::splat(30.),
-                                egui::Button::new("O").selected(self.group == Mode::Ores),
-                            )
+                            draw_icon_button(ui, RailIcon::Unknown, "Ores")
                         };
                         if response.on_hover_text("Ores").clicked() {
                             self.group = Mode::Ores;
@@ -162,24 +182,41 @@ impl State {
                         .iter()
                         .flat_map(|row| row.members.iter().cloned())
                         .collect();
-                    ui.horizontal(|ui| {
+                    ui.vertical(|ui| {
                         let visible = rows
                             .iter()
                             .filter(|row| row.members.iter().any(|id| !is_hidden(prefs, &kind, id)))
                             .count();
                         let total = rows.len();
-                        if draw_icon_button(ui, RailIcon::All, "Show all types").clicked() {
+                        if draw_icon_button(
+                            ui,
+                            RailIcon::All,
+                            &format!("Show all types · {visible}/{total} visible"),
+                        )
+                        .clicked()
+                        {
                             prefs.set_feature_group_visible(&kind, &group_ids, true);
                             enable_group = true;
                         }
-                        if draw_icon_button(ui, RailIcon::None, "Hide all types").clicked() {
+                        if draw_icon_button(
+                            ui,
+                            RailIcon::None,
+                            &format!("Hide all types · {visible}/{total} visible"),
+                        )
+                        .clicked()
+                        {
                             prefs.set_feature_group_visible(&kind, &group_ids, false);
                         }
-                        if draw_icon_button(ui, RailIcon::Reset, "Reset type filters").clicked() {
+                        if draw_icon_button(
+                            ui,
+                            RailIcon::Reset,
+                            &format!("Reset type filters · {visible}/{total} visible"),
+                        )
+                        .clicked()
+                        {
                             prefs.set_feature_group_visible(&kind, &group_ids, true);
                             enable_group = true;
                         }
-                        ui.label(format!("{}/{}", visible, total));
                     });
                     if enable_group {
                         set_group_visible(show_ores, show_structures, &kind, true);
@@ -187,6 +224,7 @@ impl State {
                     ui.separator();
                     egui::ScrollArea::vertical()
                         .auto_shrink([false, false])
+                        .scroll_bar_visibility(egui::scroll_area::ScrollBarVisibility::AlwaysHidden)
                         .show(ui, |ui| {
                             for entry in &rows {
                                 let visible_count = entry
@@ -234,12 +272,22 @@ impl State {
                                     }),
                                     _ => None,
                                 };
-                                let response = response.unwrap_or_else(|| ui.button("◈"));
+                                let response = response.unwrap_or_else(|| {
+                                    draw_icon_button(ui, RailIcon::Unknown, &entry.label)
+                                });
                                 let response = response.on_hover_text(format!(
                                     "{}{}{}",
                                     entry.label,
                                     if entry.members.len() > 1 {
-                                        format!(" · {} variants", entry.members.len())
+                                        format!(
+                                            " · {} variants · right-click to {}",
+                                            entry.members.len(),
+                                            if self.expanded.contains(&entry.icon_id) {
+                                                "collapse"
+                                            } else {
+                                                "expand"
+                                            }
+                                        )
                                     } else {
                                         String::new()
                                     },
@@ -270,10 +318,24 @@ impl State {
                                     }
                                 }
                                 if response.secondary_clicked() {
-                                    prefs.set_feature_group_visible(&kind, &group_ids, false);
-                                    prefs.set_feature_group_visible(&kind, &entry.members, true);
-                                    if !globally_visible {
-                                        set_group_visible(show_ores, show_structures, &kind, true);
+                                    if kind == MarkerKind::Structure && entry.members.len() > 1 {
+                                        if !self.expanded.insert(entry.icon_id.clone()) {
+                                            self.expanded.remove(&entry.icon_id);
+                                        }
+                                    } else {
+                                        prefs.solo_feature(
+                                            &kind,
+                                            rows.iter().flat_map(|row| row.members.iter().cloned()),
+                                            &entry.icon_id,
+                                        );
+                                        if !globally_visible {
+                                            set_group_visible(
+                                                show_ores,
+                                                show_structures,
+                                                &kind,
+                                                true,
+                                            );
+                                        }
                                     }
                                 }
                                 if !visible {
@@ -283,6 +345,62 @@ impl State {
                                         2.,
                                         egui::Color32::from_black_alpha(112),
                                     );
+                                }
+                                if kind == MarkerKind::Structure
+                                    && entry.members.len() > 1
+                                    && self.expanded.contains(&entry.icon_id)
+                                {
+                                    for member in &entry.members {
+                                        let member_entry = entries.iter().find(|e| &e.id == member);
+                                        let label = member_entry
+                                            .map(|e| e.label.as_str())
+                                            .unwrap_or(member);
+                                        let hidden = is_hidden(prefs, &kind, member);
+                                        ui.horizontal(|ui| {
+                                            ui.add_space(3.);
+                                            let texture = structure_cache.get(ctx, member);
+                                            let tint = if hidden {
+                                                egui::Color32::from_gray(105)
+                                            } else {
+                                                egui::Color32::WHITE
+                                            };
+                                            let child = ui
+                                                .add_sized(
+                                                    Vec2::splat(31.),
+                                                    egui::Button::image(
+                                                        egui::Image::new((
+                                                            texture.id(),
+                                                            Vec2::splat(25.),
+                                                        ))
+                                                        .tint(tint),
+                                                    )
+                                                    .selected(!hidden),
+                                                )
+                                                .on_hover_text(format!("{label} · {member}"));
+                                            if child.clicked() {
+                                                if ui.input(|i| i.modifiers.shift) {
+                                                    prefs.solo_feature(
+                                                        &kind,
+                                                        rows.iter().flat_map(|row| {
+                                                            row.members.iter().cloned()
+                                                        }),
+                                                        member,
+                                                    );
+                                                } else {
+                                                    prefs
+                                                        .set_feature_visible(&kind, member, hidden);
+                                                }
+                                                if !globally_visible {
+                                                    set_group_visible(
+                                                        show_ores,
+                                                        show_structures,
+                                                        &kind,
+                                                        true,
+                                                    );
+                                                }
+                                            }
+                                        });
+                                    }
                                 }
                             }
                         });
@@ -306,6 +424,7 @@ enum RailIcon {
     All,
     None,
     Reset,
+    Unknown,
 }
 
 fn draw_icon_button(ui: &mut egui::Ui, icon: RailIcon, tip: &str) -> egui::Response {
@@ -351,7 +470,7 @@ fn draw_icon_button(ui: &mut egui::Ui, icon: RailIcon, tip: &str) -> egui::Respo
                 egui::Stroke::new(1.8_f32, stroke.color),
             );
         }
-    } else {
+    } else if matches!(icon, RailIcon::Reset) {
         let points = [
             p(5., -6.),
             p(7., -1.),
@@ -367,6 +486,12 @@ fn draw_icon_button(ui: &mut egui::Ui, icon: RailIcon, tip: &str) -> egui::Respo
         }
         ui.painter().line_segment([p(5., -6.), p(1., -6.)], stroke);
         ui.painter().line_segment([p(5., -6.), p(5., -2.)], stroke);
+    } else {
+        let points = [p(0., -7.), p(7., 0.), p(0., 7.), p(-7., 0.), p(0., -7.)];
+        for pair in points.windows(2) {
+            ui.painter().line_segment([pair[0], pair[1]], stroke);
+        }
+        ui.painter().circle_filled(c, 1.8, stroke.color);
     }
     response.on_hover_text(tip)
 }
@@ -448,6 +573,38 @@ mod tests {
                 id: "minecraft:desert_temple".into(),
                 label: "Desert temple".into(),
             },
+            Entry {
+                id: "alekiships:unfinished_sloop_oak".into(),
+                label: "Unfinished sloop oak".into(),
+            },
+            Entry {
+                id: "alekiships:unfinished_sloop_birch".into(),
+                label: "Unfinished sloop birch".into(),
+            },
+            Entry {
+                id: "alekiships:unfinished_rowboat_oak".into(),
+                label: "Unfinished rowboat oak".into(),
+            },
+            Entry {
+                id: "wan_ancient_beasts:abandoned_village".into(),
+                label: "Abandoned village".into(),
+            },
+            Entry {
+                id: "tfg:illagers/arabic_village".into(),
+                label: "Arabic village".into(),
+            },
+            Entry {
+                id: "tfg:illagers/arabic_village_living".into(),
+                label: "Arabic village living".into(),
+            },
+            Entry {
+                id: "tfg:illagers/norse_village_ruined".into(),
+                label: "Norse village ruined".into(),
+            },
+            Entry {
+                id: "wan_ancient_beasts:training_outpost".into(),
+                label: "Training outpost".into(),
+            },
         ];
         let groups = structure_rows(&structures);
         let tower = groups.iter().find(|g| g.label == "tower").unwrap();
@@ -466,6 +623,37 @@ mod tests {
             groups
                 .iter()
                 .any(|g| g.members == ["minecraft:desert_temple"])
+        );
+        let sloop = groups
+            .iter()
+            .find(|g| g.label == "Unfinished sloops")
+            .unwrap();
+        assert_eq!(sloop.members.len(), 2);
+        let rowboat = groups
+            .iter()
+            .find(|g| g.label == "Unfinished rowboats")
+            .unwrap();
+        assert_eq!(rowboat.members, ["alekiships:unfinished_rowboat_oak"]);
+        let village = groups
+            .iter()
+            .find(|g| {
+                g.members
+                    .contains(&"wan_ancient_beasts:abandoned_village".to_owned())
+            })
+            .unwrap();
+        assert_eq!(village.members, ["wan_ancient_beasts:abandoned_village"]);
+        let tfg_villages = groups
+            .iter()
+            .find(|g| {
+                g.members
+                    .contains(&"tfg:illagers/arabic_village".to_owned())
+            })
+            .unwrap();
+        assert_eq!(tfg_villages.members.len(), 3);
+        assert!(
+            groups
+                .iter()
+                .any(|g| g.members == ["wan_ancient_beasts:training_outpost"])
         );
 
         let ores = [
@@ -497,6 +685,13 @@ mod tests {
                 .iter()
                 .all(|id| is_hidden(&prefs, &MarkerKind::Structure, id))
         );
+        prefs.set_feature_visible(&MarkerKind::Structure, &tower.members[0], true);
+        assert!(!is_hidden(
+            &prefs,
+            &MarkerKind::Structure,
+            &tower.members[0]
+        ));
+        assert!(is_hidden(&prefs, &MarkerKind::Structure, &tower.members[1]));
         prefs.set_feature_group_visible(&MarkerKind::Structure, &tower.members, true);
         assert!(
             tower

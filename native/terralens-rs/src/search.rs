@@ -119,7 +119,7 @@ pub fn predict_cancelable(w: &World, q: &Query, cancelled: impl Fn() -> bool) ->
                 .filter(|m| matches_query(m, &q.text)),
         );
         limited |= batch.coverage.truncated || radius < q.radius;
-        notes.push(format!("structure predictions ≤{:.1} km", radius / 1000.));
+        notes.push(format!("structure ≤{:.1} km", radius / 1000.));
     }
     if cancelled() {
         return None;
@@ -137,7 +137,7 @@ pub fn predict_cancelable(w: &World, q: &Query, cancelled: impl Fn() -> bool) ->
         );
         limited |= batch.coverage.truncated || radius < q.radius;
         markers.extend(batch.markers);
-        notes.push(format!("ore predictions ≤{:.1} km", radius / 1000.));
+        notes.push(format!("ore ≤{:.1} km", radius / 1000.));
     }
     if cancelled() {
         return None;
@@ -190,7 +190,7 @@ pub fn predict_cancelable(w: &World, q: &Query, cancelled: impl Fn() -> bool) ->
                         &rock,
                         MarkerKind::Rock,
                         point,
-                        "Predicted surface rock · 128-block search grid",
+                        "surface rock · 128-block search grid",
                         [189, 167, 140],
                     );
                 }

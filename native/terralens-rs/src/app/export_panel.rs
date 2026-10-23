@@ -91,7 +91,6 @@ impl State {
             self.update_height(bounds);
             self.pending_picker = Some(Picker::Map);
         }
-        ui.small("PNG uses fresh seed predictions; it does not include saved-block cutaways.");
         if ui
             .button("Export markers CSV")
             .on_hover_text("Export markers currently shown on the map")
@@ -261,6 +260,8 @@ fn geology_names() -> Vec<String> {
 fn color_for(m: &Marker) -> u8 {
     match &m.kind {
         crate::model::MarkerKind::Structure => 14,
+        crate::model::MarkerKind::Spawn => 15,
+        crate::model::MarkerKind::Player => 12,
         crate::model::MarkerKind::Ore => 6,
         crate::model::MarkerKind::Biome => 11,
         crate::model::MarkerKind::Rock => 3,

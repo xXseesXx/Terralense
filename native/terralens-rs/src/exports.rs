@@ -581,7 +581,12 @@ fn compose_map(
         }
         let px = project_x(marker.x, bounds, width);
         let py = project_z(marker.z, bounds, height);
-        if matches!(&marker.kind, crate::model::MarkerKind::Structure) {
+        if matches!(
+            &marker.kind,
+            crate::model::MarkerKind::Structure
+                | crate::model::MarkerKind::Spawn
+                | crate::model::MarkerKind::Player
+        ) {
             let icon = crate::structure_icons::raster(&marker.id, 24);
             composite_center(image, &icon, px as i32, py as i32);
             continue;
@@ -602,6 +607,8 @@ fn compose_map(
         }
         let color = match &marker.kind {
             crate::model::MarkerKind::Structure => [255, 170, 55, 255],
+            crate::model::MarkerKind::Spawn => [255, 220, 112, 255],
+            crate::model::MarkerKind::Player => [137, 207, 255, 255],
             crate::model::MarkerKind::Tree => [130, 255, 120, 255],
             crate::model::MarkerKind::Forest => [53, 216, 139, 255],
             crate::model::MarkerKind::Rock => [237, 208, 155, 255],
@@ -905,6 +912,8 @@ fn export_markers(
         }
         let kind = match &m.kind {
             crate::model::MarkerKind::Structure => "structure",
+            crate::model::MarkerKind::Spawn => "spawn",
+            crate::model::MarkerKind::Player => "player",
             crate::model::MarkerKind::Ore => "ore",
             crate::model::MarkerKind::Biome => "biome",
             crate::model::MarkerKind::Rock => "rock",
@@ -1120,6 +1129,62 @@ mod tests {
         assert!(csv.contains("\"-1234\",\"-987\",\"72\""));
         assert!(csv.contains("\"-1240\",\"65\",\"-990\",\"-1220\",\"90\",\"-970\""));
         std::fs::remove_file(path).unwrap();
+    }
+
+    #[test]
+    fn composed_map_uses_distinct_spawn_and_player_icons() {
+        let mut image = ImageBuffer::from_pixel(100, 100, Rgba([20, 40, 60, 255]));
+        let marker = |id: &str, label: &str, x, z, kind| Marker {
+            id: id.into(),
+            label: label.into(),
+            namespace: "minecraft".into(),
+            x,
+            z,
+            y: Some(64.),
+            kind,
+            confirmed: true,
+            min_y: None,
+            max_y: None,
+            detail: String::new(),
+            color: [255; 3],
+            bounds: None,
+        };
+        let bounds = Bounds {
+            min_x: 0.,
+            min_z: 0.,
+            max_x: 100.,
+            max_z: 100.,
+        };
+        let markers = [
+            marker(
+                "minecraft:world_spawn",
+                "World spawn",
+                25.,
+                25.,
+                crate::model::MarkerKind::Spawn,
+            ),
+            marker(
+                "minecraft:player/abc",
+                "Player",
+                75.,
+                75.,
+                crate::model::MarkerKind::Player,
+            ),
+        ];
+        compose_map(
+            &mut image,
+            bounds,
+            Layer::Biomes,
+            &markers,
+            &Composition::default(),
+            &|| false,
+        )
+        .unwrap();
+        let spawn = image.get_pixel(25, 25).0;
+        let player = image.get_pixel(75, 78).0;
+        assert!(spawn[0] > 245 && spawn[1] > 235 && spawn[2] > 175);
+        assert!(player[0] < 160 && player[1] > 185 && player[2] > 235);
+        assert_ne!(spawn, player);
     }
     #[test]
     fn cancelled_png_export_keeps_existing_target() {

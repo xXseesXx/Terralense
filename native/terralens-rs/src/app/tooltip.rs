@@ -90,15 +90,9 @@ pub fn show_surface(
             {
                 value_row(ui, "CROP", display_marker_name(crop));
             }
-            ui.label(
-                RichText::new(if saved {
-                    "Saved blocks"
-                } else {
-                    "Seed prediction · generation order and terrain may differ"
-                })
-                .size(10.)
-                .color(MUTED),
-            );
+            if saved {
+                ui.label(RichText::new("Saved blocks").size(10.).color(MUTED));
+            }
         });
 }
 
@@ -331,7 +325,7 @@ pub fn display_marker_name(name: &str) -> String {
         .next()
         .unwrap_or(name)
         .split('/')
-        .filter(|part| !part.is_empty())
+        .filter(|part| !part.is_empty() && *part != "predicted_surface")
         .map(clean_biome_name)
         .collect::<Vec<_>>()
         .join(" · ")

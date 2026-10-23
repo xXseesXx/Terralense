@@ -70,7 +70,7 @@ pub(super) fn paint(
         endpoints.push((
             point,
             format!(
-                "{} · predicted {:.0} blocks",
+                "{} · {:.0} blocks",
                 candidate.nearest_ore.as_deref().unwrap_or("Ore"),
                 candidate.ore_distance.unwrap_or(0.)
             ),

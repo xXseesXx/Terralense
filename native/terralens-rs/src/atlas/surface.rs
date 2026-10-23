@@ -321,14 +321,19 @@ impl SurfaceView {
             return;
         }
         let source = match (saved > 0, predicted > 0) {
-            (true, true) => "Saved + predicted",
+            (true, true) => "Saved",
             (true, false) => "Saved surface",
-            (false, true) => "Seed prediction",
+            (false, true) => "",
             (false, false) if self.path.is_some() => "Saved surface",
-            (false, false) => "Seed prediction",
+            (false, false) => "",
         };
         self.status = format!(
-            "{source} · {} cached chunks{}",
+            "{}{} cached chunks{}",
+            if source.is_empty() {
+                String::new()
+            } else {
+                format!("{source} · ")
+            },
             saved + predicted,
             if errors > 0 {
                 format!(" · {errors} read errors")

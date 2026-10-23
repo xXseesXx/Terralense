@@ -324,8 +324,24 @@ fn beneath_ore_candidates(
                 }
                 let bottom = y - vertical;
                 let top = y + vertical;
-                out.push(Marker { id:format!("{id}@{cx},{cz}"), label: format!("{} · Y {bottom}–{top}", id.replace('_'," ")), namespace:"tfg".into(), x:mx as f64,z:mz as f64,y:Some(y as f64),kind:MarkerKind::Ore,confirmed:false,min_y:Some(bottom as f64),max_y:Some(top as f64),bounds: None,
-                detail:format!("Beneath {kind} vein prediction · feature biome checked at Y={y} · contains {}",materials.join(", ")),color:ore_color(id) });
+                out.push(Marker {
+                    id: format!("{id}@{cx},{cz}"),
+                    label: format!("{} · Y {bottom}–{top}", id.replace('_', " ")),
+                    namespace: "tfg".into(),
+                    x: mx as f64,
+                    z: mz as f64,
+                    y: Some(y as f64),
+                    kind: MarkerKind::Ore,
+                    confirmed: false,
+                    min_y: Some(bottom as f64),
+                    max_y: Some(top as f64),
+                    bounds: None,
+                    detail: format!(
+                        "Beneath {kind} vein · feature biome checked at Y={y} · contains {}",
+                        materials.join(", ")
+                    ),
+                    color: ore_color(id),
+                });
                 if output_cap && out.len() >= MAX_MARKERS {
                     truncated = true;
                     break 'chunks;
@@ -1900,10 +1916,7 @@ where
                     min_y: Some(bottom as f64),
                     max_y: Some(top as f64),
                     bounds: None,
-                    detail: format!(
-                        "Ore seed prediction · {kind} vein · contains {}",
-                        materials.join(", ")
-                    ),
+                    detail: format!("{kind} vein · contains {}", materials.join(", ")),
                     color: ore_color(vein_id),
                 });
                 if output_cap && out.len() >= MAX_MARKERS {
@@ -2027,7 +2040,7 @@ where
                         min_y: Some(y as f64 - height as f64),
                         max_y: Some(y as f64 + height as f64),
                         bounds: None,
-                        detail: "Kaolin clay ore prediction · climate and biome gates pass.".into(),
+                        detail: "Kaolin clay ore · climate and biome gates pass.".into(),
                         color: [232, 216, 199],
                     });
                 }

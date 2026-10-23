@@ -16,9 +16,12 @@ Beneath **1.0.6**. The supported dimensions are **Overworld** and **Beneath / Ne
 - Beneath biome maps with **16-block vertical bands** and saved-block cave cutaways.
 - Unified **Ctrl+F** search for structures, ores and vein contents, biomes, rocks, forests and tree
   habitats. Results are ordered by distance from a configurable point. Enter / Shift+Enter visit
-  the next / previous result.
+  the next / previous result. The default radius is 10 km.
 - Interactive raw-ore artwork and original structure icons, recorded structure footprints, pin
   details, and zoom-dependent visibility. Marker groups stay anchored while you pan.
+- World-spawn and saved-player pins, with cached player names where available. They remain at
+  their recorded coordinates across zoom levels and appear in Everything search and exports.
+  Players are shown in their recorded dimension; these are last-saved positions, not live tracking.
 - Close-up block detail from generated chunks, including structures, trees and crops. Missing
   Overworld chunks have a seed vegetation preview; missing Beneath chunks retain biome colors.
   **View blocks** inspects a saved structure inside its bounding box; **Full terrain** exits it.
@@ -73,7 +76,9 @@ path. Recent sources are available from **File → Recent worlds**. Saves are re
 The resizable left control pane has **Search**, **Biomes**, and **Structures** tabs. Search contains
 the **Seeds** shortlist and location finder; Ctrl+F opens **Features** search. The right icon rail
 switches between structure and ore types. Its group and individual controls hide or show features,
-including related structure variants. This changes display visibility; marker placement remains
+including related structure variants such as villages and unfinished sloops. Right-click a group
+to expand its individual variants; click a child icon to toggle just that variant. Shift-click
+isolates a type or group. This changes display visibility; marker placement remains
 spatially anchored as you pan, and zoom progressively hides common or less prominent markers
 before rare, important ones. The Structures tab lists visible-area or whole-save structures by
 distance and exports the filtered table. Biomes has editable area coordinates and **From visible**.
@@ -114,7 +119,10 @@ maintenance-only command-line options are rejected before opening a window. `--h
 
 **Tools → Display and tooltip options…** contains **Block detail rendering** and **Detail at close
 zoom**. The first controls close-up block drawing and requests; the second toggles the surface
-detail overlay. Search origin, radius, predictions and coverage are in Features' **…** menu.
+detail overlay. Detail rendering and connected-region hover outlines start disabled; enable them
+from these options and **Map → Connected-region highlight**. Existing preferences receive these
+quieter defaults once; later choices are retained. Search origin, radius (10 km by default),
+and coverage are in Features' **…** menu.
 
 ## Accuracy
 

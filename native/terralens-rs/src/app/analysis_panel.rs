@@ -19,13 +19,20 @@ pub fn show_controls(
 ) -> Option<Action> {
     let mut action = None;
     ui.horizontal_wrapped(|ui| {
-        if mode==0 && ui.button("Analyze area").clicked() {
+        if mode == 0 && ui.button("Analyze area").clicked() {
             action = Some(Action::Analyze(Query {
                 bounds,
                 sample_budget: 4096,
             }));
         }
-        if mode==1 && ui.button("Find locations").on_hover_text("Combine climate, nearby rock and predicted ore requirements; sample the current seed").clicked() {
+        if mode == 1
+            && ui
+                .button("Find locations")
+                .on_hover_text(
+                    "Combine climate, nearby rock and ore requirements; sample the current seed",
+                )
+                .clicked()
+        {
             action = Some(Action::Locate(query.clone()));
         }
     });
@@ -253,9 +260,13 @@ pub fn show_results(ui: &mut egui::Ui, results: Option<&LocationResults>) -> Opt
                     c.distance / 1000.,
                     c.biome
                 );
-                if ui.selectable_label(false, text)
-                    .on_hover_text("Pin this sampled site and show its matching rock and predicted ore on the map")
-                    .clicked() {
+                if ui
+                    .selectable_label(false, text)
+                    .on_hover_text(
+                        "Pin this sampled site and show its matching rock and ore on the map",
+                    )
+                    .clicked()
+                {
                     selected = Some(c.point);
                 }
                 ui.label(

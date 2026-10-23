@@ -1,5 +1,5 @@
 //! World-anchored clustering: panning never changes a marker's group or centroid.
-use crate::model::{Bounds, Marker, Point};
+use crate::model::{Bounds, Marker, MarkerKind, Point};
 use std::collections::BTreeMap;
 
 pub(super) fn cell_span(bpp: f64) -> f64 {
@@ -21,7 +21,9 @@ pub(super) fn groups(markers: &[&Marker], bpp: f64, selected: Option<&Marker>) -
     let mut groups = BTreeMap::<(i64, i64), Vec<usize>>::new();
     let mut pinned = Vec::new();
     for (index, marker) in markers.iter().enumerate() {
-        if selected.is_some_and(|pin| pin.id == marker.id && pin.point() == marker.point()) {
+        if matches!(marker.kind, MarkerKind::Spawn | MarkerKind::Player)
+            || selected.is_some_and(|pin| pin.id == marker.id && pin.point() == marker.point())
+        {
             pinned.push(index);
         } else {
             groups
@@ -71,6 +73,27 @@ mod tests {
             bounds: None,
         }
     }
+    #[test]
+    fn spawn_and_players_stay_at_their_positions_outside_feature_clusters() {
+        let mut values = [
+            marker(36., 12.),
+            marker(42., 16.),
+            marker(40., 14.),
+            marker(41., 15.),
+        ];
+        values[2].kind = MarkerKind::Spawn;
+        values[3].kind = MarkerKind::Player;
+        let markers: Vec<_> = values.iter().collect();
+        for bpp in [0.125, 2., 32., 4096.] {
+            let groups = groups(&markers, bpp, None);
+            for index in [2, 3] {
+                let group = groups.iter().find(|group| group.contains(&index)).unwrap();
+                assert_eq!(group, &[index]);
+                assert_eq!(center(&markers, group), markers[index].point());
+            }
+        }
+    }
+
     #[test]
     fn neighboring_pair_keeps_membership_and_world_center_during_a_pan() {
         // This pair straddled a screen-cell boundary after a tiny pan in the old scheme.

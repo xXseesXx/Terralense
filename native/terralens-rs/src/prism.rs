@@ -4,7 +4,7 @@
 //! location table and only generated chunks are decompressed. A complete index is
 //! cached against the region file metadata so a running game invalidates it naturally.
 use crate::dimension::{Dimension, DimensionInfo};
-use crate::model::{Marker, MarkerKind, Point, Settings, WorldInfo};
+use crate::model::{Marker, MarkerKind, Point, Settings, WorldInfo, WorldLocation};
 use flate2::read::{DeflateDecoder, GzDecoder, ZlibDecoder};
 use rayon::prelude::*;
 use serde::Deserialize;
@@ -247,6 +247,7 @@ fn read_world(path: &Path) -> WorldInfo {
         compatible: false,
         warning: None,
         dimensions: Vec::new(),
+        map_locations: Vec::new(),
     };
     let parsed = (|| -> Result<WorldInfo, String> {
         let level = read_nbt_file(&path.join("level.dat"))?;
@@ -327,6 +328,7 @@ fn read_world(path: &Path) -> WorldInfo {
                     .into_owned()
             });
         let dimensions = discover_dimensions(path, dimension_defs, player);
+        let map_locations = read_world_locations(path, data, data.get("Player"));
         Ok(WorldInfo {
             id: path
                 .file_name()
@@ -341,6 +343,7 @@ fn read_world(path: &Path) -> WorldInfo {
             compatible: warning.is_none(),
             warning,
             dimensions,
+            map_locations,
         })
     })();
     parsed.unwrap_or_else(|e| {
@@ -560,6 +563,260 @@ fn read_saved_player(world: &Path) -> Option<Nbt> {
         .find_map(|(_, path)| read_nbt_file(&path).ok())
 }
 
+const WORLD_BORDER_LIMIT: f64 = 29_999_984.0;
+
+fn valid_marker_position(x: f64, y: f64, z: f64) -> bool {
+    x.is_finite()
+        && z.is_finite()
+        && y.is_finite()
+        && x.abs() <= WORLD_BORDER_LIMIT
+        && z.abs() <= WORLD_BORDER_LIMIT
+        && y.abs() <= 4096.0
+}
+
+fn read_world_locations(world: &Path, data: &Nbt, embedded: Option<&Nbt>) -> Vec<WorldLocation> {
+    let mut locations = Vec::new();
+    if let (Some(x), Some(y), Some(z)) = (
+        data.get("SpawnX").and_then(Nbt::f64),
+        data.get("SpawnY").and_then(Nbt::f64),
+        data.get("SpawnZ").and_then(Nbt::f64),
+    ) {
+        if valid_marker_position(x, y, z) {
+            locations.push(location_marker(
+                "minecraft:world_spawn".into(),
+                "World spawn".into(),
+                MarkerKind::Spawn,
+                "minecraft:overworld".into(),
+                x,
+                y,
+                z,
+                "Saved world spawn position".into(),
+                [97, 190, 115],
+            ));
+        }
+    }
+    let names = read_player_names(world);
+    let mut players =
+        std::collections::BTreeMap::<String, (String, String, f64, f64, f64, bool)>::new();
+    if let Some(player) = embedded {
+        insert_player_location(
+            &mut players,
+            player,
+            player_uuid(player).unwrap_or_else(|| "embedded-player".into()),
+            &names,
+            true,
+        );
+    }
+    if let Ok(entries) = fs::read_dir(world.join("playerdata")) {
+        let mut files = entries
+            .flatten()
+            .filter(|entry| {
+                entry
+                    .path()
+                    .extension()
+                    .is_some_and(|extension| extension == "dat")
+            })
+            .collect::<Vec<_>>();
+        files.sort_by_key(|entry| entry.file_name());
+        for entry in files {
+            let Some(uuid) = entry
+                .path()
+                .file_stem()
+                .and_then(|s| s.to_str())
+                .filter(|s| valid_uuid(s))
+                .map(str::to_owned)
+            else {
+                continue;
+            };
+            let Ok(player) = read_nbt_file(&entry.path()) else {
+                continue;
+            };
+            insert_player_location(&mut players, &player, uuid, &names, false);
+        }
+    }
+    for (uuid, (label, dimension, x, y, z, _embedded)) in players {
+        let normalized = normalized_uuid(&uuid);
+        let short = normalized.get(..8).unwrap_or("unknown");
+        let fallback = format!("Player {short}");
+        let label = if label.is_empty() { fallback } else { label };
+        locations.push(location_marker(
+            format!("minecraft:player/{normalized}"),
+            label,
+            MarkerKind::Player,
+            dimension,
+            x,
+            y,
+            z,
+            "Saved player position · last recorded in this world".into(),
+            [110, 168, 221],
+        ));
+    }
+    locations
+}
+
+fn insert_player_location(
+    players: &mut std::collections::BTreeMap<String, (String, String, f64, f64, f64, bool)>,
+    player: &Nbt,
+    uuid: String,
+    names: &HashMap<String, String>,
+    embedded: bool,
+) {
+    let dimension = player
+        .get("Dimension")
+        .and_then(Nbt::string)
+        .map(str::to_owned);
+    let pos = player.get("Pos").and_then(Nbt::list);
+    let (Some(dimension), Some(pos)) = (dimension, pos) else {
+        return;
+    };
+    let (Some(x), Some(y), Some(z)) = (
+        pos.first().and_then(Nbt::f64),
+        pos.get(1).and_then(Nbt::f64),
+        pos.get(2).and_then(Nbt::f64),
+    ) else {
+        return;
+    };
+    if pos.len() < 3 || !valid_marker_position(x, y, z) {
+        return;
+    }
+    let normalized = normalized_uuid(&uuid);
+    let name = names.get(&normalized).cloned().unwrap_or_default();
+    let key = if uuid == "embedded-player" {
+        uuid
+    } else {
+        normalized
+    };
+    let value = (name, dimension, x, y, z, embedded);
+    match players.get(&key) {
+        Some(existing) if existing.5 && !embedded => {}
+        _ => {
+            players.insert(key, value);
+        }
+    }
+}
+
+fn valid_uuid(uuid: &str) -> bool {
+    let compact = normalized_uuid(uuid);
+    compact.len() == 32 && compact.chars().all(|c| c.is_ascii_hexdigit())
+}
+
+fn location_marker(
+    id: String,
+    label: String,
+    kind: MarkerKind,
+    dimension: String,
+    x: f64,
+    y: f64,
+    z: f64,
+    detail: String,
+    color: [u8; 3],
+) -> WorldLocation {
+    WorldLocation {
+        dimension,
+        marker: Marker {
+            id,
+            label,
+            namespace: "minecraft".into(),
+            x,
+            z,
+            y: Some(y),
+            kind,
+            confirmed: true,
+            min_y: Some(y),
+            max_y: Some(y),
+            detail,
+            color,
+            bounds: None,
+        },
+    }
+}
+
+fn player_uuid(player: &Nbt) -> Option<String> {
+    if let Some(values) = player.get("UUID").and_then(Nbt::int_array) {
+        if values.len() == 4 {
+            let mut hex = String::with_capacity(32);
+            for value in values {
+                hex.push_str(&format!("{:08x}", *value as u32));
+            }
+            return Some(format!(
+                "{}-{}-{}-{}-{}",
+                &hex[0..8],
+                &hex[8..12],
+                &hex[12..16],
+                &hex[16..20],
+                &hex[20..32]
+            ));
+        }
+    }
+    let most = player.get("UUIDMost").and_then(Nbt::i64)? as u64;
+    let least = player.get("UUIDLeast").and_then(Nbt::i64)? as u64;
+    let compact = format!("{most:016x}{least:016x}");
+    Some(format!(
+        "{}-{}-{}-{}-{}",
+        &compact[0..8],
+        &compact[8..12],
+        &compact[12..16],
+        &compact[16..20],
+        &compact[20..32]
+    ))
+}
+
+fn normalized_uuid(uuid: &str) -> String {
+    uuid.chars()
+        .filter(|c| *c != '-')
+        .flat_map(char::to_lowercase)
+        .collect()
+}
+
+fn read_player_names(world: &Path) -> HashMap<String, String> {
+    let mut names = HashMap::new();
+    let directories = world
+        .parent()
+        .into_iter()
+        .chain(world.parent().and_then(Path::parent));
+    for directory in directories {
+        for filename in ["usercache.json", "usernamecache.json"] {
+            let Ok(bytes) = fs::read(directory.join(filename)) else {
+                continue;
+            };
+            let Ok(value) = serde_json::from_slice::<serde_json::Value>(&bytes) else {
+                continue;
+            };
+            if let Some(entries) = value.as_array() {
+                for entry in entries {
+                    if let (Some(uuid), Some(name)) = (
+                        entry.get("uuid").and_then(|x| x.as_str()),
+                        entry.get("name").and_then(|x| x.as_str()),
+                    ) {
+                        names
+                            .entry(normalized_uuid(uuid))
+                            .or_insert_with(|| name.to_owned());
+                    }
+                }
+            } else if let Some(entries) = value.as_object() {
+                for (key, value) in entries {
+                    let Some(value) = value.as_str() else {
+                        continue;
+                    };
+                    let pair = if valid_uuid(key) {
+                        Some((key.as_str(), value))
+                    } else if valid_uuid(value) {
+                        Some((value, key.as_str()))
+                    } else {
+                        None
+                    };
+                    if let Some((uuid, name)) = pair {
+                        names
+                            .entry(normalized_uuid(uuid))
+                            .or_insert_with(|| name.to_owned());
+                    }
+                }
+            }
+        }
+    }
+    names
+}
+
 #[derive(Clone, Debug)]
 enum Nbt {
     Number(f64),
@@ -691,9 +948,9 @@ impl<'a> Reader<'a> {
                     return Err("Invalid NBT array length".into());
                 }
                 if t == 11 {
-                    if n == 6 {
-                        let mut values = Vec::with_capacity(6);
-                        for _ in 0..6 {
+                    if n == 4 || n == 6 {
+                        let mut values = Vec::with_capacity(n as usize);
+                        for _ in 0..n {
                             values.push(self.i32()?);
                         }
                         Nbt::IntArray(values)
@@ -1033,6 +1290,16 @@ mod tests {
         b.extend(v.as_bytes());
         b
     }
+    fn double_list_tag(n: &str, values: [f64; 3]) -> Vec<u8> {
+        let mut b = vec![9];
+        b.extend(name(n));
+        b.push(6);
+        b.extend(3i32.to_be_bytes());
+        for value in values {
+            b.extend(value.to_be_bytes());
+        }
+        b
+    }
     fn int_array_tag(n: &str, values: &[i32]) -> Vec<u8> {
         let mut bytes = vec![11];
         bytes.extend(name(n));
@@ -1172,6 +1439,112 @@ mod tests {
         assert_eq!((marker.x, marker.z), (16008., -12792.));
         assert_eq!(marker.bounds.unwrap().min_x, -20);
         assert_eq!(marker.bounds.unwrap().max_z, 120);
+    }
+
+    #[test]
+    fn saved_spawn_and_player_locations_validate_deduplicate_and_keep_dimensions() {
+        let root =
+            std::env::temp_dir().join(format!("terralens-location-test-{}", std::process::id()));
+        let world = root.join(".minecraft/saves/world");
+        fs::create_dir_all(world.join("playerdata")).unwrap();
+        fs::write(
+            world
+                .parent()
+                .unwrap()
+                .parent()
+                .unwrap()
+                .join("usercache.json"),
+            br#"[{"name":"NetherExplorer","uuid":"00000000-0000-0001-0000-000000000002"}]"#,
+        )
+        .unwrap();
+        fs::write(
+            world.parent().unwrap().join("usernamecache.json"),
+            br#"{"00000000-0000-0001-0000-000000000002":"DirectForgeName"}"#,
+        )
+        .unwrap();
+        let data = Nbt::Compound(HashMap::from([
+            ("SpawnX".into(), Nbt::Number(120.)),
+            ("SpawnY".into(), Nbt::Number(72.)),
+            ("SpawnZ".into(), Nbt::Number(-200.)),
+        ]));
+        let embedded = Nbt::Compound(HashMap::from([
+            ("UUIDMost".into(), Nbt::Long(1)),
+            ("UUIDLeast".into(), Nbt::Long(2)),
+            (
+                "Dimension".into(),
+                Nbt::String("minecraft:the_nether".into()),
+            ),
+            (
+                "Pos".into(),
+                Nbt::List(vec![
+                    Nbt::Number(-42.5),
+                    Nbt::Number(88.0),
+                    Nbt::Number(19.25),
+                ]),
+            ),
+        ]));
+        let player_file = |most, least, dimension: &str, pos| {
+            let mut body = long_tag(4, "UUIDMost", most);
+            body.extend(long_tag(4, "UUIDLeast", least));
+            body.extend(string_tag("Dimension", dimension));
+            body.extend(double_list_tag("Pos", pos));
+            compound("", body)
+        };
+        write_gzip(
+            &world.join("playerdata/00000000-0000-0001-0000-000000000002.dat"),
+            &player_file(1, 2, "minecraft:the_nether", [9., 80., 10.]),
+        );
+        write_gzip(
+            &world.join("playerdata/00000000-0000-0003-0000-000000000004.dat"),
+            &player_file(3, 4, "minecraft:overworld", [30., 65., 40.]),
+        );
+        fs::write(world.join("playerdata/malformed.dat"), b"bad gzip").unwrap();
+        let locations = read_world_locations(&world, &data, Some(&embedded));
+        assert_eq!(locations.len(), 3);
+        let spawn = locations
+            .iter()
+            .find(|loc| loc.marker.kind == MarkerKind::Spawn)
+            .unwrap();
+        assert_eq!(spawn.dimension, "minecraft:overworld");
+        assert_eq!(
+            (spawn.marker.x, spawn.marker.y, spawn.marker.z),
+            (120., Some(72.), -200.)
+        );
+        let nether = locations
+            .iter()
+            .find(|loc| loc.dimension == "minecraft:the_nether")
+            .unwrap();
+        assert_eq!(nether.marker.label, "DirectForgeName");
+        assert_eq!((nether.marker.x, nether.marker.y), (-42.5, Some(88.)));
+        assert_eq!(
+            locations
+                .iter()
+                .filter(|loc| loc.marker.kind == MarkerKind::Player)
+                .count(),
+            2
+        );
+        assert!(
+            locations
+                .iter()
+                .all(|loc| loc.marker.confirmed && loc.marker.bounds.is_none())
+        );
+
+        let no_spawn = Nbt::Compound(HashMap::from([
+            ("SpawnX".into(), Nbt::Number(0.)),
+            ("SpawnZ".into(), Nbt::Number(0.)),
+        ]));
+        assert!(
+            !read_world_locations(&root.join("empty"), &no_spawn, None)
+                .iter()
+                .any(|loc| loc.marker.kind == MarkerKind::Spawn)
+        );
+        let invalid = Nbt::Compound(HashMap::from([
+            ("SpawnX".into(), Nbt::Number(f64::INFINITY)),
+            ("SpawnY".into(), Nbt::Number(0.)),
+            ("SpawnZ".into(), Nbt::Number(0.)),
+        ]));
+        assert!(read_world_locations(&root.join("empty"), &invalid, None).is_empty());
+        fs::remove_dir_all(root).unwrap();
     }
 
     #[test]

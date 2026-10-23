@@ -218,10 +218,12 @@ impl TerraLensApp {
                 self.prefs
                     .display
                     .marker_visible(marker, self.prefs.blocks_per_point)
-                    && (self.prefs.dimension != Dimension::Beneath || {
-                        let (min, max) = self.prefs.dimension.band(self.prefs.slice_y);
-                        marker.intersects_band(min, max)
-                    })
+                    && (self.prefs.dimension != Dimension::Beneath
+                        || matches!(marker.kind, MarkerKind::Spawn | MarkerKind::Player)
+                        || {
+                            let (min, max) = self.prefs.dimension.band(self.prefs.slice_y);
+                            marker.intersects_band(min, max)
+                        })
             })
             .cloned()
             .collect()
