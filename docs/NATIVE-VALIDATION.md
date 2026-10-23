@@ -1,9 +1,9 @@
 # Native validation
 
 The published release was checked on Linux against TFG Core 0.9.25, TFC 3.2.25, Beneath 1.0.6
-and Ad Astra 1.15.21. The current release passes **284 release tests**: 260 library, twelve engine-process, ten parity
+and Ad Astra 1.15.21. The current release passes **288 release tests**: 264 library, twelve engine-process, ten parity
 and two release-CLI checks. Formatting, the headless build and the opt-in diagnostic targets pass.
-This includes 39 Atlas tests covering cache reuse across zoom levels, refinement, family coverage,
+This includes 40 Atlas tests covering cache reuse across zoom levels, refinement, family coverage,
 adjacent boundaries, split continuation, same-root panning and dimension-aware spawn/player pins.
 Saved-location fixtures cover spawn, UUID deduplication, multiple players and dimensions, malformed
 files, and both player-name cache formats. Structure regressions cover off-anchor box centers,
@@ -89,10 +89,16 @@ and the [full report](data/structure-audit-seed0-100km.json) for coordinates and
   Catalog partition checks keep each vein selectable once, preserve dimensions and namespaces,
   and verify mixed-vein grouping against configured outputs. Spawn and player artwork stays
   separate from feature clusters and appears in composed PNG/CSV exports.
-- Ruined churches, towers, towerhouses, castles, ancient monuments and other ruined sites share
-  one expandable Ruins row across mod namespaces. Installed-catalog tests verify the consolidation,
+- Ruined churches, towers, towerhouses, castles, ancient monuments, aqueducts, ocean moai and
+  other ruined sites share one expandable Ruins row across mod namespaces. Installed-catalog tests verify the consolidation,
   retained individual IDs and singleton solo behavior. A shared classifier assigns cracked masonry,
   broken chapel, shattered keep and standing-stone sprites in the rail, map and exports.
+- Beneath structure pins ignore the selected vertical band in both the map and visible-marker
+  exports, while ore pins keep their height filter. A cache regression checks that completed
+  seed-placement pins survive repeated band changes and are cleared on a dimension change.
+  Requested quiet defaults hide Ruins, Nether fossils, forest roaming, Moon cheese and rabbit
+  houses. Migration/serialization tests verify one-time application and subsequent individual
+  overrides, including ocean moai and aqueducts in the shared Ruins group.
 - Native icon rendering was checked at 940×620 with 32px transparent structure sprites and larger
   raw ore artwork. Clusters use representative artwork and counts without a disc background.
   Sprite tests cover alpha, the mineshaft opening, TFG symbol routing and distinct vanilla textures

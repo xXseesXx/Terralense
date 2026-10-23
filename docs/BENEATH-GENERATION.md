@@ -37,6 +37,10 @@ representing 11 unique biomes. Because depth depends on Y, the biome map must ke
 Y. The viewer uses section-aligned 16-block layers (0–15 through 240–255), samples biomes
 at the middle of each layer, and shows the highest saved block within that layer in detail mode.
 The upper preset selects 192–207; lower and middle layers show different biome bands.
+Structure pins span every band, including saved starts outside the selected height. Completed
+placement caches survive band changes; only the terrain raster and height-dependent detail are
+reloaded. Ore markers are filtered by their vertical extent. Nether fossils start hidden and
+can be enabled through the structure rail.
 Biomes are stored at quart resolution, so exact saved palette comparisons use
 quart-aligned X, Y, and Z.
 

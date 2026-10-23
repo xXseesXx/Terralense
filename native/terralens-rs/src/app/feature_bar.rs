@@ -785,7 +785,10 @@ mod tests {
             rows.iter().find(|row| row.label == "tin").unwrap().members,
             ["deep_asbestos", "high_tin", "sand_tin"]
         );
-        let mut prefs = DisplayPrefs::default();
+        let mut prefs = DisplayPrefs {
+            hidden_structure_ids: Vec::new(),
+            ..Default::default()
+        };
         prefs.set_feature_group_visible(&MarkerKind::Ore, &copper.members, false);
         prefs.set_feature_visible(&MarkerKind::Ore, "normal_copper", true);
         assert!(!is_hidden(&prefs, &MarkerKind::Ore, "normal_copper"));
@@ -882,6 +885,9 @@ mod tests {
             "wan:ruined_castle",
             "wan:ice_spike_castle",
             "wan:abandoned_village",
+            "tfg:aqueduct/aqueduct",
+            "tfg:ocean/ocean_moai",
+            "tfg:ocean/ocean_moai_0",
             "wan:mesa_temple",
             "wan:mesa_temple_small",
         ]
@@ -896,7 +902,7 @@ mod tests {
         assert_eq!(ruins.key, "structure:ruins");
         assert_eq!(ruins.label, "Ruins");
         assert_eq!(ruins.icon_id, "terralens:ruins");
-        assert_eq!(ruins.members.len(), 15);
+        assert_eq!(ruins.members.len(), 18);
         for id in [
             "tfc_ruins:ruin_rich",
             "other:ruin_small",
@@ -907,6 +913,9 @@ mod tests {
             "wan:desert_ruins_small",
             "wan:ruined_castle",
             "wan:abandoned_village",
+            "tfg:aqueduct/aqueduct",
+            "tfg:ocean/ocean_moai",
+            "tfg:ocean/ocean_moai_0",
         ] {
             assert_eq!(group(id).key, "structure:ruins", "{id}");
         }
@@ -916,7 +925,10 @@ mod tests {
 
     #[test]
     fn preference_helpers_toggle_solo_and_restore_types_independently() {
-        let mut prefs = DisplayPrefs::default();
+        let mut prefs = DisplayPrefs {
+            hidden_structure_ids: Vec::new(),
+            ..Default::default()
+        };
         let ores = vec!["normal_gold".to_owned(), "normal_iron".to_owned()];
         let structures = vec![
             "minecraft:village".to_owned(),
@@ -1065,7 +1077,10 @@ mod tests {
                 .any(|g| g.members == ["wan_ancient_beasts:training_outpost"])
         );
 
-        let mut prefs = DisplayPrefs::default();
+        let mut prefs = DisplayPrefs {
+            hidden_structure_ids: Vec::new(),
+            ..Default::default()
+        };
         prefs.set_feature_group_visible(&MarkerKind::Structure, &tower.members, false);
         assert!(
             tower
@@ -1094,7 +1109,12 @@ mod tests {
         let (_, catalog) = super::super::workspace::feature_catalog_for(Dimension::Overworld);
         let installed: Vec<_> = catalog
             .iter()
-            .filter(|(id, _)| id.starts_with("tfc_ruins:") || id.starts_with("tfc_ruined_world:"))
+            .filter(|(id, _)| {
+                id.starts_with("tfc_ruins:")
+                    || id.starts_with("tfc_ruined_world:")
+                    || id == "tfg:aqueduct/aqueduct"
+                    || id == "tfg:ocean/ocean_moai_0"
+            })
             .map(|(id, label)| Entry {
                 id: id.clone(),
                 label: label.clone(),
@@ -1108,6 +1128,12 @@ mod tests {
         assert!(rows[0].members.iter().any(|id| id.contains("church")));
         assert!(rows[0].members.iter().any(|id| id.contains("towerhouse")));
         assert!(rows[0].members.iter().any(|id| id.contains("monument")));
+        assert!(
+            rows[0]
+                .members
+                .iter()
+                .any(|id| id == "tfg:ocean/ocean_moai_0")
+        );
     }
 
     #[test]
@@ -1117,7 +1143,10 @@ mod tests {
         assert_eq!(rows.len(), 1);
         assert_eq!(rows[0].icon_id, "terralens:ruins");
         assert_eq!(rows[0].members, ["mod:abandoned_shrine"]);
-        let mut prefs = DisplayPrefs::default();
+        let mut prefs = DisplayPrefs {
+            hidden_structure_ids: Vec::new(),
+            ..Default::default()
+        };
         prefs.solo_feature(
             &MarkerKind::Structure,
             rows.iter().flat_map(|row| row.members.iter().cloned()),

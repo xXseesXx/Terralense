@@ -216,15 +216,12 @@ impl TerraLensApp {
             .visible_markers(bounds, self.prefs.show_ores, self.prefs.show_structures)
             .into_iter()
             .filter(|marker| {
-                self.prefs
-                    .display
-                    .marker_visible(marker, self.prefs.blocks_per_point)
-                    && (self.prefs.dimension != Dimension::Beneath
-                        || matches!(marker.kind, MarkerKind::Spawn | MarkerKind::Player)
-                        || {
-                            let (min, max) = self.prefs.dimension.band(self.prefs.slice_y);
-                            marker.intersects_band(min, max)
-                        })
+                self.prefs.display.marker_visible_in_view(
+                    marker,
+                    self.prefs.blocks_per_point,
+                    self.prefs.dimension,
+                    self.prefs.slice_y,
+                )
             })
             .cloned()
             .collect()

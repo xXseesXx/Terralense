@@ -983,18 +983,23 @@ impl Atlas {
         self.pending.clear();
         self.uploads.clear();
         self.markers.clear();
-        self.predicted.clear();
+        // A Beneath slice changes the terrain raster, not seed-derived placement positions.
+        // Keep completed feature data so its pins remain present while the new band loads.
         if !preserve_saved {
+            self.predicted.clear();
             self.saved.clear();
             self.saved_index = MarkerIndex::default();
             self.scan_epoch = self.spec.epoch;
         }
         self.marker_index = MarkerIndex::default();
-        self.feature_tiles.clear();
-        self.feature_splits.clear();
-        self.feature_truncated.clear();
-        self.feature_lru.clear();
-        self.feature_visible_keys.clear();
+        if !preserve_saved {
+            self.feature_tiles.clear();
+            self.feature_splits.clear();
+            self.feature_truncated.clear();
+            self.feature_lru.clear();
+            self.feature_visible_keys.clear();
+            self.feature_limited = false;
+        }
         self.feature_plan_key = None;
         self.feature_pending = false;
         self.probe = None;
@@ -1016,7 +1021,6 @@ impl Atlas {
         if !preserve_saved {
             self.loading_scan = save.is_some();
         }
-        self.feature_limited = false;
         self.search_limited = false;
         self.cancel_tasks();
         self.analysis_report = None;
@@ -3450,6 +3454,34 @@ mod tests {
             atlas.spec.epoch, unchanged,
             "Unchanged selection must not restart work each frame"
         );
+    }
+
+    #[test]
+    fn height_scrubbing_keeps_completed_feature_pins_and_resets_them_on_dimension_change() {
+        let mut atlas = Atlas::new(&egui::Context::default(), 7, Settings::default());
+        atlas.set_dimension(Dimension::Beneath, 96);
+        let key = FeatureTileKey::at(Point::default(), 0, true, true);
+        let mut pin = marker(1, MarkerKind::Structure, 8., 8., "tfg");
+        pin.id = "tfg:beneath/tower@0,0".into();
+        atlas.cache_feature_result(key, vec![pin], false);
+        let bounds = Bounds {
+            min_x: 0.,
+            min_z: 0.,
+            max_x: 16.,
+            max_z: 16.,
+        };
+        for y in [0, 80, 128, 240] {
+            atlas.set_dimension(Dimension::Beneath, y);
+            assert_eq!(atlas.feature_tiles.len(), 1, "Y={y}");
+            assert_eq!(atlas.feature_lru.len(), 1, "Y={y}");
+            assert_eq!(atlas.predicted.len(), 1, "Y={y}");
+            let visible = atlas.visible_markers(bounds, false, true);
+            assert_eq!(visible.len(), 1, "Y={y}");
+            assert_eq!(visible[0].id, "tfg:beneath/tower@0,0");
+        }
+        atlas.set_dimension(Dimension::Moon, Dimension::Moon.default_y());
+        assert!(atlas.feature_tiles.is_empty() && atlas.predicted.is_empty());
+        assert!(atlas.visible_markers(bounds, false, true).is_empty());
     }
 
     #[test]

@@ -114,7 +114,7 @@ impl Default for Preferences {
     fn default() -> Self {
         Self {
             navigation: navigation::Navigation::default(),
-            defaults_version: 1,
+            defaults_version: 2,
             tools: map_tools::MapToolsPrefs::default(),
             display: crate::display::DisplayPrefs::default(),
             world_id: String::new(),
@@ -237,6 +237,10 @@ impl Preferences {
             self.allow_detail_rendering = false;
             self.defaults_version = 1;
         }
+        if self.defaults_version < 2 {
+            self.display.apply_structure_visibility_defaults();
+            self.defaults_version = 2;
+        }
     }
 }
 
@@ -341,9 +345,10 @@ impl TerraLensApp {
             atlas.set_dimension(Dimension::Beneath, top);
         }
         let keep_selected = self.selected_marker.as_ref().is_some_and(|marker| {
-            marker
-                .bounds
-                .is_some_and(|bounds| bounds.intersects_band(top - 15, top))
+            marker.kind == MarkerKind::Structure
+                || marker
+                    .bounds
+                    .is_some_and(|bounds| bounds.intersects_band(top - 15, top))
         });
         if !keep_selected {
             self.selected_marker = None;
@@ -1432,20 +1437,13 @@ impl TerraLensApp {
             self.prefs.show_ores,
             self.prefs.show_structures,
         );
-        visible_markers.retain(|m| {
-            let in_band = if self.prefs.dimension == Dimension::Beneath
-                && !matches!(m.kind, MarkerKind::Spawn | MarkerKind::Player)
-            {
-                let (min, max) = self.prefs.dimension.band(self.prefs.slice_y);
-                m.intersects_band(min, max)
-            } else {
-                true
-            };
-            in_band
-                && self
-                    .prefs
-                    .display
-                    .marker_visible(m, self.prefs.blocks_per_point)
+        visible_markers.retain(|marker| {
+            self.prefs.display.marker_visible_in_view(
+                marker,
+                self.prefs.blocks_per_point,
+                self.prefs.dimension,
+                self.prefs.slice_y,
+            )
         });
         if let Some(marker) = &self.selected_marker {
             if bounds.contains(marker.map_point().x, marker.map_point().z)
@@ -2457,6 +2455,54 @@ mod interaction_tests {
             restored.connected_highlight
                 && restored.surface_detail
                 && restored.allow_detail_rendering
+        );
+    }
+
+    #[test]
+    fn structure_defaults_upgrade_once_without_resetting_later_visibility_choices() {
+        let mut prefs: Preferences = serde_json::from_value(serde_json::json!({
+            "defaults_version": 1,
+            "connected_highlight": true, "surface_detail": true, "allow_detail_rendering": true,
+            "display": { "hidden_structure_ids": ["tfg:mineshaft/mineshaft"] }
+        }))
+        .unwrap();
+        prefs.upgrade_defaults();
+        assert_eq!(prefs.defaults_version, 2);
+        assert!(prefs.connected_highlight && prefs.surface_detail && prefs.allow_detail_rendering);
+        for id in [
+            "tfg:mineshaft/mineshaft",
+            "minecraft:nether_fossil",
+            "tfg:ocean/ocean_moai_0",
+            "tfg:aqueduct/aqueduct",
+        ] {
+            assert!(
+                prefs
+                    .display
+                    .hidden_structure_ids
+                    .iter()
+                    .any(|hidden| hidden == id),
+                "{id}"
+            );
+        }
+        prefs
+            .display
+            .set_feature_visible(&MarkerKind::Structure, "tfg:ocean/ocean_moai_0", true);
+        let mut restored: Preferences =
+            serde_json::from_value(serde_json::to_value(prefs).unwrap()).unwrap();
+        restored.upgrade_defaults();
+        assert!(
+            !restored
+                .display
+                .hidden_structure_ids
+                .iter()
+                .any(|id| id == "tfg:ocean/ocean_moai_0")
+        );
+        assert!(
+            restored
+                .display
+                .hidden_structure_ids
+                .iter()
+                .any(|id| id == "tfg:aqueduct/aqueduct")
         );
     }
 

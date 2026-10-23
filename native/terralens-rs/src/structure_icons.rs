@@ -24,6 +24,11 @@ pub fn ruin_topic(id: &str) -> Option<RuinTopic> {
     }
     let monument = has("monument") || has("monuments");
     let ruined = matches!(namespace, "tfc_ruins" | "tfc_ruined_world")
+        || id == "tfg:aqueduct/aqueduct"
+        || matches!(
+            id.as_str(),
+            "tfg:ocean/ocean_moai" | "tfg:ocean/ocean_moai_0"
+        )
         || ["ruin", "ruins", "ruined", "abandoned"]
             .into_iter()
             .any(has)
@@ -568,6 +573,9 @@ mod tests {
             ("tfc_ruined_world:towerhouse_2", RuinTopic::Tower),
             ("tfc_ruined_world:castle_1", RuinTopic::Tower),
             ("tfc_ruined_world:ancient_monument_2", RuinTopic::Monument),
+            ("tfg:aqueduct/aqueduct", RuinTopic::Monument),
+            ("tfg:ocean/ocean_moai", RuinTopic::Monument),
+            ("tfg:ocean/ocean_moai_0@-138,-156", RuinTopic::Monument),
             ("mod:ruins/stone_church@-31,84", RuinTopic::Church),
             ("mod:ancient_monuments/stone_circle", RuinTopic::Monument),
             ("wan_ancient_beasts:abandoned_village", RuinTopic::Masonry),
@@ -579,6 +587,7 @@ mod tests {
             "tfg:beneath/tower",
             "mod:church",
             "minecraft:monument",
+            "tfg:ocean/ocean_monument",
             "minecraft:ancient_city",
             "tfg:illagers/arabic_village_living",
             "tfg:moon/moonbase",
@@ -589,6 +598,11 @@ mod tests {
         assert_eq!(
             sprite("minecraft:ruined_portal"),
             Sprite::Cubiomes("portal")
+        );
+        assert_eq!(
+            raster("tfg:aqueduct/aqueduct", 32),
+            raster("tfc_ruined_world:ancient_monument_2", 32),
+            "Aqueduct uses the original ruined monument silhouette"
         );
     }
 

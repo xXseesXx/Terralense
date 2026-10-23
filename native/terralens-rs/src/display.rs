@@ -5,6 +5,7 @@
 use crate::{
     atlas::Layer,
     biome,
+    dimension::Dimension,
     model::{Marker, MarkerKind},
 };
 use serde::{Deserialize, Serialize};
@@ -60,13 +61,45 @@ impl Default for DisplayPrefs {
             rainfall_min: 0.,
             rainfall_max: 500.,
             hidden_ore_ids: Vec::new(),
-            hidden_structure_ids: Vec::new(),
+            hidden_structure_ids: default_hidden_structure_ids().to_vec(),
             feature_bar_ores: false,
         }
     }
 }
 
+/// Resolve concrete IDs once so group defaults and individual toggles use the same catalog.
+fn default_hidden_structure_ids() -> &'static [String] {
+    static IDS: std::sync::OnceLock<Vec<String>> = std::sync::OnceLock::new();
+    IDS.get_or_init(|| {
+        let mut ids: Vec<_> = Dimension::ALL
+            .into_iter()
+            .flat_map(|dimension| crate::structure_support::catalog(dimension))
+            .filter(|(id, _)| {
+                crate::structure_icons::ruin_topic(id).is_some()
+                    || matches!(
+                        id.as_str(),
+                        "minecraft:nether_fossil"
+                            | "tfg:illagers/forest_roaming"
+                            | "tfg:moon/cheese_ores"
+                            | "tfg:moon/moon_rabbit_houses"
+                    )
+            })
+            .map(|(id, _)| id.clone())
+            .collect();
+        ids.sort();
+        ids.dedup();
+        ids
+    })
+}
+
 impl DisplayPrefs {
+    /// Used once when upgrading an existing installation; later user toggles are retained.
+    pub fn apply_structure_visibility_defaults(&mut self) {
+        for id in default_hidden_structure_ids() {
+            self.set_feature_visible(&MarkerKind::Structure, id, false);
+        }
+    }
+
     /// Set one stable feature type's visibility. Occurrence coordinates are stripped so one
     /// click applies to every generated or saved instance of that type.
     pub fn set_feature_visible(&mut self, kind: &MarkerKind, id: &str, visible: bool) {
@@ -183,6 +216,27 @@ impl DisplayPrefs {
         }
     }
 
+    /// The Beneath Y band filters deposits, while structure and location pins span all bands.
+    /// The map and its exports share this rule so changing height cannot lose a structure pin.
+    pub fn marker_visible_in_view(
+        &self,
+        marker: &Marker,
+        blocks_per_point: f64,
+        dimension: Dimension,
+        slice_y: i32,
+    ) -> bool {
+        self.marker_visible(marker, blocks_per_point)
+            && (dimension != Dimension::Beneath
+                || matches!(
+                    marker.kind,
+                    MarkerKind::Structure | MarkerKind::Spawn | MarkerKind::Player
+                )
+                || {
+                    let (min, max) = dimension.band(slice_y);
+                    marker.intersects_band(min, max)
+                })
+    }
+
     pub fn visible_id_set(
         &self,
         kind: &MarkerKind,
@@ -271,5 +325,104 @@ mod tests {
             200.,
             &["limestone".to_owned()]
         ));
+    }
+
+    fn structure(id: &str) -> Marker {
+        Marker {
+            id: format!("{id}@4,-7"),
+            label: id.into(),
+            namespace: "tfg".into(),
+            x: 72.,
+            z: -104.,
+            y: Some(93.),
+            kind: MarkerKind::Structure,
+            confirmed: false,
+            min_y: None,
+            max_y: None,
+            bounds: None,
+            detail: String::new(),
+            color: [230, 173, 85],
+        }
+    }
+
+    #[test]
+    fn quieter_structure_defaults_can_be_overridden_per_type_and_persisted() {
+        let mut prefs = DisplayPrefs::default();
+        for id in [
+            "minecraft:nether_fossil",
+            "tfg:ocean/ocean_moai_0",
+            "tfg:illagers/forest_roaming",
+            "tfc_ruins:ruin_small",
+            "tfg:aqueduct/aqueduct",
+            "tfg:moon/cheese_ores",
+            "tfg:moon/moon_rabbit_houses",
+        ] {
+            for confirmed in [false, true] {
+                let mut marker = structure(id);
+                marker.confirmed = confirmed;
+                assert!(!prefs.marker_visible(&marker, 0.5), "{id}");
+            }
+        }
+        for dimension in Dimension::ALL {
+            for (id, _) in crate::structure_support::catalog(dimension) {
+                if crate::structure_icons::ruin_topic(id).is_some() {
+                    assert!(!prefs.marker_visible(&structure(id), 0.5), "{id}");
+                }
+            }
+        }
+        for id in [
+            "minecraft:bastion_remnant",
+            "tfg:beneath/tower",
+            "tfg:mineshaft/mineshaft",
+            "tfg:illagers/norse_village_living",
+            "tfg:moon/moonbase",
+        ] {
+            assert!(prefs.marker_visible(&structure(id), 0.5), "{id}");
+        }
+        let moai = structure("tfg:ocean/ocean_moai_0");
+        prefs.set_feature_visible(&MarkerKind::Structure, &moai.id, true);
+        let restored: DisplayPrefs =
+            serde_json::from_value(serde_json::to_value(prefs).unwrap()).unwrap();
+        assert!(restored.marker_visible(&moai, 0.5));
+        assert!(!restored.marker_visible(&structure("tfg:aqueduct/aqueduct"), 0.5));
+    }
+
+    #[test]
+    fn beneath_structure_pins_span_all_bands_while_deposits_follow_height() {
+        let prefs = DisplayPrefs::default();
+        let candidate = structure("tfg:beneath/tower");
+        let mut saved = candidate.clone();
+        saved.confirmed = true;
+        saved.bounds = Some(crate::model::StructureBounds {
+            min_x: 64,
+            max_x: 95,
+            min_z: -112,
+            max_z: -81,
+            min_y: 80,
+            max_y: 130,
+        });
+        let mut ore = candidate.clone();
+        ore.kind = MarkerKind::Ore;
+        ore.id = "beneath_native_copper@4,-7".into();
+        ore.min_y = Some(80.);
+        ore.max_y = Some(110.);
+        for y in (0..256).step_by(16) {
+            for marker in [&candidate, &saved] {
+                assert!(
+                    prefs.marker_visible_in_view(marker, 0.5, Dimension::Beneath, y),
+                    "Y={y}"
+                );
+            }
+            let (min, max) = Dimension::Beneath.band(y);
+            assert_eq!(
+                prefs.marker_visible_in_view(&ore, 0.5, Dimension::Beneath, y),
+                ore.intersects_band(min, max),
+                "Y={y}"
+            );
+        }
+        let mut hidden = prefs;
+        hidden.set_feature_visible(&MarkerKind::Structure, &candidate.id, false);
+        assert!(!hidden.marker_visible_in_view(&candidate, 0.5, Dimension::Beneath, 0));
+        assert!(!hidden.marker_visible_in_view(&saved, 0.5, Dimension::Beneath, 93));
     }
 }
