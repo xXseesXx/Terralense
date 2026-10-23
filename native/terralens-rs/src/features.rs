@@ -3,6 +3,9 @@
 //! Placed markers from a save are authoritative. Random-spread results here are only
 //! seed-derived candidates: biome and structure placement gates are evaluated where
 //! available, but mod-specific predicates and terrain checks are not all represented.
+#[cfg(feature = "diagnostics")]
+pub mod structure_audit;
+
 use crate::random::{JavaRandom, Xoroshiro};
 use crate::{
     model::{Bounds, Climate, Marker, MarkerKind, Point},
@@ -15,8 +18,6 @@ use std::collections::BinaryHeap;
 use std::collections::{HashMap, HashSet};
 use std::sync::OnceLock;
 
-const STRUCTURE_DATA: &str = include_str!("../assets/data/tfg/installed-structure-runtime.json");
-const TFG_STRUCTURE_DATA: &str = include_str!("../assets/data/tfg/structures.json");
 const TFG_VEINS: &str = include_str!("../assets/data/tfg/veins.json");
 const TFG_BIOME_TAGS: &str = include_str!("../assets/data/tfg/biome-tags.json");
 const TFG_KAOLIN: &str = include_str!("../assets/data/tfg/kaolin.json");
@@ -386,16 +387,8 @@ pub fn beneath_feature_catalog() -> &'static (Vec<(String, String)>, Vec<(String
             .flatten()
             .map(|(id, _)| (id.clone(), label(id)))
             .collect();
-        let structures = data["structures"]
-            .as_array()
-            .into_iter()
-            .flatten()
-            .filter_map(|v| v["id"].as_str().map(|id| (id.to_owned(), label(id))))
-            .chain([(
-                "minecraft:nether_complexes".to_owned(),
-                "Nether fortress / bastion".to_owned(),
-            )])
-            .collect();
+        let structures =
+            crate::structure_support::catalog(crate::dimension::Dimension::Beneath).clone();
         (ores, structures)
     })
 }
@@ -407,72 +400,15 @@ fn beneath_structure_candidates(
     visible_bpp: Option<f64>,
     cancelled: &impl Fn() -> bool,
 ) -> FeatureBatch {
-    const BIOMES: &[&str] = &[
-        "tfg:nether/decaying_caverns",
-        "tfg:nether/salt_caves",
-        "tfg:nether/muggy_bog",
-        "tfg:nether/webbed_lair",
-        "tfg:nether/lush_hollow",
-        "tfg:nether/geothermal_springs",
-        "tfg:nether/tar_pools",
-        "tfg:nether/thorny_brambles",
-        "tfg:nether/basalt_deltas",
-        "tfg:nether/ash_forest",
-        "tfg:nether/lava_floes",
-    ];
-    let sets = [
-        CandidateSet {
-            id: "tfg:beneath/tower".into(),
-            salt: 264226226,
-            spacing: 15,
-            separation: 5,
-            triangular: false,
-            climate: None,
-            climate_placement: false,
-            structures: vec![CandidateStructure {
-                id: "tfg:beneath/tower".into(),
-                weight: 1,
-                biomes: BIOMES.iter().map(|s| s.to_string()).collect(),
-                conditions: vec![],
-            }],
-        },
-        CandidateSet {
-            id: "tfg:beneath/outpost".into(),
-            salt: 264552552,
-            spacing: 15,
-            separation: 5,
-            triangular: false,
-            climate: None,
-            climate_placement: false,
-            structures: vec![CandidateStructure {
-                id: "tfg:beneath/outpost".into(),
-                weight: 1,
-                biomes: BIOMES.iter().map(|s| s.to_string()).collect(),
-                conditions: vec![],
-            }],
-        },
-        CandidateSet {
-            id: "minecraft:nether_complexes".into(),
-            salt: 30_084_232,
-            spacing: 27,
-            separation: 4,
-            triangular: false,
-            climate: None,
-            climate_placement: false,
-            structures: vec![CandidateStructure {
-                id: "minecraft:nether_complexes".into(),
-                weight: 1,
-                biomes: BIOMES.iter().map(|s| s.to_string()).collect(),
-                conditions: vec![],
-            }],
-        },
-    ];
+    static SETS: OnceLock<Vec<CandidateSet>> = OnceLock::new();
+    let sets =
+        SETS.get_or_init(|| build_dimension_structure_sets(crate::dimension::Dimension::Beneath));
     let mut out = Vec::new();
     let mut scanned = 0usize;
     let mut truncated = false;
-    for set in &sets {
+    for set in sets {
         let search_id = if set.id == "minecraft:nether_complexes" {
-            "minecraft:nether_complexes nether fortress bastion remnant"
+            "minecraft:bastion_remnant bastion remnant"
         } else {
             &set.id
         };
@@ -515,40 +451,36 @@ fn beneath_structure_candidates(
                 let (cx, cz) = potential(world.seed, set, gx, gz);
                 let x = cx * 16 + 8;
                 let z = cz * 16 + 8;
-                if !bounds.contains(x as f64, z as f64)
-                    || !set.structures[0].biomes.contains(&world.biome_at(x, 93, z))
-                {
+                if !bounds.contains(x as f64, z as f64) {
                     continue;
                 }
-                // Placement exclusion zones test the other set's deterministic spread grid.
-                // Tower excludes vanilla complexes; outpost excludes biome-valid tower starts.
+                let biome = world.biome_at(x, 93, z);
+                let Some(entry) =
+                    weighted_order(world.seed, cx, cz, set.structures.iter().collect())
+                        .into_iter()
+                        .find(|entry| entry.biomes.contains(&biome))
+                else {
+                    continue;
+                };
                 if set.id.ends_with("tower")
-                    && candidate_near_set(world.seed, &sets[2], cx, cz, 3, None, world)
+                    && sets
+                        .iter()
+                        .find(|set| set.id == "minecraft:nether_complexes")
+                        .is_some_and(|other| {
+                            candidate_near_set(world.seed, other, cx, cz, 3, None, world)
+                        })
                 {
                     continue;
-                }
-                if set.id.ends_with("outpost") {
-                    if candidate_near_set(
-                        world.seed,
-                        &sets[0],
-                        cx,
-                        cz,
-                        3,
-                        Some(&sets[0].structures[0].biomes),
-                        world,
-                    ) {
-                        continue;
-                    }
                 }
                 let complex = set.id == "minecraft:nether_complexes";
                 out.push(Marker {
-                    id: format!("{}@{cx},{cz}", set.id),
-                    label: if complex { "Nether fortress / bastion".into() } else { set.id.rsplit('/').next().unwrap_or("structure").into() },
-                    namespace: if complex { "minecraft".into() } else { "tfg".into() },
+                    id: format!("{}@{cx},{cz}", entry.id),
+                    label: entry.id.clone(),
+                    namespace: entry.id.split(':').next().unwrap_or("minecraft").into(),
                     x: x as f64, z: z as f64, y: Some(93.), kind: MarkerKind::Structure,
                     confirmed: false, min_y: None, max_y: None,
                     bounds: None,
-                detail: if complex { "Nether complex placement candidate · may be a fortress or bastion; selected child and terrain generation are not confirmed.".into() } else { "Beneath structure placement candidate · biome checked at Y=93; terrain generation may reject it.".into() },
+                detail: if complex { "Bastion placement candidate · installed TFG biome selector matched; terrain generation is not confirmed.".into() } else { "Beneath structure placement candidate · biome checked at Y=93; terrain generation may reject it.".into() },
                     color: [230, 173, 85],
                 });
             }
@@ -689,7 +621,10 @@ fn structure_visibility(set_id: &str, structure_id: &str) -> (f64, bool) {
     static SPACING: OnceLock<HashMap<String, f64>> = OnceLock::new();
     let spacings = SPACING.get_or_init(|| {
         let mut values: HashMap<String, f64> = HashMap::new();
-        for set in runtime_sets() {
+        for set in crate::dimension::Dimension::ALL
+            .into_iter()
+            .flat_map(build_dimension_structure_sets)
+        {
             values.insert(set.id.clone(), set.spacing as f64);
             for structure in &set.structures {
                 values
@@ -877,71 +812,24 @@ fn runtime_sets() -> &'static [CandidateSet] {
     SETS.get_or_init(build_runtime_sets)
 }
 fn build_runtime_sets() -> Vec<CandidateSet> {
-    let doc: Value =
-        serde_json::from_str(STRUCTURE_DATA).expect("checked in structure runtime data");
-    let definitions = doc["definitions"].as_array().expect("definitions array");
-    let mut raw_tags: HashMap<String, Vec<String>> = HashMap::new();
-    let mut structures: HashMap<String, HashSet<String>> = HashMap::new();
-    for item in definitions {
-        let id = item["id"].as_str().unwrap_or_default();
-        if item["kind"] == "biome_tag" {
-            let members = item["data"]["values"]
-                .as_array()
-                .into_iter()
-                .flatten()
-                .filter_map(|entry| {
-                    entry
-                        .as_str()
-                        .or_else(|| entry["id"].as_str())
-                        .map(str::to_owned)
-                })
-                .collect();
-            raw_tags.insert(id.to_owned(), members);
-        }
-    }
-    fn resolve_tag(
-        id: &str,
-        raw: &HashMap<String, Vec<String>>,
-        seen: &mut HashSet<String>,
-        out: &mut HashSet<String>,
-    ) {
-        if !seen.insert(id.to_owned()) {
-            return;
-        }
-        if let Some(members) = raw.get(id) {
-            for member in members {
-                if let Some(nested) = member.strip_prefix('#') {
-                    resolve_tag(nested, raw, seen, out);
-                } else {
-                    out.insert(member.clone());
-                }
-            }
-        }
-        seen.remove(id);
-    }
-    let tags: HashMap<String, HashSet<String>> = raw_tags
-        .keys()
-        .map(|id| {
-            let mut out = HashSet::new();
-            resolve_tag(id, &raw_tags, &mut HashSet::new(), &mut out);
-            (id.clone(), out)
-        })
+    build_dimension_structure_sets(crate::dimension::Dimension::Overworld)
+}
+
+fn build_dimension_structure_sets(dimension: crate::dimension::Dimension) -> Vec<CandidateSet> {
+    let data = crate::structure_support::source();
+    let definitions: HashMap<_, _> = data["structures"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .filter_map(|s| Some((s["id"].as_str()?, &s["definition"])))
         .collect();
-    for item in definitions.iter().filter(|d| d["kind"] == "structure") {
-        let id = item["id"].as_str().unwrap_or_default();
-        let biome_tag = item["data"]["biomes"].as_str().unwrap_or_default();
-        if let Some(tag) = biome_tag.strip_prefix('#') {
-            if let Some(members) = tags.get(tag) {
-                structures.insert(id.to_owned(), members.clone());
-            }
-        } else if !biome_tag.is_empty() {
-            structures.insert(id.to_owned(), [biome_tag.to_owned()].into_iter().collect());
-        }
-    }
-    let mut out = Vec::new();
-    for item in definitions.iter().filter(|d| d["kind"] == "structure_set") {
-        let placement = &item["data"]["placement"];
-        if placement["type"].as_str() != Some("minecraft:random_spread") {
+    let mut sets = Vec::new();
+    for set in data["sets"].as_array().unwrap() {
+        let placement = &set["placement"];
+        if !matches!(
+            placement["type"].as_str(),
+            Some("minecraft:random_spread" | "tfc:climate")
+        ) {
             continue;
         }
         let (Some(salt), Some(spacing), Some(separation)) = (
@@ -951,112 +839,59 @@ fn build_runtime_sets() -> Vec<CandidateSet> {
         ) else {
             continue;
         };
-        if spacing <= 0 || separation < 0 || separation >= spacing {
-            continue;
-        }
-        let entries = item["data"]["structures"].as_array().into_iter().flatten();
-        let mut unresolved_biome = false;
-        let candidates = entries
-            .filter_map(|entry| {
-                let id = entry["structure"].as_str()?.to_owned();
-                let weight = entry["weight"]
-                    .as_i64()
-                    .unwrap_or(1)
-                    .clamp(1, i32::MAX as i64) as i32;
-                let Some(biomes) = structures.get(&id).cloned() else {
-                    unresolved_biome = true;
-                    return None;
-                };
-                Some(CandidateStructure {
-                    id,
-                    weight,
-                    biomes,
-                    conditions: Vec::new(),
-                })
-            })
-            .collect::<Vec<_>>();
-        if candidates.is_empty() || unresolved_biome {
-            continue;
-        }
-        let frequency = placement["frequency"].as_f64().unwrap_or(1.0);
-        if frequency != 1.0
-            || placement["frequency_reduction_method"]
-                .as_str()
-                .is_some_and(|m| m != "default")
+        if spacing <= 0
+            || separation < 0
+            || separation >= spacing
+            || placement["frequency"]
+                .as_f64()
+                .is_some_and(|frequency| frequency != 1.)
         {
             continue;
         }
-        out.push(CandidateSet {
-            id: item["id"].as_str().unwrap_or("unknown:set").to_owned(),
+        let structures = set["children"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .filter_map(|child| {
+                let id = child["id"].as_str()?;
+                // Keep incompatible children in the weighted draw. Minecraft retries the
+                // remaining members after a failed biome gate; deleting one changes
+                // random consumption and can move the selected variant.
+                let biomes = crate::structure_support::allowed_biomes(dimension, id)
+                    .cloned()
+                    .unwrap_or_default();
+                let definition = definitions.get(id)?;
+                Some(CandidateStructure {
+                    id: id.to_owned(),
+                    weight: child["weight"]
+                        .as_i64()
+                        .unwrap_or(1)
+                        .clamp(1, i32::MAX as i64) as i32,
+                    biomes,
+                    conditions: definition["conditions"]
+                        .as_array()
+                        .into_iter()
+                        .flatten()
+                        .map(parse_condition)
+                        .collect(),
+                })
+            })
+            .collect::<Vec<_>>();
+        if !structures.iter().any(|entry| !entry.biomes.is_empty()) {
+            continue;
+        }
+        sets.push(CandidateSet {
+            id: set["id"].as_str().unwrap().to_owned(),
             salt: salt as i32,
             spacing: spacing as i32,
             separation: separation as i32,
-            triangular: placement["spread_type"].as_str() == Some("triangular"),
-            climate: None,
-            climate_placement: false,
-            structures: candidates,
+            triangular: placement["spread_type"] == "triangular",
+            climate: climate_rule(&placement["climate"]),
+            climate_placement: placement["type"] == "tfc:climate",
+            structures,
         });
     }
-    // TFG's verified structure definitions include climate-spread settlements not in
-    // the general installed-mod inventory. Preserve those set definitions as candidate data.
-    let tfg: Value =
-        serde_json::from_str(TFG_STRUCTURE_DATA).expect("checked in TFG structure data");
-    for set in tfg["sets"]
-        .as_array()
-        .into_iter()
-        .flatten()
-        .filter(|s| s["dimension"] == "overworld")
-    {
-        let p = &set["placement"];
-        let (Some(salt), Some(spacing), Some(separation)) = (
-            p["salt"].as_i64(),
-            p["spacing"].as_i64(),
-            p["separation"].as_i64(),
-        ) else {
-            continue;
-        };
-        if spacing <= 0 || separation < 0 || separation >= spacing {
-            continue;
-        }
-        let mut entries = Vec::new();
-        for s in set["structures"].as_array().into_iter().flatten() {
-            let Some(id) = s["id"].as_str() else {
-                continue;
-            };
-            let biomes = s["biomes"]
-                .as_array()
-                .into_iter()
-                .flatten()
-                .filter_map(Value::as_str)
-                .map(str::to_owned)
-                .collect();
-            entries.push(CandidateStructure {
-                id: id.to_owned(),
-                weight: s["weight"].as_i64().unwrap_or(1).max(1) as i32,
-                biomes,
-                conditions: s["conditions"]
-                    .as_array()
-                    .into_iter()
-                    .flatten()
-                    .map(parse_condition)
-                    .collect(),
-            });
-        }
-        if !entries.is_empty() {
-            out.retain(|other| other.id != set["id"].as_str().unwrap_or_default());
-            out.push(CandidateSet {
-                id: set["id"].as_str().unwrap_or("tfg:unknown").to_owned(),
-                salt: salt as i32,
-                spacing: spacing as i32,
-                separation: separation as i32,
-                triangular: p["spreadType"] == "triangular",
-                climate: climate_rule(&p["climate"]),
-                climate_placement: p["type"] == "tfc:climate",
-                structures: entries,
-            });
-        }
-    }
-    out
+    sets
 }
 
 fn potential(seed: i64, set: &CandidateSet, cell_x: i32, cell_z: i32) -> (i32, i32) {
@@ -1231,7 +1066,7 @@ where
         if let Some(bpp) = visible_bpp {
             if !set.structures.iter().any(|s| {
                 let (base, notable) = structure_visibility(&set.id, &s.id);
-                bpp <= visibility_cutoff(base, notable)
+                !s.biomes.is_empty() && bpp <= visibility_cutoff(base, notable)
             }) {
                 continue;
             }
@@ -1317,7 +1152,7 @@ where
                 }
             }
             out.push(Marker {
-                id: format!("{}@{},{}", set.id, chunk_x, chunk_z),
+                id: format!("{}@{},{}", entry.id, chunk_x, chunk_z),
                 label: entry.id.clone(),
                 namespace: entry.id.split(':').next().unwrap_or("minecraft").to_owned(),
                 x,

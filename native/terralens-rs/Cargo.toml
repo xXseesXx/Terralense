@@ -52,6 +52,10 @@ name = "structure_coverage"
 required-features = ["diagnostics"]
 
 [[example]]
+name = "structure_audit"
+required-features = ["diagnostics"]
+
+[[example]]
 name = "surface_preview"
 required-features = ["diagnostics"]
 

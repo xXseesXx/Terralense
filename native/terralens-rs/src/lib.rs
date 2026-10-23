@@ -21,6 +21,7 @@ pub mod rivers;
 
 pub mod search;
 pub mod structure_icons;
+pub mod structure_support;
 
 pub mod analysis;
 pub mod dimension;

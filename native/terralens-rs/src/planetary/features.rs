@@ -56,12 +56,7 @@ pub fn feature_catalog(
             .flatten()
             .map(|(id, _)| (format!("{prefix}:{id}"), label(id)))
             .collect();
-        let structures = d["structure_sets"]
-            .as_object()
-            .into_iter()
-            .flatten()
-            .map(|(id, _)| (id.clone(), label(id)))
-            .collect();
+        let structures = crate::structure_support::catalog(dimension).clone();
         (ores, structures)
     })
 }
@@ -396,6 +391,9 @@ fn predict_structures(
             let Some(id) = st["structure"].as_str() else {
                 continue;
             };
+            if !crate::structure_support::enabled(world.dimension, id) {
+                continue;
+            }
             let qid = id.to_owned();
             if !features::text_matches(
                 &format!("{qid} {} {}", label(id), world.dimension.label()),
@@ -659,7 +657,10 @@ mod tests {
         assert!(mo.iter().all(|(id, _)| id.starts_with("moon:")));
         assert!(ra.iter().all(|(id, _)| id.starts_with("mars:")));
         assert!(ms.iter().any(|(id, _)| id == "tfg:moon/moonbase"));
-        assert!(rs.iter().any(|(id, _)| id.contains("mars_temple")));
+        assert!(
+            rs.is_empty(),
+            "Mars structure selectors contain no TFG Mars biomes"
+        );
     }
 
     #[test]

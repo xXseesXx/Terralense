@@ -140,6 +140,12 @@ fixtures. Elevation is an estimate. Ore pins and outlined/unconfirmed structure 
 predictions; saved structure starts confirm recorded generation, not whether a structure has been
 looted or modified. Tree counts estimate generation attempts, and habitat search is sampled.
 
+The installed structure inventory is audited within 100 km at seed zero. Source biome gates
+limit seed previews and the right rail to 30 Overworld, three Beneath and four Moon structure
+types; Mars has none in this pack profile. Strongholds and other incompatible definitions are
+disabled. These are placement candidates, with saved starts tracked separately; see the
+[structure audit](docs/STRUCTURE-GENERATION.md).
+
 Structure bounds and block cutaways require saved structure data. Ungenerated jigsaw layouts are
 not simulated, so a structure without a recorded box keeps its placement location. Terrain-dependent placement,
 caves, aquifers and unseen structure blocks are not fully generated. Planetary ore starts use

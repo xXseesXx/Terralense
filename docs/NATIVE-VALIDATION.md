@@ -1,7 +1,7 @@
 # Native validation
 
 The published release was checked on Linux against TFG Core 0.9.25, TFC 3.2.25, Beneath 1.0.6
-and Ad Astra 1.15.21. The current release passes **280 release tests**: 256 library, twelve engine-process, ten parity
+and Ad Astra 1.15.21. The current release passes **284 release tests**: 260 library, twelve engine-process, ten parity
 and two release-CLI checks. Formatting, the headless build and the opt-in diagnostic targets pass.
 This includes 39 Atlas tests covering cache reuse across zoom levels, refinement, family coverage,
 adjacent boundaries, split continuation, same-root panning and dimension-aware spawn/player pins.
@@ -50,6 +50,29 @@ simulate every surface-opening carver, decoration or structure block. The 512 sa
 observations provide a bounded candidate-neighborhood cross-check, not block-exact vein parity.
 See [planetary generation](PLANETARY-GENERATION.md) for the denominators and limitations.
 
+## Structure applicability
+
+The installed source inventory covers all 66 sets and 131 distinct structure IDs, including
+vanilla definitions, effective KubeJS selectors and literal nested biome tags. The 100 km
+seed-zero audit stops independently at the first viable placement for each weighted member.
+It found every source-compatible type: 30 Overworld, three Beneath, four Moon and zero Mars.
+The remaining per-dimension entries have a proven empty raw-biome intersection; no compatible
+type was disabled for an unsupported scanner or an exhausted sample. Strongholds, Nether
+fortresses, the explicitly disabled Beneath outpost and incompatible Primal/Ad Astra entries
+are excluded from seed searches and the source catalog. Actual saved starts remain visible.
+
+Portable release tests verify full audit coverage, current raw biome pools, source gating,
+dimension-specific catalogs and the retention of all 29 independently recorded saved types.
+The opt-in diagnostics regression additionally checks that all 37 reported witness locations
+are returned by the production dimension scanners. Audit and finder use the same biome probes,
+including Beneath at Y=93, and preserve all children in the weighted draw.
+
+Candidate placement does not simulate successful Minecraft structure generation. Separate
+read-only world-0 evidence confirms 25 Overworld types (278 starts) and all four Moon types
+(4,295 starts), with bounds and no decoding errors. No Beneath region files exist in that
+reference; 13,399 Mars chunks contain no starts. See [structure generation](STRUCTURE-GENERATION.md)
+and the [full report](data/structure-audit-seed0-100km.json) for coordinates and limitations.
+
 ## Viewer behavior
 
 - The refactored shell was rendered at 940×620 and 1280×800 on an isolated X11 virtual display,
@@ -96,7 +119,7 @@ See [planetary generation](PLANETARY-GENERATION.md) for the denominators and lim
   read-only-source fixture and confirmed the arch at the drawn box center. Unknown jigsaw layouts
   are not materialized and have no fabricated bounds.
 - Structure reader fixtures cover arbitrary mod namespaces, dimension-root isolation, and boxes
-  whose start point lies outside the visible map. The local reference save had bounds for all
+  whose start point lies outside the visible map. The earlier Ganymede reference save had bounds for all
   356 Overworld and 2,875 Beneath starts, with zero decode errors.
 - Cutaway checks prove an Overworld Y0–7 inspection excludes a roof at Y15; Beneath intersects
   structure height with its selected band and leaves missing blocks unknown. Disabled detail

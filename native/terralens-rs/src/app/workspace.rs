@@ -354,13 +354,9 @@ impl TerraLensApp {
                     "Colorblind colors",
                 );
             });
-            let catalog = feature_catalog();
+            let catalog = feature_catalog_for(self.prefs.dimension);
             ui.menu_button("Ore visibility", |ui| {
-                for (id, label) in catalog
-                    .0
-                    .iter()
-                    .filter(|(id, _)| id.starts_with("beneath_"))
-                {
+                for (id, label) in &catalog.0 {
                     let mut visible = !self.prefs.display.hidden_ore_ids.contains(id);
                     if ui.checkbox(&mut visible, label).changed() {
                         if visible {
@@ -375,15 +371,7 @@ impl TerraLensApp {
                 }
             });
             ui.menu_button("Structure visibility", |ui| {
-                for (id, label) in catalog.1.iter().filter(|(id, _)| {
-                    id.starts_with("tfg:beneath/")
-                        || matches!(
-                            id.as_str(),
-                            "minecraft:nether_complexes"
-                                | "minecraft:fortress"
-                                | "minecraft:bastion_remnant"
-                        )
-                }) {
+                for (id, label) in &catalog.1 {
                     let mut visible = !self.prefs.display.hidden_structure_ids.contains(id);
                     if ui.checkbox(&mut visible, label).changed() {
                         if visible {
@@ -481,11 +469,10 @@ impl TerraLensApp {
         .into_iter()
         .map(str::to_owned)
         .collect();
-        let catalog = feature_catalog();
+        let catalog = feature_catalog_for(self.prefs.dimension);
         let ores: Vec<_> = catalog
             .0
             .iter()
-            .filter(|(id, _)| !id.starts_with("beneath_"))
             .map(|(id, label)| display_panel::FeatureOption { id, label })
             .collect();
         let structures: Vec<_> = catalog
@@ -787,13 +774,6 @@ pub(super) fn feature_catalog() -> &'static (Vec<(String, String)>, Vec<(String,
         let beneath: serde_json::Value =
             serde_json::from_str(include_str!("../beneath/ore-features.json"))
                 .expect("embedded Beneath veins");
-        let runtime: serde_json::Value = serde_json::from_str(include_str!(
-            "../../assets/data/tfg/installed-structure-runtime.json"
-        ))
-        .expect("embedded structures");
-        let tfc: serde_json::Value =
-            serde_json::from_str(include_str!("../../assets/data/tfg/structures.json"))
-                .expect("embedded TFG structures");
         let label = |id: &str| id.rsplit(':').next().unwrap_or(id).replace(['_', '/'], " ");
         let mut ores: Vec<_> = veins["veins"]
             .as_object()
@@ -808,29 +788,10 @@ pub(super) fn feature_catalog() -> &'static (Vec<(String, String)>, Vec<(String,
                 .flat_map(|m| m.keys())
                 .map(|id| (id.clone(), label(id))),
         );
-        let mut structures = std::collections::BTreeMap::new();
-        for definition in runtime["definitions"].as_array().into_iter().flatten() {
-            if definition["kind"] == "structure" || definition["kind"] == "structure_set" {
-                if let Some(id) = definition["id"].as_str() {
-                    structures.insert(id.to_owned(), label(id));
-                }
-            }
-        }
-        for set in tfc["sets"].as_array().into_iter().flatten() {
-            if let Some(id) = set["id"].as_str() {
-                structures.insert(id.to_owned(), label(id));
-            }
-            for s in set["structures"].as_array().into_iter().flatten() {
-                if let Some(id) = s["id"].as_str() {
-                    structures.insert(id.to_owned(), label(id));
-                }
-            }
-        }
-        structures.insert("tfg:beneath/tower".into(), "Beneath tower".into());
-        structures.insert("tfg:beneath/outpost".into(), "Beneath outpost".into());
-        structures.extend(crate::features::beneath_feature_catalog().1.iter().cloned());
-        structures.insert("minecraft:fortress".into(), "Nether fortress".into());
-        structures.insert("minecraft:bastion_remnant".into(), "Bastion remnant".into());
+        let structures = Dimension::ALL
+            .into_iter()
+            .flat_map(|dimension| crate::structure_support::catalog(dimension).iter().cloned())
+            .collect::<std::collections::BTreeMap<_, _>>();
         (ores, structures.into_iter().collect())
     })
 }
@@ -838,222 +799,36 @@ pub(super) fn feature_catalog() -> &'static (Vec<(String, String)>, Vec<(String,
 pub(super) fn feature_catalog_for(
     dimension: Dimension,
 ) -> &'static (Vec<(String, String)>, Vec<(String, String)>) {
-    match dimension {
-        Dimension::Overworld => {
-            static CATALOG: std::sync::OnceLock<(Vec<(String, String)>, Vec<(String, String)>)> =
-                std::sync::OnceLock::new();
-            CATALOG.get_or_init(|| {
-                let (ores, structures) = feature_catalog();
-                let ores = ores
-                    .iter()
-                    .filter(|(id, _)| {
-                        !id.starts_with("beneath_")
-                            && !id.starts_with("moon:")
-                            && !id.starts_with("mars:")
-                    })
-                    .cloned()
-                    .collect();
-                let membership = installed_structure_dimensions();
-                let structures = structures
-                    .iter()
-                    .filter(|(id, _)| {
-                        membership
-                            .get(id)
-                            .is_some_and(|dimensions| dimensions.contains(&Dimension::Overworld))
-                    })
-                    .cloned()
-                    .collect();
-                (ores, structures)
-            })
-        }
-        Dimension::Beneath => crate::features::beneath_feature_catalog(),
-        Dimension::Moon | Dimension::Mars => crate::planetary::features::feature_catalog(dimension),
-    }
-}
-
-/// Dimensions are derived from the installed structure's biome profile, with
-/// TFG's extracted structure-set dimension kept as authoritative metadata.
-fn installed_structure_dimensions() -> &'static std::collections::BTreeMap<String, Vec<Dimension>> {
-    static MEMBERSHIP: std::sync::OnceLock<std::collections::BTreeMap<String, Vec<Dimension>>> =
-        std::sync::OnceLock::new();
-    MEMBERSHIP.get_or_init(|| {
-        use std::collections::{BTreeMap, HashSet};
-        let runtime: serde_json::Value = serde_json::from_str(include_str!(
-            "../../assets/data/tfg/installed-structure-runtime.json"
-        ))
-        .expect("embedded installed structure profiles");
-        let tfg: serde_json::Value =
-            serde_json::from_str(include_str!("../../assets/data/tfg/structures.json"))
-                .expect("embedded TFG structure profiles");
-
-        let mut tag_values = BTreeMap::<String, Vec<serde_json::Value>>::new();
-        for definition in runtime["definitions"].as_array().into_iter().flatten() {
-            if definition["kind"] == "biome_tag" {
-                if let (Some(id), Some(values)) = (
-                    definition["id"].as_str(),
-                    definition["data"]["values"].as_array(),
-                ) {
-                    tag_values.insert(id.to_owned(), values.clone());
-                }
-            }
-        }
-
-        fn add_profile_dimensions(
-            value: &serde_json::Value,
-            tags: &BTreeMap<String, Vec<serde_json::Value>>,
-            out: &mut HashSet<Dimension>,
-            depth: usize,
-        ) {
-            if depth > 8 {
-                return;
-            }
-            let Some(raw) = value
-                .as_str()
-                .or_else(|| value.get("id").and_then(|v| v.as_str()))
-            else {
-                return;
-            };
-            if let Some(tag) = raw.strip_prefix('#') {
-                if tag == "minecraft:is_overworld" {
-                    out.insert(Dimension::Overworld);
-                } else if tag == "minecraft:is_nether" {
-                    out.insert(Dimension::Beneath);
-                } else if tag == "minecraft:is_end" {
-                    // This tool has no End dimension profile.
-                } else if let Some(values) = tags.get(tag) {
-                    for nested in values {
-                        add_profile_dimensions(nested, tags, out, depth + 1);
-                    }
-                } else if tag.starts_with("minecraft:")
-                    || tag.starts_with("forge:")
-                    || tag.starts_with("c:")
-                {
-                    // Installed vanilla/Forge biome tags on these structure profiles
-                    // describe Overworld biomes (Nether profiles use is_nether or
-                    // a concrete Nether registry biome).
-                    out.insert(Dimension::Overworld);
-                }
-                return;
-            }
-            let dimension = if raw.starts_with("tfg:earth/") {
-                Some(Dimension::Overworld)
-            } else if raw.starts_with("tfg:nether/")
-                || matches!(
-                    raw,
-                    "minecraft:nether_wastes"
-                        | "minecraft:soul_sand_valley"
-                        | "minecraft:crimson_forest"
-                        | "minecraft:warped_forest"
-                        | "minecraft:basalt_deltas"
-                )
-            {
-                Some(Dimension::Beneath)
-            } else if raw.starts_with("tfg:moon/") || raw == "ad_astra:lunar_wastelands" {
-                Some(Dimension::Moon)
-            } else if raw.starts_with("tfg:mars/")
-                || matches!(
-                    raw,
-                    "ad_astra:martian_wastelands" | "ad_astra:martian_canyon_creek"
-                )
-            {
-                Some(Dimension::Mars)
-            } else if raw.starts_with("minecraft:")
-                && !matches!(raw, "minecraft:the_end" | "minecraft:end")
-            {
-                Some(Dimension::Overworld)
-            } else if raw.starts_with("tfc:") {
-                Some(Dimension::Overworld)
-            } else {
-                None
-            };
-            if let Some(dimension) = dimension {
-                out.insert(dimension);
-            }
-        }
-
-        let mut membership = BTreeMap::<String, HashSet<Dimension>>::new();
-        for definition in runtime["definitions"].as_array().into_iter().flatten() {
-            if definition["kind"] != "structure" {
-                continue;
-            }
-            let (Some(id), profile) = (definition["id"].as_str(), &definition["data"]["biomes"])
-            else {
-                continue;
-            };
-            let mut dimensions = HashSet::new();
-            match profile {
-                serde_json::Value::Array(values) => {
-                    for value in values {
-                        add_profile_dimensions(value, &tag_values, &mut dimensions, 0);
-                    }
-                }
-                serde_json::Value::String(_) => {
-                    add_profile_dimensions(profile, &tag_values, &mut dimensions, 0);
-                }
-                _ => {}
-            }
-            if !dimensions.is_empty() {
-                membership.insert(id.to_owned(), dimensions);
-            }
-        }
-        for definition in runtime["definitions"].as_array().into_iter().flatten() {
-            if definition["kind"] != "structure_set" {
-                continue;
-            }
-            let Some(set_id) = definition["id"].as_str() else {
-                continue;
-            };
-            let mut dimensions = HashSet::new();
-            for entry in definition["data"]["structures"]
-                .as_array()
-                .into_iter()
-                .flatten()
-            {
-                if let Some(id) = entry["structure"].as_str() {
-                    if let Some(found) = membership.get(id) {
-                        dimensions.extend(found.iter().copied());
-                    }
-                }
-            }
-            if !dimensions.is_empty() {
-                membership.insert(set_id.to_owned(), dimensions);
-            }
-        }
-        for set in tfg["sets"].as_array().into_iter().flatten() {
-            let dimension = match set["dimension"].as_str() {
-                Some("overworld") => Some(Dimension::Overworld),
-                Some("nether") => Some(Dimension::Beneath),
-                Some("moon") => Some(Dimension::Moon),
-                Some("mars") => Some(Dimension::Mars),
-                _ => None,
-            };
-            let Some(dimension) = dimension else { continue };
-            if let Some(id) = set["id"].as_str() {
-                membership
-                    .entry(id.to_owned())
-                    .or_default()
-                    .insert(dimension);
-            }
-            for structure in set["structures"].as_array().into_iter().flatten() {
-                if let Some(id) = structure["id"].as_str() {
-                    membership
-                        .entry(id.to_owned())
-                        .or_default()
-                        .insert(dimension);
-                }
-            }
-        }
-        membership
+    static CATALOGS: std::sync::OnceLock<
+        std::collections::HashMap<Dimension, (Vec<(String, String)>, Vec<(String, String)>)>,
+    > = std::sync::OnceLock::new();
+    &CATALOGS.get_or_init(|| {
+        Dimension::ALL
             .into_iter()
-            .map(|(id, dimensions)| {
-                let ordered = Dimension::ALL
-                    .into_iter()
-                    .filter(|dimension| dimensions.contains(dimension))
-                    .collect();
-                (id, ordered)
+            .map(|dimension| {
+                let ores = match dimension {
+                    Dimension::Overworld => feature_catalog()
+                        .0
+                        .iter()
+                        .filter(|(id, _)| {
+                            !id.starts_with("beneath_")
+                                && !id.starts_with("moon:")
+                                && !id.starts_with("mars:")
+                        })
+                        .cloned()
+                        .collect(),
+                    Dimension::Beneath => crate::features::beneath_feature_catalog().0.clone(),
+                    Dimension::Moon | Dimension::Mars => {
+                        crate::planetary::features::feature_catalog(dimension)
+                            .0
+                            .clone()
+                    }
+                };
+                let structures = crate::structure_support::catalog(dimension).clone();
+                (dimension, (ores, structures))
             })
             .collect()
-    })
+    })[&dimension]
 }
 
 fn decode_session(value: serde_json::Value) -> Result<Preferences, String> {
@@ -1103,10 +878,11 @@ mod tests {
 
         let beneath = feature_catalog_for(Dimension::Beneath);
         assert!(beneath.0.iter().all(|(id, _)| id.starts_with("beneath_")));
-        assert!(beneath
-            .1
-            .iter()
-            .all(|(id, _)| id.starts_with("tfg:beneath/") || id.starts_with("minecraft:nether")));
+        assert!(beneath.1.iter().all(|(id, _)| {
+            id.starts_with("tfg:beneath/")
+                || id.starts_with("minecraft:nether")
+                || id == "minecraft:bastion_remnant"
+        }));
 
         for (dimension, prefix) in [(Dimension::Moon, "moon:"), (Dimension::Mars, "mars:")] {
             let catalog = feature_catalog_for(dimension);
@@ -1119,20 +895,62 @@ mod tests {
             assert!(catalog.1.iter().all(|(id, _)| !id.contains(other)));
         }
 
-        let profiles = installed_structure_dimensions();
-        let has = |dimension, id: &str| {
-            profiles
-                .get(id)
-                .is_some_and(|dimensions| dimensions.contains(&dimension))
-        };
-        assert!(has(Dimension::Overworld, "ae2:meteorite"));
-        assert!(!has(Dimension::Moon, "ae2:meteorite"));
-        assert!(has(Dimension::Beneath, "tfg:beneath/tower"));
-        assert!(has(Dimension::Moon, "ad_astra:moon_dungeon"));
-        assert!(!has(Dimension::Mars, "ad_astra:moon_dungeon"));
-        assert!(has(Dimension::Mars, "ad_astra:mars_temple"));
-        assert!(!has(Dimension::Moon, "ad_astra:mars_temple"));
-        assert!(!has(Dimension::Overworld, "ad_astra:pygro_tower"));
-        assert!(!has(Dimension::Overworld, "minecraft:end_city"));
+        let source = crate::structure_support::enabled;
+        for id in [
+            "minecraft:stronghold",
+            "minecraft:strongholds",
+            "minecraft:ancient_city",
+            "minecraft:village_plains",
+            "wan_ancient_beasts:ancient_nest",
+        ] {
+            assert!(!source(Dimension::Overworld, id), "{id}");
+            assert!(!overworld.1.iter().any(|(candidate, _)| candidate == id));
+        }
+        assert!(source(
+            Dimension::Overworld,
+            "tfc_ruined_world:towerhouse_1"
+        ));
+        assert!(source(
+            Dimension::Overworld,
+            "tfg:illagers/norse_village_living"
+        ));
+        assert!(
+            overworld
+                .1
+                .iter()
+                .any(|(id, _)| id == "tfc_ruined_world:towerhouse_1")
+        );
+        assert!(!source(Dimension::Beneath, "tfg:beneath/outpost"));
+        assert!(!source(Dimension::Beneath, "minecraft:fortress"));
+        assert!(source(Dimension::Beneath, "minecraft:bastion_remnant"));
+        assert!(source(Dimension::Beneath, "minecraft:nether_fossil"));
+        assert!(!beneath.1.iter().any(|(id, _)| id == "tfg:beneath/outpost"));
+        assert!(
+            beneath
+                .1
+                .iter()
+                .any(|(id, _)| id == "minecraft:bastion_remnant")
+        );
+        assert!(
+            beneath
+                .1
+                .iter()
+                .any(|(id, _)| id == "minecraft:nether_fossil")
+        );
+        assert!(!source(Dimension::Moon, "ad_astra:moon_dungeon"));
+        assert!(source(Dimension::Moon, "tfg:moon/moonbase"));
+        assert!(!source(Dimension::Mars, "ad_astra:mars_temple"));
+        assert!(
+            feature_catalog_for(Dimension::Moon)
+                .1
+                .iter()
+                .all(|(id, _)| id != "ad_astra:moon_dungeon")
+        );
+        assert!(
+            feature_catalog_for(Dimension::Mars)
+                .1
+                .iter()
+                .all(|(id, _)| id != "ad_astra:mars_temple")
+        );
     }
 }
