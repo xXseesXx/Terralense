@@ -873,20 +873,28 @@ mod tests {
             overworld
                 .1
                 .iter()
-                .all(|(id, _)| !id.contains("beneath") && !id.starts_with("minecraft:nether"))
+                .all(|(id, _)| crate::structure_support::enabled(Dimension::Overworld, id)),
+            "Overworld controls must have Overworld biome-profile support"
         );
 
         let beneath = feature_catalog_for(Dimension::Beneath);
         assert!(beneath.0.iter().all(|(id, _)| id.starts_with("beneath_")));
-        assert!(beneath.1.iter().all(|(id, _)| {
-            id.starts_with("tfg:beneath/")
-                || id.starts_with("minecraft:nether")
-                || id == "minecraft:bastion_remnant"
-        }));
+        assert!(
+            beneath
+                .1
+                .iter()
+                .all(|(id, _)| crate::structure_support::enabled(Dimension::Beneath, id))
+        );
 
         for (dimension, prefix) in [(Dimension::Moon, "moon:"), (Dimension::Mars, "mars:")] {
             let catalog = feature_catalog_for(dimension);
             assert!(catalog.0.iter().all(|(id, _)| id.starts_with(prefix)));
+            assert!(
+                catalog
+                    .1
+                    .iter()
+                    .all(|(id, _)| crate::structure_support::enabled(dimension, id))
+            );
             let other = if dimension == Dimension::Moon {
                 "mars"
             } else {
@@ -895,62 +903,41 @@ mod tests {
             assert!(catalog.1.iter().all(|(id, _)| !id.contains(other)));
         }
 
-        let source = crate::structure_support::enabled;
+        let contains = |catalog: &[(String, String)], id: &str| {
+            catalog.iter().any(|(candidate, _)| candidate == id)
+        };
         for id in [
-            "minecraft:stronghold",
-            "minecraft:strongholds",
-            "minecraft:ancient_city",
             "minecraft:village_plains",
-            "wan_ancient_beasts:ancient_nest",
+            "minecraft:village_desert",
+            "minecraft:village_savanna",
+            "minecraft:village_snowy",
+            "minecraft:village_taiga",
+            "wan_ancient_beasts:abandoned_village",
+            "tfg:illagers/arabic_village_living",
+            "tfg:illagers/malay_village_living",
+            "tfg:illagers/norse_village_living",
+            "tfg:illagers/norse_village_ruined",
+            "tfg:illagers/yurts_village_living",
+            "tfg:temperate/plains_temperate_house_0",
+            "tfc_ruined_world:towerhouse_1",
         ] {
-            assert!(!source(Dimension::Overworld, id), "{id}");
-            assert!(!overworld.1.iter().any(|(candidate, _)| candidate == id));
+            assert!(contains(&overworld.1, id), "Overworld catalog missing {id}");
         }
-        assert!(source(
-            Dimension::Overworld,
-            "tfc_ruined_world:towerhouse_1"
-        ));
-        assert!(source(
-            Dimension::Overworld,
-            "tfg:illagers/norse_village_living"
-        ));
-        assert!(
-            overworld
-                .1
-                .iter()
-                .any(|(id, _)| id == "tfc_ruined_world:towerhouse_1")
-        );
-        assert!(!source(Dimension::Beneath, "tfg:beneath/outpost"));
-        assert!(!source(Dimension::Beneath, "minecraft:fortress"));
-        assert!(source(Dimension::Beneath, "minecraft:bastion_remnant"));
-        assert!(source(Dimension::Beneath, "minecraft:nether_fossil"));
-        assert!(!beneath.1.iter().any(|(id, _)| id == "tfg:beneath/outpost"));
-        assert!(
-            beneath
-                .1
-                .iter()
-                .any(|(id, _)| id == "minecraft:bastion_remnant")
-        );
-        assert!(
-            beneath
-                .1
-                .iter()
-                .any(|(id, _)| id == "minecraft:nether_fossil")
-        );
-        assert!(!source(Dimension::Moon, "ad_astra:moon_dungeon"));
-        assert!(source(Dimension::Moon, "tfg:moon/moonbase"));
-        assert!(!source(Dimension::Mars, "ad_astra:mars_temple"));
-        assert!(
-            feature_catalog_for(Dimension::Moon)
-                .1
-                .iter()
-                .all(|(id, _)| id != "ad_astra:moon_dungeon")
-        );
-        assert!(
-            feature_catalog_for(Dimension::Mars)
-                .1
-                .iter()
-                .all(|(id, _)| id != "ad_astra:mars_temple")
-        );
+        for id in ["tfc_ruined_world:towerhouse_1", "tfg:moon/moonbase"] {
+            assert!(!contains(&beneath.1, id), "Beneath catalog leaked {id}");
+        }
+        assert!(contains(&beneath.1, "minecraft:fortress"));
+        assert!(contains(&beneath.1, "minecraft:bastion_remnant"));
+        assert!(contains(&beneath.1, "minecraft:nether_fossil"));
+        assert!(!contains(&beneath.1, "tfg:beneath/outpost"));
+
+        let moon = feature_catalog_for(Dimension::Moon);
+        let mars = feature_catalog_for(Dimension::Mars);
+        assert!(contains(&moon.1, "ad_astra:moon_dungeon"));
+        assert!(!contains(&mars.1, "ad_astra:moon_dungeon"));
+        assert!(contains(&mars.1, "ad_astra:mars_temple"));
+        assert!(!contains(&moon.1, "ad_astra:mars_temple"));
+        assert!(contains(&moon.1, "tfg:moon/moonbase"));
+        assert!(!contains(&overworld.1, "tfg:moon/moonbase"));
     }
 }

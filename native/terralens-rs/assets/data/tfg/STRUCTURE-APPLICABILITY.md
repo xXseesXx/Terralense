@@ -6,7 +6,9 @@ The artifact includes all 66 structure sets and their 131 distinct structure def
 
 Nether, Moon, and Mars biome profiles come from the existing `level.dat` and match current KubeJS dimension profiles. The Overworld profile uses TFG Core 0.9.25's 109 TFG Earth biomes registered for the custom `tfc:overworld` source. A separate 139-ID registered-resource pool (109 TFG Earth plus 30 legacy TFC biomes) is retained for auditing; those legacy TFC IDs are not treated as generated profile IDs. Comparisons use raw registry IDs. No vanilla names are aliased to TFC names.
 
-A biome intersection proves only that a structure's biome gate can match the dimension profile; it does not prove placement or terrain viability. `scanner_eligible` additionally requires a placement type supported by the scanner. Scanner callers must still enforce their per-type distance limits (currently requested as 100 km), frequency, height/terrain checks, and supported structure-ID filtering. Empty biome selectors and concentric-ring strongholds remain in the inventory but are gated out.
+A biome intersection proves only that a structure's biome gate can match the dimension profile; it does not prove placement or terrain viability. `scanner_eligible` additionally requires a placement type supported by the scanner. Scanner callers must still enforce their per-type distance limits (currently requested as 100 km), frequency, height/terrain checks, and supported structure-ID filtering. Explicitly empty structure biome selectors remain omitted from the controls. Concentric-ring
+strongholds and other structures without native preview support stay in the registered
+catalog; an audit miss or static biome mismatch is never used as a catalog blacklist.
 
 Regenerate without launching Minecraft or changing the world:
 

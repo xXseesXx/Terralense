@@ -241,7 +241,7 @@ for setid,(sd,setsrc) in sorted(sets.items()):
   children.append({'id':sid,'weight':weight,'reference_tag':tag_ref,'structure_type':st.get('type'),'biome_selector':selector['raw'],'resolved_selector_biomes':selector['biomes'],'eligible_dimensions':eligible,'scanner_eligible_dimensions':scan_dims,'dimension_biomes':per,'status':status,'disabled_reasons':reasons,'source':stsrc})
  rows.append({'id':setid,'source':setsrc,'placement':placement,'children':children})
 
-# Summary dimension => structure ids with candidates; status checks can gate marker enablement.
+# Native preview support by dimension; negative entries must not blacklist registered controls.
 summary={}
 for dim in profiles:
  ids=[]

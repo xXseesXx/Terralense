@@ -391,7 +391,7 @@ fn predict_structures(
             let Some(id) = st["structure"].as_str() else {
                 continue;
             };
-            if !crate::structure_support::enabled(world.dimension, id) {
+            if !crate::structure_support::biome_compatible(world.dimension, id) {
                 continue;
             }
             let qid = id.to_owned();
@@ -657,10 +657,10 @@ mod tests {
         assert!(mo.iter().all(|(id, _)| id.starts_with("moon:")));
         assert!(ra.iter().all(|(id, _)| id.starts_with("mars:")));
         assert!(ms.iter().any(|(id, _)| id == "tfg:moon/moonbase"));
-        assert!(
-            rs.is_empty(),
-            "Mars structure selectors contain no TFG Mars biomes"
-        );
+        assert!(ms.iter().any(|(id, _)| id == "ad_astra:moon_dungeon"));
+        assert!(rs.iter().any(|(id, _)| id == "ad_astra:mars_temple"));
+        assert!(ms.iter().all(|(id, _)| id != "ad_astra:mars_temple"));
+        assert!(rs.iter().all(|(id, _)| id != "ad_astra:moon_dungeon"));
     }
 
     #[test]

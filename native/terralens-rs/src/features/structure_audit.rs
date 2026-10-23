@@ -18,7 +18,7 @@ const RADIUS: i32 = 100_000;
 pub enum Status {
     CandidateFound,
     NoValidCandidateWithinRadius,
-    SourceBiomeIncompatible,
+    NoMatchingSamplerBiome,
     UnsupportedPlacement,
 }
 
@@ -211,7 +211,7 @@ pub fn scan_reference_world() -> Report {
         center: [0, 0],
         radius_blocks: RADIUS,
         dimensions,
-        evidence_limit: "A seed-derived random-spread placement has selected the weighted child and passed the installed biome and climate gates. This does not claim that Minecraft successfully generated a structure start or that terrain-specific placement checks passed; saved Anvil starts are listed as separate evidence.".into(),
+        evidence_limit: "A seed-derived random-spread placement has selected the weighted child and passed the installed biome and climate gates. This does not claim that Minecraft successfully generated a structure start or that terrain-specific placement checks passed; saved Anvil starts are listed as separate evidence. Missing sampler biome matches or audit witnesses must not blacklist registered structures.".into(),
     }
 }
 
@@ -417,9 +417,9 @@ fn scan_set(
         if member.biomes.is_disjoint(universe) {
             results.push(StructureResult {
                 dimension: world.dimension.id().into(), set_id: set.id.clone(), structure_id: member.id.clone(),
-                status: Status::SourceBiomeIncompatible, x: None, z: None, distance: None,
+                status: Status::NoMatchingSamplerBiome, x: None, z: None, distance: None,
                 candidates_checked: 0, biome_rejections: 0,
-                detail: "The installed structure biome selector has no intersection with the registered biome universe for this dimension.".into(),
+                detail: "The static structure selector has no literal intersection with this pinned native sampler profile. This does not prove absence in Minecraft and must not blacklist the registered type.".into(),
             });
         } else if let Some(reason) = &set.unsupported_reason {
             results.push(StructureResult {
