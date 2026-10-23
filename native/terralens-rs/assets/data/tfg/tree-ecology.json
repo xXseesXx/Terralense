@@ -1,0 +1,483 @@
+{
+  "version": 1,
+  "source": "Climate ranges from installed Core/AFC forest-entry data; eligible species only. Expected tree attempts are modeled separately.",
+  "entries": [
+    {
+      "id": "tfc:tree/acacia_entry",
+      "species": "acacia",
+      "minTemperature": 13.4,
+      "maxTemperature": 40,
+      "minRainfall": 90,
+      "maxRainfall": 275,
+      "source": "afc-1.0.22-1.20.1.jar"
+    },
+    {
+      "id": "tfc:tree/acacia_koa_entry",
+      "species": "acacia_koa",
+      "minTemperature": 15.3,
+      "maxTemperature": 24.4,
+      "minRainfall": 350,
+      "maxRainfall": 500,
+      "source": "afc-1.0.22-1.20.1.jar"
+    },
+    {
+      "id": "tfc:tree/ash_entry",
+      "species": "ash",
+      "minTemperature": -13.9,
+      "maxTemperature": 0.7,
+      "minRainfall": 60,
+      "maxRainfall": 240,
+      "source": "afc-1.0.22-1.20.1.jar"
+    },
+    {
+      "id": "tfc:tree/aspen_entry",
+      "species": "aspen",
+      "minTemperature": -15.7,
+      "maxTemperature": -1.1,
+      "minRainfall": 350,
+      "maxRainfall": 500,
+      "source": "afc-1.0.22-1.20.1.jar"
+    },
+    {
+      "id": "tfc:tree/balsam_fir_entry",
+      "species": "balsam_fir",
+      "minTemperature": -13.9,
+      "maxTemperature": -1.1,
+      "minRainfall": 210,
+      "maxRainfall": 500,
+      "source": "afc-1.0.22-1.20.1.jar"
+    },
+    {
+      "id": "tfc:tree/baobab_entry",
+      "species": "baobab",
+      "minTemperature": 15.3,
+      "maxTemperature": 26.2,
+      "minRainfall": 30,
+      "maxRainfall": 190,
+      "source": "afc-1.0.22-1.20.1.jar"
+    },
+    {
+      "id": "tfc:tree/bigleaf_maple_entry",
+      "species": "bigleaf_maple",
+      "minTemperature": -4.8,
+      "maxTemperature": 11.6,
+      "minRainfall": 405,
+      "maxRainfall": 500,
+      "source": "afc-1.0.22-1.20.1.jar"
+    },
+    {
+      "id": "tfc:tree/birch_entry",
+      "species": "birch",
+      "minTemperature": -13.9,
+      "maxTemperature": 2.5,
+      "minRainfall": 125,
+      "maxRainfall": 310,
+      "source": "afc-1.0.22-1.20.1.jar"
+    },
+    {
+      "id": "tfc:tree/black_oak_entry",
+      "species": "black_oak",
+      "minTemperature": 11.6,
+      "maxTemperature": 20.7,
+      "minRainfall": 150,
+      "maxRainfall": 330,
+      "source": "afc-1.0.22-1.20.1.jar"
+    },
+    {
+      "id": "tfc:tree/black_spruce_entry",
+      "species": "black_spruce",
+      "minTemperature": -17.5,
+      "maxTemperature": -1.1,
+      "minRainfall": 220,
+      "maxRainfall": 360,
+      "source": "afc-1.0.22-1.20.1.jar"
+    },
+    {
+      "id": "tfc:tree/blackwood_entry",
+      "species": "blackwood",
+      "minTemperature": 9.8,
+      "maxTemperature": 20.7,
+      "minRainfall": 35,
+      "maxRainfall": 150,
+      "source": "afc-1.0.22-1.20.1.jar"
+    },
+    {
+      "id": "tfc:tree/chestnut_entry",
+      "species": "chestnut",
+      "minTemperature": -6.6,
+      "maxTemperature": 11.6,
+      "minRainfall": 150,
+      "maxRainfall": 300,
+      "source": "afc-1.0.22-1.20.1.jar"
+    },
+    {
+      "id": "tfc:tree/coast_redwood_entry",
+      "species": "coast_redwood",
+      "minTemperature": 4.3,
+      "maxTemperature": 9.8,
+      "minRainfall": 320,
+      "maxRainfall": 500,
+      "source": "afc-1.0.22-1.20.1.jar"
+    },
+    {
+      "id": "tfc:tree/coast_spruce_entry",
+      "species": "coast_spruce",
+      "minTemperature": -12.1,
+      "maxTemperature": 6.1,
+      "minRainfall": 320,
+      "maxRainfall": 390,
+      "source": "afc-1.0.22-1.20.1.jar"
+    },
+    {
+      "id": "tfc:tree/cypress_entry",
+      "species": "cypress",
+      "minTemperature": 2.5,
+      "maxTemperature": 15.3,
+      "minRainfall": 100,
+      "maxRainfall": 260,
+      "source": "afc-1.0.22-1.20.1.jar"
+    },
+    {
+      "id": "tfc:tree/douglas_fir_entry",
+      "species": "douglas_fir",
+      "minTemperature": -10.3,
+      "maxTemperature": 6.1,
+      "minRainfall": 305,
+      "maxRainfall": 500,
+      "source": "afc-1.0.22-1.20.1.jar"
+    },
+    {
+      "id": "tfc:tree/eucalyptus_entry",
+      "species": "eucalyptus",
+      "minTemperature": 8,
+      "maxTemperature": 18.9,
+      "minRainfall": 170,
+      "maxRainfall": 325,
+      "source": "afc-1.0.22-1.20.1.jar"
+    },
+    {
+      "id": "tfc:tree/fig_entry",
+      "species": "fig",
+      "minTemperature": 18.9,
+      "maxTemperature": 26.2,
+      "minRainfall": 340,
+      "maxRainfall": 500,
+      "source": "afc-1.0.22-1.20.1.jar"
+    },
+    {
+      "id": "tfc:tree/flame_of_the_forest_entry",
+      "species": "flame_of_the_forest",
+      "minTemperature": 13.4,
+      "maxTemperature": 24.4,
+      "minRainfall": 340,
+      "maxRainfall": 500,
+      "source": "afc-1.0.22-1.20.1.jar"
+    },
+    {
+      "id": "tfc:tree/giant_rosewood_entry",
+      "species": "giant_rosewood",
+      "minTemperature": 15.3,
+      "maxTemperature": 22.5,
+      "minRainfall": 340,
+      "maxRainfall": 440,
+      "source": "afc-1.0.22-1.20.1.jar"
+    },
+    {
+      "id": "tfc:tree/hevea_entry",
+      "species": "hevea",
+      "minTemperature": 17.1,
+      "maxTemperature": 26.2,
+      "minRainfall": 390,
+      "maxRainfall": 500,
+      "source": "afc-1.0.22-1.20.1.jar"
+    },
+    {
+      "id": "tfc:tree/hickory_entry",
+      "species": "hickory",
+      "minTemperature": -6.6,
+      "maxTemperature": 11.6,
+      "minRainfall": 210,
+      "maxRainfall": 400,
+      "source": "afc-1.0.22-1.20.1.jar"
+    },
+    {
+      "id": "tfc:tree/horsetail_ironwood_entry",
+      "species": "horsetail_ironwood",
+      "minTemperature": 9.8,
+      "maxTemperature": 20.7,
+      "minRainfall": 340,
+      "maxRainfall": 500,
+      "source": "afc-1.0.22-1.20.1.jar"
+    },
+    {
+      "id": "tfc:tree/ipe_entry",
+      "species": "ipe",
+      "minTemperature": 11.6,
+      "maxTemperature": 20.7,
+      "minRainfall": 340,
+      "maxRainfall": 500,
+      "source": "afc-1.0.22-1.20.1.jar"
+    },
+    {
+      "id": "tfc:tree/ironwood_entry",
+      "species": "ironwood",
+      "minTemperature": 20.7,
+      "maxTemperature": 40,
+      "minRainfall": 320,
+      "maxRainfall": 430,
+      "source": "afc-1.0.22-1.20.1.jar"
+    },
+    {
+      "id": "tfc:tree/jaggery_palm_entry",
+      "species": "jaggery_palm",
+      "minTemperature": 20.7,
+      "maxTemperature": 26.2,
+      "minRainfall": 400,
+      "maxRainfall": 500,
+      "source": "afc-1.0.22-1.20.1.jar"
+    },
+    {
+      "id": "tfc:tree/kapok_entry",
+      "species": "kapok",
+      "minTemperature": 13.4,
+      "maxTemperature": 24.4,
+      "minRainfall": 360,
+      "maxRainfall": 500,
+      "source": "afc-1.0.22-1.20.1.jar"
+    },
+    {
+      "id": "tfc:tree/lebombo_ironwood_entry",
+      "species": "lebombo_ironwood",
+      "minTemperature": 20.7,
+      "maxTemperature": 40,
+      "minRainfall": 150,
+      "maxRainfall": 230,
+      "source": "afc-1.0.22-1.20.1.jar"
+    },
+    {
+      "id": "tfc:tree/live_oak_entry",
+      "species": "live_oak",
+      "minTemperature": 0.7,
+      "maxTemperature": 13.4,
+      "minRainfall": 390,
+      "maxRainfall": 500,
+      "source": "afc-1.0.22-1.20.1.jar"
+    },
+    {
+      "id": "tfc:tree/mahogany_entry",
+      "species": "mahogany",
+      "minTemperature": 15.3,
+      "maxTemperature": 26.2,
+      "minRainfall": 300,
+      "maxRainfall": 430,
+      "source": "afc-1.0.22-1.20.1.jar"
+    },
+    {
+      "id": "tfc:tree/maple_entry",
+      "species": "maple",
+      "minTemperature": -8.4,
+      "maxTemperature": 8,
+      "minRainfall": 260,
+      "maxRainfall": 360,
+      "source": "afc-1.0.22-1.20.1.jar"
+    },
+    {
+      "id": "tfc:tree/mpingo_blackwood_entry",
+      "species": "mpingo_blackwood",
+      "minTemperature": 13.4,
+      "maxTemperature": 22.5,
+      "minRainfall": 85,
+      "maxRainfall": 285,
+      "source": "afc-1.0.22-1.20.1.jar"
+    },
+    {
+      "id": "tfc:tree/oak_entry",
+      "species": "oak",
+      "minTemperature": -8.4,
+      "maxTemperature": 6.1,
+      "minRainfall": 210,
+      "maxRainfall": 320,
+      "source": "afc-1.0.22-1.20.1.jar"
+    },
+    {
+      "id": "tfc:tree/palm_entry",
+      "species": "palm",
+      "minTemperature": 17.1,
+      "maxTemperature": 40,
+      "minRainfall": 0,
+      "maxRainfall": 250,
+      "source": "afc-1.0.22-1.20.1.jar"
+    },
+    {
+      "id": "tfc:tree/pine_entry",
+      "species": "pine",
+      "minTemperature": -19.4,
+      "maxTemperature": -3,
+      "minRainfall": 60,
+      "maxRainfall": 270,
+      "source": "afc-1.0.22-1.20.1.jar"
+    },
+    {
+      "id": "tfc:tree/rainbow_eucalyptus_entry",
+      "species": "rainbow_eucalyptus",
+      "minTemperature": 15.3,
+      "maxTemperature": 24.4,
+      "minRainfall": 300,
+      "maxRainfall": 450,
+      "source": "afc-1.0.22-1.20.1.jar"
+    },
+    {
+      "id": "tfc:tree/red_silk_cotton_entry",
+      "species": "red_silk_cotton",
+      "minTemperature": 20.7,
+      "maxTemperature": 40,
+      "minRainfall": 250,
+      "maxRainfall": 350,
+      "source": "afc-1.0.22-1.20.1.jar"
+    },
+    {
+      "id": "tfc:tree/redcedar_entry",
+      "species": "redcedar",
+      "minTemperature": -4.8,
+      "maxTemperature": 9.8,
+      "minRainfall": 410,
+      "maxRainfall": 500,
+      "source": "afc-1.0.22-1.20.1.jar"
+    },
+    {
+      "id": "tfc:tree/rosewood_entry",
+      "species": "rosewood",
+      "minTemperature": 15.3,
+      "maxTemperature": 24.4,
+      "minRainfall": 245,
+      "maxRainfall": 360,
+      "source": "afc-1.0.22-1.20.1.jar"
+    },
+    {
+      "id": "tfc:tree/rubber_fig_entry",
+      "species": "rubber_fig",
+      "minTemperature": 9.8,
+      "maxTemperature": 20.7,
+      "minRainfall": 290,
+      "maxRainfall": 400,
+      "source": "afc-1.0.22-1.20.1.jar"
+    },
+    {
+      "id": "tfc:tree/sapele_mahogany_entry",
+      "species": "sapele_mahogany",
+      "minTemperature": 13.4,
+      "maxTemperature": 26.2,
+      "minRainfall": 330,
+      "maxRainfall": 500,
+      "source": "afc-1.0.22-1.20.1.jar"
+    },
+    {
+      "id": "tfc:tree/sequoia_entry",
+      "species": "sequoia",
+      "minTemperature": 0.7,
+      "maxTemperature": 8,
+      "minRainfall": 320,
+      "maxRainfall": 500,
+      "source": "afc-1.0.22-1.20.1.jar"
+    },
+    {
+      "id": "tfc:tree/small_leaf_mahogany_entry",
+      "species": "small_leaf_mahogany",
+      "minTemperature": 11.6,
+      "maxTemperature": 18.9,
+      "minRainfall": 320,
+      "maxRainfall": 500,
+      "source": "afc-1.0.22-1.20.1.jar"
+    },
+    {
+      "id": "tfc:tree/spruce_entry",
+      "species": "spruce",
+      "minTemperature": -19.4,
+      "maxTemperature": 2.5,
+      "minRainfall": 330,
+      "maxRainfall": 500,
+      "source": "afc-1.0.22-1.20.1.jar"
+    },
+    {
+      "id": "tfc:tree/stone_pine_entry",
+      "species": "stone_pine",
+      "minTemperature": 2.5,
+      "maxTemperature": 18.9,
+      "minRainfall": 140,
+      "maxRainfall": 290,
+      "source": "afc-1.0.22-1.20.1.jar"
+    },
+    {
+      "id": "tfc:tree/sycamore_entry",
+      "species": "sycamore",
+      "minTemperature": -6.6,
+      "maxTemperature": 11.6,
+      "minRainfall": 330,
+      "maxRainfall": 480,
+      "source": "afc-1.0.22-1.20.1.jar"
+    },
+    {
+      "id": "tfc:tree/teak_entry",
+      "species": "teak",
+      "minTemperature": 13.4,
+      "maxTemperature": 26.2,
+      "minRainfall": 215,
+      "maxRainfall": 330,
+      "source": "afc-1.0.22-1.20.1.jar"
+    },
+    {
+      "id": "tfc:tree/tualang_entry",
+      "species": "tualang",
+      "minTemperature": 20.7,
+      "maxTemperature": 40,
+      "minRainfall": 360,
+      "maxRainfall": 500,
+      "source": "afc-1.0.22-1.20.1.jar"
+    },
+    {
+      "id": "tfc:tree/weeping_cypress_entry",
+      "species": "weeping_cypress",
+      "minTemperature": -8.4,
+      "maxTemperature": 4.3,
+      "minRainfall": 290,
+      "maxRainfall": 415,
+      "source": "afc-1.0.22-1.20.1.jar"
+    },
+    {
+      "id": "tfc:tree/weeping_maple_entry",
+      "species": "weeping_maple",
+      "minTemperature": 0.7,
+      "maxTemperature": 4.3,
+      "minRainfall": 240,
+      "maxRainfall": 320,
+      "source": "afc-1.0.22-1.20.1.jar"
+    },
+    {
+      "id": "tfc:tree/weeping_willow_entry",
+      "species": "weeping_willow",
+      "minTemperature": 9.8,
+      "maxTemperature": 17.1,
+      "minRainfall": 355,
+      "maxRainfall": 500,
+      "source": "afc-1.0.22-1.20.1.jar"
+    },
+    {
+      "id": "tfc:tree/white_cedar_entry",
+      "species": "white_cedar",
+      "minTemperature": -13.9,
+      "maxTemperature": 4.3,
+      "minRainfall": 100,
+      "maxRainfall": 220,
+      "source": "afc-1.0.22-1.20.1.jar"
+    },
+    {
+      "id": "tfc:tree/willow_entry",
+      "species": "willow",
+      "minTemperature": -6.6,
+      "maxTemperature": 9.8,
+      "minRainfall": 330,
+      "maxRainfall": 500,
+      "source": "afc-1.0.22-1.20.1.jar"
+    }
+  ]
+}

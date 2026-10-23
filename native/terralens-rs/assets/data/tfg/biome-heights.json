@@ -1,0 +1,797 @@
+{
+  "_meta": {
+    "description": "Each TFG biome's height expression, extracted verbatim from TFGBiomes.java. Expressions compose: a TFG landform often wraps a TFC base noise, so the whole expression is kept rather than a function name and arguments. `functions` is the inventory of what a port has to implement, split by declaring class: BiomeNoise is TFC own, TFGBiomeNoise and TFGNoiseHelpers belong to TerraFirmaGreg.",
+    "source": "tools/.cache/tfg-core-modern-0.9.21/src/main/java/su/terrafirmagreg/core/world/new_ow_wg/biome/TFGBiomes.java",
+    "extraction_date": "2026-09-10T22:51:13.681Z",
+    "biome_count": 109,
+    "functions": {
+      "BiomeNoise": [
+        "canyons",
+        "hills",
+        "lake",
+        "lowlands",
+        "mountains",
+        "ocean",
+        "oceanRidge",
+        "shore"
+      ],
+      "TFGBiomeNoise": [
+        "activeHotSpots",
+        "activeShieldVolcano",
+        "ancientHotSpots",
+        "ancientShieldVolcano",
+        "badlands",
+        "bowlDolines",
+        "burren",
+        "buttes",
+        "cenotes",
+        "constant",
+        "dormantHotSpots",
+        "dormantShieldVolcano",
+        "drumlins",
+        "dunes",
+        "extinctHotSpots",
+        "extinctShieldVolcano",
+        "fengcong",
+        "fenglin",
+        "flats",
+        "glacialBase",
+        "glacialCirques",
+        "glacialCirquesIceSurfaceHeight",
+        "glacialSurfaceTexture",
+        "glaciatedShieldVolcano",
+        "hoodoos",
+        "hotSpotIntensity",
+        "iceSheetSurfaceHeight",
+        "invertedPatternedGround",
+        "knobAndKettle",
+        "mesas",
+        "montaneIceSheetSurfaceHeight",
+        "oceanicIceSheetSurfaceHeight",
+        "patternedGround",
+        "rockyIslands",
+        "saltFlats",
+        "sharpHills",
+        "shieldVolcanoGlacierSurface",
+        "shieldVolcanoIceSheetSurface",
+        "shilin",
+        "stairCanyons",
+        "stoneCircles",
+        "sunkenShieldVolcano",
+        "tiankeng"
+      ],
+      "TFGNoiseHelpers": [
+        "addConstant",
+        "max"
+      ]
+    },
+    "function_count": {
+      "BiomeNoise": 8,
+      "TFGBiomeNoise": 43,
+      "TFGNoiseHelpers": 2
+    }
+  },
+  "biomes": {
+    "ocean": {
+      "expression": "seed -> BiomeNoise.ocean(seed, -26, -12)",
+      "calls": [
+        "BiomeNoise.ocean"
+      ]
+    },
+    "ocean_reef": {
+      "expression": "seed -> BiomeNoise.ocean(seed, -16, -8)",
+      "calls": [
+        "BiomeNoise.ocean"
+      ]
+    },
+    "deep_ocean": {
+      "expression": "seed -> BiomeNoise.ocean(seed, -30, -16)",
+      "calls": [
+        "BiomeNoise.ocean"
+      ]
+    },
+    "deep_ocean_trench": {
+      "expression": "seed -> BiomeNoise.oceanRidge(seed, -30, -16)",
+      "calls": [
+        "BiomeNoise.oceanRidge"
+      ]
+    },
+    "plains": {
+      "expression": "seed -> BiomeNoise.hills(seed, 4, 10)",
+      "calls": [
+        "BiomeNoise.hills"
+      ]
+    },
+    "hills": {
+      "expression": "seed -> BiomeNoise.hills(seed, -5, 16)",
+      "calls": [
+        "BiomeNoise.hills"
+      ]
+    },
+    "lowlands": {
+      "expression": "BiomeNoise::lowlands",
+      "calls": [
+        "BiomeNoise.lowlands"
+      ]
+    },
+    "salt_marsh": {
+      "expression": "BiomeNoise::lowlands",
+      "calls": [
+        "BiomeNoise.lowlands"
+      ]
+    },
+    "low_canyons": {
+      "expression": "seed -> BiomeNoise.canyons(seed, -8, 21)",
+      "calls": [
+        "BiomeNoise.canyons"
+      ]
+    },
+    "rolling_hills": {
+      "expression": "seed -> BiomeNoise.hills(seed, -5, 28)",
+      "calls": [
+        "BiomeNoise.hills"
+      ]
+    },
+    "highlands": {
+      "expression": "seed -> TFGBiomeNoise.sharpHills(seed, -3, 28)",
+      "calls": [
+        "TFGBiomeNoise.sharpHills"
+      ]
+    },
+    "badlands": {
+      "expression": "seed -> TFGBiomeNoise.badlands(seed, 22, 19.5f)",
+      "calls": [
+        "TFGBiomeNoise.badlands"
+      ]
+    },
+    "plateau": {
+      "expression": "seed -> BiomeNoise.hills(seed, 20, 30)",
+      "calls": [
+        "BiomeNoise.hills"
+      ]
+    },
+    "plateau_wide": {
+      "expression": "seed -> BiomeNoise.hills(seed, 20, 30)",
+      "calls": [
+        "BiomeNoise.hills"
+      ]
+    },
+    "canyons": {
+      "expression": "seed -> BiomeNoise.canyons(seed, -2, 40)",
+      "calls": [
+        "BiomeNoise.canyons"
+      ]
+    },
+    "mountains": {
+      "expression": "seed -> BiomeNoise.mountains(seed, 10, 70)",
+      "calls": [
+        "BiomeNoise.mountains"
+      ]
+    },
+    "old_mountains": {
+      "expression": "seed -> BiomeNoise.mountains(seed, 16, 40)",
+      "calls": [
+        "BiomeNoise.mountains"
+      ]
+    },
+    "oceanic_mountains": {
+      "expression": "seed -> BiomeNoise.mountains(seed, -16, 60)",
+      "calls": [
+        "BiomeNoise.mountains"
+      ]
+    },
+    "volcanic_mountains": {
+      "expression": "seed -> BiomeNoise.mountains(seed, 10, 60)",
+      "calls": [
+        "BiomeNoise.mountains"
+      ]
+    },
+    "volcanic_oceanic_mountains": {
+      "expression": "seed -> BiomeNoise.mountains(seed, -24, 50)",
+      "calls": [
+        "BiomeNoise.mountains"
+      ]
+    },
+    "guano_island": {
+      "expression": "TFGBiomeNoise::rockyIslands",
+      "calls": [
+        "TFGBiomeNoise.rockyIslands"
+      ]
+    },
+    "shore": {
+      "expression": "BiomeNoise::shore",
+      "calls": [
+        "BiomeNoise.shore"
+      ]
+    },
+    "tidal_flats": {
+      "expression": "BiomeNoise::shore",
+      "calls": [
+        "BiomeNoise.shore"
+      ]
+    },
+    "sea_stacks": {
+      "expression": "seed -> BiomeNoise.hills(seed, 10, 30)",
+      "calls": [
+        "BiomeNoise.hills"
+      ]
+    },
+    "terrace_upper": {
+      "expression": "seed -> TFGBiomeNoise.constant(0)",
+      "calls": [
+        "TFGBiomeNoise.constant"
+      ]
+    },
+    "terrace_lower": {
+      "expression": "seed -> TFGBiomeNoise.constant(0)",
+      "calls": [
+        "TFGBiomeNoise.constant"
+      ]
+    },
+    "setback_cliffs": {
+      "expression": "seed -> BiomeNoise.hills(seed, 20, 30)",
+      "calls": [
+        "BiomeNoise.hills"
+      ]
+    },
+    "coastal_dunes": {
+      "expression": "seed -> TFGBiomeNoise.constant(0)",
+      "calls": [
+        "TFGBiomeNoise.constant"
+      ]
+    },
+    "rocky_shores": {
+      "expression": "seed -> TFGBiomeNoise.constant(-15)",
+      "calls": [
+        "TFGBiomeNoise.constant"
+      ]
+    },
+    "embayments": {
+      "expression": "BiomeNoise::shore",
+      "calls": [
+        "BiomeNoise.shore"
+      ]
+    },
+    "lake": {
+      "expression": "BiomeNoise::lake",
+      "calls": [
+        "BiomeNoise.lake"
+      ]
+    },
+    "river": null,
+    "mountain_lake": {
+      "expression": "seed -> BiomeNoise.mountains(seed, 10, 70)",
+      "calls": [
+        "BiomeNoise.mountains"
+      ]
+    },
+    "old_mountain_lake": {
+      "expression": "seed -> BiomeNoise.mountains(seed, -16, 60)",
+      "calls": [
+        "BiomeNoise.mountains"
+      ]
+    },
+    "oceanic_mountain_lake": {
+      "expression": "seed -> BiomeNoise.mountains(seed, -16, 60)",
+      "calls": [
+        "BiomeNoise.mountains"
+      ]
+    },
+    "volcanic_mountain_lake": {
+      "expression": "seed -> BiomeNoise.mountains(seed, 10, 60)",
+      "calls": [
+        "BiomeNoise.mountains"
+      ]
+    },
+    "volcanic_oceanic_mountain_lake": {
+      "expression": "seed -> BiomeNoise.mountains(seed, -24, 50)",
+      "calls": [
+        "BiomeNoise.mountains"
+      ]
+    },
+    "plateau_lake": {
+      "expression": "seed -> BiomeNoise.hills(seed, 20, 30)",
+      "calls": [
+        "BiomeNoise.hills"
+      ]
+    },
+    "mud_flats": {
+      "expression": "TFGBiomeNoise::flats",
+      "calls": [
+        "TFGBiomeNoise.flats"
+      ]
+    },
+    "salt_flats": {
+      "expression": "TFGBiomeNoise::saltFlats",
+      "calls": [
+        "TFGBiomeNoise.saltFlats"
+      ]
+    },
+    "dune_sea": {
+      "expression": "seed -> TFGBiomeNoise.dunes(seed, 2, 16)",
+      "calls": [
+        "TFGBiomeNoise.dunes"
+      ]
+    },
+    "grassy_dunes": {
+      "expression": "seed -> TFGBiomeNoise.dunes(seed, 2, 16)",
+      "calls": [
+        "TFGBiomeNoise.dunes"
+      ]
+    },
+    "whorled_canyons": {
+      "expression": "seed -> BiomeNoise.canyons(seed, 8, 60)",
+      "calls": [
+        "BiomeNoise.canyons"
+      ]
+    },
+    "stair_step_canyons": {
+      "expression": "TFGBiomeNoise::stairCanyons",
+      "calls": [
+        "TFGBiomeNoise.stairCanyons"
+      ]
+    },
+    "mesas": {
+      "expression": "TFGBiomeNoise::mesas",
+      "calls": [
+        "TFGBiomeNoise.mesas"
+      ]
+    },
+    "buttes": {
+      "expression": "TFGBiomeNoise::buttes",
+      "calls": [
+        "TFGBiomeNoise.buttes"
+      ]
+    },
+    "hoodoos": {
+      "expression": "TFGBiomeNoise::hoodoos",
+      "calls": [
+        "TFGBiomeNoise.hoodoos"
+      ]
+    },
+    "rocky_plateau": {
+      "expression": "seed -> TFGNoiseHelpers.max( TFGBiomeNoise.bowlDolines(seed, BiomeNoise.hills(seed, 22, 32), 16), BiomeNoise.canyons(seed, 0, 52).spread(1.5))",
+      "calls": [
+        "TFGNoiseHelpers.max",
+        "TFGBiomeNoise.bowlDolines",
+        "BiomeNoise.hills",
+        "BiomeNoise.canyons"
+      ]
+    },
+    "tower_karst_plains": {
+      "expression": "seed -> TFGBiomeNoise.fenglin(seed, BiomeNoise.hills(seed, 4, 8), 40)",
+      "calls": [
+        "TFGBiomeNoise.fenglin",
+        "BiomeNoise.hills"
+      ]
+    },
+    "tower_karst_canyons": {
+      "expression": "seed -> TFGBiomeNoise.fengcong(seed, BiomeNoise.canyons(seed, -2, 30))",
+      "calls": [
+        "TFGBiomeNoise.fengcong",
+        "BiomeNoise.canyons"
+      ]
+    },
+    "tower_karst_hills": {
+      "expression": "seed -> TFGBiomeNoise.fengcong(seed, BiomeNoise.hills(seed, -5, 22))",
+      "calls": [
+        "TFGBiomeNoise.fengcong",
+        "BiomeNoise.hills"
+      ]
+    },
+    "tower_karst_highlands": {
+      "expression": "seed -> TFGBiomeNoise.fengcong(seed, TFGBiomeNoise.sharpHills(seed, 0, 20))",
+      "calls": [
+        "TFGBiomeNoise.fengcong",
+        "TFGBiomeNoise.sharpHills"
+      ]
+    },
+    "tower_karst_lake": {
+      "expression": "seed -> TFGBiomeNoise.fenglin(seed, BiomeNoise.hills(seed, -12, -4), 50)",
+      "calls": [
+        "TFGBiomeNoise.fenglin",
+        "BiomeNoise.hills"
+      ]
+    },
+    "tower_karst_bay": {
+      "expression": "seed -> TFGBiomeNoise.fenglin(seed, BiomeNoise.hills(seed, -18, -8), 50)",
+      "calls": [
+        "TFGBiomeNoise.fenglin",
+        "BiomeNoise.hills"
+      ]
+    },
+    "burren_plateau": {
+      "expression": "seed -> TFGBiomeNoise.burren(seed, BiomeNoise.hills(seed, 22, 32), 1.4)",
+      "calls": [
+        "TFGBiomeNoise.burren",
+        "BiomeNoise.hills"
+      ]
+    },
+    "burren_badlands": {
+      "expression": "seed -> TFGBiomeNoise.burren(seed, TFGBiomeNoise.badlands(seed, 22, 19.5f), 1.0)",
+      "calls": [
+        "TFGBiomeNoise.burren",
+        "TFGBiomeNoise.badlands"
+      ]
+    },
+    "burren_badlands_tall": {
+      "expression": "seed -> TFGBiomeNoise.burren(seed, TFGBiomeNoise.badlands(seed, 35, 33f), 1.0)",
+      "calls": [
+        "TFGBiomeNoise.burren",
+        "TFGBiomeNoise.badlands"
+      ]
+    },
+    "burren_plains": {
+      "expression": "seed -> TFGBiomeNoise.burren(seed, BiomeNoise.hills(seed, 6, 12), 1.5)",
+      "calls": [
+        "TFGBiomeNoise.burren",
+        "BiomeNoise.hills"
+      ]
+    },
+    "burren_roche_moutonee": {
+      "expression": "seed -> TFGBiomeNoise.burren(seed, TFGBiomeNoise.drumlins(seed), 1.5)",
+      "calls": [
+        "TFGBiomeNoise.burren",
+        "TFGBiomeNoise.drumlins"
+      ]
+    },
+    "shilin_plains": {
+      "expression": "seed -> TFGBiomeNoise.shilin(seed, BiomeNoise.hills(seed, 4, 10), 28)",
+      "calls": [
+        "TFGBiomeNoise.shilin",
+        "BiomeNoise.hills"
+      ]
+    },
+    "shilin_canyons": {
+      "expression": "seed -> TFGBiomeNoise.shilin(seed, BiomeNoise.canyons(seed, -2, 30), 26)",
+      "calls": [
+        "TFGBiomeNoise.shilin",
+        "BiomeNoise.canyons"
+      ]
+    },
+    "shilin_hills": {
+      "expression": "seed -> TFGBiomeNoise.shilin(seed, BiomeNoise.hills(seed, -2, 16), 26)",
+      "calls": [
+        "TFGBiomeNoise.shilin",
+        "BiomeNoise.hills"
+      ]
+    },
+    "shilin_highlands": {
+      "expression": "seed -> TFGBiomeNoise.shilin(seed, TFGBiomeNoise.sharpHills(seed, 0, 32), 32)",
+      "calls": [
+        "TFGBiomeNoise.shilin",
+        "TFGBiomeNoise.sharpHills"
+      ]
+    },
+    "shilin_plateau": {
+      "expression": "seed -> TFGBiomeNoise.shilin(seed, BiomeNoise.hills(seed, 12, 22), 32)",
+      "calls": [
+        "TFGBiomeNoise.shilin",
+        "BiomeNoise.hills"
+      ]
+    },
+    "doline_plains": {
+      "expression": "seed -> TFGBiomeNoise.bowlDolines(seed, BiomeNoise.hills(seed, 4, 10), 6)",
+      "calls": [
+        "TFGBiomeNoise.bowlDolines",
+        "BiomeNoise.hills"
+      ]
+    },
+    "doline_hills": {
+      "expression": "seed -> TFGBiomeNoise.bowlDolines(seed, BiomeNoise.hills(seed, -5, 16), 10)",
+      "calls": [
+        "TFGBiomeNoise.bowlDolines",
+        "BiomeNoise.hills"
+      ]
+    },
+    "doline_rolling_hills": {
+      "expression": "seed -> TFGBiomeNoise.bowlDolines(seed, BiomeNoise.hills(seed, -5, 28), 18)",
+      "calls": [
+        "TFGBiomeNoise.bowlDolines",
+        "BiomeNoise.hills"
+      ]
+    },
+    "doline_highlands": {
+      "expression": "seed -> TFGBiomeNoise.bowlDolines(seed, TFGBiomeNoise.sharpHills(seed, -3, 20), 22)",
+      "calls": [
+        "TFGBiomeNoise.bowlDolines",
+        "TFGBiomeNoise.sharpHills"
+      ]
+    },
+    "doline_plateau": {
+      "expression": "seed -> TFGBiomeNoise.bowlDolines(seed, BiomeNoise.hills(seed, 22, 32), 22)",
+      "calls": [
+        "TFGBiomeNoise.bowlDolines",
+        "BiomeNoise.hills"
+      ]
+    },
+    "doline_canyons": {
+      "expression": "seed -> TFGBiomeNoise.bowlDolines(seed, BiomeNoise.canyons(seed, -2, 34), 15)",
+      "calls": [
+        "TFGBiomeNoise.bowlDolines",
+        "BiomeNoise.canyons"
+      ]
+    },
+    "cenote_plains": {
+      "expression": "seed -> TFGBiomeNoise.cenotes(seed, BiomeNoise.hills(seed, 4, 10), 11, 8)",
+      "calls": [
+        "TFGBiomeNoise.cenotes",
+        "BiomeNoise.hills"
+      ]
+    },
+    "cenote_hills": {
+      "expression": "seed -> TFGBiomeNoise.cenotes(seed, BiomeNoise.hills(seed, -5, 16), 16, 10)",
+      "calls": [
+        "TFGBiomeNoise.cenotes",
+        "BiomeNoise.hills"
+      ]
+    },
+    "cenote_rolling_hills": {
+      "expression": "seed -> TFGBiomeNoise.cenotes(seed, BiomeNoise.hills(seed, -5, 28), 22, 14)",
+      "calls": [
+        "TFGBiomeNoise.cenotes",
+        "BiomeNoise.hills"
+      ]
+    },
+    "cenote_canyons": {
+      "expression": "seed -> TFGBiomeNoise.cenotes(seed, BiomeNoise.canyons(seed, 2, 28), 18, 10)",
+      "calls": [
+        "TFGBiomeNoise.cenotes",
+        "BiomeNoise.canyons"
+      ]
+    },
+    "cenote_highlands": {
+      "expression": "seed -> TFGBiomeNoise.cenotes(seed, TFGBiomeNoise.sharpHills(seed, 0, 24), 20, 10)",
+      "calls": [
+        "TFGBiomeNoise.cenotes",
+        "TFGBiomeNoise.sharpHills"
+      ]
+    },
+    "cenote_plateau": {
+      "expression": "seed -> TFGBiomeNoise.cenotes(seed, BiomeNoise.hills(seed, 20, 30), 22, 20)",
+      "calls": [
+        "TFGBiomeNoise.cenotes",
+        "BiomeNoise.hills"
+      ]
+    },
+    "extreme_doline_plateau": {
+      "expression": "seed -> TFGBiomeNoise.tiankeng(seed, BiomeNoise.hills(seed, 24, 34))",
+      "calls": [
+        "TFGBiomeNoise.tiankeng",
+        "BiomeNoise.hills"
+      ]
+    },
+    "extreme_doline_mountains": {
+      "expression": "seed -> TFGBiomeNoise.tiankeng(seed, BiomeNoise.mountains(seed, 16, 40))",
+      "calls": [
+        "TFGBiomeNoise.tiankeng",
+        "BiomeNoise.mountains"
+      ]
+    },
+    "active_shield_volcano": {
+      "expression": "seed -> TFGBiomeNoise.activeShieldVolcano(seed, TFGBiomeNoise.activeHotSpots(seed))",
+      "calls": [
+        "TFGBiomeNoise.activeShieldVolcano",
+        "TFGBiomeNoise.activeHotSpots"
+      ]
+    },
+    "dormant_shield_volcano": {
+      "expression": "seed -> TFGBiomeNoise.dormantShieldVolcano(seed, TFGBiomeNoise.dormantHotSpots(seed))",
+      "calls": [
+        "TFGBiomeNoise.dormantShieldVolcano",
+        "TFGBiomeNoise.dormantHotSpots"
+      ]
+    },
+    "extinct_shield_volcano": {
+      "expression": "seed -> TFGBiomeNoise.extinctShieldVolcano(seed, TFGBiomeNoise.extinctHotSpots(seed))",
+      "calls": [
+        "TFGBiomeNoise.extinctShieldVolcano",
+        "TFGBiomeNoise.extinctHotSpots"
+      ]
+    },
+    "ancient_shield_volcano": {
+      "expression": "seed -> TFGBiomeNoise.ancientShieldVolcano(seed, 90, 130, TFGBiomeNoise.ancientHotSpots(seed))",
+      "calls": [
+        "TFGBiomeNoise.ancientShieldVolcano",
+        "TFGBiomeNoise.ancientHotSpots"
+      ]
+    },
+    "sunken_shield_volcano": {
+      "expression": "seed -> TFGBiomeNoise.sunkenShieldVolcano(seed, TFGBiomeNoise.ancientHotSpots(seed))",
+      "calls": [
+        "TFGBiomeNoise.sunkenShieldVolcano",
+        "TFGBiomeNoise.ancientHotSpots"
+      ]
+    },
+    "shield_volcano_shore": {
+      "expression": "BiomeNoise::shore",
+      "calls": [
+        "BiomeNoise.shore"
+      ]
+    },
+    "old_shield_volcano_shore": {
+      "expression": "BiomeNoise::shore",
+      "calls": [
+        "BiomeNoise.shore"
+      ]
+    },
+    "ice_sheet": {
+      "expression": "seed -> TFGBiomeNoise.iceSheetSurfaceHeight(seed) .add(TFGBiomeNoise.glacialSurfaceTexture(seed))",
+      "calls": [
+        "TFGBiomeNoise.iceSheetSurfaceHeight",
+        "TFGBiomeNoise.glacialSurfaceTexture"
+      ]
+    },
+    "ice_sheet_mountains": {
+      "expression": "seed -> TFGNoiseHelpers.max(TFGNoiseHelpers.max(TFGBiomeNoise.montaneIceSheetSurfaceHeight(seed) .add(TFGBiomeNoise.glacialSurfaceTexture(seed)), TFGNoiseHelpers.addConstant(TFGBiomeNoise.glacialCirques(seed), 39)), TFGNoiseHelpers.addConstant(TFGBiomeNoise.glacialCirquesIceSurfaceHeight(seed), 39))",
+      "calls": [
+        "TFGNoiseHelpers.max",
+        "TFGBiomeNoise.montaneIceSheetSurfaceHeight",
+        "TFGBiomeNoise.glacialSurfaceTexture",
+        "TFGNoiseHelpers.addConstant",
+        "TFGBiomeNoise.glacialCirques",
+        "TFGBiomeNoise.glacialCirquesIceSurfaceHeight"
+      ]
+    },
+    "ice_sheet_oceanic_mountains": {
+      "expression": "seed -> TFGNoiseHelpers.max(TFGNoiseHelpers.max(TFGBiomeNoise.oceanicIceSheetSurfaceHeight(seed) .add(TFGBiomeNoise.glacialSurfaceTexture(seed)), TFGBiomeNoise.glacialCirquesIceSurfaceHeight(seed)), TFGBiomeNoise.glacialCirques(seed))",
+      "calls": [
+        "TFGNoiseHelpers.max",
+        "TFGBiomeNoise.oceanicIceSheetSurfaceHeight",
+        "TFGBiomeNoise.glacialSurfaceTexture",
+        "TFGBiomeNoise.glacialCirquesIceSurfaceHeight",
+        "TFGBiomeNoise.glacialCirques"
+      ]
+    },
+    "ice_sheet_shield_volcano": {
+      "expression": "seed -> TFGNoiseHelpers.max(TFGBiomeNoise.glaciatedShieldVolcano(seed, TFGBiomeNoise.hotSpotIntensity(seed)), TFGBiomeNoise.shieldVolcanoIceSheetSurface(seed, TFGBiomeNoise.hotSpotIntensity(seed)) .add(TFGBiomeNoise.glacialSurfaceTexture(seed)))",
+      "calls": [
+        "TFGNoiseHelpers.max",
+        "TFGBiomeNoise.glaciatedShieldVolcano",
+        "TFGBiomeNoise.hotSpotIntensity",
+        "TFGBiomeNoise.shieldVolcanoIceSheetSurface",
+        "TFGBiomeNoise.glacialSurfaceTexture"
+      ]
+    },
+    "ice_sheet_tuyas": {
+      "expression": "seed -> TFGBiomeNoise.iceSheetSurfaceHeight(seed) .add(TFGBiomeNoise.glacialSurfaceTexture(seed))",
+      "calls": [
+        "TFGBiomeNoise.iceSheetSurfaceHeight",
+        "TFGBiomeNoise.glacialSurfaceTexture"
+      ]
+    },
+    "subglacial_lake": {
+      "expression": "seed -> TFGBiomeNoise.iceSheetSurfaceHeight(seed) .add(TFGBiomeNoise.glacialSurfaceTexture(seed))",
+      "calls": [
+        "TFGBiomeNoise.iceSheetSurfaceHeight",
+        "TFGBiomeNoise.glacialSurfaceTexture"
+      ]
+    },
+    "ice_sheet_edge": {
+      "expression": "TFGBiomeNoise::glacialBase",
+      "calls": [
+        "TFGBiomeNoise.glacialBase"
+      ]
+    },
+    "ice_sheet_tuyas_edge": {
+      "expression": "TFGBiomeNoise::glacialBase",
+      "calls": [
+        "TFGBiomeNoise.glacialBase"
+      ]
+    },
+    "ice_sheet_mountains_edge": {
+      "expression": "seed -> TFGNoiseHelpers.max(TFGNoiseHelpers.addConstant(TFGBiomeNoise.glacialCirques(seed), 39), TFGNoiseHelpers.addConstant(TFGBiomeNoise.glacialCirquesIceSurfaceHeight(seed), 39))",
+      "calls": [
+        "TFGNoiseHelpers.max",
+        "TFGNoiseHelpers.addConstant",
+        "TFGBiomeNoise.glacialCirques",
+        "TFGBiomeNoise.glacialCirquesIceSurfaceHeight"
+      ]
+    },
+    "ice_sheet_oceanic_mountains_edge": {
+      "expression": "seed -> TFGNoiseHelpers.max(TFGBiomeNoise.glacialCirquesIceSurfaceHeight(seed), TFGBiomeNoise.glacialCirques(seed))",
+      "calls": [
+        "TFGNoiseHelpers.max",
+        "TFGBiomeNoise.glacialCirquesIceSurfaceHeight",
+        "TFGBiomeNoise.glacialCirques"
+      ]
+    },
+    "meltwater_lake": {
+      "expression": "BiomeNoise::lake",
+      "calls": [
+        "BiomeNoise.lake"
+      ]
+    },
+    "ice_sheet_oceanic": {
+      "expression": "seed -> TFGBiomeNoise.oceanicIceSheetSurfaceHeight(seed) .add(TFGBiomeNoise.glacialSurfaceTexture(seed))",
+      "calls": [
+        "TFGBiomeNoise.oceanicIceSheetSurfaceHeight",
+        "TFGBiomeNoise.glacialSurfaceTexture"
+      ]
+    },
+    "ice_sheet_shore": {
+      "expression": "seed -> BiomeNoise.ocean(seed, -16, -8)",
+      "calls": [
+        "BiomeNoise.ocean"
+      ]
+    },
+    "glaciated_mountains": {
+      "expression": "seed -> TFGNoiseHelpers.max(TFGNoiseHelpers.addConstant(TFGBiomeNoise.glacialCirques(seed), 39), TFGNoiseHelpers.addConstant(TFGBiomeNoise.glacialCirquesIceSurfaceHeight(seed), 39))",
+      "calls": [
+        "TFGNoiseHelpers.max",
+        "TFGNoiseHelpers.addConstant",
+        "TFGBiomeNoise.glacialCirques",
+        "TFGBiomeNoise.glacialCirquesIceSurfaceHeight"
+      ]
+    },
+    "glaciated_oceanic_mountains": {
+      "expression": "seed -> TFGNoiseHelpers.max(TFGBiomeNoise.glacialCirques(seed), TFGBiomeNoise.glacialCirquesIceSurfaceHeight(seed))",
+      "calls": [
+        "TFGNoiseHelpers.max",
+        "TFGBiomeNoise.glacialCirques",
+        "TFGBiomeNoise.glacialCirquesIceSurfaceHeight"
+      ]
+    },
+    "glaciated_shield_volcano": {
+      "expression": "seed -> TFGNoiseHelpers.max(TFGBiomeNoise.glaciatedShieldVolcano(seed, TFGBiomeNoise.hotSpotIntensity(seed)), TFGBiomeNoise.shieldVolcanoGlacierSurface(seed, TFGBiomeNoise.hotSpotIntensity(seed)) .add(TFGBiomeNoise.glacialSurfaceTexture(seed)))",
+      "calls": [
+        "TFGNoiseHelpers.max",
+        "TFGBiomeNoise.glaciatedShieldVolcano",
+        "TFGBiomeNoise.hotSpotIntensity",
+        "TFGBiomeNoise.shieldVolcanoGlacierSurface",
+        "TFGBiomeNoise.glacialSurfaceTexture"
+      ]
+    },
+    "glacially_carved_mountains": {
+      "expression": "seed -> TFGNoiseHelpers.addConstant(TFGBiomeNoise.glacialCirques(seed), 39)",
+      "calls": [
+        "TFGNoiseHelpers.addConstant",
+        "TFGBiomeNoise.glacialCirques"
+      ]
+    },
+    "glacially_carved_oceanic_mountains": {
+      "expression": "TFGBiomeNoise::glacialCirques",
+      "calls": [
+        "TFGBiomeNoise.glacialCirques"
+      ]
+    },
+    "drumlins": {
+      "expression": "TFGBiomeNoise::drumlins",
+      "calls": [
+        "TFGBiomeNoise.drumlins"
+      ]
+    },
+    "tuyas": {
+      "expression": "TFGBiomeNoise::drumlins",
+      "calls": [
+        "TFGBiomeNoise.drumlins"
+      ]
+    },
+    "knob_and_kettle": {
+      "expression": "TFGBiomeNoise::knobAndKettle",
+      "calls": [
+        "TFGBiomeNoise.knobAndKettle"
+      ]
+    },
+    "patterned_ground": {
+      "expression": "seed -> BiomeNoise.hills(seed, -4, 3) .add(TFGBiomeNoise.patternedGround(seed))",
+      "calls": [
+        "BiomeNoise.hills",
+        "TFGBiomeNoise.patternedGround"
+      ]
+    },
+    "inverted_patterned_ground": {
+      "expression": "TFGBiomeNoise::invertedPatternedGround",
+      "calls": [
+        "TFGBiomeNoise.invertedPatternedGround"
+      ]
+    },
+    "stone_circles": {
+      "expression": "seed -> BiomeNoise.hills(seed, -2, 4) .add(TFGBiomeNoise.stoneCircles(seed))",
+      "calls": [
+        "BiomeNoise.hills",
+        "TFGBiomeNoise.stoneCircles"
+      ]
+    }
+  }
+}

@@ -1,0 +1,347 @@
+{
+  "_meta": {
+    "extraction_date": "2026-09-11T22:58:49.188Z",
+    "source": "tools/extract-tfg-biome-tags.mjs",
+    "source_jar": "TerraFirmaGreg-Core-Modern-0.9.21.jar",
+    "tag_count": 32
+  },
+  "tags": {
+    "tfg:earth/is_cold": [
+      "tfg:earth/burren_roche_moutonee",
+      "tfg:earth/drumlins",
+      "tfg:earth/glaciated_mountains",
+      "tfg:earth/glaciated_oceanic_mountains",
+      "tfg:earth/glaciated_shield_volcano",
+      "tfg:earth/ice_sheet",
+      "tfg:earth/ice_sheet_edge",
+      "tfg:earth/ice_sheet_mountains",
+      "tfg:earth/ice_sheet_mountains_edge",
+      "tfg:earth/ice_sheet_oceanic",
+      "tfg:earth/ice_sheet_oceanic_mountains",
+      "tfg:earth/ice_sheet_oceanic_mountains_edge",
+      "tfg:earth/ice_sheet_shield_volcano",
+      "tfg:earth/ice_sheet_shore",
+      "tfg:earth/ice_sheet_tuyas",
+      "tfg:earth/ice_sheet_tuyas_edge",
+      "tfg:earth/inverted_patterned_ground",
+      "tfg:earth/knob_and_kettle",
+      "tfg:earth/meltwater_lake",
+      "tfg:earth/patterned_ground",
+      "tfg:earth/stone_circles",
+      "tfg:earth/subglacial_lake",
+      "tfg:earth/tuyas"
+    ],
+    "tfg:earth/is_dry": [
+      "tfg:earth/dune_sea",
+      "tfg:earth/grassy_dunes",
+      "tfg:earth/mud_flats",
+      "tfg:earth/salt_flats"
+    ],
+    "tfg:earth/is_fresh_water": [
+      "tfg:earth/lake",
+      "tfg:earth/lowlands",
+      "tfg:earth/meltwater_lake",
+      "tfg:earth/mountain_lake",
+      "tfg:earth/old_mountain_lake",
+      "tfg:earth/plateau_lake",
+      "tfg:earth/river",
+      "tfg:earth/subglacial_lake",
+      "tfg:earth/tower_karst_lake",
+      "tfg:earth/volcanic_mountain_lake"
+    ],
+    "tfg:earth/is_hill": [
+      "tfg:earth/cenote_highlands",
+      "tfg:earth/cenote_hills",
+      "tfg:earth/cenote_rolling_hills",
+      "tfg:earth/doline_highlands",
+      "tfg:earth/doline_hills",
+      "tfg:earth/doline_rolling_hills",
+      "tfg:earth/highlands",
+      "tfg:earth/hills",
+      "tfg:earth/rolling_hills",
+      "tfg:earth/shilin_highlands",
+      "tfg:earth/shilin_hills",
+      "tfg:earth/tower_karst_highlands",
+      "tfg:earth/tower_karst_hills"
+    ],
+    "tfg:earth/is_ice_sheet": [
+      "tfg:earth/glaciated_mountains",
+      "tfg:earth/glaciated_oceanic_mountains",
+      "tfg:earth/glaciated_shield_volcano",
+      "tfg:earth/ice_sheet",
+      "tfg:earth/ice_sheet_mountains",
+      "tfg:earth/ice_sheet_oceanic",
+      "tfg:earth/ice_sheet_oceanic_mountains",
+      "tfg:earth/ice_sheet_shield_volcano",
+      "tfg:earth/ice_sheet_shore",
+      "tfg:earth/ice_sheet_tuyas",
+      "tfg:earth/ice_sheet_tuyas_edge",
+      "tfg:earth/subglacial_lake"
+    ],
+    "tfg:earth/is_karst": [
+      "tfg:earth/burren_badlands",
+      "tfg:earth/burren_badlands_tall",
+      "tfg:earth/burren_plains",
+      "tfg:earth/burren_plateau",
+      "tfg:earth/burren_roche_moutonee",
+      "tfg:earth/cenote_canyons",
+      "tfg:earth/cenote_highlands",
+      "tfg:earth/cenote_hills",
+      "tfg:earth/cenote_plains",
+      "tfg:earth/cenote_plateau",
+      "tfg:earth/cenote_rolling_hills",
+      "tfg:earth/doline_canyons",
+      "tfg:earth/doline_highlands",
+      "tfg:earth/doline_hills",
+      "tfg:earth/doline_plains",
+      "tfg:earth/doline_plateau",
+      "tfg:earth/doline_rolling_hills",
+      "tfg:earth/extreme_doline_mountains",
+      "tfg:earth/extreme_doline_plateau",
+      "tfg:earth/shilin_canyons",
+      "tfg:earth/shilin_highlands",
+      "tfg:earth/shilin_hills",
+      "tfg:earth/shilin_plains",
+      "tfg:earth/shilin_plateau",
+      "tfg:earth/tower_karst_bay",
+      "tfg:earth/tower_karst_canyons",
+      "tfg:earth/tower_karst_highlands",
+      "tfg:earth/tower_karst_hills",
+      "tfg:earth/tower_karst_lake",
+      "tfg:earth/tower_karst_plains"
+    ],
+    "tfg:earth/is_lake": [
+      "tfg:earth/lake",
+      "tfg:earth/meltwater_lake",
+      "tfg:earth/mountain_lake",
+      "tfg:earth/oceanic_mountain_lake",
+      "tfg:earth/old_mountain_lake",
+      "tfg:earth/plateau_lake",
+      "tfg:earth/subglacial_lake",
+      "tfg:earth/tower_karst_lake",
+      "tfg:earth/volcanic_mountain_lake",
+      "tfg:earth/volcanic_oceanic_mountain_lake"
+    ],
+    "tfg:earth/is_mountain": [
+      "tfg:earth/extreme_doline_mountains",
+      "tfg:earth/glacially_carved_mountains",
+      "tfg:earth/glacially_carved_oceanic_mountains",
+      "tfg:earth/glaciated_mountains",
+      "tfg:earth/glaciated_oceanic_mountains",
+      "tfg:earth/ice_sheet_mountains",
+      "tfg:earth/ice_sheet_mountains_edge",
+      "tfg:earth/ice_sheet_oceanic_mountains",
+      "tfg:earth/ice_sheet_oceanic_mountains_edge",
+      "tfg:earth/mountain_lake",
+      "tfg:earth/mountains",
+      "tfg:earth/oceanic_mountain_lake",
+      "tfg:earth/oceanic_mountains",
+      "tfg:earth/old_mountain_lake",
+      "tfg:earth/old_mountains",
+      "tfg:earth/volcanic_mountain_lake",
+      "tfg:earth/volcanic_mountains",
+      "tfg:earth/volcanic_oceanic_mountain_lake",
+      "tfg:earth/volcanic_oceanic_mountains"
+    ],
+    "tfg:earth/is_normal": [
+      "tfg:earth/badlands",
+      "tfg:earth/burren_plains",
+      "tfg:earth/burren_plateau",
+      "tfg:earth/cenote_highlands",
+      "tfg:earth/cenote_hills",
+      "tfg:earth/cenote_plains",
+      "tfg:earth/cenote_plateau",
+      "tfg:earth/cenote_rolling_hills",
+      "tfg:earth/doline_highlands",
+      "tfg:earth/doline_hills",
+      "tfg:earth/doline_plains",
+      "tfg:earth/doline_plateau",
+      "tfg:earth/doline_rolling_hills",
+      "tfg:earth/extreme_doline_plateau",
+      "tfg:earth/highlands",
+      "tfg:earth/hills",
+      "tfg:earth/lowlands",
+      "tfg:earth/plains",
+      "tfg:earth/plateau",
+      "tfg:earth/plateau_lake",
+      "tfg:earth/plateau_wide",
+      "tfg:earth/rocky_plateau",
+      "tfg:earth/rolling_hills",
+      "tfg:earth/shilin_highlands",
+      "tfg:earth/shilin_hills",
+      "tfg:earth/shilin_plateau",
+      "tfg:earth/tower_karst_canyons",
+      "tfg:earth/tower_karst_highlands",
+      "tfg:earth/tower_karst_hills",
+      "tfg:earth/tower_karst_plains"
+    ],
+    "tfg:earth/is_ocean": [
+      "tfg:earth/coastal_dunes",
+      "tfg:earth/deep_ocean",
+      "tfg:earth/deep_ocean_trench",
+      "tfg:earth/embayments",
+      "tfg:earth/guano_island",
+      "tfg:earth/ice_sheet_oceanic",
+      "tfg:earth/ice_sheet_shore",
+      "tfg:earth/ocean",
+      "tfg:earth/ocean_reef",
+      "tfg:earth/old_shield_volcano_shore",
+      "tfg:earth/rocky_shores",
+      "tfg:earth/sea_stacks",
+      "tfg:earth/setback_cliffs",
+      "tfg:earth/shield_volcano_shore",
+      "tfg:earth/shore",
+      "tfg:earth/terrace_lower",
+      "tfg:earth/terrace_upper",
+      "tfg:earth/tidal_flats",
+      "tfg:earth/tower_karst_bay"
+    ],
+    "tfg:earth/is_oldgen": [
+      "tfc:badlands",
+      "tfc:canyons",
+      "tfc:deep_ocean",
+      "tfc:deep_ocean_trench",
+      "tfc:highlands",
+      "tfc:hills",
+      "tfc:inverted_badlands",
+      "tfc:lake",
+      "tfc:low_canyons",
+      "tfc:lowlands",
+      "tfc:mountain_lake",
+      "tfc:mountains",
+      "tfc:ocean",
+      "tfc:ocean_reef",
+      "tfc:oceanic_mountain_lake",
+      "tfc:oceanic_mountains",
+      "tfc:old_mountain_lake",
+      "tfc:old_mountains",
+      "tfc:plains",
+      "tfc:plateau",
+      "tfc:plateau_lake",
+      "tfc:river",
+      "tfc:rolling_hills",
+      "tfc:salt_marsh",
+      "tfc:shore",
+      "tfc:tidal_flats",
+      "tfc:volcanic_mountain_lake",
+      "tfc:volcanic_mountains",
+      "tfc:volcanic_oceanic_mountain_lake",
+      "tfc:volcanic_oceanic_mountains"
+    ],
+    "tfg:earth/is_river": [
+      "tfg:earth/river"
+    ],
+    "tfg:earth/is_salt_flats": [
+      "tfg:earth/salt_flats"
+    ],
+    "tfg:earth/is_salt_water": [
+      "tfg:earth/glaciated_oceanic_mountains",
+      "tfg:earth/ice_sheet_oceanic",
+      "tfg:earth/ice_sheet_oceanic_mountains",
+      "tfg:earth/ice_sheet_oceanic_mountains_edge",
+      "tfg:earth/oceanic_mountain_lake",
+      "tfg:earth/salt_marsh",
+      "tfg:earth/tower_karst_bay",
+      "tfg:earth/volcanic_oceanic_mountain_lake"
+    ],
+    "tfg:earth/is_sandstone": [
+      "tfg:earth/badlands",
+      "tfg:earth/burren_badlands",
+      "tfg:earth/burren_badlands_tall",
+      "tfg:earth/buttes",
+      "tfg:earth/canyons",
+      "tfg:earth/cenote_canyons",
+      "tfg:earth/doline_canyons",
+      "tfg:earth/hoodoos",
+      "tfg:earth/low_canyons",
+      "tfg:earth/mesas",
+      "tfg:earth/shilin_canyons",
+      "tfg:earth/stair_step_canyons",
+      "tfg:earth/whorled_canyons"
+    ],
+    "tfg:earth/is_shore_island": [
+      "tfg:earth/coastal_dunes",
+      "tfg:earth/embayments",
+      "tfg:earth/guano_island",
+      "tfg:earth/ice_sheet_shore",
+      "tfg:earth/old_shield_volcano_shore",
+      "tfg:earth/rocky_shores",
+      "tfg:earth/sea_stacks",
+      "tfg:earth/setback_cliffs",
+      "tfg:earth/shield_volcano_shore",
+      "tfg:earth/shore",
+      "tfg:earth/terrace_lower",
+      "tfg:earth/terrace_upper",
+      "tfg:earth/tidal_flats"
+    ],
+    "tfg:earth/is_swamp": [
+      "tfg:earth/lowlands",
+      "tfg:earth/salt_marsh"
+    ],
+    "tfg:earth/is_true_ocean": [
+      "tfg:earth/deep_ocean",
+      "tfg:earth/deep_ocean_trench",
+      "tfg:earth/ocean",
+      "tfg:earth/ocean_reef",
+      "tfg:earth/sunken_shield_volcano"
+    ],
+    "tfg:earth/is_volcanic": [
+      "tfg:earth/active_shield_volcano",
+      "tfg:earth/ancient_shield_volcano",
+      "tfg:earth/canyons",
+      "tfg:earth/dormant_shield_volcano",
+      "tfg:earth/extinct_shield_volcano",
+      "tfg:earth/glaciated_shield_volcano",
+      "tfg:earth/ice_sheet_shield_volcano",
+      "tfg:earth/ice_sheet_tuyas",
+      "tfg:earth/ice_sheet_tuyas_edge",
+      "tfg:earth/old_shield_volcano_shore",
+      "tfg:earth/shield_volcano_shore",
+      "tfg:earth/sunken_shield_volcano",
+      "tfg:earth/tuyas",
+      "tfg:earth/volcanic_mountains",
+      "tfg:earth/volcanic_oceanic_mountains"
+    ],
+    "tfg:nether/has_garnet_sands": [
+      "tfg:nether/salt_caves",
+      "tfg:nether/tar_pools",
+      "tfg:nether/thorny_brambles"
+    ],
+    "tfg:nether/has_oilsands": [
+      "tfg:nether/tar_pools"
+    ],
+    "tfg:nether/is_ash_forest": [
+      "tfg:nether/ash_forest"
+    ],
+    "tfg:nether/is_basalt_deltas": [
+      "tfg:nether/basalt_deltas"
+    ],
+    "tfg:nether/is_decaying_caverns": [
+      "tfg:nether/decaying_caverns"
+    ],
+    "tfg:nether/is_geothermal_springs": [
+      "tfg:nether/geothermal_springs"
+    ],
+    "tfg:nether/is_lava_floes": [
+      "tfg:nether/lava_floes"
+    ],
+    "tfg:nether/is_lush_hollow": [
+      "tfg:nether/lush_hollow"
+    ],
+    "tfg:nether/is_muggy_bog": [
+      "tfg:nether/muggy_bog"
+    ],
+    "tfg:nether/is_salt_caves": [
+      "tfg:nether/salt_caves"
+    ],
+    "tfg:nether/is_tar_pools": [
+      "tfg:nether/tar_pools"
+    ],
+    "tfg:nether/is_thorny_brambles": [
+      "tfg:nether/thorny_brambles"
+    ],
+    "tfg:nether/is_webbed_lair": [
+      "tfg:nether/webbed_lair"
+    ]
+  }
+}

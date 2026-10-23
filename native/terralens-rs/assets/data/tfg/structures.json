@@ -1,0 +1,1607 @@
+{
+  "_source": "Extracted by tools/extract-tfg-structures.mjs from TerraFirmaGreg Modern KubeJS data and the modpack jars (1.20.1.jar, tfc_ruins-1.0.1-forge-1.20.1.jar, tfcstructuremodc-0.0.4.jar, TerraFirmaCraft-Forge-1.20.1-3.2.24.jar, TerraFirmaGreg-Core-Modern-0.9.21.jar). Regenerate rather than edit.",
+  "sets": [
+    {
+      "id": "tfg:aqueduct/aqueduct",
+      "dimension": "overworld",
+      "placement": {
+        "type": "tfc:climate",
+        "salt": 264226226,
+        "spacing": 128,
+        "separation": 120,
+        "spreadType": "linear",
+        "climate": {
+          "min_temperature": -5,
+          "max_rainfall": 350
+        }
+      },
+      "structures": [
+        {
+          "id": "tfg:aqueduct/aqueduct",
+          "weight": 1,
+          "type": "minecraft:jigsaw",
+          "biomes": [
+            "tfg:earth/badlands",
+            "tfg:earth/burren_badlands",
+            "tfg:earth/burren_plains",
+            "tfg:earth/burren_roche_moutonee",
+            "tfg:earth/buttes",
+            "tfg:earth/canyons",
+            "tfg:earth/cenote_canyons",
+            "tfg:earth/cenote_highlands",
+            "tfg:earth/cenote_hills",
+            "tfg:earth/cenote_plains",
+            "tfg:earth/doline_canyons",
+            "tfg:earth/doline_highlands",
+            "tfg:earth/doline_plains",
+            "tfg:earth/drumlins",
+            "tfg:earth/extreme_doline_plateau",
+            "tfg:earth/grassy_dunes",
+            "tfg:earth/highlands",
+            "tfg:earth/hoodoos",
+            "tfg:earth/lowlands",
+            "tfg:earth/mesas",
+            "tfg:earth/plains",
+            "tfg:earth/shilin_highlands",
+            "tfg:earth/shilin_hills",
+            "tfg:earth/shilin_plains",
+            "tfg:earth/stair_step_canyons",
+            "tfg:earth/tower_karst_canyons",
+            "tfg:earth/tower_karst_highlands",
+            "tfg:earth/tower_karst_plains",
+            "tfg:earth/tuyas"
+          ],
+          "conditions": []
+        }
+      ]
+    },
+    {
+      "id": "tfg:illagers/arabic_village",
+      "dimension": "overworld",
+      "placement": {
+        "type": "tfc:climate",
+        "salt": 486552548,
+        "spacing": 35,
+        "separation": 25,
+        "spreadType": "linear",
+        "climate": {
+          "min_temperature": 6,
+          "max_temperature": 25,
+          "min_rainfall": 70,
+          "max_rainfall": 250,
+          "max_forest": "edge"
+        }
+      },
+      "structures": [
+        {
+          "id": "tfg:illagers/arabic_village_living",
+          "weight": 100,
+          "type": "minecraft:jigsaw",
+          "biomes": [
+            "tfg:earth/burren_plains",
+            "tfg:earth/burren_plateau",
+            "tfg:earth/drumlins",
+            "tfg:earth/hills",
+            "tfg:earth/inverted_patterned_ground",
+            "tfg:earth/knob_and_kettle",
+            "tfg:earth/patterned_ground",
+            "tfg:earth/plains",
+            "tfg:earth/plateau",
+            "tfg:earth/plateau_wide",
+            "tfg:earth/rocky_plateau",
+            "tfg:earth/stone_circles"
+          ],
+          "conditions": [
+            {
+              "type": "avoid_biomes",
+              "biomes": [
+                "tfg:earth/coastal_dunes",
+                "tfg:earth/deep_ocean",
+                "tfg:earth/deep_ocean_trench",
+                "tfg:earth/embayments",
+                "tfg:earth/guano_island",
+                "tfg:earth/ice_sheet_oceanic",
+                "tfg:earth/ice_sheet_shore",
+                "tfg:earth/lake",
+                "tfg:earth/meltwater_lake",
+                "tfg:earth/mountain_lake",
+                "tfg:earth/ocean",
+                "tfg:earth/ocean_reef",
+                "tfg:earth/oceanic_mountain_lake",
+                "tfg:earth/old_mountain_lake",
+                "tfg:earth/old_shield_volcano_shore",
+                "tfg:earth/plateau_lake",
+                "tfg:earth/river",
+                "tfg:earth/rocky_shores",
+                "tfg:earth/sea_stacks",
+                "tfg:earth/setback_cliffs",
+                "tfg:earth/shield_volcano_shore",
+                "tfg:earth/shore",
+                "tfg:earth/subglacial_lake",
+                "tfg:earth/terrace_lower",
+                "tfg:earth/terrace_upper",
+                "tfg:earth/tidal_flats",
+                "tfg:earth/tower_karst_bay",
+                "tfg:earth/tower_karst_lake",
+                "tfg:earth/volcanic_mountain_lake",
+                "tfg:earth/volcanic_oceanic_mountain_lake"
+              ],
+              "radius": 105,
+              "step": 8,
+              "allowedCount": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tfg:illagers/illager_camps",
+      "dimension": "overworld",
+      "placement": {
+        "type": "tfc:climate",
+        "salt": 96263635,
+        "spacing": 35,
+        "separation": 25,
+        "spreadType": "linear",
+        "climate": {
+          "min_temperature": -12,
+          "max_temperature": 25,
+          "max_forest": "normal"
+        }
+      },
+      "structures": [
+        {
+          "id": "tfg:illagers/camps",
+          "weight": 100,
+          "type": "minecraft:jigsaw",
+          "biomes": [
+            "tfg:earth/ancient_shield_volcano",
+            "tfg:earth/badlands",
+            "tfg:earth/burren_badlands",
+            "tfg:earth/burren_badlands_tall",
+            "tfg:earth/burren_plains",
+            "tfg:earth/burren_plateau",
+            "tfg:earth/burren_roche_moutonee",
+            "tfg:earth/canyons",
+            "tfg:earth/cenote_canyons",
+            "tfg:earth/cenote_highlands",
+            "tfg:earth/cenote_hills",
+            "tfg:earth/cenote_plains",
+            "tfg:earth/cenote_plateau",
+            "tfg:earth/cenote_rolling_hills",
+            "tfg:earth/coastal_dunes",
+            "tfg:earth/doline_canyons",
+            "tfg:earth/doline_highlands",
+            "tfg:earth/doline_hills",
+            "tfg:earth/doline_plains",
+            "tfg:earth/doline_plateau",
+            "tfg:earth/doline_rolling_hills",
+            "tfg:earth/dormant_shield_volcano",
+            "tfg:earth/drumlins",
+            "tfg:earth/embayments",
+            "tfg:earth/extinct_shield_volcano",
+            "tfg:earth/extreme_doline_plateau",
+            "tfg:earth/grassy_dunes",
+            "tfg:earth/highlands",
+            "tfg:earth/hills",
+            "tfg:earth/inverted_patterned_ground",
+            "tfg:earth/mountains",
+            "tfg:earth/mud_flats",
+            "tfg:earth/oceanic_mountains",
+            "tfg:earth/old_mountains",
+            "tfg:earth/old_shield_volcano_shore",
+            "tfg:earth/patterned_ground",
+            "tfg:earth/plains",
+            "tfg:earth/plateau",
+            "tfg:earth/plateau_wide",
+            "tfg:earth/rocky_plateau",
+            "tfg:earth/rolling_hills",
+            "tfg:earth/salt_flats",
+            "tfg:earth/setback_cliffs",
+            "tfg:earth/shield_volcano_shore",
+            "tfg:earth/shore",
+            "tfg:earth/stone_circles",
+            "tfg:earth/tidal_flats",
+            "tfg:earth/tuyas",
+            "tfg:earth/volcanic_mountains",
+            "tfg:earth/volcanic_oceanic_mountains",
+            "tfg:earth/whorled_canyons"
+          ],
+          "conditions": [
+            {
+              "type": "avoid_biomes",
+              "biomes": [
+                "tfg:earth/coastal_dunes",
+                "tfg:earth/deep_ocean",
+                "tfg:earth/deep_ocean_trench",
+                "tfg:earth/embayments",
+                "tfg:earth/guano_island",
+                "tfg:earth/ice_sheet_oceanic",
+                "tfg:earth/ice_sheet_shore",
+                "tfg:earth/lake",
+                "tfg:earth/meltwater_lake",
+                "tfg:earth/mountain_lake",
+                "tfg:earth/ocean",
+                "tfg:earth/ocean_reef",
+                "tfg:earth/oceanic_mountain_lake",
+                "tfg:earth/old_mountain_lake",
+                "tfg:earth/old_shield_volcano_shore",
+                "tfg:earth/plateau_lake",
+                "tfg:earth/river",
+                "tfg:earth/rocky_shores",
+                "tfg:earth/sea_stacks",
+                "tfg:earth/setback_cliffs",
+                "tfg:earth/shield_volcano_shore",
+                "tfg:earth/shore",
+                "tfg:earth/subglacial_lake",
+                "tfg:earth/terrace_lower",
+                "tfg:earth/terrace_upper",
+                "tfg:earth/tidal_flats",
+                "tfg:earth/tower_karst_bay",
+                "tfg:earth/tower_karst_lake",
+                "tfg:earth/volcanic_mountain_lake",
+                "tfg:earth/volcanic_oceanic_mountain_lake"
+              ],
+              "radius": 50,
+              "step": 8,
+              "allowedCount": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tfg:illagers/illager_forest_roaming",
+      "dimension": "overworld",
+      "placement": {
+        "type": "tfc:climate",
+        "salt": 1241798492,
+        "spacing": 30,
+        "separation": 20,
+        "spreadType": "linear",
+        "climate": {
+          "min_temperature": -12,
+          "max_temperature": 25,
+          "min_forest": "edge"
+        }
+      },
+      "structures": [
+        {
+          "id": "tfg:illagers/forest_roaming",
+          "weight": 100,
+          "type": "minecraft:jigsaw",
+          "biomes": [
+            "tfg:earth/ancient_shield_volcano",
+            "tfg:earth/badlands",
+            "tfg:earth/burren_badlands",
+            "tfg:earth/burren_badlands_tall",
+            "tfg:earth/burren_plains",
+            "tfg:earth/burren_plateau",
+            "tfg:earth/burren_roche_moutonee",
+            "tfg:earth/canyons",
+            "tfg:earth/cenote_canyons",
+            "tfg:earth/cenote_highlands",
+            "tfg:earth/cenote_hills",
+            "tfg:earth/cenote_plains",
+            "tfg:earth/cenote_plateau",
+            "tfg:earth/cenote_rolling_hills",
+            "tfg:earth/coastal_dunes",
+            "tfg:earth/doline_canyons",
+            "tfg:earth/doline_highlands",
+            "tfg:earth/doline_hills",
+            "tfg:earth/doline_plains",
+            "tfg:earth/doline_plateau",
+            "tfg:earth/doline_rolling_hills",
+            "tfg:earth/dormant_shield_volcano",
+            "tfg:earth/drumlins",
+            "tfg:earth/embayments",
+            "tfg:earth/extinct_shield_volcano",
+            "tfg:earth/extreme_doline_plateau",
+            "tfg:earth/grassy_dunes",
+            "tfg:earth/highlands",
+            "tfg:earth/hills",
+            "tfg:earth/inverted_patterned_ground",
+            "tfg:earth/mountains",
+            "tfg:earth/mud_flats",
+            "tfg:earth/oceanic_mountains",
+            "tfg:earth/old_mountains",
+            "tfg:earth/old_shield_volcano_shore",
+            "tfg:earth/patterned_ground",
+            "tfg:earth/plains",
+            "tfg:earth/plateau",
+            "tfg:earth/plateau_wide",
+            "tfg:earth/rocky_plateau",
+            "tfg:earth/rolling_hills",
+            "tfg:earth/salt_flats",
+            "tfg:earth/setback_cliffs",
+            "tfg:earth/shield_volcano_shore",
+            "tfg:earth/shore",
+            "tfg:earth/stone_circles",
+            "tfg:earth/tidal_flats",
+            "tfg:earth/tuyas",
+            "tfg:earth/volcanic_mountains",
+            "tfg:earth/volcanic_oceanic_mountains",
+            "tfg:earth/whorled_canyons"
+          ],
+          "conditions": [
+            {
+              "type": "avoid_biomes",
+              "biomes": [
+                "tfg:earth/coastal_dunes",
+                "tfg:earth/deep_ocean",
+                "tfg:earth/deep_ocean_trench",
+                "tfg:earth/embayments",
+                "tfg:earth/guano_island",
+                "tfg:earth/ice_sheet_oceanic",
+                "tfg:earth/ice_sheet_shore",
+                "tfg:earth/lake",
+                "tfg:earth/meltwater_lake",
+                "tfg:earth/mountain_lake",
+                "tfg:earth/ocean",
+                "tfg:earth/ocean_reef",
+                "tfg:earth/oceanic_mountain_lake",
+                "tfg:earth/old_mountain_lake",
+                "tfg:earth/old_shield_volcano_shore",
+                "tfg:earth/plateau_lake",
+                "tfg:earth/river",
+                "tfg:earth/rocky_shores",
+                "tfg:earth/sea_stacks",
+                "tfg:earth/setback_cliffs",
+                "tfg:earth/shield_volcano_shore",
+                "tfg:earth/shore",
+                "tfg:earth/subglacial_lake",
+                "tfg:earth/terrace_lower",
+                "tfg:earth/terrace_upper",
+                "tfg:earth/tidal_flats",
+                "tfg:earth/tower_karst_bay",
+                "tfg:earth/tower_karst_lake",
+                "tfg:earth/volcanic_mountain_lake",
+                "tfg:earth/volcanic_oceanic_mountain_lake"
+              ],
+              "radius": 50,
+              "step": 8,
+              "allowedCount": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tfg:illagers/malay_village",
+      "dimension": "overworld",
+      "placement": {
+        "type": "tfc:climate",
+        "salt": 486552548,
+        "spacing": 30,
+        "separation": 20,
+        "spreadType": "linear",
+        "climate": {
+          "min_temperature": 6,
+          "max_temperature": 30,
+          "min_rainfall": 250,
+          "max_forest": "edge"
+        }
+      },
+      "structures": [
+        {
+          "id": "tfg:illagers/malay_village_living",
+          "weight": 100,
+          "type": "minecraft:jigsaw",
+          "biomes": [
+            "tfg:earth/lowlands",
+            "tfg:earth/salt_marsh"
+          ],
+          "conditions": [
+            {
+              "type": "avoid_biomes",
+              "biomes": [
+                "tfg:earth/active_shield_volcano",
+                "tfg:earth/ancient_shield_volcano",
+                "tfg:earth/badlands",
+                "tfg:earth/burren_badlands",
+                "tfg:earth/burren_badlands_tall",
+                "tfg:earth/burren_plains",
+                "tfg:earth/burren_plateau",
+                "tfg:earth/burren_roche_moutonee",
+                "tfg:earth/buttes",
+                "tfg:earth/canyons",
+                "tfg:earth/cenote_canyons",
+                "tfg:earth/cenote_highlands",
+                "tfg:earth/cenote_hills",
+                "tfg:earth/cenote_plains",
+                "tfg:earth/cenote_plateau",
+                "tfg:earth/cenote_rolling_hills",
+                "tfg:earth/coastal_dunes",
+                "tfg:earth/deep_ocean",
+                "tfg:earth/deep_ocean_trench",
+                "tfg:earth/doline_canyons",
+                "tfg:earth/doline_highlands",
+                "tfg:earth/doline_hills",
+                "tfg:earth/doline_plains",
+                "tfg:earth/doline_plateau",
+                "tfg:earth/doline_rolling_hills",
+                "tfg:earth/dormant_shield_volcano",
+                "tfg:earth/drumlins",
+                "tfg:earth/dune_sea",
+                "tfg:earth/embayments",
+                "tfg:earth/extinct_shield_volcano",
+                "tfg:earth/extreme_doline_mountains",
+                "tfg:earth/extreme_doline_plateau",
+                "tfg:earth/glacially_carved_mountains",
+                "tfg:earth/glacially_carved_oceanic_mountains",
+                "tfg:earth/glaciated_mountains",
+                "tfg:earth/glaciated_oceanic_mountains",
+                "tfg:earth/glaciated_shield_volcano",
+                "tfg:earth/grassy_dunes",
+                "tfg:earth/guano_island",
+                "tfg:earth/highlands",
+                "tfg:earth/hills",
+                "tfg:earth/hoodoos",
+                "tfg:earth/ice_sheet_mountains",
+                "tfg:earth/ice_sheet_mountains_edge",
+                "tfg:earth/ice_sheet_oceanic_mountains",
+                "tfg:earth/ice_sheet_oceanic_mountains_edge",
+                "tfg:earth/ice_sheet_shield_volcano",
+                "tfg:earth/ice_sheet_shore",
+                "tfg:earth/ice_sheet_tuyas",
+                "tfg:earth/ice_sheet_tuyas_edge",
+                "tfg:earth/inverted_patterned_ground",
+                "tfg:earth/knob_and_kettle",
+                "tfg:earth/low_canyons",
+                "tfg:earth/mesas",
+                "tfg:earth/mountain_lake",
+                "tfg:earth/mountains",
+                "tfg:earth/mud_flats",
+                "tfg:earth/ocean",
+                "tfg:earth/ocean_reef",
+                "tfg:earth/oceanic_mountain_lake",
+                "tfg:earth/oceanic_mountains",
+                "tfg:earth/old_mountain_lake",
+                "tfg:earth/old_mountains",
+                "tfg:earth/old_shield_volcano_shore",
+                "tfg:earth/patterned_ground",
+                "tfg:earth/plains",
+                "tfg:earth/plateau",
+                "tfg:earth/plateau_wide",
+                "tfg:earth/rocky_plateau",
+                "tfg:earth/rocky_shores",
+                "tfg:earth/rolling_hills",
+                "tfg:earth/salt_flats",
+                "tfg:earth/sea_stacks",
+                "tfg:earth/setback_cliffs",
+                "tfg:earth/shield_volcano_shore",
+                "tfg:earth/shilin_canyons",
+                "tfg:earth/shilin_highlands",
+                "tfg:earth/shilin_hills",
+                "tfg:earth/shilin_plains",
+                "tfg:earth/shilin_plateau",
+                "tfg:earth/shore",
+                "tfg:earth/stair_step_canyons",
+                "tfg:earth/stone_circles",
+                "tfg:earth/sunken_shield_volcano",
+                "tfg:earth/terrace_lower",
+                "tfg:earth/terrace_upper",
+                "tfg:earth/tidal_flats",
+                "tfg:earth/tower_karst_bay",
+                "tfg:earth/tower_karst_canyons",
+                "tfg:earth/tower_karst_highlands",
+                "tfg:earth/tower_karst_hills",
+                "tfg:earth/tower_karst_lake",
+                "tfg:earth/tower_karst_plains",
+                "tfg:earth/tuyas",
+                "tfg:earth/volcanic_mountain_lake",
+                "tfg:earth/volcanic_mountains",
+                "tfg:earth/volcanic_oceanic_mountain_lake",
+                "tfg:earth/volcanic_oceanic_mountains",
+                "tfg:earth/whorled_canyons"
+              ],
+              "radius": 80,
+              "step": 8,
+              "allowedCount": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tfg:illagers/norse_village",
+      "dimension": "overworld",
+      "placement": {
+        "type": "tfc:climate",
+        "salt": 486552548,
+        "spacing": 35,
+        "separation": 25,
+        "spreadType": "linear",
+        "climate": {
+          "min_temperature": -12,
+          "max_temperature": 4,
+          "min_rainfall": 250,
+          "max_forest": "edge"
+        }
+      },
+      "structures": [
+        {
+          "id": "tfg:illagers/norse_village_living",
+          "weight": 75,
+          "type": "minecraft:jigsaw",
+          "biomes": [
+            "tfg:earth/burren_plains",
+            "tfg:earth/burren_plateau",
+            "tfg:earth/drumlins",
+            "tfg:earth/hills",
+            "tfg:earth/inverted_patterned_ground",
+            "tfg:earth/knob_and_kettle",
+            "tfg:earth/patterned_ground",
+            "tfg:earth/plains",
+            "tfg:earth/plateau",
+            "tfg:earth/plateau_wide",
+            "tfg:earth/rocky_plateau",
+            "tfg:earth/stone_circles"
+          ],
+          "conditions": [
+            {
+              "type": "avoid_biomes",
+              "biomes": [
+                "tfg:earth/coastal_dunes",
+                "tfg:earth/deep_ocean",
+                "tfg:earth/deep_ocean_trench",
+                "tfg:earth/embayments",
+                "tfg:earth/guano_island",
+                "tfg:earth/ice_sheet_oceanic",
+                "tfg:earth/ice_sheet_shore",
+                "tfg:earth/lake",
+                "tfg:earth/meltwater_lake",
+                "tfg:earth/mountain_lake",
+                "tfg:earth/ocean",
+                "tfg:earth/ocean_reef",
+                "tfg:earth/oceanic_mountain_lake",
+                "tfg:earth/old_mountain_lake",
+                "tfg:earth/old_shield_volcano_shore",
+                "tfg:earth/plateau_lake",
+                "tfg:earth/river",
+                "tfg:earth/rocky_shores",
+                "tfg:earth/sea_stacks",
+                "tfg:earth/setback_cliffs",
+                "tfg:earth/shield_volcano_shore",
+                "tfg:earth/shore",
+                "tfg:earth/subglacial_lake",
+                "tfg:earth/terrace_lower",
+                "tfg:earth/terrace_upper",
+                "tfg:earth/tidal_flats",
+                "tfg:earth/tower_karst_bay",
+                "tfg:earth/tower_karst_lake",
+                "tfg:earth/volcanic_mountain_lake",
+                "tfg:earth/volcanic_oceanic_mountain_lake"
+              ],
+              "radius": 105,
+              "step": 8,
+              "allowedCount": 0
+            }
+          ]
+        },
+        {
+          "id": "tfg:illagers/norse_village_ruined",
+          "weight": 25,
+          "type": "minecraft:jigsaw",
+          "biomes": [
+            "tfg:earth/burren_plains",
+            "tfg:earth/burren_plateau",
+            "tfg:earth/drumlins",
+            "tfg:earth/hills",
+            "tfg:earth/inverted_patterned_ground",
+            "tfg:earth/knob_and_kettle",
+            "tfg:earth/patterned_ground",
+            "tfg:earth/plains",
+            "tfg:earth/plateau",
+            "tfg:earth/plateau_wide",
+            "tfg:earth/rocky_plateau",
+            "tfg:earth/stone_circles"
+          ],
+          "conditions": [
+            {
+              "type": "avoid_biomes",
+              "biomes": [
+                "tfg:earth/coastal_dunes",
+                "tfg:earth/deep_ocean",
+                "tfg:earth/deep_ocean_trench",
+                "tfg:earth/embayments",
+                "tfg:earth/guano_island",
+                "tfg:earth/ice_sheet_oceanic",
+                "tfg:earth/ice_sheet_shore",
+                "tfg:earth/lake",
+                "tfg:earth/meltwater_lake",
+                "tfg:earth/mountain_lake",
+                "tfg:earth/ocean",
+                "tfg:earth/ocean_reef",
+                "tfg:earth/oceanic_mountain_lake",
+                "tfg:earth/old_mountain_lake",
+                "tfg:earth/old_shield_volcano_shore",
+                "tfg:earth/plateau_lake",
+                "tfg:earth/river",
+                "tfg:earth/rocky_shores",
+                "tfg:earth/sea_stacks",
+                "tfg:earth/setback_cliffs",
+                "tfg:earth/shield_volcano_shore",
+                "tfg:earth/shore",
+                "tfg:earth/subglacial_lake",
+                "tfg:earth/terrace_lower",
+                "tfg:earth/terrace_upper",
+                "tfg:earth/tidal_flats",
+                "tfg:earth/tower_karst_bay",
+                "tfg:earth/tower_karst_lake",
+                "tfg:earth/volcanic_mountain_lake",
+                "tfg:earth/volcanic_oceanic_mountain_lake"
+              ],
+              "radius": 105,
+              "step": 8,
+              "allowedCount": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tfg:illagers/yurts_village",
+      "dimension": "overworld",
+      "placement": {
+        "type": "tfc:climate",
+        "salt": 486552548,
+        "spacing": 35,
+        "separation": 25,
+        "spreadType": "linear",
+        "climate": {
+          "min_temperature": -12,
+          "max_temperature": 4,
+          "min_rainfall": 50,
+          "max_rainfall": 250,
+          "max_forest": "edge"
+        }
+      },
+      "structures": [
+        {
+          "id": "tfg:illagers/yurts_village_living",
+          "weight": 100,
+          "type": "minecraft:jigsaw",
+          "biomes": [
+            "tfg:earth/burren_plains",
+            "tfg:earth/burren_plateau",
+            "tfg:earth/drumlins",
+            "tfg:earth/hills",
+            "tfg:earth/inverted_patterned_ground",
+            "tfg:earth/knob_and_kettle",
+            "tfg:earth/patterned_ground",
+            "tfg:earth/plains",
+            "tfg:earth/plateau",
+            "tfg:earth/plateau_wide",
+            "tfg:earth/rocky_plateau",
+            "tfg:earth/stone_circles"
+          ],
+          "conditions": [
+            {
+              "type": "avoid_biomes",
+              "biomes": [
+                "tfg:earth/coastal_dunes",
+                "tfg:earth/deep_ocean",
+                "tfg:earth/deep_ocean_trench",
+                "tfg:earth/embayments",
+                "tfg:earth/guano_island",
+                "tfg:earth/ice_sheet_oceanic",
+                "tfg:earth/ice_sheet_shore",
+                "tfg:earth/lake",
+                "tfg:earth/meltwater_lake",
+                "tfg:earth/mountain_lake",
+                "tfg:earth/ocean",
+                "tfg:earth/ocean_reef",
+                "tfg:earth/oceanic_mountain_lake",
+                "tfg:earth/old_mountain_lake",
+                "tfg:earth/old_shield_volcano_shore",
+                "tfg:earth/plateau_lake",
+                "tfg:earth/river",
+                "tfg:earth/rocky_shores",
+                "tfg:earth/sea_stacks",
+                "tfg:earth/setback_cliffs",
+                "tfg:earth/shield_volcano_shore",
+                "tfg:earth/shore",
+                "tfg:earth/subglacial_lake",
+                "tfg:earth/terrace_lower",
+                "tfg:earth/terrace_upper",
+                "tfg:earth/tidal_flats",
+                "tfg:earth/tower_karst_bay",
+                "tfg:earth/tower_karst_lake",
+                "tfg:earth/volcanic_mountain_lake",
+                "tfg:earth/volcanic_oceanic_mountain_lake"
+              ],
+              "radius": 105,
+              "step": 8,
+              "allowedCount": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tfg:mineshaft/mineshaft",
+      "dimension": "overworld",
+      "placement": {
+        "type": "minecraft:random_spread",
+        "salt": 121541467,
+        "spacing": 50,
+        "separation": 30,
+        "spreadType": "linear"
+      },
+      "structures": [
+        {
+          "id": "tfg:mineshaft/mineshaft",
+          "weight": 100,
+          "type": "lithostitched:jigsaw",
+          "biomes": [
+            "tfg:earth/ancient_shield_volcano",
+            "tfg:earth/badlands",
+            "tfg:earth/burren_badlands",
+            "tfg:earth/burren_badlands_tall",
+            "tfg:earth/burren_plains",
+            "tfg:earth/burren_plateau",
+            "tfg:earth/burren_roche_moutonee",
+            "tfg:earth/canyons",
+            "tfg:earth/cenote_canyons",
+            "tfg:earth/cenote_highlands",
+            "tfg:earth/cenote_hills",
+            "tfg:earth/cenote_plains",
+            "tfg:earth/cenote_plateau",
+            "tfg:earth/cenote_rolling_hills",
+            "tfg:earth/coastal_dunes",
+            "tfg:earth/doline_canyons",
+            "tfg:earth/doline_highlands",
+            "tfg:earth/doline_hills",
+            "tfg:earth/doline_plains",
+            "tfg:earth/doline_plateau",
+            "tfg:earth/doline_rolling_hills",
+            "tfg:earth/dormant_shield_volcano",
+            "tfg:earth/drumlins",
+            "tfg:earth/embayments",
+            "tfg:earth/extinct_shield_volcano",
+            "tfg:earth/extreme_doline_plateau",
+            "tfg:earth/grassy_dunes",
+            "tfg:earth/highlands",
+            "tfg:earth/hills",
+            "tfg:earth/inverted_patterned_ground",
+            "tfg:earth/mountains",
+            "tfg:earth/mud_flats",
+            "tfg:earth/oceanic_mountains",
+            "tfg:earth/old_mountains",
+            "tfg:earth/old_shield_volcano_shore",
+            "tfg:earth/patterned_ground",
+            "tfg:earth/plains",
+            "tfg:earth/plateau",
+            "tfg:earth/plateau_wide",
+            "tfg:earth/rocky_plateau",
+            "tfg:earth/rolling_hills",
+            "tfg:earth/salt_flats",
+            "tfg:earth/setback_cliffs",
+            "tfg:earth/shield_volcano_shore",
+            "tfg:earth/shore",
+            "tfg:earth/stone_circles",
+            "tfg:earth/tidal_flats",
+            "tfg:earth/tuyas",
+            "tfg:earth/volcanic_mountains",
+            "tfg:earth/volcanic_oceanic_mountains",
+            "tfg:earth/whorled_canyons"
+          ],
+          "conditions": [
+            {
+              "type": "height",
+              "heightmap": "WORLD_SURFACE_WG",
+              "min": 63,
+              "max": 140
+            },
+            {
+              "type": "avoid_biomes",
+              "biomes": [
+                "tfg:earth/coastal_dunes",
+                "tfg:earth/deep_ocean",
+                "tfg:earth/deep_ocean_trench",
+                "tfg:earth/embayments",
+                "tfg:earth/guano_island",
+                "tfg:earth/ice_sheet_oceanic",
+                "tfg:earth/ice_sheet_shore",
+                "tfg:earth/lake",
+                "tfg:earth/meltwater_lake",
+                "tfg:earth/mountain_lake",
+                "tfg:earth/ocean",
+                "tfg:earth/ocean_reef",
+                "tfg:earth/oceanic_mountain_lake",
+                "tfg:earth/old_mountain_lake",
+                "tfg:earth/old_shield_volcano_shore",
+                "tfg:earth/plateau_lake",
+                "tfg:earth/river",
+                "tfg:earth/rocky_shores",
+                "tfg:earth/sea_stacks",
+                "tfg:earth/setback_cliffs",
+                "tfg:earth/shield_volcano_shore",
+                "tfg:earth/shore",
+                "tfg:earth/subglacial_lake",
+                "tfg:earth/terrace_lower",
+                "tfg:earth/terrace_upper",
+                "tfg:earth/tidal_flats",
+                "tfg:earth/tower_karst_bay",
+                "tfg:earth/tower_karst_lake",
+                "tfg:earth/volcanic_mountain_lake",
+                "tfg:earth/volcanic_oceanic_mountain_lake"
+              ],
+              "radius": 105,
+              "step": 8,
+              "allowedCount": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tfg:ocean/ocean_moai",
+      "dimension": "overworld",
+      "placement": {
+        "type": "minecraft:random_spread",
+        "salt": 264167444,
+        "spacing": 3,
+        "separation": 1,
+        "spreadType": "linear"
+      },
+      "structures": [
+        {
+          "id": "tfg:ocean/ocean_moai_0",
+          "weight": 1,
+          "type": "minecraft:jigsaw",
+          "biomes": [
+            "tfg:earth/old_shield_volcano_shore",
+            "tfg:earth/shield_volcano_shore",
+            "tfg:earth/sunken_shield_volcano",
+            "tfg:earth/volcanic_mountains",
+            "tfg:earth/volcanic_oceanic_mountains"
+          ],
+          "conditions": [
+            {
+              "type": "height",
+              "heightmap": "OCEAN_FLOOR_WG",
+              "min": 65,
+              "max": 256
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tfg:temperate/plains_temperate_house",
+      "dimension": "overworld",
+      "placement": {
+        "type": "tfc:climate",
+        "salt": 264167119,
+        "spacing": 50,
+        "separation": 30,
+        "spreadType": "linear",
+        "climate": {
+          "min_temperature": -5,
+          "max_temperature": 10,
+          "min_rainfall": 150,
+          "max_rainfall": 400,
+          "max_forest": "normal"
+        }
+      },
+      "structures": [
+        {
+          "id": "tfg:temperate/plains_temperate_house_0",
+          "weight": 1,
+          "type": "minecraft:jigsaw",
+          "biomes": [
+            "tfg:earth/burren_plains",
+            "tfg:earth/burren_plateau",
+            "tfg:earth/drumlins",
+            "tfg:earth/extinct_shield_volcano",
+            "tfg:earth/grassy_dunes",
+            "tfg:earth/highlands",
+            "tfg:earth/inverted_patterned_ground",
+            "tfg:earth/knob_and_kettle",
+            "tfg:earth/patterned_ground",
+            "tfg:earth/plains",
+            "tfg:earth/plateau",
+            "tfg:earth/plateau_wide",
+            "tfg:earth/rocky_plateau"
+          ],
+          "conditions": [
+            {
+              "type": "avoid_biomes",
+              "biomes": [
+                "tfg:earth/coastal_dunes",
+                "tfg:earth/deep_ocean",
+                "tfg:earth/deep_ocean_trench",
+                "tfg:earth/embayments",
+                "tfg:earth/guano_island",
+                "tfg:earth/ice_sheet_oceanic",
+                "tfg:earth/ice_sheet_shore",
+                "tfg:earth/lake",
+                "tfg:earth/meltwater_lake",
+                "tfg:earth/mountain_lake",
+                "tfg:earth/ocean",
+                "tfg:earth/ocean_reef",
+                "tfg:earth/oceanic_mountain_lake",
+                "tfg:earth/old_mountain_lake",
+                "tfg:earth/old_shield_volcano_shore",
+                "tfg:earth/plateau_lake",
+                "tfg:earth/river",
+                "tfg:earth/rocky_shores",
+                "tfg:earth/sea_stacks",
+                "tfg:earth/setback_cliffs",
+                "tfg:earth/shield_volcano_shore",
+                "tfg:earth/shore",
+                "tfg:earth/subglacial_lake",
+                "tfg:earth/terrace_lower",
+                "tfg:earth/terrace_upper",
+                "tfg:earth/tidal_flats",
+                "tfg:earth/tower_karst_bay",
+                "tfg:earth/tower_karst_lake",
+                "tfg:earth/volcanic_mountain_lake",
+                "tfg:earth/volcanic_oceanic_mountain_lake"
+              ],
+              "radius": 50,
+              "step": 8,
+              "allowedCount": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tfc_ruins:ruins",
+      "dimension": "overworld",
+      "placement": {
+        "type": "minecraft:random_spread",
+        "salt": 544804645,
+        "spacing": 35,
+        "separation": 10,
+        "spreadType": "linear",
+        "exclusionZone": {
+          "otherSet": "minecraft:strongholds",
+          "chunkCount": 6
+        }
+      },
+      "structures": [
+        {
+          "id": "tfc_ruins:ruin_small",
+          "weight": 4,
+          "type": "minecraft:jigsaw",
+          "biomes": [
+            "tfg:earth/badlands",
+            "tfg:earth/burren_badlands",
+            "tfg:earth/burren_plains",
+            "tfg:earth/burren_plateau",
+            "tfg:earth/drumlins",
+            "tfg:earth/hills",
+            "tfg:earth/hoodoos",
+            "tfg:earth/inverted_patterned_ground",
+            "tfg:earth/knob_and_kettle",
+            "tfg:earth/low_canyons",
+            "tfg:earth/lowlands",
+            "tfg:earth/patterned_ground",
+            "tfg:earth/plains",
+            "tfg:earth/plateau",
+            "tfg:earth/plateau_wide",
+            "tfg:earth/rocky_plateau",
+            "tfg:earth/rolling_hills",
+            "tfg:earth/stone_circles"
+          ],
+          "conditions": []
+        },
+        {
+          "id": "tfc_ruins:ruin_beach",
+          "weight": 3,
+          "type": "minecraft:jigsaw",
+          "biomes": [
+            "tfg:earth/coastal_dunes",
+            "tfg:earth/embayments",
+            "tfg:earth/shield_volcano_shore",
+            "tfg:earth/shore",
+            "tfg:earth/tidal_flats"
+          ],
+          "conditions": []
+        },
+        {
+          "id": "tfc_ruins:ruin_rich",
+          "weight": 2,
+          "type": "minecraft:jigsaw",
+          "biomes": [
+            "tfg:earth/highlands",
+            "tfg:earth/old_mountains",
+            "tfg:earth/plateau",
+            "tfg:earth/rolling_hills"
+          ],
+          "conditions": []
+        }
+      ]
+    },
+    {
+      "id": "tfc_ruined_world:ancient_monument_1",
+      "dimension": "overworld",
+      "placement": {
+        "type": "minecraft:random_spread",
+        "salt": 1442136154,
+        "spacing": 40,
+        "separation": 25,
+        "spreadType": "linear"
+      },
+      "structures": [
+        {
+          "id": "tfc_ruined_world:ancient_monument_1",
+          "weight": 1,
+          "type": "minecraft:jigsaw",
+          "biomes": [
+            "tfg:earth/hills",
+            "tfg:earth/inverted_patterned_ground",
+            "tfg:earth/mud_flats",
+            "tfg:earth/patterned_ground",
+            "tfg:earth/plains",
+            "tfg:earth/plateau",
+            "tfg:earth/plateau_wide",
+            "tfg:earth/salt_flats"
+          ],
+          "conditions": []
+        },
+        {
+          "id": "tfc_ruined_world:ancient_monument_2",
+          "weight": 1,
+          "type": "minecraft:jigsaw",
+          "biomes": [
+            "tfg:earth/hills",
+            "tfg:earth/inverted_patterned_ground",
+            "tfg:earth/mud_flats",
+            "tfg:earth/patterned_ground",
+            "tfg:earth/plains",
+            "tfg:earth/plateau",
+            "tfg:earth/plateau_wide",
+            "tfg:earth/salt_flats"
+          ],
+          "conditions": []
+        }
+      ]
+    },
+    {
+      "id": "tfc_ruined_world:limestone_church",
+      "dimension": "overworld",
+      "placement": {
+        "type": "minecraft:random_spread",
+        "salt": 1442136151,
+        "spacing": 45,
+        "separation": 25,
+        "spreadType": "linear"
+      },
+      "structures": [
+        {
+          "id": "tfc_ruined_world:limestone_church",
+          "weight": 1,
+          "type": "minecraft:jigsaw",
+          "biomes": [
+            "tfg:earth/hills",
+            "tfg:earth/inverted_patterned_ground",
+            "tfg:earth/mud_flats",
+            "tfg:earth/patterned_ground",
+            "tfg:earth/plains",
+            "tfg:earth/plateau",
+            "tfg:earth/plateau_wide",
+            "tfg:earth/salt_flats"
+          ],
+          "conditions": []
+        },
+        {
+          "id": "tfc_ruined_world:small_limestone_church",
+          "weight": 1,
+          "type": "minecraft:jigsaw",
+          "biomes": [
+            "tfg:earth/hills",
+            "tfg:earth/inverted_patterned_ground",
+            "tfg:earth/mud_flats",
+            "tfg:earth/patterned_ground",
+            "tfg:earth/plains",
+            "tfg:earth/plateau",
+            "tfg:earth/plateau_wide",
+            "tfg:earth/salt_flats"
+          ],
+          "conditions": []
+        },
+        {
+          "id": "tfc_ruined_world:medium_gneiss_church",
+          "weight": 1,
+          "type": "minecraft:jigsaw",
+          "biomes": [
+            "tfg:earth/hills",
+            "tfg:earth/inverted_patterned_ground",
+            "tfg:earth/mud_flats",
+            "tfg:earth/patterned_ground",
+            "tfg:earth/plains",
+            "tfg:earth/plateau",
+            "tfg:earth/plateau_wide",
+            "tfg:earth/salt_flats"
+          ],
+          "conditions": []
+        },
+        {
+          "id": "tfc_ruined_world:small_gneiss_church",
+          "weight": 1,
+          "type": "minecraft:jigsaw",
+          "biomes": [
+            "tfg:earth/hills",
+            "tfg:earth/inverted_patterned_ground",
+            "tfg:earth/mud_flats",
+            "tfg:earth/patterned_ground",
+            "tfg:earth/plains",
+            "tfg:earth/plateau",
+            "tfg:earth/plateau_wide",
+            "tfg:earth/salt_flats"
+          ],
+          "conditions": []
+        },
+        {
+          "id": "tfc_ruined_world:small_limestone_church_2",
+          "weight": 1,
+          "type": "minecraft:jigsaw",
+          "biomes": [
+            "tfg:earth/hills",
+            "tfg:earth/inverted_patterned_ground",
+            "tfg:earth/mud_flats",
+            "tfg:earth/patterned_ground",
+            "tfg:earth/plains",
+            "tfg:earth/plateau",
+            "tfg:earth/plateau_wide",
+            "tfg:earth/salt_flats"
+          ],
+          "conditions": []
+        }
+      ]
+    },
+    {
+      "id": "tfc_ruined_world:tower_1",
+      "dimension": "overworld",
+      "placement": {
+        "type": "minecraft:random_spread",
+        "salt": 1442136152,
+        "spacing": 35,
+        "separation": 15,
+        "spreadType": "linear"
+      },
+      "structures": [
+        {
+          "id": "tfc_ruined_world:tower_1",
+          "weight": 1,
+          "type": "minecraft:jigsaw",
+          "biomes": [
+            "tfg:earth/badlands",
+            "tfg:earth/burren_badlands",
+            "tfg:earth/burren_plains",
+            "tfg:earth/burren_plateau",
+            "tfg:earth/drumlins",
+            "tfg:earth/hills",
+            "tfg:earth/hoodoos",
+            "tfg:earth/inverted_patterned_ground",
+            "tfg:earth/knob_and_kettle",
+            "tfg:earth/low_canyons",
+            "tfg:earth/lowlands",
+            "tfg:earth/mud_flats",
+            "tfg:earth/patterned_ground",
+            "tfg:earth/plains",
+            "tfg:earth/plateau",
+            "tfg:earth/plateau_wide",
+            "tfg:earth/rocky_plateau",
+            "tfg:earth/rolling_hills",
+            "tfg:earth/salt_flats",
+            "tfg:earth/stone_circles"
+          ],
+          "conditions": []
+        },
+        {
+          "id": "tfc_ruined_world:tower_2",
+          "weight": 1,
+          "type": "minecraft:jigsaw",
+          "biomes": [
+            "tfg:earth/badlands",
+            "tfg:earth/burren_badlands",
+            "tfg:earth/burren_plains",
+            "tfg:earth/burren_plateau",
+            "tfg:earth/drumlins",
+            "tfg:earth/hills",
+            "tfg:earth/hoodoos",
+            "tfg:earth/inverted_patterned_ground",
+            "tfg:earth/knob_and_kettle",
+            "tfg:earth/low_canyons",
+            "tfg:earth/lowlands",
+            "tfg:earth/mud_flats",
+            "tfg:earth/patterned_ground",
+            "tfg:earth/plains",
+            "tfg:earth/plateau",
+            "tfg:earth/plateau_wide",
+            "tfg:earth/rocky_plateau",
+            "tfg:earth/rolling_hills",
+            "tfg:earth/salt_flats",
+            "tfg:earth/stone_circles"
+          ],
+          "conditions": []
+        },
+        {
+          "id": "tfc_ruined_world:tower_3",
+          "weight": 1,
+          "type": "minecraft:jigsaw",
+          "biomes": [
+            "tfg:earth/badlands",
+            "tfg:earth/burren_badlands",
+            "tfg:earth/burren_plains",
+            "tfg:earth/burren_plateau",
+            "tfg:earth/drumlins",
+            "tfg:earth/hills",
+            "tfg:earth/hoodoos",
+            "tfg:earth/inverted_patterned_ground",
+            "tfg:earth/knob_and_kettle",
+            "tfg:earth/low_canyons",
+            "tfg:earth/lowlands",
+            "tfg:earth/mud_flats",
+            "tfg:earth/patterned_ground",
+            "tfg:earth/plains",
+            "tfg:earth/plateau",
+            "tfg:earth/plateau_wide",
+            "tfg:earth/rocky_plateau",
+            "tfg:earth/rolling_hills",
+            "tfg:earth/salt_flats",
+            "tfg:earth/stone_circles"
+          ],
+          "conditions": []
+        },
+        {
+          "id": "tfc_ruined_world:tower_4",
+          "weight": 1,
+          "type": "minecraft:jigsaw",
+          "biomes": [
+            "tfg:earth/badlands",
+            "tfg:earth/burren_badlands",
+            "tfg:earth/burren_plains",
+            "tfg:earth/burren_plateau",
+            "tfg:earth/drumlins",
+            "tfg:earth/hills",
+            "tfg:earth/hoodoos",
+            "tfg:earth/inverted_patterned_ground",
+            "tfg:earth/knob_and_kettle",
+            "tfg:earth/low_canyons",
+            "tfg:earth/lowlands",
+            "tfg:earth/mud_flats",
+            "tfg:earth/patterned_ground",
+            "tfg:earth/plains",
+            "tfg:earth/plateau",
+            "tfg:earth/plateau_wide",
+            "tfg:earth/rocky_plateau",
+            "tfg:earth/rolling_hills",
+            "tfg:earth/salt_flats",
+            "tfg:earth/stone_circles"
+          ],
+          "conditions": []
+        },
+        {
+          "id": "tfc_ruined_world:tower_5",
+          "weight": 1,
+          "type": "minecraft:jigsaw",
+          "biomes": [
+            "tfg:earth/badlands",
+            "tfg:earth/burren_badlands",
+            "tfg:earth/burren_plains",
+            "tfg:earth/burren_plateau",
+            "tfg:earth/drumlins",
+            "tfg:earth/hills",
+            "tfg:earth/hoodoos",
+            "tfg:earth/inverted_patterned_ground",
+            "tfg:earth/knob_and_kettle",
+            "tfg:earth/low_canyons",
+            "tfg:earth/lowlands",
+            "tfg:earth/mud_flats",
+            "tfg:earth/patterned_ground",
+            "tfg:earth/plains",
+            "tfg:earth/plateau",
+            "tfg:earth/plateau_wide",
+            "tfg:earth/rocky_plateau",
+            "tfg:earth/rolling_hills",
+            "tfg:earth/salt_flats",
+            "tfg:earth/stone_circles"
+          ],
+          "conditions": []
+        }
+      ]
+    },
+    {
+      "id": "tfc_ruined_world:towerhouse_1",
+      "dimension": "overworld",
+      "placement": {
+        "type": "minecraft:random_spread",
+        "salt": 1442136153,
+        "spacing": 70,
+        "separation": 50,
+        "spreadType": "linear"
+      },
+      "structures": [
+        {
+          "id": "tfc_ruined_world:towerhouse_1",
+          "weight": 2,
+          "type": "minecraft:jigsaw",
+          "biomes": [
+            "tfg:earth/badlands",
+            "tfg:earth/burren_badlands",
+            "tfg:earth/burren_plains",
+            "tfg:earth/burren_plateau",
+            "tfg:earth/drumlins",
+            "tfg:earth/hills",
+            "tfg:earth/hoodoos",
+            "tfg:earth/inverted_patterned_ground",
+            "tfg:earth/knob_and_kettle",
+            "tfg:earth/low_canyons",
+            "tfg:earth/lowlands",
+            "tfg:earth/mud_flats",
+            "tfg:earth/patterned_ground",
+            "tfg:earth/plains",
+            "tfg:earth/plateau",
+            "tfg:earth/plateau_wide",
+            "tfg:earth/rocky_plateau",
+            "tfg:earth/rolling_hills",
+            "tfg:earth/salt_flats",
+            "tfg:earth/stone_circles"
+          ],
+          "conditions": []
+        },
+        {
+          "id": "tfc_ruined_world:towerhouse_2",
+          "weight": 2,
+          "type": "minecraft:jigsaw",
+          "biomes": [
+            "tfg:earth/badlands",
+            "tfg:earth/burren_badlands",
+            "tfg:earth/burren_plains",
+            "tfg:earth/burren_plateau",
+            "tfg:earth/drumlins",
+            "tfg:earth/hills",
+            "tfg:earth/hoodoos",
+            "tfg:earth/inverted_patterned_ground",
+            "tfg:earth/knob_and_kettle",
+            "tfg:earth/low_canyons",
+            "tfg:earth/lowlands",
+            "tfg:earth/mud_flats",
+            "tfg:earth/patterned_ground",
+            "tfg:earth/plains",
+            "tfg:earth/plateau",
+            "tfg:earth/plateau_wide",
+            "tfg:earth/rocky_plateau",
+            "tfg:earth/rolling_hills",
+            "tfg:earth/salt_flats",
+            "tfg:earth/stone_circles"
+          ],
+          "conditions": []
+        },
+        {
+          "id": "tfc_ruined_world:castle_1",
+          "weight": 1,
+          "type": "minecraft:jigsaw",
+          "biomes": [
+            "tfg:earth/hills",
+            "tfg:earth/inverted_patterned_ground",
+            "tfg:earth/mud_flats",
+            "tfg:earth/patterned_ground",
+            "tfg:earth/plains",
+            "tfg:earth/plateau",
+            "tfg:earth/plateau_wide",
+            "tfg:earth/salt_flats"
+          ],
+          "conditions": []
+        },
+        {
+          "id": "tfc_ruined_world:castle_2",
+          "weight": 1,
+          "type": "minecraft:jigsaw",
+          "biomes": [
+            "tfg:earth/hills",
+            "tfg:earth/inverted_patterned_ground",
+            "tfg:earth/mud_flats",
+            "tfg:earth/patterned_ground",
+            "tfg:earth/plains",
+            "tfg:earth/plateau",
+            "tfg:earth/plateau_wide",
+            "tfg:earth/salt_flats"
+          ],
+          "conditions": []
+        }
+      ]
+    },
+    {
+      "id": "tfg:beneath/tower",
+      "dimension": "nether",
+      "placement": {
+        "type": "minecraft:random_spread",
+        "salt": 264226226,
+        "spacing": 15,
+        "separation": 5,
+        "spreadType": "linear",
+        "exclusionZone": {
+          "otherSet": "minecraft:nether_complexes",
+          "chunkCount": 3
+        }
+      },
+      "structures": [
+        {
+          "id": "tfg:beneath/tower",
+          "weight": 1,
+          "type": "minecraft:jigsaw",
+          "biomes": [
+            "tfg:nether/ash_forest",
+            "tfg:nether/basalt_deltas",
+            "tfg:nether/decaying_caverns",
+            "tfg:nether/geothermal_springs",
+            "tfg:nether/lava_floes",
+            "tfg:nether/lush_hollow",
+            "tfg:nether/muggy_bog",
+            "tfg:nether/salt_caves",
+            "tfg:nether/tar_pools",
+            "tfg:nether/thorny_brambles",
+            "tfg:nether/webbed_lair"
+          ],
+          "conditions": []
+        }
+      ]
+    },
+    {
+      "id": "tfg:moon/cheese_ores",
+      "dimension": "moon",
+      "placement": {
+        "type": "minecraft:random_spread",
+        "salt": 486424619,
+        "spacing": 3,
+        "separation": 1,
+        "spreadType": "linear",
+        "exclusionZone": {
+          "otherSet": "tfg:moon/meteors",
+          "chunkCount": 6
+        }
+      },
+      "structures": [
+        {
+          "id": "tfg:moon/cheese_ores",
+          "weight": 1,
+          "type": "minecraft:jigsaw",
+          "biomes": [
+            "tfg:moon/lunar_asurine_dense",
+            "tfg:moon/lunar_asurine_sparse",
+            "tfg:moon/lunar_chorus_dense",
+            "tfg:moon/lunar_chorus_sparse",
+            "tfg:moon/lunar_corals_dense",
+            "tfg:moon/lunar_corals_sparse",
+            "tfg:moon/lunar_lights_dense",
+            "tfg:moon/lunar_lights_sparse",
+            "tfg:moon/lunar_plains",
+            "tfg:moon/lunar_sands"
+          ],
+          "conditions": []
+        }
+      ]
+    },
+    {
+      "id": "tfg:moon/meteors",
+      "dimension": "moon",
+      "placement": {
+        "type": "minecraft:random_spread",
+        "salt": 412423412,
+        "spacing": 50,
+        "separation": 20,
+        "spreadType": "linear"
+      },
+      "structures": [
+        {
+          "id": "tfg:moon/meteors",
+          "weight": 1,
+          "type": "minecraft:jigsaw",
+          "biomes": [
+            "tfg:moon/lunar_asurine_dense",
+            "tfg:moon/lunar_asurine_sparse",
+            "tfg:moon/lunar_chorus_dense",
+            "tfg:moon/lunar_chorus_sparse",
+            "tfg:moon/lunar_corals_dense",
+            "tfg:moon/lunar_corals_sparse",
+            "tfg:moon/lunar_lights_dense",
+            "tfg:moon/lunar_lights_sparse",
+            "tfg:moon/lunar_plains",
+            "tfg:moon/lunar_sands"
+          ],
+          "conditions": []
+        }
+      ]
+    },
+    {
+      "id": "tfg:moon/moon_rabbit_houses",
+      "dimension": "moon",
+      "placement": {
+        "type": "minecraft:random_spread",
+        "salt": 1234542,
+        "spacing": 8,
+        "separation": 5,
+        "spreadType": "linear",
+        "exclusionZone": {
+          "otherSet": "tfg:moon/meteors",
+          "chunkCount": 6
+        }
+      },
+      "structures": [
+        {
+          "id": "tfg:moon/moon_rabbit_houses",
+          "weight": 1,
+          "type": "minecraft:jigsaw",
+          "biomes": [
+            "tfg:moon/lunar_asurine_dense",
+            "tfg:moon/lunar_asurine_sparse",
+            "tfg:moon/lunar_chorus_dense",
+            "tfg:moon/lunar_chorus_sparse",
+            "tfg:moon/lunar_corals_dense",
+            "tfg:moon/lunar_corals_sparse",
+            "tfg:moon/lunar_lights_dense",
+            "tfg:moon/lunar_lights_sparse",
+            "tfg:moon/lunar_plains",
+            "tfg:moon/lunar_sands"
+          ],
+          "conditions": []
+        }
+      ]
+    },
+    {
+      "id": "tfg:moon/moonbase",
+      "dimension": "moon",
+      "placement": {
+        "type": "minecraft:random_spread",
+        "salt": 73746546,
+        "spacing": 50,
+        "separation": 20,
+        "spreadType": "linear",
+        "exclusionZone": {
+          "otherSet": "tfg:moon/meteors",
+          "chunkCount": 3
+        }
+      },
+      "structures": [
+        {
+          "id": "tfg:moon/moonbase",
+          "weight": 1,
+          "type": "minecraft:jigsaw",
+          "biomes": [
+            "tfg:moon/lunar_asurine_dense",
+            "tfg:moon/lunar_asurine_sparse",
+            "tfg:moon/lunar_chorus_dense",
+            "tfg:moon/lunar_chorus_sparse",
+            "tfg:moon/lunar_corals_dense",
+            "tfg:moon/lunar_corals_sparse",
+            "tfg:moon/lunar_lights_dense",
+            "tfg:moon/lunar_lights_sparse",
+            "tfg:moon/lunar_plains",
+            "tfg:moon/lunar_sands"
+          ],
+          "conditions": []
+        }
+      ]
+    },
+    {
+      "id": "minecraft:strongholds",
+      "dimension": "overworld",
+      "placement": {
+        "type": "minecraft:concentric_rings",
+        "salt": 0,
+        "spreadType": "linear"
+      },
+      "structures": []
+    },
+    {
+      "id": "minecraft:nether_complexes",
+      "dimension": "nether",
+      "placement": {
+        "type": "minecraft:random_spread",
+        "salt": 30084232,
+        "spacing": 27,
+        "separation": 4,
+        "spreadType": "linear"
+      },
+      "structures": []
+    }
+  ]
+}

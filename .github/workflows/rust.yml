@@ -1,0 +1,38 @@
+name: Rust
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+concurrency:
+  group: rust-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: native/terralens-rs
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: dtolnay/rust-toolchain@b725eda525362e7cf34af9a7243cac1e3f01a7ec # stable
+        with:
+          components: rustfmt
+      - name: Native dependencies
+        run: sudo apt-get update && sudo apt-get install -y pkg-config libwayland-dev libxkbcommon-dev libxkbcommon-x11-dev libx11-dev libxi-dev libxcursor-dev libgl1-mesa-dev
+      - run: cargo fmt --all --check
+      - run: cargo test --release --locked
+      - run: cargo check --release --locked --no-default-features --lib
+      - run: cargo check --release --locked --features diagnostics --all-targets
+      - name: Production binary (diagnostics disabled)
+        run: cargo build --release --locked
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: terralens-linux-x86_64
+          path: |
+            native/terralens-rs/target/release/terralens
+            LICENSE
+            NOTICE.md
+            licenses/
+            native/terralens-rs/assets/export-font-source.txt
+            native/terralens-rs/assets/ore-icons/README.md

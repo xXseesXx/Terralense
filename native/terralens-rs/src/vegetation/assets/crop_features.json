@@ -1,0 +1,2205 @@
+{
+  "source": "TerraFirmaGreg Core Modern 0.9.25 + installed KubeJS data (TFG Earth crop worldgen)",
+  "features": [
+    {
+      "id": "tfc:plant/wild_crop/barley_patch",
+      "placed": {
+        "feature": "tfc:plant/wild_crop/barley_patch",
+        "placement": [
+          {
+            "chance": 80,
+            "type": "minecraft:rarity_filter"
+          },
+          {
+            "type": "minecraft:in_square"
+          },
+          {
+            "max_temperature": 26,
+            "max_rainfall": 310,
+            "max_forest": "edge",
+            "type": "tfc:climate",
+            "min_rainfall": 70,
+            "min_temperature": -8
+          }
+        ],
+        "__comment__": "This file was automatically created by mcresources"
+      },
+      "configured": {
+        "__comment__": "This file was automatically created by mcresources",
+        "type": "minecraft:random_patch",
+        "config": {
+          "xz_spread": 5,
+          "tries": 6,
+          "y_spread": 1,
+          "feature": "tfc:plant/wild_crop/barley"
+        }
+      },
+      "inner": {
+        "__comment__": "This file was automatically created by mcresources",
+        "type": "minecraft:simple_block",
+        "config": {
+          "to_place": {
+            "state": {
+              "Name": "tfc:wild_crop/barley"
+            },
+            "type": "minecraft:simple_state_provider"
+          }
+        }
+      }
+    },
+    {
+      "id": "tfc:plant/wild_crop/oat_patch",
+      "placed": {
+        "feature": "tfc:plant/wild_crop/oat_patch",
+        "placement": [
+          {
+            "chance": 80,
+            "type": "minecraft:rarity_filter"
+          },
+          {
+            "type": "minecraft:in_square"
+          },
+          {
+            "max_temperature": 40,
+            "max_rainfall": 400,
+            "max_forest": "edge",
+            "type": "tfc:climate",
+            "min_rainfall": 140,
+            "min_temperature": 3
+          }
+        ],
+        "__comment__": "This file was automatically created by mcresources"
+      },
+      "configured": {
+        "__comment__": "This file was automatically created by mcresources",
+        "type": "minecraft:random_patch",
+        "config": {
+          "xz_spread": 5,
+          "tries": 6,
+          "y_spread": 1,
+          "feature": "tfc:plant/wild_crop/oat"
+        }
+      },
+      "inner": {
+        "__comment__": "This file was automatically created by mcresources",
+        "type": "minecraft:simple_block",
+        "config": {
+          "to_place": {
+            "state": {
+              "Name": "tfc:wild_crop/oat"
+            },
+            "type": "minecraft:simple_state_provider"
+          }
+        }
+      }
+    },
+    {
+      "id": "tfc:plant/wild_crop/rye_patch",
+      "placed": {
+        "feature": "tfc:plant/wild_crop/rye_patch",
+        "placement": [
+          {
+            "chance": 80,
+            "type": "minecraft:rarity_filter"
+          },
+          {
+            "type": "minecraft:in_square"
+          },
+          {
+            "max_temperature": 30,
+            "max_rainfall": 350,
+            "max_forest": "edge",
+            "type": "tfc:climate",
+            "min_rainfall": 100,
+            "min_temperature": -11
+          }
+        ],
+        "__comment__": "This file was automatically created by mcresources"
+      },
+      "configured": {
+        "__comment__": "This file was automatically created by mcresources",
+        "type": "minecraft:random_patch",
+        "config": {
+          "xz_spread": 5,
+          "tries": 6,
+          "y_spread": 1,
+          "feature": "tfc:plant/wild_crop/rye"
+        }
+      },
+      "inner": {
+        "__comment__": "This file was automatically created by mcresources",
+        "type": "minecraft:simple_block",
+        "config": {
+          "to_place": {
+            "state": {
+              "Name": "tfc:wild_crop/rye"
+            },
+            "type": "minecraft:simple_state_provider"
+          }
+        }
+      }
+    },
+    {
+      "id": "tfc:plant/wild_crop/maize_patch",
+      "placed": {
+        "feature": "tfc:plant/wild_crop/maize_patch",
+        "placement": [
+          {
+            "chance": 80,
+            "type": "minecraft:rarity_filter"
+          },
+          {
+            "type": "minecraft:in_square"
+          },
+          {
+            "max_temperature": 40,
+            "max_rainfall": 500,
+            "max_forest": "edge",
+            "type": "tfc:climate",
+            "min_rainfall": 300,
+            "min_temperature": 13
+          }
+        ],
+        "__comment__": "This file was automatically created by mcresources"
+      },
+      "configured": {
+        "__comment__": "This file was automatically created by mcresources",
+        "type": "minecraft:random_patch",
+        "config": {
+          "xz_spread": 5,
+          "tries": 6,
+          "y_spread": 1,
+          "feature": "tfc:plant/wild_crop/maize"
+        }
+      },
+      "inner": {
+        "__comment__": "This file was automatically created by mcresources",
+        "type": "tfc:tall_wild_crop",
+        "config": {
+          "block": "tfc:wild_crop/maize"
+        }
+      }
+    },
+    {
+      "id": "tfc:plant/wild_crop/wheat_patch",
+      "placed": {
+        "feature": "tfc:plant/wild_crop/wheat_patch",
+        "placement": [
+          {
+            "chance": 80,
+            "type": "minecraft:rarity_filter"
+          },
+          {
+            "type": "minecraft:in_square"
+          },
+          {
+            "max_temperature": 35,
+            "max_rainfall": 400,
+            "max_forest": "edge",
+            "type": "tfc:climate",
+            "min_rainfall": 100,
+            "min_temperature": -4
+          }
+        ],
+        "__comment__": "This file was automatically created by mcresources"
+      },
+      "configured": {
+        "__comment__": "This file was automatically created by mcresources",
+        "type": "minecraft:random_patch",
+        "config": {
+          "xz_spread": 5,
+          "tries": 6,
+          "y_spread": 1,
+          "feature": "tfc:plant/wild_crop/wheat"
+        }
+      },
+      "inner": {
+        "__comment__": "This file was automatically created by mcresources",
+        "type": "minecraft:simple_block",
+        "config": {
+          "to_place": {
+            "state": {
+              "Name": "tfc:wild_crop/wheat"
+            },
+            "type": "minecraft:simple_state_provider"
+          }
+        }
+      }
+    },
+    {
+      "id": "tfc:plant/wild_crop/rice_patch",
+      "placed": {
+        "feature": "tfc:plant/wild_crop/rice_patch",
+        "placement": [
+          {
+            "chance": 80,
+            "type": "minecraft:rarity_filter"
+          },
+          {
+            "type": "minecraft:in_square"
+          },
+          {
+            "max_temperature": 30,
+            "max_rainfall": 500,
+            "type": "tfc:climate",
+            "min_rainfall": 100,
+            "min_forest": "normal",
+            "min_temperature": 15
+          }
+        ],
+        "__comment__": "This file was automatically created by mcresources"
+      },
+      "configured": {
+        "__comment__": "This file was automatically created by mcresources",
+        "type": "minecraft:random_patch",
+        "config": {
+          "xz_spread": 5,
+          "tries": 6,
+          "y_spread": 1,
+          "feature": "tfc:plant/wild_crop/rice"
+        }
+      },
+      "inner": {
+        "__comment__": "This file was automatically created by mcresources",
+        "type": "tfc:block_with_fluid",
+        "config": {
+          "to_place": {
+            "state": {
+              "Name": "tfc:wild_crop/rice"
+            },
+            "type": "minecraft:simple_state_provider"
+          }
+        }
+      }
+    },
+    {
+      "id": "tfc:plant/wild_crop/beet_patch",
+      "placed": {
+        "feature": "tfc:plant/wild_crop/beet_patch",
+        "placement": [
+          {
+            "chance": 80,
+            "type": "minecraft:rarity_filter"
+          },
+          {
+            "type": "minecraft:in_square"
+          },
+          {
+            "max_temperature": 20,
+            "max_rainfall": 300,
+            "type": "tfc:climate",
+            "min_rainfall": 70,
+            "min_temperature": -5
+          }
+        ],
+        "__comment__": "This file was automatically created by mcresources"
+      },
+      "configured": {
+        "__comment__": "This file was automatically created by mcresources",
+        "type": "minecraft:random_patch",
+        "config": {
+          "xz_spread": 5,
+          "tries": 6,
+          "y_spread": 1,
+          "feature": "tfc:plant/wild_crop/beet"
+        }
+      },
+      "inner": {
+        "__comment__": "This file was automatically created by mcresources",
+        "type": "minecraft:simple_block",
+        "config": {
+          "to_place": {
+            "state": {
+              "Name": "tfc:wild_crop/beet"
+            },
+            "type": "minecraft:simple_state_provider"
+          }
+        }
+      }
+    },
+    {
+      "id": "tfc:plant/wild_crop/cabbage_patch",
+      "placed": {
+        "feature": "tfc:plant/wild_crop/cabbage_patch",
+        "placement": [
+          {
+            "chance": 80,
+            "type": "minecraft:rarity_filter"
+          },
+          {
+            "type": "minecraft:in_square"
+          },
+          {
+            "max_temperature": 27,
+            "max_rainfall": 280,
+            "type": "tfc:climate",
+            "min_rainfall": 60,
+            "min_temperature": -10
+          }
+        ],
+        "__comment__": "This file was automatically created by mcresources"
+      },
+      "configured": {
+        "__comment__": "This file was automatically created by mcresources",
+        "type": "minecraft:random_patch",
+        "config": {
+          "xz_spread": 5,
+          "tries": 6,
+          "y_spread": 1,
+          "feature": "tfc:plant/wild_crop/cabbage"
+        }
+      },
+      "inner": {
+        "__comment__": "This file was automatically created by mcresources",
+        "type": "minecraft:simple_block",
+        "config": {
+          "to_place": {
+            "state": {
+              "Name": "tfc:wild_crop/cabbage"
+            },
+            "type": "minecraft:simple_state_provider"
+          }
+        }
+      }
+    },
+    {
+      "id": "tfc:plant/wild_crop/carrot_patch",
+      "placed": {
+        "feature": "tfc:plant/wild_crop/carrot_patch",
+        "placement": [
+          {
+            "chance": 80,
+            "type": "minecraft:rarity_filter"
+          },
+          {
+            "type": "minecraft:in_square"
+          },
+          {
+            "max_temperature": 30,
+            "max_rainfall": 400,
+            "type": "tfc:climate",
+            "min_rainfall": 100,
+            "min_temperature": 3
+          }
+        ],
+        "__comment__": "This file was automatically created by mcresources"
+      },
+      "configured": {
+        "__comment__": "This file was automatically created by mcresources",
+        "type": "minecraft:random_patch",
+        "config": {
+          "xz_spread": 5,
+          "tries": 6,
+          "y_spread": 1,
+          "feature": "tfc:plant/wild_crop/carrot"
+        }
+      },
+      "inner": {
+        "__comment__": "This file was automatically created by mcresources",
+        "type": "minecraft:simple_block",
+        "config": {
+          "to_place": {
+            "state": {
+              "Name": "tfc:wild_crop/carrot"
+            },
+            "type": "minecraft:simple_state_provider"
+          }
+        }
+      }
+    },
+    {
+      "id": "tfc:plant/wild_crop/garlic_patch",
+      "placed": {
+        "feature": "tfc:plant/wild_crop/garlic_patch",
+        "placement": [
+          {
+            "chance": 80,
+            "type": "minecraft:rarity_filter"
+          },
+          {
+            "type": "minecraft:in_square"
+          },
+          {
+            "max_temperature": 18,
+            "max_rainfall": 310,
+            "type": "tfc:climate",
+            "min_rainfall": 60,
+            "min_temperature": -20
+          }
+        ],
+        "__comment__": "This file was automatically created by mcresources"
+      },
+      "configured": {
+        "__comment__": "This file was automatically created by mcresources",
+        "type": "minecraft:random_patch",
+        "config": {
+          "xz_spread": 5,
+          "tries": 6,
+          "y_spread": 1,
+          "feature": "tfc:plant/wild_crop/garlic"
+        }
+      },
+      "inner": {
+        "__comment__": "This file was automatically created by mcresources",
+        "type": "minecraft:simple_block",
+        "config": {
+          "to_place": {
+            "state": {
+              "Name": "tfc:wild_crop/garlic"
+            },
+            "type": "minecraft:simple_state_provider"
+          }
+        }
+      }
+    },
+    {
+      "id": "tfc:plant/wild_crop/green_bean_patch",
+      "placed": {
+        "feature": "tfc:plant/wild_crop/green_bean_patch",
+        "placement": [
+          {
+            "chance": 80,
+            "type": "minecraft:rarity_filter"
+          },
+          {
+            "type": "minecraft:in_square"
+          },
+          {
+            "max_temperature": 35,
+            "max_rainfall": 410,
+            "type": "tfc:climate",
+            "min_rainfall": 150,
+            "min_forest": "normal",
+            "min_temperature": 2
+          }
+        ],
+        "__comment__": "This file was automatically created by mcresources"
+      },
+      "configured": {
+        "__comment__": "This file was automatically created by mcresources",
+        "type": "minecraft:random_patch",
+        "config": {
+          "xz_spread": 5,
+          "tries": 6,
+          "y_spread": 1,
+          "feature": "tfc:plant/wild_crop/green_bean"
+        }
+      },
+      "inner": {
+        "__comment__": "This file was automatically created by mcresources",
+        "type": "tfc:tall_wild_crop",
+        "config": {
+          "block": "tfc:wild_crop/green_bean"
+        }
+      }
+    },
+    {
+      "id": "tfc:plant/wild_crop/melon_patch",
+      "placed": {
+        "feature": "tfc:plant/wild_crop/melon_patch",
+        "placement": [
+          {
+            "chance": 80,
+            "type": "minecraft:rarity_filter"
+          },
+          {
+            "type": "minecraft:in_square"
+          },
+          {
+            "max_temperature": 37,
+            "max_rainfall": 500,
+            "type": "tfc:climate",
+            "min_rainfall": 200,
+            "min_forest": "normal",
+            "min_temperature": 5
+          }
+        ],
+        "__comment__": "This file was automatically created by mcresources"
+      },
+      "configured": {
+        "__comment__": "This file was automatically created by mcresources",
+        "type": "minecraft:random_patch",
+        "config": {
+          "xz_spread": 5,
+          "tries": 6,
+          "y_spread": 1,
+          "feature": "tfc:plant/wild_crop/melon"
+        }
+      },
+      "inner": {
+        "__comment__": "This file was automatically created by mcresources",
+        "type": "tfc:spreading_crop",
+        "config": {
+          "block": "tfc:wild_crop/melon"
+        }
+      }
+    },
+    {
+      "id": "tfc:plant/wild_crop/potato_patch",
+      "placed": {
+        "feature": "tfc:plant/wild_crop/potato_patch",
+        "placement": [
+          {
+            "chance": 80,
+            "type": "minecraft:rarity_filter"
+          },
+          {
+            "type": "minecraft:in_square"
+          },
+          {
+            "max_temperature": 37,
+            "max_rainfall": 410,
+            "type": "tfc:climate",
+            "min_rainfall": 200,
+            "min_temperature": -1
+          }
+        ],
+        "__comment__": "This file was automatically created by mcresources"
+      },
+      "configured": {
+        "__comment__": "This file was automatically created by mcresources",
+        "type": "minecraft:random_patch",
+        "config": {
+          "xz_spread": 5,
+          "tries": 6,
+          "y_spread": 1,
+          "feature": "tfc:plant/wild_crop/potato"
+        }
+      },
+      "inner": {
+        "__comment__": "This file was automatically created by mcresources",
+        "type": "minecraft:simple_block",
+        "config": {
+          "to_place": {
+            "state": {
+              "Name": "tfc:wild_crop/potato"
+            },
+            "type": "minecraft:simple_state_provider"
+          }
+        }
+      }
+    },
+    {
+      "id": "tfc:plant/wild_crop/pumpkin_patch",
+      "placed": {
+        "feature": "tfc:plant/wild_crop/pumpkin_patch",
+        "placement": [
+          {
+            "chance": 80,
+            "type": "minecraft:rarity_filter"
+          },
+          {
+            "type": "minecraft:in_square"
+          },
+          {
+            "max_temperature": 30,
+            "max_rainfall": 390,
+            "type": "tfc:climate",
+            "min_rainfall": 120,
+            "min_temperature": 0
+          }
+        ],
+        "__comment__": "This file was automatically created by mcresources"
+      },
+      "configured": {
+        "__comment__": "This file was automatically created by mcresources",
+        "type": "minecraft:random_patch",
+        "config": {
+          "xz_spread": 5,
+          "tries": 6,
+          "y_spread": 1,
+          "feature": "tfc:plant/wild_crop/pumpkin"
+        }
+      },
+      "inner": {
+        "__comment__": "This file was automatically created by mcresources",
+        "type": "tfc:spreading_crop",
+        "config": {
+          "block": "tfc:wild_crop/pumpkin"
+        }
+      }
+    },
+    {
+      "id": "tfc:plant/wild_crop/onion_patch",
+      "placed": {
+        "feature": "tfc:plant/wild_crop/onion_patch",
+        "placement": [
+          {
+            "chance": 80,
+            "type": "minecraft:rarity_filter"
+          },
+          {
+            "type": "minecraft:in_square"
+          },
+          {
+            "max_temperature": 30,
+            "max_rainfall": 390,
+            "type": "tfc:climate",
+            "min_rainfall": 100,
+            "min_temperature": 0
+          }
+        ],
+        "__comment__": "This file was automatically created by mcresources"
+      },
+      "configured": {
+        "__comment__": "This file was automatically created by mcresources",
+        "type": "minecraft:random_patch",
+        "config": {
+          "xz_spread": 5,
+          "tries": 6,
+          "y_spread": 1,
+          "feature": "tfc:plant/wild_crop/onion"
+        }
+      },
+      "inner": {
+        "__comment__": "This file was automatically created by mcresources",
+        "type": "minecraft:simple_block",
+        "config": {
+          "to_place": {
+            "state": {
+              "Name": "tfc:wild_crop/onion"
+            },
+            "type": "minecraft:simple_state_provider"
+          }
+        }
+      }
+    },
+    {
+      "id": "tfc:plant/wild_crop/soybean_patch",
+      "placed": {
+        "feature": "tfc:plant/wild_crop/soybean_patch",
+        "placement": [
+          {
+            "chance": 80,
+            "type": "minecraft:rarity_filter"
+          },
+          {
+            "type": "minecraft:in_square"
+          },
+          {
+            "max_temperature": 30,
+            "max_rainfall": 410,
+            "type": "tfc:climate",
+            "min_rainfall": 160,
+            "min_forest": "normal",
+            "min_temperature": 8
+          }
+        ],
+        "__comment__": "This file was automatically created by mcresources"
+      },
+      "configured": {
+        "__comment__": "This file was automatically created by mcresources",
+        "type": "minecraft:random_patch",
+        "config": {
+          "xz_spread": 5,
+          "tries": 6,
+          "y_spread": 1,
+          "feature": "tfc:plant/wild_crop/soybean"
+        }
+      },
+      "inner": {
+        "__comment__": "This file was automatically created by mcresources",
+        "type": "minecraft:simple_block",
+        "config": {
+          "to_place": {
+            "state": {
+              "Name": "tfc:wild_crop/soybean"
+            },
+            "type": "minecraft:simple_state_provider"
+          }
+        }
+      }
+    },
+    {
+      "id": "tfc:plant/wild_crop/squash_patch",
+      "placed": {
+        "feature": "tfc:plant/wild_crop/squash_patch",
+        "placement": [
+          {
+            "chance": 80,
+            "type": "minecraft:rarity_filter"
+          },
+          {
+            "type": "minecraft:in_square"
+          },
+          {
+            "max_temperature": 33,
+            "max_rainfall": 390,
+            "type": "tfc:climate",
+            "min_rainfall": 90,
+            "min_forest": "normal",
+            "min_temperature": 5
+          }
+        ],
+        "__comment__": "This file was automatically created by mcresources"
+      },
+      "configured": {
+        "__comment__": "This file was automatically created by mcresources",
+        "type": "minecraft:random_patch",
+        "config": {
+          "xz_spread": 5,
+          "tries": 6,
+          "y_spread": 1,
+          "feature": "tfc:plant/wild_crop/squash"
+        }
+      },
+      "inner": {
+        "__comment__": "This file was automatically created by mcresources",
+        "type": "minecraft:simple_block",
+        "config": {
+          "to_place": {
+            "state": {
+              "Name": "tfc:wild_crop/squash"
+            },
+            "type": "minecraft:simple_state_provider"
+          }
+        }
+      }
+    },
+    {
+      "id": "tfc:plant/wild_crop/sugarcane_patch",
+      "placed": {
+        "feature": "tfc:plant/wild_crop/sugarcane_patch",
+        "placement": [
+          {
+            "chance": 80,
+            "type": "minecraft:rarity_filter"
+          },
+          {
+            "type": "minecraft:in_square"
+          },
+          {
+            "max_temperature": 38,
+            "max_rainfall": 500,
+            "type": "tfc:climate",
+            "min_rainfall": 160,
+            "min_temperature": 12
+          }
+        ],
+        "__comment__": "This file was automatically created by mcresources"
+      },
+      "configured": {
+        "__comment__": "This file was automatically created by mcresources",
+        "type": "minecraft:random_patch",
+        "config": {
+          "xz_spread": 5,
+          "tries": 6,
+          "y_spread": 1,
+          "feature": "tfc:plant/wild_crop/sugarcane"
+        }
+      },
+      "inner": {
+        "__comment__": "This file was automatically created by mcresources",
+        "type": "tfc:tall_wild_crop",
+        "config": {
+          "block": "tfc:wild_crop/sugarcane"
+        }
+      }
+    },
+    {
+      "id": "tfc:plant/wild_crop/tomato_patch",
+      "placed": {
+        "feature": "tfc:plant/wild_crop/tomato_patch",
+        "placement": [
+          {
+            "chance": 80,
+            "type": "minecraft:rarity_filter"
+          },
+          {
+            "type": "minecraft:in_square"
+          },
+          {
+            "max_temperature": 36,
+            "max_rainfall": 390,
+            "type": "tfc:climate",
+            "min_rainfall": 120,
+            "min_forest": "normal",
+            "min_temperature": 0
+          }
+        ],
+        "__comment__": "This file was automatically created by mcresources"
+      },
+      "configured": {
+        "__comment__": "This file was automatically created by mcresources",
+        "type": "minecraft:random_patch",
+        "config": {
+          "xz_spread": 5,
+          "tries": 6,
+          "y_spread": 1,
+          "feature": "tfc:plant/wild_crop/tomato"
+        }
+      },
+      "inner": {
+        "__comment__": "This file was automatically created by mcresources",
+        "type": "tfc:tall_wild_crop",
+        "config": {
+          "block": "tfc:wild_crop/tomato"
+        }
+      }
+    },
+    {
+      "id": "tfc:plant/wild_crop/jute_patch",
+      "placed": {
+        "feature": "tfc:plant/wild_crop/jute_patch",
+        "placement": [
+          {
+            "chance": 80,
+            "type": "minecraft:rarity_filter"
+          },
+          {
+            "type": "minecraft:in_square"
+          },
+          {
+            "max_temperature": 37,
+            "max_rainfall": 410,
+            "type": "tfc:climate",
+            "min_rainfall": 100,
+            "min_temperature": 5
+          }
+        ],
+        "__comment__": "This file was automatically created by mcresources"
+      },
+      "configured": {
+        "__comment__": "This file was automatically created by mcresources",
+        "type": "minecraft:random_patch",
+        "config": {
+          "xz_spread": 5,
+          "tries": 6,
+          "y_spread": 1,
+          "feature": "tfc:plant/wild_crop/jute"
+        }
+      },
+      "inner": {
+        "__comment__": "This file was automatically created by mcresources",
+        "type": "tfc:tall_wild_crop",
+        "config": {
+          "block": "tfc:wild_crop/jute"
+        }
+      }
+    },
+    {
+      "id": "tfc:plant/wild_crop/papyrus_patch",
+      "placed": {
+        "feature": "tfc:plant/wild_crop/papyrus_patch",
+        "placement": [
+          {
+            "chance": 80,
+            "type": "minecraft:rarity_filter"
+          },
+          {
+            "type": "minecraft:in_square"
+          },
+          {
+            "max_temperature": 37,
+            "max_rainfall": 500,
+            "type": "tfc:climate",
+            "min_rainfall": 310,
+            "min_temperature": 19
+          }
+        ],
+        "__comment__": "This file was automatically created by mcresources"
+      },
+      "configured": {
+        "__comment__": "This file was automatically created by mcresources",
+        "type": "minecraft:random_patch",
+        "config": {
+          "xz_spread": 5,
+          "tries": 6,
+          "y_spread": 1,
+          "feature": "tfc:plant/wild_crop/papyrus"
+        }
+      },
+      "inner": {
+        "__comment__": "This file was automatically created by mcresources",
+        "type": "tfc:tall_wild_crop",
+        "config": {
+          "block": "tfc:wild_crop/papyrus"
+        }
+      }
+    },
+    {
+      "id": "tfc:plant/wild_crop/red_bell_pepper_patch",
+      "placed": {
+        "feature": "tfc:plant/wild_crop/red_bell_pepper_patch",
+        "placement": [
+          {
+            "chance": 80,
+            "type": "minecraft:rarity_filter"
+          },
+          {
+            "type": "minecraft:in_square"
+          },
+          {
+            "max_temperature": 30,
+            "max_rainfall": 400,
+            "type": "tfc:climate",
+            "min_rainfall": 190,
+            "min_temperature": 16
+          }
+        ],
+        "__comment__": "This file was automatically created by mcresources"
+      },
+      "configured": {
+        "__comment__": "This file was automatically created by mcresources",
+        "type": "minecraft:random_patch",
+        "config": {
+          "xz_spread": 5,
+          "tries": 6,
+          "y_spread": 1,
+          "feature": "tfc:plant/wild_crop/red_bell_pepper"
+        }
+      },
+      "inner": {
+        "__comment__": "This file was automatically created by mcresources",
+        "type": "minecraft:simple_block",
+        "config": {
+          "to_place": {
+            "state": {
+              "Name": "tfc:wild_crop/red_bell_pepper"
+            },
+            "type": "minecraft:simple_state_provider"
+          }
+        }
+      }
+    },
+    {
+      "id": "tfc:plant/wild_crop/yellow_bell_pepper_patch",
+      "placed": {
+        "feature": "tfc:plant/wild_crop/yellow_bell_pepper_patch",
+        "placement": [
+          {
+            "chance": 80,
+            "type": "minecraft:rarity_filter"
+          },
+          {
+            "type": "minecraft:in_square"
+          },
+          {
+            "max_temperature": 30,
+            "max_rainfall": 400,
+            "type": "tfc:climate",
+            "min_rainfall": 190,
+            "min_temperature": 16
+          }
+        ],
+        "__comment__": "This file was automatically created by mcresources"
+      },
+      "configured": {
+        "__comment__": "This file was automatically created by mcresources",
+        "type": "minecraft:random_patch",
+        "config": {
+          "xz_spread": 5,
+          "tries": 6,
+          "y_spread": 1,
+          "feature": "tfc:plant/wild_crop/yellow_bell_pepper"
+        }
+      },
+      "inner": {
+        "__comment__": "This file was automatically created by mcresources",
+        "type": "minecraft:simple_block",
+        "config": {
+          "to_place": {
+            "state": {
+              "Name": "tfc:wild_crop/yellow_bell_pepper"
+            },
+            "type": "minecraft:simple_state_provider"
+          }
+        }
+      }
+    },
+    {
+      "id": "tfg:earth/crop/sunflower_patch",
+      "placed": {
+        "feature": "tfg:earth/crop/sunflower_patch",
+        "placement": [
+          {
+            "type": "minecraft:rarity_filter",
+            "chance": 100
+          },
+          {
+            "type": "minecraft:in_square"
+          },
+          {
+            "type": "tfc:climate",
+            "min_temperature": 5,
+            "max_temperature": 40,
+            "min_rainfall": 100,
+            "max_rainfall": 450,
+            "max_forest": "sparse"
+          }
+        ]
+      },
+      "configured": {
+        "type": "minecraft:random_patch",
+        "config": {
+          "feature": {
+            "feature": {
+              "type": "tfc:tall_wild_crop",
+              "config": {
+                "block": "tfg:sunflower_wild"
+              }
+            },
+            "placement": [
+              {
+                "type": "minecraft:heightmap",
+                "heightmap": "WORLD_SURFACE_WG"
+              },
+              {
+                "type": "block_predicate_filter",
+                "predicate": {
+                  "type": "tfc:replaceable"
+                }
+              },
+              {
+                "type": "block_predicate_filter",
+                "predicate": {
+                  "type": "would_survive",
+                  "state": {
+                    "Name": "tfg:sunflower_wild",
+                    "Properties": {
+                      "part": "bottom"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "tries": 16,
+          "xz_spread": 20,
+          "y_spread": 1
+        }
+      }
+    },
+    {
+      "id": "tfg:earth/crop/rapeseed_patch",
+      "placed": {
+        "feature": "tfg:earth/crop/rapeseed_patch",
+        "placement": [
+          {
+            "type": "minecraft:rarity_filter",
+            "chance": 100
+          },
+          {
+            "type": "minecraft:in_square"
+          },
+          {
+            "type": "tfc:climate",
+            "min_temperature": -7,
+            "max_temperature": 25,
+            "min_rainfall": 50,
+            "max_rainfall": 350,
+            "max_forest": "edge"
+          }
+        ]
+      },
+      "configured": {
+        "type": "minecraft:random_patch",
+        "config": {
+          "feature": {
+            "feature": {
+              "type": "tfc:tall_wild_crop",
+              "config": {
+                "block": "tfg:rapeseed_wild"
+              }
+            },
+            "placement": [
+              {
+                "type": "minecraft:heightmap",
+                "heightmap": "WORLD_SURFACE_WG"
+              },
+              {
+                "type": "block_predicate_filter",
+                "predicate": {
+                  "type": "tfc:replaceable"
+                }
+              },
+              {
+                "type": "block_predicate_filter",
+                "predicate": {
+                  "type": "would_survive",
+                  "state": {
+                    "Name": "tfg:rapeseed_wild",
+                    "Properties": {
+                      "part": "bottom"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "tries": 12,
+          "xz_spread": 10,
+          "y_spread": 1
+        }
+      }
+    },
+    {
+      "id": "tfg:earth/crop/flax_patch",
+      "placed": {
+        "feature": "tfg:earth/crop/flax_patch",
+        "placement": [
+          {
+            "type": "minecraft:rarity_filter",
+            "chance": 100
+          },
+          {
+            "type": "minecraft:in_square"
+          },
+          {
+            "type": "tfc:climate",
+            "min_temperature": -5,
+            "max_temperature": 23,
+            "min_rainfall": 175,
+            "max_rainfall": 475,
+            "max_forest": "sparse"
+          }
+        ]
+      },
+      "configured": {
+        "type": "minecraft:random_patch",
+        "config": {
+          "feature": {
+            "feature": {
+              "type": "tfc:tall_wild_crop",
+              "config": {
+                "block": "tfg:flax_wild"
+              }
+            },
+            "placement": [
+              {
+                "type": "minecraft:heightmap",
+                "heightmap": "WORLD_SURFACE_WG"
+              },
+              {
+                "type": "block_predicate_filter",
+                "predicate": {
+                  "type": "tfc:replaceable"
+                }
+              },
+              {
+                "type": "block_predicate_filter",
+                "predicate": {
+                  "type": "would_survive",
+                  "state": {
+                    "Name": "tfg:flax_wild",
+                    "Properties": {
+                      "part": "bottom"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "tries": 8,
+          "xz_spread": 10,
+          "y_spread": 1
+        }
+      }
+    },
+    {
+      "id": "tfg:earth/crop/radish_patch",
+      "placed": {
+        "feature": "tfg:earth/crop/radish_patch",
+        "placement": [
+          {
+            "type": "minecraft:rarity_filter",
+            "chance": 80
+          },
+          {
+            "type": "minecraft:in_square"
+          },
+          {
+            "type": "tfc:climate",
+            "min_temperature": -16,
+            "max_temperature": 4,
+            "min_rainfall": 75,
+            "max_rainfall": 325,
+            "max_forest": "normal"
+          }
+        ]
+      },
+      "configured": {
+        "type": "minecraft:random_patch",
+        "config": {
+          "feature": {
+            "feature": {
+              "type": "minecraft:simple_block",
+              "config": {
+                "to_place": {
+                  "type": "minecraft:simple_state_provider",
+                  "state": {
+                    "Name": "tfg:radish_wild"
+                  }
+                }
+              }
+            },
+            "placement": [
+              {
+                "type": "minecraft:heightmap",
+                "heightmap": "WORLD_SURFACE_WG"
+              },
+              {
+                "type": "block_predicate_filter",
+                "predicate": {
+                  "type": "tfc:replaceable"
+                }
+              },
+              {
+                "type": "block_predicate_filter",
+                "predicate": {
+                  "type": "would_survive",
+                  "state": {
+                    "Name": "tfg:radish_wild"
+                  }
+                }
+              }
+            ]
+          },
+          "tries": 8,
+          "xz_spread": 8,
+          "y_spread": 1
+        }
+      }
+    },
+    {
+      "id": "tfg:earth/crop/lentil_patch",
+      "placed": {
+        "feature": "tfg:earth/crop/lentil_patch",
+        "placement": [
+          {
+            "type": "minecraft:rarity_filter",
+            "chance": 80
+          },
+          {
+            "type": "minecraft:in_square"
+          },
+          {
+            "type": "tfc:climate",
+            "min_temperature": -18,
+            "max_temperature": 2,
+            "min_rainfall": 250,
+            "max_rainfall": 425,
+            "min_forest": "sparse",
+            "max_forest": "old_growth"
+          }
+        ]
+      },
+      "configured": {
+        "type": "minecraft:random_patch",
+        "config": {
+          "feature": {
+            "feature": {
+              "type": "minecraft:simple_block",
+              "config": {
+                "to_place": {
+                  "type": "minecraft:simple_state_provider",
+                  "state": {
+                    "Name": "tfg:lentil_wild"
+                  }
+                }
+              }
+            },
+            "placement": [
+              {
+                "type": "minecraft:heightmap",
+                "heightmap": "WORLD_SURFACE_WG"
+              },
+              {
+                "type": "block_predicate_filter",
+                "predicate": {
+                  "type": "tfc:replaceable"
+                }
+              },
+              {
+                "type": "block_predicate_filter",
+                "predicate": {
+                  "type": "would_survive",
+                  "state": {
+                    "Name": "tfg:lentil_wild"
+                  }
+                }
+              }
+            ]
+          },
+          "tries": 8,
+          "xz_spread": 8,
+          "y_spread": 1
+        }
+      }
+    },
+    {
+      "id": "tfg:earth/crop/cucumber_patch",
+      "placed": {
+        "feature": "tfg:earth/crop/cucumber_patch",
+        "placement": [
+          {
+            "type": "minecraft:rarity_filter",
+            "chance": 80
+          },
+          {
+            "type": "minecraft:in_square"
+          },
+          {
+            "type": "tfc:climate",
+            "min_temperature": 15,
+            "max_temperature": 40,
+            "min_rainfall": 350,
+            "max_rainfall": 500,
+            "min_forest": "sparse",
+            "max_forest": "normal"
+          }
+        ]
+      },
+      "configured": {
+        "type": "minecraft:random_patch",
+        "config": {
+          "feature": {
+            "feature": {
+              "type": "tfc:tall_wild_crop",
+              "config": {
+                "block": "tfg:cucumber_wild"
+              }
+            },
+            "placement": [
+              {
+                "type": "minecraft:heightmap",
+                "heightmap": "WORLD_SURFACE_WG"
+              },
+              {
+                "type": "block_predicate_filter",
+                "predicate": {
+                  "type": "tfc:replaceable"
+                }
+              },
+              {
+                "type": "block_predicate_filter",
+                "predicate": {
+                  "type": "would_survive",
+                  "state": {
+                    "Name": "tfg:cucumber_wild"
+                  }
+                }
+              }
+            ]
+          },
+          "tries": 8,
+          "xz_spread": 8,
+          "y_spread": 1
+        }
+      }
+    },
+    {
+      "id": "tfg:earth/crop/basil_patch",
+      "placed": {
+        "feature": "tfg:earth/crop/basil_patch",
+        "placement": [
+          {
+            "type": "minecraft:rarity_filter",
+            "chance": 50
+          },
+          {
+            "type": "minecraft:in_square"
+          },
+          {
+            "type": "tfc:climate",
+            "min_temperature": 12,
+            "max_temperature": 25,
+            "min_rainfall": 300,
+            "max_forest": "sparse"
+          }
+        ]
+      },
+      "configured": {
+        "type": "minecraft:random_patch",
+        "config": {
+          "feature": {
+            "feature": {
+              "type": "minecraft:simple_block",
+              "config": {
+                "to_place": {
+                  "type": "minecraft:simple_state_provider",
+                  "state": {
+                    "Name": "firmalife:plant/basil"
+                  }
+                }
+              }
+            },
+            "placement": [
+              {
+                "type": "minecraft:heightmap",
+                "heightmap": "WORLD_SURFACE_WG"
+              },
+              {
+                "type": "block_predicate_filter",
+                "predicate": {
+                  "type": "tfc:replaceable"
+                }
+              },
+              {
+                "type": "block_predicate_filter",
+                "predicate": {
+                  "type": "would_survive",
+                  "state": {
+                    "Name": "firmalife:plant/basil"
+                  }
+                }
+              }
+            ]
+          },
+          "tries": 12,
+          "xz_spread": 8,
+          "y_spread": 1
+        }
+      }
+    },
+    {
+      "id": "tfg:earth/crop/bay_laurel_patch",
+      "placed": {
+        "feature": "tfg:earth/crop/bay_laurel_patch",
+        "placement": [
+          {
+            "type": "minecraft:rarity_filter",
+            "chance": 50
+          },
+          {
+            "type": "minecraft:in_square"
+          },
+          {
+            "type": "tfc:climate",
+            "min_temperature": 8,
+            "max_temperature": 14,
+            "min_rainfall": 25,
+            "max_rainfall": 225,
+            "max_forest": "edge"
+          }
+        ]
+      },
+      "configured": {
+        "type": "minecraft:random_patch",
+        "config": {
+          "feature": {
+            "feature": {
+              "type": "minecraft:simple_block",
+              "config": {
+                "to_place": {
+                  "type": "minecraft:simple_state_provider",
+                  "state": {
+                    "Name": "firmalife:plant/bay_laurel"
+                  }
+                }
+              }
+            },
+            "placement": [
+              {
+                "type": "minecraft:heightmap",
+                "heightmap": "WORLD_SURFACE_WG"
+              },
+              {
+                "type": "block_predicate_filter",
+                "predicate": {
+                  "type": "tfc:replaceable"
+                }
+              },
+              {
+                "type": "block_predicate_filter",
+                "predicate": {
+                  "type": "would_survive",
+                  "state": {
+                    "Name": "firmalife:plant/bay_laurel"
+                  }
+                }
+              }
+            ]
+          },
+          "tries": 12,
+          "xz_spread": 8,
+          "y_spread": 1
+        }
+      }
+    },
+    {
+      "id": "tfg:earth/crop/cardamom_patch",
+      "placed": {
+        "feature": "tfg:earth/crop/cardamom_patch",
+        "placement": [
+          {
+            "type": "minecraft:rarity_filter",
+            "chance": 50
+          },
+          {
+            "type": "minecraft:in_square"
+          },
+          {
+            "type": "tfc:climate",
+            "min_temperature": 18,
+            "max_temperature": 30,
+            "min_rainfall": 350,
+            "min_forest": "edge",
+            "max_forest": "old_growth"
+          }
+        ]
+      },
+      "configured": {
+        "type": "minecraft:random_patch",
+        "config": {
+          "feature": {
+            "feature": {
+              "type": "minecraft:simple_block",
+              "config": {
+                "to_place": {
+                  "type": "minecraft:simple_state_provider",
+                  "state": {
+                    "Name": "firmalife:plant/cardamom"
+                  }
+                }
+              }
+            },
+            "placement": [
+              {
+                "type": "minecraft:heightmap",
+                "heightmap": "WORLD_SURFACE_WG"
+              },
+              {
+                "type": "block_predicate_filter",
+                "predicate": {
+                  "type": "tfc:replaceable"
+                }
+              },
+              {
+                "type": "block_predicate_filter",
+                "predicate": {
+                  "type": "would_survive",
+                  "state": {
+                    "Name": "firmalife:plant/cardamom"
+                  }
+                }
+              }
+            ]
+          },
+          "tries": 12,
+          "xz_spread": 8,
+          "y_spread": 1
+        }
+      }
+    },
+    {
+      "id": "tfg:earth/crop/cilantro_patch",
+      "placed": {
+        "feature": "tfg:earth/crop/cilantro_patch",
+        "placement": [
+          {
+            "type": "minecraft:rarity_filter",
+            "chance": 50
+          },
+          {
+            "type": "minecraft:in_square"
+          },
+          {
+            "type": "tfc:climate",
+            "min_temperature": 5,
+            "max_temperature": 15,
+            "max_rainfall": 150,
+            "max_forest": "edge"
+          }
+        ]
+      },
+      "configured": {
+        "type": "minecraft:random_patch",
+        "config": {
+          "feature": {
+            "feature": {
+              "type": "minecraft:simple_block",
+              "config": {
+                "to_place": {
+                  "type": "minecraft:simple_state_provider",
+                  "state": {
+                    "Name": "firmalife:plant/cilantro"
+                  }
+                }
+              }
+            },
+            "placement": [
+              {
+                "type": "minecraft:heightmap",
+                "heightmap": "WORLD_SURFACE_WG"
+              },
+              {
+                "type": "block_predicate_filter",
+                "predicate": {
+                  "type": "tfc:replaceable"
+                }
+              },
+              {
+                "type": "block_predicate_filter",
+                "predicate": {
+                  "type": "would_survive",
+                  "state": {
+                    "Name": "firmalife:plant/cilantro"
+                  }
+                }
+              }
+            ]
+          },
+          "tries": 12,
+          "xz_spread": 8,
+          "y_spread": 1
+        }
+      }
+    },
+    {
+      "id": "tfg:earth/crop/cumin_patch",
+      "placed": {
+        "feature": "tfg:earth/crop/cumin_patch",
+        "placement": [
+          {
+            "type": "minecraft:rarity_filter",
+            "chance": 50
+          },
+          {
+            "type": "minecraft:in_square"
+          },
+          {
+            "type": "tfc:climate",
+            "min_temperature": 6,
+            "max_temperature": 20,
+            "min_rainfall": 50,
+            "max_rainfall": 250,
+            "max_forest": "edge"
+          }
+        ]
+      },
+      "configured": {
+        "type": "minecraft:random_patch",
+        "config": {
+          "feature": {
+            "feature": {
+              "type": "minecraft:simple_block",
+              "config": {
+                "to_place": {
+                  "type": "minecraft:simple_state_provider",
+                  "state": {
+                    "Name": "firmalife:plant/cumin"
+                  }
+                }
+              }
+            },
+            "placement": [
+              {
+                "type": "minecraft:heightmap",
+                "heightmap": "WORLD_SURFACE_WG"
+              },
+              {
+                "type": "block_predicate_filter",
+                "predicate": {
+                  "type": "tfc:replaceable"
+                }
+              },
+              {
+                "type": "block_predicate_filter",
+                "predicate": {
+                  "type": "would_survive",
+                  "state": {
+                    "Name": "firmalife:plant/cumin"
+                  }
+                }
+              }
+            ]
+          },
+          "tries": 12,
+          "xz_spread": 8,
+          "y_spread": 1
+        }
+      }
+    },
+    {
+      "id": "tfg:earth/crop/oregano_patch",
+      "placed": {
+        "feature": "tfg:earth/crop/oregano_patch",
+        "placement": [
+          {
+            "type": "minecraft:rarity_filter",
+            "chance": 50
+          },
+          {
+            "type": "minecraft:in_square"
+          },
+          {
+            "type": "tfc:climate",
+            "min_temperature": 5,
+            "max_temperature": 13,
+            "min_rainfall": 50,
+            "max_rainfall": 150,
+            "max_forest": "sparse"
+          }
+        ]
+      },
+      "configured": {
+        "type": "minecraft:random_patch",
+        "config": {
+          "feature": {
+            "feature": {
+              "type": "minecraft:simple_block",
+              "config": {
+                "to_place": {
+                  "type": "minecraft:simple_state_provider",
+                  "state": {
+                    "Name": "firmalife:plant/oregano"
+                  }
+                }
+              }
+            },
+            "placement": [
+              {
+                "type": "minecraft:heightmap",
+                "heightmap": "WORLD_SURFACE_WG"
+              },
+              {
+                "type": "block_predicate_filter",
+                "predicate": {
+                  "type": "tfc:replaceable"
+                }
+              },
+              {
+                "type": "block_predicate_filter",
+                "predicate": {
+                  "type": "would_survive",
+                  "state": {
+                    "Name": "firmalife:plant/oregano"
+                  }
+                }
+              }
+            ]
+          },
+          "tries": 12,
+          "xz_spread": 8,
+          "y_spread": 1
+        }
+      }
+    },
+    {
+      "id": "tfg:earth/crop/pimento_patch",
+      "placed": {
+        "feature": "tfg:earth/crop/pimento_patch",
+        "placement": [
+          {
+            "type": "minecraft:rarity_filter",
+            "chance": 50
+          },
+          {
+            "type": "minecraft:in_square"
+          },
+          {
+            "type": "tfc:climate",
+            "min_temperature": 15,
+            "max_temperature": 30,
+            "min_rainfall": 200,
+            "max_rainfall": 450,
+            "min_forest": "sparse",
+            "max_forest": "normal"
+          }
+        ]
+      },
+      "configured": {
+        "type": "minecraft:random_patch",
+        "config": {
+          "feature": {
+            "feature": {
+              "type": "minecraft:simple_block",
+              "config": {
+                "to_place": {
+                  "type": "minecraft:simple_state_provider",
+                  "state": {
+                    "Name": "firmalife:plant/pimento"
+                  }
+                }
+              }
+            },
+            "placement": [
+              {
+                "type": "minecraft:heightmap",
+                "heightmap": "WORLD_SURFACE_WG"
+              },
+              {
+                "type": "block_predicate_filter",
+                "predicate": {
+                  "type": "tfc:replaceable"
+                }
+              },
+              {
+                "type": "block_predicate_filter",
+                "predicate": {
+                  "type": "would_survive",
+                  "state": {
+                    "Name": "firmalife:plant/pimento"
+                  }
+                }
+              }
+            ]
+          },
+          "tries": 12,
+          "xz_spread": 8,
+          "y_spread": 1
+        }
+      }
+    },
+    {
+      "id": "tfg:earth/crop/vanilla_patch",
+      "placed": {
+        "feature": "tfg:earth/crop/vanilla_patch",
+        "placement": [
+          {
+            "type": "minecraft:rarity_filter",
+            "chance": 50
+          },
+          {
+            "type": "minecraft:in_square"
+          },
+          {
+            "type": "tfc:climate",
+            "min_temperature": 18,
+            "max_temperature": 30,
+            "min_rainfall": 200,
+            "min_forest": "normal",
+            "max_forest": "old_growth"
+          }
+        ]
+      },
+      "configured": {
+        "type": "minecraft:random_patch",
+        "config": {
+          "feature": {
+            "feature": {
+              "type": "minecraft:simple_block",
+              "config": {
+                "to_place": {
+                  "type": "minecraft:simple_state_provider",
+                  "state": {
+                    "Name": "firmalife:plant/vanilla"
+                  }
+                }
+              }
+            },
+            "placement": [
+              {
+                "type": "minecraft:heightmap",
+                "heightmap": "WORLD_SURFACE_WG"
+              },
+              {
+                "type": "block_predicate_filter",
+                "predicate": {
+                  "type": "tfc:replaceable"
+                }
+              },
+              {
+                "type": "block_predicate_filter",
+                "predicate": {
+                  "type": "would_survive",
+                  "state": {
+                    "Name": "firmalife:plant/vanilla"
+                  }
+                }
+              }
+            ]
+          },
+          "tries": 12,
+          "xz_spread": 8,
+          "y_spread": 1
+        }
+      }
+    },
+    {
+      "id": "tfg:earth/crop/palm_tree/coconut",
+      "placed": {
+        "feature": "tfg:earth/crop/palm_tree/coconut",
+        "placement": [
+          {
+            "type": "minecraft:random_offset",
+            "xz_spread": {
+              "type": "minecraft:uniform",
+              "value": {
+                "min_inclusive": -7,
+                "max_inclusive": 7
+              }
+            },
+            "y_spread": 0
+          },
+          {
+            "type": "minecraft:heightmap",
+            "heightmap": "WORLD_SURFACE_WG"
+          },
+          {
+            "type": "minecraft:block_predicate_filter",
+            "predicate": {
+              "type": "matching_block_tag",
+              "offset": [
+                0,
+                -1,
+                0
+              ],
+              "tag": "minecraft:bamboo_plantable_on"
+            }
+          }
+        ]
+      },
+      "configured": {
+        "type": "tfc:random_tree",
+        "config": {
+          "structures": [
+            "tfg:palm_tree/coconut_0",
+            "tfg:palm_tree/coconut_1",
+            "tfg:palm_tree/coconut_2",
+            "tfg:palm_tree/coconut_3"
+          ],
+          "radius": 1,
+          "placement": {
+            "width": 1,
+            "height": 14,
+            "allow_submerged": true,
+            "allow_deeply_submerged": false,
+            "ground_type": "sand"
+          }
+        }
+      },
+      "inner": {
+        "type": "tfc:random_tree",
+        "config": {
+          "structures": [
+            "tfg:palm_tree/coconut_0",
+            "tfg:palm_tree/coconut_1",
+            "tfg:palm_tree/coconut_2",
+            "tfg:palm_tree/coconut_3"
+          ],
+          "radius": 1,
+          "placement": {
+            "width": 1,
+            "height": 14,
+            "allow_submerged": true,
+            "allow_deeply_submerged": false,
+            "ground_type": "sand"
+          }
+        }
+      }
+    },
+    {
+      "id": "tfg:earth/crop/palm_tree/coconut_patch",
+      "placed": {
+        "feature": "tfg:earth/crop/palm_tree/coconut_patch",
+        "placement": [
+          {
+            "type": "minecraft:rarity_filter",
+            "chance": 160
+          },
+          {
+            "type": "tfc:climate",
+            "min_temperature": 15,
+            "max_temperature": 45,
+            "min_rainfall": 170
+          },
+          {
+            "type": "minecraft:in_square"
+          },
+          {
+            "type": "minecraft:heightmap",
+            "heightmap": "WORLD_SURFACE_WG"
+          },
+          {
+            "type": "tfc:near_fluid",
+            "radius": 20,
+            "fluids": [
+              "tfc:salt_water"
+            ]
+          },
+          {
+            "type": "minecraft:block_predicate_filter",
+            "predicate": {
+              "type": "matching_block_tag",
+              "offset": [
+                0,
+                -1,
+                0
+              ],
+              "tag": "minecraft:bamboo_plantable_on"
+            }
+          },
+          {
+            "type": "tfc:flat_enough",
+            "flatness": 0.2
+          }
+        ]
+      },
+      "configured": {
+        "type": "tfc:dynamic_random_patch",
+        "config": {
+          "feature": "tfg:earth/crop/palm_tree/coconut",
+          "tries": 3
+        }
+      },
+      "inner": {
+        "type": "tfc:random_tree",
+        "config": {
+          "structures": [
+            "tfg:palm_tree/coconut_0",
+            "tfg:palm_tree/coconut_1",
+            "tfg:palm_tree/coconut_2",
+            "tfg:palm_tree/coconut_3"
+          ],
+          "radius": 1,
+          "placement": {
+            "width": 1,
+            "height": 14,
+            "allow_submerged": true,
+            "allow_deeply_submerged": false,
+            "ground_type": "sand"
+          }
+        }
+      }
+    },
+    {
+      "id": "tfg:earth/crop/palm_tree/date",
+      "placed": {
+        "feature": "tfg:earth/crop/palm_tree/date",
+        "placement": [
+          {
+            "type": "minecraft:random_offset",
+            "xz_spread": {
+              "type": "minecraft:uniform",
+              "value": {
+                "min_inclusive": -7,
+                "max_inclusive": 7
+              }
+            },
+            "y_spread": 0
+          },
+          {
+            "type": "minecraft:heightmap",
+            "heightmap": "WORLD_SURFACE_WG"
+          },
+          {
+            "type": "minecraft:block_predicate_filter",
+            "predicate": {
+              "type": "matching_block_tag",
+              "offset": [
+                0,
+                -1,
+                0
+              ],
+              "tag": "minecraft:bamboo_plantable_on"
+            }
+          }
+        ]
+      },
+      "configured": {
+        "type": "tfc:random_tree",
+        "config": {
+          "structures": [
+            "tfg:palm_tree/date_0",
+            "tfg:palm_tree/date_1",
+            "tfg:palm_tree/date_2",
+            "tfg:palm_tree/date_3"
+          ],
+          "radius": 1,
+          "placement": {
+            "width": 1,
+            "height": 13,
+            "allow_submerged": true,
+            "allow_deeply_submerged": false,
+            "ground_type": "sand"
+          }
+        }
+      },
+      "inner": {
+        "type": "tfc:random_tree",
+        "config": {
+          "structures": [
+            "tfg:palm_tree/date_0",
+            "tfg:palm_tree/date_1",
+            "tfg:palm_tree/date_2",
+            "tfg:palm_tree/date_3"
+          ],
+          "radius": 1,
+          "placement": {
+            "width": 1,
+            "height": 13,
+            "allow_submerged": true,
+            "allow_deeply_submerged": false,
+            "ground_type": "sand"
+          }
+        }
+      }
+    },
+    {
+      "id": "tfg:earth/crop/palm_tree/date_patch",
+      "placed": {
+        "feature": "tfg:earth/crop/palm_tree/date_patch",
+        "placement": [
+          {
+            "type": "minecraft:rarity_filter",
+            "chance": 160
+          },
+          {
+            "type": "tfc:climate",
+            "min_temperature": 20,
+            "max_temperature": 50,
+            "min_rainfall": 200
+          },
+          {
+            "type": "minecraft:in_square"
+          },
+          {
+            "type": "minecraft:heightmap",
+            "heightmap": "WORLD_SURFACE_WG"
+          },
+          {
+            "type": "tfc:near_fluid",
+            "radius": 35,
+            "fluids": [
+              "tfc:salt_water"
+            ]
+          },
+          {
+            "type": "minecraft:block_predicate_filter",
+            "predicate": {
+              "type": "matching_block_tag",
+              "offset": [
+                0,
+                -1,
+                0
+              ],
+              "tag": "minecraft:bamboo_plantable_on"
+            }
+          },
+          {
+            "type": "tfc:flat_enough",
+            "flatness": 0.2
+          }
+        ]
+      },
+      "configured": {
+        "type": "tfc:dynamic_random_patch",
+        "config": {
+          "feature": "tfg:earth/crop/palm_tree/date",
+          "tries": 3
+        }
+      },
+      "inner": {
+        "type": "tfc:random_tree",
+        "config": {
+          "structures": [
+            "tfg:palm_tree/date_0",
+            "tfg:palm_tree/date_1",
+            "tfg:palm_tree/date_2",
+            "tfg:palm_tree/date_3"
+          ],
+          "radius": 1,
+          "placement": {
+            "width": 1,
+            "height": 13,
+            "allow_submerged": true,
+            "allow_deeply_submerged": false,
+            "ground_type": "sand"
+          }
+        }
+      }
+    }
+  ]
+}

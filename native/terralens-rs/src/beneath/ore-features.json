@@ -1,0 +1,4316 @@
+{
+  "_meta": {
+    "source": "installed Prism KubeJS configs + TFG source biome tags",
+    "instance": "minecraft",
+    "count": 29
+  },
+  "veins": {
+    "beneath_aluminium": {
+      "random_name": "beneath_aluminium",
+      "rarity": 10,
+      "height": 60,
+      "radius": 10,
+      "min_y": 80,
+      "max_y": 140,
+      "min_skew": 5,
+      "max_skew": 15,
+      "min_slant": 2,
+      "max_slant": 5,
+      "sign": 0.5,
+      "density": 0.22,
+      "project": false,
+      "project_offset": false,
+      "near_lava": false,
+      "biomes": "#tfg:nether/is_tar_pools",
+      "type": "pipe",
+      "blocks": {
+        "tfc:rock/raw/schist": [
+          {
+            "block": "gtceu:schist_alunite_ore",
+            "weight": 20
+          },
+          {
+            "block": "gtceu:raw_alunite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:schist_zeolite_ore",
+            "weight": 12
+          },
+          {
+            "block": "gtceu:schist_barite_ore",
+            "weight": 8
+          }
+        ],
+        "tfc:rock/raw/gneiss": [
+          {
+            "block": "gtceu:gneiss_alunite_ore",
+            "weight": 20
+          },
+          {
+            "block": "gtceu:raw_alunite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:gneiss_zeolite_ore",
+            "weight": 12
+          },
+          {
+            "block": "gtceu:gneiss_barite_ore",
+            "weight": 8
+          }
+        ],
+        "minecraft:tuff": [
+          {
+            "block": "gtceu:tuff_alunite_ore",
+            "weight": 20
+          },
+          {
+            "block": "gtceu:raw_alunite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:tuff_zeolite_ore",
+            "weight": 12
+          },
+          {
+            "block": "gtceu:tuff_barite_ore",
+            "weight": 8
+          }
+        ],
+        "minecraft:deepslate": [
+          {
+            "block": "gtceu:deepslate_alunite_ore",
+            "weight": 20
+          },
+          {
+            "block": "gtceu:raw_alunite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:deepslate_zeolite_ore",
+            "weight": 12
+          },
+          {
+            "block": "gtceu:deepslate_barite_ore",
+            "weight": 8
+          }
+        ],
+        "minecraft:dripstone_block": [
+          {
+            "block": "gtceu:dripstone_alunite_ore",
+            "weight": 20
+          },
+          {
+            "block": "gtceu:raw_alunite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:dripstone_zeolite_ore",
+            "weight": 12
+          },
+          {
+            "block": "gtceu:dripstone_barite_ore",
+            "weight": 8
+          }
+        ],
+        "tfc:rock/raw/diorite": [
+          {
+            "block": "gtceu:diorite_alunite_ore",
+            "weight": 20
+          },
+          {
+            "block": "gtceu:raw_alunite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:diorite_zeolite_ore",
+            "weight": 12
+          },
+          {
+            "block": "gtceu:diorite_barite_ore",
+            "weight": 8
+          }
+        ],
+        "tfc:rock/raw/gabbro": [
+          {
+            "block": "gtceu:gabbro_alunite_ore",
+            "weight": 20
+          },
+          {
+            "block": "gtceu:raw_alunite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:gabbro_zeolite_ore",
+            "weight": 12
+          },
+          {
+            "block": "gtceu:gabbro_barite_ore",
+            "weight": 8
+          }
+        ],
+        "tfc:rock/raw/granite": [
+          {
+            "block": "gtceu:granite_alunite_ore",
+            "weight": 20
+          },
+          {
+            "block": "gtceu:raw_alunite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:granite_zeolite_ore",
+            "weight": 12
+          },
+          {
+            "block": "gtceu:granite_barite_ore",
+            "weight": 8
+          }
+        ]
+      }
+    },
+    "beneath_bismuth": {
+      "random_name": "beneath_bismuth",
+      "rarity": 10,
+      "height": 60,
+      "radius": 15,
+      "min_y": 0,
+      "max_y": 80,
+      "min_skew": 5,
+      "max_skew": 15,
+      "min_slant": 2,
+      "max_slant": 5,
+      "sign": 0.5,
+      "density": 0.24,
+      "project": false,
+      "project_offset": false,
+      "near_lava": false,
+      "biomes": "#tfg:nether/is_ash_forest",
+      "type": "pipe",
+      "blocks": {
+        "minecraft:blackstone": [
+          {
+            "block": "gtceu:pyroxenite_bismuth_ore",
+            "weight": 20
+          },
+          {
+            "block": "gtceu:raw_bismuth_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:pyroxenite_sulfur_ore",
+            "weight": 18
+          },
+          {
+            "block": "gtceu:raw_sulfur_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:pyroxenite_saltpeter_ore",
+            "weight": 15
+          }
+        ],
+        "minecraft:magma_block": [
+          {
+            "block": "gtceu:pyroxenite_bismuth_ore",
+            "weight": 20
+          },
+          {
+            "block": "gtceu:raw_bismuth_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:pyroxenite_sulfur_ore",
+            "weight": 18
+          },
+          {
+            "block": "gtceu:raw_sulfur_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:pyroxenite_saltpeter_ore",
+            "weight": 15
+          }
+        ],
+        "minecraft:deepslate": [
+          {
+            "block": "gtceu:deepslate_bismuth_ore",
+            "weight": 20
+          },
+          {
+            "block": "gtceu:raw_bismuth_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:deepslate_sulfur_ore",
+            "weight": 18
+          },
+          {
+            "block": "gtceu:raw_sulfur_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:deepslate_saltpeter_ore",
+            "weight": 15
+          }
+        ],
+        "tfc:rock/raw/basalt": [
+          {
+            "block": "gtceu:basalt_bismuth_ore",
+            "weight": 20
+          },
+          {
+            "block": "gtceu:raw_bismuth_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:basalt_sulfur_ore",
+            "weight": 18
+          },
+          {
+            "block": "gtceu:raw_sulfur_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:basalt_saltpeter_ore",
+            "weight": 15
+          }
+        ],
+        "minecraft:basalt": [
+          {
+            "block": "gtceu:basalt_bismuth_ore",
+            "weight": 20
+          },
+          {
+            "block": "gtceu:raw_bismuth_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:basalt_sulfur_ore",
+            "weight": 18
+          },
+          {
+            "block": "gtceu:raw_sulfur_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:basalt_saltpeter_ore",
+            "weight": 15
+          }
+        ]
+      }
+    },
+    "beneath_coal_anthracite": {
+      "random_name": "beneath_coal_anthracite",
+      "rarity": 10,
+      "size": 27,
+      "min_y": 140,
+      "max_y": 190,
+      "density": 0.25,
+      "project": false,
+      "project_offset": false,
+      "near_lava": false,
+      "biomes": "#tfg:nether/is_decaying_caverns",
+      "type": "cluster",
+      "blocks": {
+        "tfc:rock/raw/phyllite": [
+          {
+            "block": "gtceu:phyllite_anthracite_ore",
+            "weight": 60
+          },
+          {
+            "block": "gtceu:raw_anthracite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:phyllite_graphite_ore",
+            "weight": 20
+          }
+        ],
+        "tfc:rock/raw/schist": [
+          {
+            "block": "gtceu:schist_anthracite_ore",
+            "weight": 60
+          },
+          {
+            "block": "gtceu:raw_anthracite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:schist_graphite_ore",
+            "weight": 20
+          }
+        ],
+        "tfc:rock/raw/gneiss": [
+          {
+            "block": "gtceu:gneiss_anthracite_ore",
+            "weight": 60
+          },
+          {
+            "block": "gtceu:raw_anthracite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:gneiss_graphite_ore",
+            "weight": 20
+          }
+        ],
+        "tfc:rock/raw/marble": [
+          {
+            "block": "gtceu:marble_anthracite_ore",
+            "weight": 60
+          },
+          {
+            "block": "gtceu:raw_anthracite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:marble_graphite_ore",
+            "weight": 20
+          }
+        ],
+        "tfc:rock/raw/slate": [
+          {
+            "block": "gtceu:slate_anthracite_ore",
+            "weight": 60
+          },
+          {
+            "block": "gtceu:raw_anthracite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:slate_graphite_ore",
+            "weight": 20
+          }
+        ],
+        "minecraft:deepslate": [
+          {
+            "block": "gtceu:deepslate_anthracite_ore",
+            "weight": 60
+          },
+          {
+            "block": "gtceu:raw_anthracite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:deepslate_graphite_ore",
+            "weight": 20
+          }
+        ],
+        "minecraft:dripstone_block": [
+          {
+            "block": "gtceu:dripstone_anthracite_ore",
+            "weight": 60
+          },
+          {
+            "block": "gtceu:raw_anthracite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:dripstone_graphite_ore",
+            "weight": 20
+          }
+        ],
+        "minecraft:tuff": [
+          {
+            "block": "gtceu:tuff_anthracite_ore",
+            "weight": 60
+          },
+          {
+            "block": "gtceu:raw_anthracite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:tuff_graphite_ore",
+            "weight": 20
+          }
+        ],
+        "tfc:rock/raw/diorite": [
+          {
+            "block": "gtceu:diorite_anthracite_ore",
+            "weight": 60
+          },
+          {
+            "block": "gtceu:raw_anthracite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:diorite_graphite_ore",
+            "weight": 20
+          }
+        ]
+      }
+    },
+    "beneath_coal_bituminous": {
+      "random_name": "beneath_coal_bituminous",
+      "rarity": 10,
+      "size": 29,
+      "min_y": 140,
+      "max_y": 190,
+      "density": 0.28,
+      "project": false,
+      "project_offset": false,
+      "near_lava": false,
+      "biomes": "#tfg:nether/is_muggy_bog",
+      "type": "cluster",
+      "blocks": {
+        "tfc:rock/raw/phyllite": [
+          {
+            "block": "gtceu:phyllite_coal_ore",
+            "weight": 18
+          },
+          {
+            "block": "gtceu:raw_coal_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:phyllite_pyrite_ore",
+            "weight": 9
+          }
+        ],
+        "tfc:rock/raw/schist": [
+          {
+            "block": "gtceu:schist_coal_ore",
+            "weight": 18
+          },
+          {
+            "block": "gtceu:raw_coal_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:schist_pyrite_ore",
+            "weight": 9
+          }
+        ],
+        "tfc:rock/raw/gneiss": [
+          {
+            "block": "gtceu:gneiss_coal_ore",
+            "weight": 18
+          },
+          {
+            "block": "gtceu:raw_coal_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:gneiss_pyrite_ore",
+            "weight": 9
+          }
+        ],
+        "tfc:rock/raw/marble": [
+          {
+            "block": "gtceu:marble_coal_ore",
+            "weight": 18
+          },
+          {
+            "block": "gtceu:raw_coal_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:marble_pyrite_ore",
+            "weight": 9
+          }
+        ],
+        "tfc:rock/raw/slate": [
+          {
+            "block": "gtceu:slate_coal_ore",
+            "weight": 18
+          },
+          {
+            "block": "gtceu:raw_coal_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:slate_pyrite_ore",
+            "weight": 9
+          }
+        ],
+        "minecraft:deepslate": [
+          {
+            "block": "gtceu:deepslate_coal_ore",
+            "weight": 18
+          },
+          {
+            "block": "gtceu:raw_coal_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:deepslate_pyrite_ore",
+            "weight": 9
+          }
+        ],
+        "minecraft:dripstone_block": [
+          {
+            "block": "gtceu:dripstone_coal_ore",
+            "weight": 18
+          },
+          {
+            "block": "gtceu:raw_coal_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:dripstone_pyrite_ore",
+            "weight": 9
+          }
+        ],
+        "minecraft:tuff": [
+          {
+            "block": "gtceu:tuff_coal_ore",
+            "weight": 18
+          },
+          {
+            "block": "gtceu:raw_coal_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:tuff_pyrite_ore",
+            "weight": 9
+          }
+        ],
+        "tfc:rock/raw/diorite": [
+          {
+            "block": "gtceu:diorite_coal_ore",
+            "weight": 18
+          },
+          {
+            "block": "gtceu:raw_coal_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:diorite_pyrite_ore",
+            "weight": 9
+          }
+        ]
+      }
+    },
+    "beneath_coal_lignite": {
+      "random_name": "beneath_coal_lignite",
+      "rarity": 10,
+      "size": 25,
+      "min_y": 140,
+      "max_y": 190,
+      "density": 0.3,
+      "project": false,
+      "project_offset": false,
+      "near_lava": false,
+      "biomes": "#tfg:nether/is_webbed_lair",
+      "type": "cluster",
+      "blocks": {
+        "tfc:rock/raw/phyllite": [
+          {
+            "block": "gtceu:phyllite_lignite_ore",
+            "weight": 50
+          },
+          {
+            "block": "gtceu:raw_lignite_block",
+            "weight": 1
+          }
+        ],
+        "tfc:rock/raw/schist": [
+          {
+            "block": "gtceu:schist_lignite_ore",
+            "weight": 50
+          },
+          {
+            "block": "gtceu:raw_lignite_block",
+            "weight": 1
+          }
+        ],
+        "tfc:rock/raw/gneiss": [
+          {
+            "block": "gtceu:gneiss_lignite_ore",
+            "weight": 50
+          },
+          {
+            "block": "gtceu:raw_lignite_block",
+            "weight": 1
+          }
+        ],
+        "tfc:rock/raw/marble": [
+          {
+            "block": "gtceu:marble_lignite_ore",
+            "weight": 50
+          },
+          {
+            "block": "gtceu:raw_lignite_block",
+            "weight": 1
+          }
+        ],
+        "tfc:rock/raw/slate": [
+          {
+            "block": "gtceu:slate_lignite_ore",
+            "weight": 50
+          },
+          {
+            "block": "gtceu:raw_lignite_block",
+            "weight": 1
+          }
+        ],
+        "minecraft:deepslate": [
+          {
+            "block": "gtceu:deepslate_lignite_ore",
+            "weight": 50
+          },
+          {
+            "block": "gtceu:raw_lignite_block",
+            "weight": 1
+          }
+        ],
+        "minecraft:dripstone_block": [
+          {
+            "block": "gtceu:dripstone_lignite_ore",
+            "weight": 50
+          },
+          {
+            "block": "gtceu:raw_lignite_block",
+            "weight": 1
+          }
+        ],
+        "minecraft:tuff": [
+          {
+            "block": "gtceu:tuff_lignite_ore",
+            "weight": 50
+          },
+          {
+            "block": "gtceu:raw_lignite_block",
+            "weight": 1
+          }
+        ],
+        "tfc:rock/raw/diorite": [
+          {
+            "block": "gtceu:diorite_lignite_ore",
+            "weight": 50
+          },
+          {
+            "block": "gtceu:raw_lignite_block",
+            "weight": 1
+          }
+        ]
+      }
+    },
+    "beneath_copper_native": {
+      "random_name": "beneath_copper_native",
+      "rarity": 10,
+      "size": 27,
+      "min_y": 80,
+      "max_y": 140,
+      "density": 0.3,
+      "project": false,
+      "project_offset": false,
+      "near_lava": false,
+      "biomes": "#tfg:nether/is_lush_hollow",
+      "type": "cluster",
+      "blocks": {
+        "tfc:rock/raw/schist": [
+          {
+            "block": "gtceu:schist_copper_ore",
+            "weight": 18
+          },
+          {
+            "block": "minecraft:raw_copper_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:schist_malachite_ore",
+            "weight": 6
+          }
+        ],
+        "tfc:rock/raw/gneiss": [
+          {
+            "block": "gtceu:gneiss_copper_ore",
+            "weight": 18
+          },
+          {
+            "block": "minecraft:raw_copper_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:gneiss_malachite_ore",
+            "weight": 6
+          }
+        ],
+        "minecraft:tuff": [
+          {
+            "block": "gtceu:tuff_copper_ore",
+            "weight": 18
+          },
+          {
+            "block": "minecraft:raw_copper_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:tuff_malachite_ore",
+            "weight": 6
+          }
+        ],
+        "minecraft:deepslate": [
+          {
+            "block": "gtceu:deepslate_copper_ore",
+            "weight": 18
+          },
+          {
+            "block": "minecraft:raw_copper_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:deepslate_malachite_ore",
+            "weight": 6
+          }
+        ],
+        "minecraft:dripstone_block": [
+          {
+            "block": "gtceu:dripstone_copper_ore",
+            "weight": 18
+          },
+          {
+            "block": "minecraft:raw_copper_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:dripstone_malachite_ore",
+            "weight": 6
+          }
+        ],
+        "tfc:rock/raw/diorite": [
+          {
+            "block": "gtceu:diorite_copper_ore",
+            "weight": 18
+          },
+          {
+            "block": "minecraft:raw_copper_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:diorite_malachite_ore",
+            "weight": 6
+          }
+        ],
+        "tfc:rock/raw/gabbro": [
+          {
+            "block": "gtceu:gabbro_copper_ore",
+            "weight": 18
+          },
+          {
+            "block": "minecraft:raw_copper_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:gabbro_malachite_ore",
+            "weight": 6
+          }
+        ],
+        "tfc:rock/raw/granite": [
+          {
+            "block": "gtceu:granite_copper_ore",
+            "weight": 18
+          },
+          {
+            "block": "minecraft:raw_copper_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:granite_malachite_ore",
+            "weight": 6
+          }
+        ]
+      }
+    },
+    "beneath_copper_sulfide": {
+      "random_name": "beneath_copper_sulfide",
+      "rarity": 10,
+      "size": 27,
+      "min_y": 80,
+      "max_y": 140,
+      "density": 0.28,
+      "project": false,
+      "project_offset": false,
+      "near_lava": false,
+      "biomes": "#tfg:nether/is_geothermal_springs",
+      "type": "cluster",
+      "blocks": {
+        "tfc:rock/raw/schist": [
+          {
+            "block": "gtceu:schist_chalcocite_ore",
+            "weight": 12
+          },
+          {
+            "block": "gtceu:raw_chalcocite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:schist_pyrite_ore",
+            "weight": 8
+          },
+          {
+            "block": "gtceu:schist_bornite_ore",
+            "weight": 4
+          }
+        ],
+        "tfc:rock/raw/gneiss": [
+          {
+            "block": "gtceu:gneiss_chalcocite_ore",
+            "weight": 12
+          },
+          {
+            "block": "gtceu:raw_chalcocite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:gneiss_pyrite_ore",
+            "weight": 8
+          },
+          {
+            "block": "gtceu:gneiss_bornite_ore",
+            "weight": 4
+          }
+        ],
+        "minecraft:tuff": [
+          {
+            "block": "gtceu:tuff_chalcocite_ore",
+            "weight": 12
+          },
+          {
+            "block": "gtceu:raw_chalcocite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:tuff_pyrite_ore",
+            "weight": 8
+          },
+          {
+            "block": "gtceu:tuff_bornite_ore",
+            "weight": 4
+          }
+        ],
+        "minecraft:deepslate": [
+          {
+            "block": "gtceu:deepslate_chalcocite_ore",
+            "weight": 12
+          },
+          {
+            "block": "gtceu:raw_chalcocite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:deepslate_pyrite_ore",
+            "weight": 8
+          },
+          {
+            "block": "gtceu:deepslate_bornite_ore",
+            "weight": 4
+          }
+        ],
+        "minecraft:dripstone_block": [
+          {
+            "block": "gtceu:dripstone_chalcocite_ore",
+            "weight": 12
+          },
+          {
+            "block": "gtceu:raw_chalcocite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:dripstone_pyrite_ore",
+            "weight": 8
+          },
+          {
+            "block": "gtceu:dripstone_bornite_ore",
+            "weight": 4
+          }
+        ],
+        "tfc:rock/raw/diorite": [
+          {
+            "block": "gtceu:diorite_chalcocite_ore",
+            "weight": 12
+          },
+          {
+            "block": "gtceu:raw_chalcocite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:diorite_pyrite_ore",
+            "weight": 8
+          },
+          {
+            "block": "gtceu:diorite_bornite_ore",
+            "weight": 4
+          }
+        ],
+        "tfc:rock/raw/gabbro": [
+          {
+            "block": "gtceu:gabbro_chalcocite_ore",
+            "weight": 12
+          },
+          {
+            "block": "gtceu:raw_chalcocite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:gabbro_pyrite_ore",
+            "weight": 8
+          },
+          {
+            "block": "gtceu:gabbro_bornite_ore",
+            "weight": 4
+          }
+        ],
+        "tfc:rock/raw/granite": [
+          {
+            "block": "gtceu:granite_chalcocite_ore",
+            "weight": 12
+          },
+          {
+            "block": "gtceu:raw_chalcocite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:granite_pyrite_ore",
+            "weight": 8
+          },
+          {
+            "block": "gtceu:granite_bornite_ore",
+            "weight": 4
+          }
+        ]
+      }
+    },
+    "beneath_copper_tetrahedrite": {
+      "random_name": "beneath_copper_tetrahedrite",
+      "rarity": 10,
+      "size": 25,
+      "min_y": 80,
+      "max_y": 140,
+      "density": 0.28,
+      "project": false,
+      "project_offset": false,
+      "near_lava": false,
+      "biomes": "#tfg:nether/is_lush_hollow",
+      "type": "cluster",
+      "blocks": {
+        "tfc:rock/raw/schist": [
+          {
+            "block": "gtceu:schist_tetrahedrite_ore",
+            "weight": 15
+          },
+          {
+            "block": "gtceu:raw_tetrahedrite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:schist_stibnite_ore",
+            "weight": 9
+          },
+          {
+            "block": "gtceu:schist_silver_ore",
+            "weight": 3
+          }
+        ],
+        "tfc:rock/raw/gneiss": [
+          {
+            "block": "gtceu:gneiss_tetrahedrite_ore",
+            "weight": 15
+          },
+          {
+            "block": "gtceu:raw_tetrahedrite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:gneiss_stibnite_ore",
+            "weight": 9
+          },
+          {
+            "block": "gtceu:gneiss_silver_ore",
+            "weight": 3
+          }
+        ],
+        "minecraft:tuff": [
+          {
+            "block": "gtceu:tuff_tetrahedrite_ore",
+            "weight": 15
+          },
+          {
+            "block": "gtceu:raw_tetrahedrite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:tuff_stibnite_ore",
+            "weight": 9
+          },
+          {
+            "block": "gtceu:tuff_silver_ore",
+            "weight": 3
+          }
+        ],
+        "minecraft:deepslate": [
+          {
+            "block": "gtceu:deepslate_tetrahedrite_ore",
+            "weight": 15
+          },
+          {
+            "block": "gtceu:raw_tetrahedrite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:deepslate_stibnite_ore",
+            "weight": 9
+          },
+          {
+            "block": "gtceu:deepslate_silver_ore",
+            "weight": 3
+          }
+        ],
+        "minecraft:dripstone_block": [
+          {
+            "block": "gtceu:dripstone_tetrahedrite_ore",
+            "weight": 15
+          },
+          {
+            "block": "gtceu:raw_tetrahedrite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:dripstone_stibnite_ore",
+            "weight": 9
+          },
+          {
+            "block": "gtceu:dripstone_silver_ore",
+            "weight": 3
+          }
+        ],
+        "tfc:rock/raw/diorite": [
+          {
+            "block": "gtceu:diorite_tetrahedrite_ore",
+            "weight": 15
+          },
+          {
+            "block": "gtceu:raw_tetrahedrite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:diorite_stibnite_ore",
+            "weight": 9
+          },
+          {
+            "block": "gtceu:diorite_silver_ore",
+            "weight": 3
+          }
+        ],
+        "tfc:rock/raw/gabbro": [
+          {
+            "block": "gtceu:gabbro_tetrahedrite_ore",
+            "weight": 15
+          },
+          {
+            "block": "gtceu:raw_tetrahedrite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:gabbro_stibnite_ore",
+            "weight": 9
+          },
+          {
+            "block": "gtceu:gabbro_silver_ore",
+            "weight": 3
+          }
+        ],
+        "tfc:rock/raw/granite": [
+          {
+            "block": "gtceu:granite_tetrahedrite_ore",
+            "weight": 15
+          },
+          {
+            "block": "gtceu:raw_tetrahedrite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:granite_stibnite_ore",
+            "weight": 9
+          },
+          {
+            "block": "gtceu:granite_silver_ore",
+            "weight": 3
+          }
+        ]
+      }
+    },
+    "beneath_gold": {
+      "random_name": "beneath_gold",
+      "rarity": 10,
+      "size": 25,
+      "min_y": 80,
+      "max_y": 140,
+      "density": 0.25,
+      "project": false,
+      "project_offset": false,
+      "near_lava": false,
+      "biomes": "#tfg:nether/is_lush_hollow",
+      "type": "cluster",
+      "blocks": {
+        "tfc:rock/raw/schist": [
+          {
+            "block": "gtceu:schist_gold_ore",
+            "weight": 50
+          },
+          {
+            "block": "minecraft:raw_gold_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:schist_pyrite_ore",
+            "weight": 40
+          },
+          {
+            "block": "gtceu:schist_chalcocite_ore",
+            "weight": 20
+          }
+        ],
+        "tfc:rock/raw/gneiss": [
+          {
+            "block": "gtceu:gneiss_gold_ore",
+            "weight": 50
+          },
+          {
+            "block": "minecraft:raw_gold_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:gneiss_pyrite_ore",
+            "weight": 40
+          },
+          {
+            "block": "gtceu:gneiss_chalcocite_ore",
+            "weight": 20
+          }
+        ],
+        "minecraft:tuff": [
+          {
+            "block": "gtceu:tuff_gold_ore",
+            "weight": 50
+          },
+          {
+            "block": "minecraft:raw_gold_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:tuff_pyrite_ore",
+            "weight": 40
+          },
+          {
+            "block": "gtceu:tuff_chalcocite_ore",
+            "weight": 20
+          }
+        ],
+        "minecraft:deepslate": [
+          {
+            "block": "gtceu:deepslate_gold_ore",
+            "weight": 50
+          },
+          {
+            "block": "minecraft:raw_gold_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:deepslate_pyrite_ore",
+            "weight": 40
+          },
+          {
+            "block": "gtceu:deepslate_chalcocite_ore",
+            "weight": 20
+          }
+        ],
+        "minecraft:dripstone_block": [
+          {
+            "block": "gtceu:dripstone_gold_ore",
+            "weight": 50
+          },
+          {
+            "block": "minecraft:raw_gold_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:dripstone_pyrite_ore",
+            "weight": 40
+          },
+          {
+            "block": "gtceu:dripstone_chalcocite_ore",
+            "weight": 20
+          }
+        ],
+        "tfc:rock/raw/diorite": [
+          {
+            "block": "gtceu:diorite_gold_ore",
+            "weight": 50
+          },
+          {
+            "block": "minecraft:raw_gold_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:diorite_pyrite_ore",
+            "weight": 40
+          },
+          {
+            "block": "gtceu:diorite_chalcocite_ore",
+            "weight": 20
+          }
+        ],
+        "tfc:rock/raw/gabbro": [
+          {
+            "block": "gtceu:gabbro_gold_ore",
+            "weight": 50
+          },
+          {
+            "block": "minecraft:raw_gold_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:gabbro_pyrite_ore",
+            "weight": 40
+          },
+          {
+            "block": "gtceu:gabbro_chalcocite_ore",
+            "weight": 20
+          }
+        ],
+        "tfc:rock/raw/granite": [
+          {
+            "block": "gtceu:granite_gold_ore",
+            "weight": 50
+          },
+          {
+            "block": "minecraft:raw_gold_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:granite_pyrite_ore",
+            "weight": 40
+          },
+          {
+            "block": "gtceu:granite_chalcocite_ore",
+            "weight": 20
+          }
+        ]
+      }
+    },
+    "beneath_gold_rich": {
+      "random_name": "beneath_gold_rich",
+      "rarity": 10,
+      "size": 23,
+      "min_y": 0,
+      "max_y": 80,
+      "density": 0.2,
+      "project": false,
+      "project_offset": false,
+      "near_lava": false,
+      "biomes": "#tfg:nether/is_ash_forest",
+      "type": "cluster",
+      "blocks": {
+        "minecraft:blackstone": [
+          {
+            "block": "gtceu:pyroxenite_gold_ore",
+            "weight": 40
+          },
+          {
+            "block": "minecraft:raw_gold_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:pyroxenite_magnetite_ore",
+            "weight": 30
+          },
+          {
+            "block": "gtceu:pyroxenite_electrotine_ore",
+            "weight": 20
+          }
+        ],
+        "minecraft:magma_block": [
+          {
+            "block": "gtceu:pyroxenite_gold_ore",
+            "weight": 40
+          },
+          {
+            "block": "minecraft:raw_gold_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:pyroxenite_magnetite_ore",
+            "weight": 30
+          },
+          {
+            "block": "gtceu:pyroxenite_electrotine_ore",
+            "weight": 20
+          }
+        ],
+        "minecraft:deepslate": [
+          {
+            "block": "gtceu:deepslate_gold_ore",
+            "weight": 40
+          },
+          {
+            "block": "minecraft:raw_gold_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:deepslate_magnetite_ore",
+            "weight": 30
+          },
+          {
+            "block": "gtceu:deepslate_electrotine_ore",
+            "weight": 20
+          }
+        ],
+        "tfc:rock/raw/basalt": [
+          {
+            "block": "gtceu:basalt_gold_ore",
+            "weight": 40
+          },
+          {
+            "block": "minecraft:raw_gold_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:basalt_magnetite_ore",
+            "weight": 30
+          },
+          {
+            "block": "gtceu:basalt_electrotine_ore",
+            "weight": 20
+          }
+        ],
+        "minecraft:basalt": [
+          {
+            "block": "gtceu:basalt_gold_ore",
+            "weight": 40
+          },
+          {
+            "block": "minecraft:raw_gold_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:basalt_magnetite_ore",
+            "weight": 30
+          },
+          {
+            "block": "gtceu:basalt_electrotine_ore",
+            "weight": 20
+          }
+        ]
+      }
+    },
+    "beneath_graphite": {
+      "random_name": "beneath_graphite",
+      "rarity": 10,
+      "size": 50,
+      "height": 10,
+      "min_y": 0,
+      "max_y": 80,
+      "density": 0.22,
+      "project": false,
+      "project_offset": false,
+      "near_lava": false,
+      "biomes": "#tfg:nether/is_basalt_deltas",
+      "type": "disc",
+      "blocks": {
+        "minecraft:blackstone": [
+          {
+            "block": "gtceu:pyroxenite_graphite_ore",
+            "weight": 16
+          },
+          {
+            "block": "gtceu:raw_graphite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:pyroxenite_coal_ore",
+            "weight": 4
+          },
+          {
+            "block": "gtceu:pyroxenite_diamond_ore",
+            "weight": 2
+          }
+        ],
+        "minecraft:magma_block": [
+          {
+            "block": "gtceu:pyroxenite_graphite_ore",
+            "weight": 16
+          },
+          {
+            "block": "gtceu:raw_graphite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:pyroxenite_coal_ore",
+            "weight": 4
+          },
+          {
+            "block": "gtceu:pyroxenite_diamond_ore",
+            "weight": 2
+          }
+        ],
+        "minecraft:deepslate": [
+          {
+            "block": "gtceu:deepslate_graphite_ore",
+            "weight": 16
+          },
+          {
+            "block": "gtceu:raw_graphite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:deepslate_coal_ore",
+            "weight": 4
+          },
+          {
+            "block": "gtceu:deepslate_diamond_ore",
+            "weight": 2
+          }
+        ],
+        "tfc:rock/raw/basalt": [
+          {
+            "block": "gtceu:basalt_graphite_ore",
+            "weight": 16
+          },
+          {
+            "block": "gtceu:raw_graphite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:basalt_coal_ore",
+            "weight": 4
+          },
+          {
+            "block": "gtceu:basalt_diamond_ore",
+            "weight": 2
+          }
+        ],
+        "minecraft:basalt": [
+          {
+            "block": "gtceu:basalt_graphite_ore",
+            "weight": 16
+          },
+          {
+            "block": "gtceu:raw_graphite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:basalt_coal_ore",
+            "weight": 4
+          },
+          {
+            "block": "gtceu:basalt_diamond_ore",
+            "weight": 2
+          }
+        ]
+      }
+    },
+    "beneath_iron_banded": {
+      "random_name": "beneath_iron_banded",
+      "rarity": 10,
+      "size": 31,
+      "min_y": 140,
+      "max_y": 190,
+      "density": 0.28,
+      "project": false,
+      "project_offset": false,
+      "near_lava": false,
+      "biomes": "#tfg:nether/is_webbed_lair",
+      "type": "cluster",
+      "blocks": {
+        "tfc:rock/raw/phyllite": [
+          {
+            "block": "gtceu:phyllite_goethite_ore",
+            "weight": 15
+          },
+          {
+            "block": "gtceu:raw_goethite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:phyllite_yellow_limonite_ore",
+            "weight": 12
+          },
+          {
+            "block": "gtceu:phyllite_malachite_ore",
+            "weight": 12
+          }
+        ],
+        "tfc:rock/raw/schist": [
+          {
+            "block": "gtceu:schist_goethite_ore",
+            "weight": 15
+          },
+          {
+            "block": "gtceu:raw_goethite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:schist_yellow_limonite_ore",
+            "weight": 12
+          },
+          {
+            "block": "gtceu:schist_malachite_ore",
+            "weight": 12
+          }
+        ],
+        "tfc:rock/raw/gneiss": [
+          {
+            "block": "gtceu:gneiss_goethite_ore",
+            "weight": 15
+          },
+          {
+            "block": "gtceu:raw_goethite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:gneiss_yellow_limonite_ore",
+            "weight": 12
+          },
+          {
+            "block": "gtceu:gneiss_malachite_ore",
+            "weight": 12
+          }
+        ],
+        "tfc:rock/raw/marble": [
+          {
+            "block": "gtceu:marble_goethite_ore",
+            "weight": 15
+          },
+          {
+            "block": "gtceu:raw_goethite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:marble_yellow_limonite_ore",
+            "weight": 12
+          },
+          {
+            "block": "gtceu:marble_malachite_ore",
+            "weight": 12
+          }
+        ],
+        "tfc:rock/raw/slate": [
+          {
+            "block": "gtceu:slate_goethite_ore",
+            "weight": 15
+          },
+          {
+            "block": "gtceu:raw_goethite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:slate_yellow_limonite_ore",
+            "weight": 12
+          },
+          {
+            "block": "gtceu:slate_malachite_ore",
+            "weight": 12
+          }
+        ],
+        "minecraft:deepslate": [
+          {
+            "block": "gtceu:deepslate_goethite_ore",
+            "weight": 15
+          },
+          {
+            "block": "gtceu:raw_goethite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:deepslate_yellow_limonite_ore",
+            "weight": 12
+          },
+          {
+            "block": "gtceu:deepslate_malachite_ore",
+            "weight": 12
+          }
+        ],
+        "minecraft:dripstone_block": [
+          {
+            "block": "gtceu:dripstone_goethite_ore",
+            "weight": 15
+          },
+          {
+            "block": "gtceu:raw_goethite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:dripstone_yellow_limonite_ore",
+            "weight": 12
+          },
+          {
+            "block": "gtceu:dripstone_malachite_ore",
+            "weight": 12
+          }
+        ],
+        "minecraft:tuff": [
+          {
+            "block": "gtceu:tuff_goethite_ore",
+            "weight": 15
+          },
+          {
+            "block": "gtceu:raw_goethite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:tuff_yellow_limonite_ore",
+            "weight": 12
+          },
+          {
+            "block": "gtceu:tuff_malachite_ore",
+            "weight": 12
+          }
+        ],
+        "tfc:rock/raw/diorite": [
+          {
+            "block": "gtceu:diorite_goethite_ore",
+            "weight": 15
+          },
+          {
+            "block": "gtceu:raw_goethite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:diorite_yellow_limonite_ore",
+            "weight": 12
+          },
+          {
+            "block": "gtceu:diorite_malachite_ore",
+            "weight": 12
+          }
+        ]
+      }
+    },
+    "beneath_iron_hematite": {
+      "random_name": "beneath_iron_hematite",
+      "rarity": 10,
+      "size": 29,
+      "min_y": 80,
+      "max_y": 140,
+      "density": 0.28,
+      "project": false,
+      "project_offset": false,
+      "near_lava": false,
+      "biomes": "#tfg:nether/is_tar_pools",
+      "type": "cluster",
+      "blocks": {
+        "tfc:rock/raw/schist": [
+          {
+            "block": "gtceu:schist_hematite_ore",
+            "weight": 14
+          },
+          {
+            "block": "gtceu:raw_hematite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:schist_goethite_ore",
+            "weight": 6
+          }
+        ],
+        "tfc:rock/raw/gneiss": [
+          {
+            "block": "gtceu:gneiss_hematite_ore",
+            "weight": 14
+          },
+          {
+            "block": "gtceu:raw_hematite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:gneiss_goethite_ore",
+            "weight": 6
+          }
+        ],
+        "minecraft:tuff": [
+          {
+            "block": "gtceu:tuff_hematite_ore",
+            "weight": 14
+          },
+          {
+            "block": "gtceu:raw_hematite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:tuff_goethite_ore",
+            "weight": 6
+          }
+        ],
+        "minecraft:deepslate": [
+          {
+            "block": "gtceu:deepslate_hematite_ore",
+            "weight": 14
+          },
+          {
+            "block": "gtceu:raw_hematite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:deepslate_goethite_ore",
+            "weight": 6
+          }
+        ],
+        "minecraft:dripstone_block": [
+          {
+            "block": "gtceu:dripstone_hematite_ore",
+            "weight": 14
+          },
+          {
+            "block": "gtceu:raw_hematite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:dripstone_goethite_ore",
+            "weight": 6
+          }
+        ],
+        "tfc:rock/raw/diorite": [
+          {
+            "block": "gtceu:diorite_hematite_ore",
+            "weight": 14
+          },
+          {
+            "block": "gtceu:raw_hematite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:diorite_goethite_ore",
+            "weight": 6
+          }
+        ],
+        "tfc:rock/raw/gabbro": [
+          {
+            "block": "gtceu:gabbro_hematite_ore",
+            "weight": 14
+          },
+          {
+            "block": "gtceu:raw_hematite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:gabbro_goethite_ore",
+            "weight": 6
+          }
+        ],
+        "tfc:rock/raw/granite": [
+          {
+            "block": "gtceu:granite_hematite_ore",
+            "weight": 14
+          },
+          {
+            "block": "gtceu:raw_hematite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:granite_goethite_ore",
+            "weight": 6
+          }
+        ]
+      }
+    },
+    "beneath_iron_magnetite": {
+      "random_name": "beneath_iron_magnetite",
+      "rarity": 10,
+      "height": 60,
+      "radius": 8,
+      "min_y": 80,
+      "max_y": 140,
+      "min_skew": 5,
+      "max_skew": 15,
+      "min_slant": 2,
+      "max_slant": 5,
+      "sign": 0.5,
+      "density": 0.28,
+      "project": false,
+      "project_offset": false,
+      "near_lava": false,
+      "biomes": "#tfg:nether/is_geothermal_springs",
+      "type": "pipe",
+      "blocks": {
+        "tfc:rock/raw/schist": [
+          {
+            "block": "gtceu:schist_magnetite_ore",
+            "weight": 16
+          },
+          {
+            "block": "gtceu:raw_magnetite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:schist_vanadium_magnetite_ore",
+            "weight": 6
+          },
+          {
+            "block": "gtceu:schist_gold_ore",
+            "weight": 2
+          }
+        ],
+        "tfc:rock/raw/gneiss": [
+          {
+            "block": "gtceu:gneiss_magnetite_ore",
+            "weight": 16
+          },
+          {
+            "block": "gtceu:raw_magnetite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:gneiss_vanadium_magnetite_ore",
+            "weight": 6
+          },
+          {
+            "block": "gtceu:gneiss_gold_ore",
+            "weight": 2
+          }
+        ],
+        "minecraft:tuff": [
+          {
+            "block": "gtceu:tuff_magnetite_ore",
+            "weight": 16
+          },
+          {
+            "block": "gtceu:raw_magnetite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:tuff_vanadium_magnetite_ore",
+            "weight": 6
+          },
+          {
+            "block": "gtceu:tuff_gold_ore",
+            "weight": 2
+          }
+        ],
+        "minecraft:deepslate": [
+          {
+            "block": "gtceu:deepslate_magnetite_ore",
+            "weight": 16
+          },
+          {
+            "block": "gtceu:raw_magnetite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:deepslate_vanadium_magnetite_ore",
+            "weight": 6
+          },
+          {
+            "block": "gtceu:deepslate_gold_ore",
+            "weight": 2
+          }
+        ],
+        "minecraft:dripstone_block": [
+          {
+            "block": "gtceu:dripstone_magnetite_ore",
+            "weight": 16
+          },
+          {
+            "block": "gtceu:raw_magnetite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:dripstone_vanadium_magnetite_ore",
+            "weight": 6
+          },
+          {
+            "block": "gtceu:dripstone_gold_ore",
+            "weight": 2
+          }
+        ],
+        "tfc:rock/raw/diorite": [
+          {
+            "block": "gtceu:diorite_magnetite_ore",
+            "weight": 16
+          },
+          {
+            "block": "gtceu:raw_magnetite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:diorite_vanadium_magnetite_ore",
+            "weight": 6
+          },
+          {
+            "block": "gtceu:diorite_gold_ore",
+            "weight": 2
+          }
+        ],
+        "tfc:rock/raw/gabbro": [
+          {
+            "block": "gtceu:gabbro_magnetite_ore",
+            "weight": 16
+          },
+          {
+            "block": "gtceu:raw_magnetite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:gabbro_vanadium_magnetite_ore",
+            "weight": 6
+          },
+          {
+            "block": "gtceu:gabbro_gold_ore",
+            "weight": 2
+          }
+        ],
+        "tfc:rock/raw/granite": [
+          {
+            "block": "gtceu:granite_magnetite_ore",
+            "weight": 16
+          },
+          {
+            "block": "gtceu:raw_magnetite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:granite_vanadium_magnetite_ore",
+            "weight": 6
+          },
+          {
+            "block": "gtceu:granite_gold_ore",
+            "weight": 2
+          }
+        ]
+      }
+    },
+    "beneath_lead_silver": {
+      "random_name": "beneath_lead_silver",
+      "rarity": 15,
+      "size": 27,
+      "min_y": 140,
+      "max_y": 190,
+      "density": 0.22,
+      "project": false,
+      "project_offset": false,
+      "near_lava": false,
+      "biomes": "#tfg:nether/is_salt_caves",
+      "type": "cluster",
+      "blocks": {
+        "tfc:rock/raw/phyllite": [
+          {
+            "block": "gtceu:phyllite_galena_ore",
+            "weight": 24
+          },
+          {
+            "block": "gtceu:raw_galena_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:phyllite_silver_ore",
+            "weight": 12
+          },
+          {
+            "block": "gtceu:phyllite_lead_ore",
+            "weight": 6
+          }
+        ],
+        "tfc:rock/raw/schist": [
+          {
+            "block": "gtceu:schist_galena_ore",
+            "weight": 24
+          },
+          {
+            "block": "gtceu:raw_galena_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:schist_silver_ore",
+            "weight": 12
+          },
+          {
+            "block": "gtceu:schist_lead_ore",
+            "weight": 6
+          }
+        ],
+        "tfc:rock/raw/gneiss": [
+          {
+            "block": "gtceu:gneiss_galena_ore",
+            "weight": 24
+          },
+          {
+            "block": "gtceu:raw_galena_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:gneiss_silver_ore",
+            "weight": 12
+          },
+          {
+            "block": "gtceu:gneiss_lead_ore",
+            "weight": 6
+          }
+        ],
+        "tfc:rock/raw/marble": [
+          {
+            "block": "gtceu:marble_galena_ore",
+            "weight": 24
+          },
+          {
+            "block": "gtceu:raw_galena_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:marble_silver_ore",
+            "weight": 12
+          },
+          {
+            "block": "gtceu:marble_lead_ore",
+            "weight": 6
+          }
+        ],
+        "tfc:rock/raw/slate": [
+          {
+            "block": "gtceu:slate_galena_ore",
+            "weight": 24
+          },
+          {
+            "block": "gtceu:raw_galena_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:slate_silver_ore",
+            "weight": 12
+          },
+          {
+            "block": "gtceu:slate_lead_ore",
+            "weight": 6
+          }
+        ],
+        "minecraft:deepslate": [
+          {
+            "block": "gtceu:deepslate_galena_ore",
+            "weight": 24
+          },
+          {
+            "block": "gtceu:raw_galena_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:deepslate_silver_ore",
+            "weight": 12
+          },
+          {
+            "block": "gtceu:deepslate_lead_ore",
+            "weight": 6
+          }
+        ],
+        "minecraft:dripstone_block": [
+          {
+            "block": "gtceu:dripstone_galena_ore",
+            "weight": 24
+          },
+          {
+            "block": "gtceu:raw_galena_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:dripstone_silver_ore",
+            "weight": 12
+          },
+          {
+            "block": "gtceu:dripstone_lead_ore",
+            "weight": 6
+          }
+        ],
+        "minecraft:tuff": [
+          {
+            "block": "gtceu:tuff_galena_ore",
+            "weight": 24
+          },
+          {
+            "block": "gtceu:raw_galena_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:tuff_silver_ore",
+            "weight": 12
+          },
+          {
+            "block": "gtceu:tuff_lead_ore",
+            "weight": 6
+          }
+        ],
+        "tfc:rock/raw/diorite": [
+          {
+            "block": "gtceu:diorite_galena_ore",
+            "weight": 24
+          },
+          {
+            "block": "gtceu:raw_galena_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:diorite_silver_ore",
+            "weight": 12
+          },
+          {
+            "block": "gtceu:diorite_lead_ore",
+            "weight": 6
+          }
+        ]
+      }
+    },
+    "beneath_lithium": {
+      "random_name": "beneath_lithium",
+      "rarity": 10,
+      "size": 25,
+      "min_y": 0,
+      "max_y": 80,
+      "density": 0.22,
+      "project": false,
+      "project_offset": false,
+      "near_lava": false,
+      "biomes": "#tfg:nether/is_lava_floes",
+      "type": "cluster",
+      "blocks": {
+        "minecraft:blackstone": [
+          {
+            "block": "gtceu:pyroxenite_spodumene_ore",
+            "weight": 80
+          },
+          {
+            "block": "gtceu:raw_spodumene_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:pyroxenite_anthracite_ore",
+            "weight": 30
+          },
+          {
+            "block": "gtceu:pyroxenite_alunite_ore",
+            "weight": 20
+          }
+        ],
+        "minecraft:magma_block": [
+          {
+            "block": "gtceu:pyroxenite_spodumene_ore",
+            "weight": 80
+          },
+          {
+            "block": "gtceu:raw_spodumene_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:pyroxenite_anthracite_ore",
+            "weight": 30
+          },
+          {
+            "block": "gtceu:pyroxenite_alunite_ore",
+            "weight": 20
+          }
+        ],
+        "minecraft:deepslate": [
+          {
+            "block": "gtceu:deepslate_spodumene_ore",
+            "weight": 80
+          },
+          {
+            "block": "gtceu:raw_spodumene_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:deepslate_anthracite_ore",
+            "weight": 30
+          },
+          {
+            "block": "gtceu:deepslate_alunite_ore",
+            "weight": 20
+          }
+        ],
+        "tfc:rock/raw/basalt": [
+          {
+            "block": "gtceu:basalt_spodumene_ore",
+            "weight": 80
+          },
+          {
+            "block": "gtceu:raw_spodumene_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:basalt_anthracite_ore",
+            "weight": 30
+          },
+          {
+            "block": "gtceu:basalt_alunite_ore",
+            "weight": 20
+          }
+        ],
+        "minecraft:basalt": [
+          {
+            "block": "gtceu:basalt_spodumene_ore",
+            "weight": 80
+          },
+          {
+            "block": "gtceu:raw_spodumene_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:basalt_anthracite_ore",
+            "weight": 30
+          },
+          {
+            "block": "gtceu:basalt_alunite_ore",
+            "weight": 20
+          }
+        ]
+      }
+    },
+    "beneath_manganese": {
+      "random_name": "beneath_manganese",
+      "rarity": 10,
+      "height": 60,
+      "radius": 8,
+      "min_y": 80,
+      "max_y": 140,
+      "min_skew": 5,
+      "max_skew": 15,
+      "min_slant": 2,
+      "max_slant": 5,
+      "sign": 0.5,
+      "density": 0.22,
+      "project": false,
+      "project_offset": false,
+      "near_lava": false,
+      "biomes": "#tfg:nether/is_thorny_brambles",
+      "type": "pipe",
+      "blocks": {
+        "tfc:rock/raw/schist": [
+          {
+            "block": "gtceu:schist_pyrolusite_ore",
+            "weight": 21
+          },
+          {
+            "block": "gtceu:raw_pyrolusite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:schist_grossular_ore",
+            "weight": 12
+          },
+          {
+            "block": "gtceu:schist_tantalite_ore",
+            "weight": 6
+          }
+        ],
+        "tfc:rock/raw/gneiss": [
+          {
+            "block": "gtceu:gneiss_pyrolusite_ore",
+            "weight": 21
+          },
+          {
+            "block": "gtceu:raw_pyrolusite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:gneiss_grossular_ore",
+            "weight": 12
+          },
+          {
+            "block": "gtceu:gneiss_tantalite_ore",
+            "weight": 6
+          }
+        ],
+        "minecraft:tuff": [
+          {
+            "block": "gtceu:tuff_pyrolusite_ore",
+            "weight": 21
+          },
+          {
+            "block": "gtceu:raw_pyrolusite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:tuff_grossular_ore",
+            "weight": 12
+          },
+          {
+            "block": "gtceu:tuff_tantalite_ore",
+            "weight": 6
+          }
+        ],
+        "minecraft:deepslate": [
+          {
+            "block": "gtceu:deepslate_pyrolusite_ore",
+            "weight": 21
+          },
+          {
+            "block": "gtceu:raw_pyrolusite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:deepslate_grossular_ore",
+            "weight": 12
+          },
+          {
+            "block": "gtceu:deepslate_tantalite_ore",
+            "weight": 6
+          }
+        ],
+        "minecraft:dripstone_block": [
+          {
+            "block": "gtceu:dripstone_pyrolusite_ore",
+            "weight": 21
+          },
+          {
+            "block": "gtceu:raw_pyrolusite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:dripstone_grossular_ore",
+            "weight": 12
+          },
+          {
+            "block": "gtceu:dripstone_tantalite_ore",
+            "weight": 6
+          }
+        ],
+        "tfc:rock/raw/diorite": [
+          {
+            "block": "gtceu:diorite_pyrolusite_ore",
+            "weight": 21
+          },
+          {
+            "block": "gtceu:raw_pyrolusite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:diorite_grossular_ore",
+            "weight": 12
+          },
+          {
+            "block": "gtceu:diorite_tantalite_ore",
+            "weight": 6
+          }
+        ],
+        "tfc:rock/raw/gabbro": [
+          {
+            "block": "gtceu:gabbro_pyrolusite_ore",
+            "weight": 21
+          },
+          {
+            "block": "gtceu:raw_pyrolusite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:gabbro_grossular_ore",
+            "weight": 12
+          },
+          {
+            "block": "gtceu:gabbro_tantalite_ore",
+            "weight": 6
+          }
+        ],
+        "tfc:rock/raw/granite": [
+          {
+            "block": "gtceu:granite_pyrolusite_ore",
+            "weight": 21
+          },
+          {
+            "block": "gtceu:raw_pyrolusite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:granite_grossular_ore",
+            "weight": 12
+          },
+          {
+            "block": "gtceu:granite_tantalite_ore",
+            "weight": 6
+          }
+        ]
+      }
+    },
+    "beneath_molydbenum": {
+      "random_name": "beneath_molydbenum",
+      "rarity": 10,
+      "size": 27,
+      "min_y": 140,
+      "max_y": 190,
+      "density": 0.25,
+      "project": false,
+      "project_offset": false,
+      "near_lava": false,
+      "biomes": "#tfg:nether/is_decaying_caverns",
+      "type": "cluster",
+      "blocks": {
+        "tfc:rock/raw/phyllite": [
+          {
+            "block": "gtceu:phyllite_wulfenite_ore",
+            "weight": 20
+          },
+          {
+            "block": "gtceu:raw_wulfenite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:phyllite_molybdenite_ore",
+            "weight": 10
+          },
+          {
+            "block": "gtceu:phyllite_powellite_ore",
+            "weight": 16
+          }
+        ],
+        "tfc:rock/raw/schist": [
+          {
+            "block": "gtceu:schist_wulfenite_ore",
+            "weight": 20
+          },
+          {
+            "block": "gtceu:raw_wulfenite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:schist_molybdenite_ore",
+            "weight": 10
+          },
+          {
+            "block": "gtceu:schist_powellite_ore",
+            "weight": 16
+          }
+        ],
+        "tfc:rock/raw/gneiss": [
+          {
+            "block": "gtceu:gneiss_wulfenite_ore",
+            "weight": 20
+          },
+          {
+            "block": "gtceu:raw_wulfenite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:gneiss_molybdenite_ore",
+            "weight": 10
+          },
+          {
+            "block": "gtceu:gneiss_powellite_ore",
+            "weight": 16
+          }
+        ],
+        "tfc:rock/raw/marble": [
+          {
+            "block": "gtceu:marble_wulfenite_ore",
+            "weight": 20
+          },
+          {
+            "block": "gtceu:raw_wulfenite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:marble_molybdenite_ore",
+            "weight": 10
+          },
+          {
+            "block": "gtceu:marble_powellite_ore",
+            "weight": 16
+          }
+        ],
+        "tfc:rock/raw/slate": [
+          {
+            "block": "gtceu:slate_wulfenite_ore",
+            "weight": 20
+          },
+          {
+            "block": "gtceu:raw_wulfenite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:slate_molybdenite_ore",
+            "weight": 10
+          },
+          {
+            "block": "gtceu:slate_powellite_ore",
+            "weight": 16
+          }
+        ],
+        "minecraft:deepslate": [
+          {
+            "block": "gtceu:deepslate_wulfenite_ore",
+            "weight": 20
+          },
+          {
+            "block": "gtceu:raw_wulfenite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:deepslate_molybdenite_ore",
+            "weight": 10
+          },
+          {
+            "block": "gtceu:deepslate_powellite_ore",
+            "weight": 16
+          }
+        ],
+        "minecraft:dripstone_block": [
+          {
+            "block": "gtceu:dripstone_wulfenite_ore",
+            "weight": 20
+          },
+          {
+            "block": "gtceu:raw_wulfenite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:dripstone_molybdenite_ore",
+            "weight": 10
+          },
+          {
+            "block": "gtceu:dripstone_powellite_ore",
+            "weight": 16
+          }
+        ],
+        "minecraft:tuff": [
+          {
+            "block": "gtceu:tuff_wulfenite_ore",
+            "weight": 20
+          },
+          {
+            "block": "gtceu:raw_wulfenite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:tuff_molybdenite_ore",
+            "weight": 10
+          },
+          {
+            "block": "gtceu:tuff_powellite_ore",
+            "weight": 16
+          }
+        ],
+        "tfc:rock/raw/diorite": [
+          {
+            "block": "gtceu:diorite_wulfenite_ore",
+            "weight": 20
+          },
+          {
+            "block": "gtceu:raw_wulfenite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:diorite_molybdenite_ore",
+            "weight": 10
+          },
+          {
+            "block": "gtceu:diorite_powellite_ore",
+            "weight": 16
+          }
+        ]
+      }
+    },
+    "beneath_nickel": {
+      "random_name": "beneath_nickel",
+      "rarity": 10,
+      "size": 25,
+      "min_y": 80,
+      "max_y": 140,
+      "density": 0.22,
+      "project": false,
+      "project_offset": false,
+      "near_lava": false,
+      "biomes": "#tfg:nether/is_thorny_brambles",
+      "type": "cluster",
+      "blocks": {
+        "tfc:rock/raw/schist": [
+          {
+            "block": "gtceu:schist_pentlandite_ore",
+            "weight": 24
+          },
+          {
+            "block": "gtceu:raw_pentlandite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:schist_garnierite_ore",
+            "weight": 12
+          },
+          {
+            "block": "gtceu:schist_cobaltite_ore",
+            "weight": 8
+          }
+        ],
+        "tfc:rock/raw/gneiss": [
+          {
+            "block": "gtceu:gneiss_pentlandite_ore",
+            "weight": 24
+          },
+          {
+            "block": "gtceu:raw_pentlandite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:gneiss_garnierite_ore",
+            "weight": 12
+          },
+          {
+            "block": "gtceu:gneiss_cobaltite_ore",
+            "weight": 8
+          }
+        ],
+        "minecraft:tuff": [
+          {
+            "block": "gtceu:tuff_pentlandite_ore",
+            "weight": 24
+          },
+          {
+            "block": "gtceu:raw_pentlandite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:tuff_garnierite_ore",
+            "weight": 12
+          },
+          {
+            "block": "gtceu:tuff_cobaltite_ore",
+            "weight": 8
+          }
+        ],
+        "minecraft:deepslate": [
+          {
+            "block": "gtceu:deepslate_pentlandite_ore",
+            "weight": 24
+          },
+          {
+            "block": "gtceu:raw_pentlandite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:deepslate_garnierite_ore",
+            "weight": 12
+          },
+          {
+            "block": "gtceu:deepslate_cobaltite_ore",
+            "weight": 8
+          }
+        ],
+        "minecraft:dripstone_block": [
+          {
+            "block": "gtceu:dripstone_pentlandite_ore",
+            "weight": 24
+          },
+          {
+            "block": "gtceu:raw_pentlandite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:dripstone_garnierite_ore",
+            "weight": 12
+          },
+          {
+            "block": "gtceu:dripstone_cobaltite_ore",
+            "weight": 8
+          }
+        ],
+        "tfc:rock/raw/diorite": [
+          {
+            "block": "gtceu:diorite_pentlandite_ore",
+            "weight": 24
+          },
+          {
+            "block": "gtceu:raw_pentlandite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:diorite_garnierite_ore",
+            "weight": 12
+          },
+          {
+            "block": "gtceu:diorite_cobaltite_ore",
+            "weight": 8
+          }
+        ],
+        "tfc:rock/raw/gabbro": [
+          {
+            "block": "gtceu:gabbro_pentlandite_ore",
+            "weight": 24
+          },
+          {
+            "block": "gtceu:raw_pentlandite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:gabbro_garnierite_ore",
+            "weight": 12
+          },
+          {
+            "block": "gtceu:gabbro_cobaltite_ore",
+            "weight": 8
+          }
+        ],
+        "tfc:rock/raw/granite": [
+          {
+            "block": "gtceu:granite_pentlandite_ore",
+            "weight": 24
+          },
+          {
+            "block": "gtceu:raw_pentlandite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:granite_garnierite_ore",
+            "weight": 12
+          },
+          {
+            "block": "gtceu:granite_cobaltite_ore",
+            "weight": 8
+          }
+        ]
+      }
+    },
+    "beneath_phlogopite": {
+      "random_name": "beneath_phlogopite",
+      "rarity": 10,
+      "size": 45,
+      "height": 10,
+      "min_y": 0,
+      "max_y": 80,
+      "density": 0.2,
+      "project": false,
+      "project_offset": false,
+      "near_lava": false,
+      "biomes": "#tfg:nether/is_basalt_deltas",
+      "type": "disc",
+      "blocks": {
+        "minecraft:blackstone": [
+          {
+            "block": "gtceu:pyroxenite_phlogopite_ore",
+            "weight": 15
+          },
+          {
+            "block": "gtceu:raw_phlogopite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:pyroxenite_sulfur_ore",
+            "weight": 7
+          },
+          {
+            "block": "gtceu:pyroxenite_apatite_ore",
+            "weight": 3
+          }
+        ],
+        "minecraft:magma_block": [
+          {
+            "block": "gtceu:pyroxenite_phlogopite_ore",
+            "weight": 15
+          },
+          {
+            "block": "gtceu:raw_phlogopite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:pyroxenite_sulfur_ore",
+            "weight": 7
+          },
+          {
+            "block": "gtceu:pyroxenite_apatite_ore",
+            "weight": 3
+          }
+        ],
+        "minecraft:deepslate": [
+          {
+            "block": "gtceu:deepslate_phlogopite_ore",
+            "weight": 15
+          },
+          {
+            "block": "gtceu:raw_phlogopite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:deepslate_sulfur_ore",
+            "weight": 7
+          },
+          {
+            "block": "gtceu:deepslate_apatite_ore",
+            "weight": 3
+          }
+        ],
+        "tfc:rock/raw/basalt": [
+          {
+            "block": "gtceu:basalt_phlogopite_ore",
+            "weight": 15
+          },
+          {
+            "block": "gtceu:raw_phlogopite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:basalt_sulfur_ore",
+            "weight": 7
+          },
+          {
+            "block": "gtceu:basalt_apatite_ore",
+            "weight": 3
+          }
+        ],
+        "minecraft:basalt": [
+          {
+            "block": "gtceu:basalt_phlogopite_ore",
+            "weight": 15
+          },
+          {
+            "block": "gtceu:raw_phlogopite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:basalt_sulfur_ore",
+            "weight": 7
+          },
+          {
+            "block": "gtceu:basalt_apatite_ore",
+            "weight": 3
+          }
+        ]
+      }
+    },
+    "beneath_phosphate": {
+      "random_name": "beneath_phosphate",
+      "rarity": 10,
+      "size": 25,
+      "min_y": 80,
+      "max_y": 140,
+      "density": 0.25,
+      "project": false,
+      "project_offset": false,
+      "near_lava": false,
+      "biomes": "#tfg:nether/is_tar_pools",
+      "type": "cluster",
+      "blocks": {
+        "tfc:rock/raw/schist": [
+          {
+            "block": "gtceu:schist_tricalcium_phosphate_ore",
+            "weight": 24
+          },
+          {
+            "block": "gtceu:raw_tricalcium_phosphate_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:schist_apatite_ore",
+            "weight": 16
+          },
+          {
+            "block": "gtceu:schist_pyrite_ore",
+            "weight": 4
+          }
+        ],
+        "tfc:rock/raw/gneiss": [
+          {
+            "block": "gtceu:gneiss_tricalcium_phosphate_ore",
+            "weight": 24
+          },
+          {
+            "block": "gtceu:raw_tricalcium_phosphate_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:gneiss_apatite_ore",
+            "weight": 16
+          },
+          {
+            "block": "gtceu:gneiss_pyrite_ore",
+            "weight": 4
+          }
+        ],
+        "minecraft:tuff": [
+          {
+            "block": "gtceu:tuff_tricalcium_phosphate_ore",
+            "weight": 24
+          },
+          {
+            "block": "gtceu:raw_tricalcium_phosphate_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:tuff_apatite_ore",
+            "weight": 16
+          },
+          {
+            "block": "gtceu:tuff_pyrite_ore",
+            "weight": 4
+          }
+        ],
+        "minecraft:deepslate": [
+          {
+            "block": "gtceu:deepslate_tricalcium_phosphate_ore",
+            "weight": 24
+          },
+          {
+            "block": "gtceu:raw_tricalcium_phosphate_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:deepslate_apatite_ore",
+            "weight": 16
+          },
+          {
+            "block": "gtceu:deepslate_pyrite_ore",
+            "weight": 4
+          }
+        ],
+        "minecraft:dripstone_block": [
+          {
+            "block": "gtceu:dripstone_tricalcium_phosphate_ore",
+            "weight": 24
+          },
+          {
+            "block": "gtceu:raw_tricalcium_phosphate_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:dripstone_apatite_ore",
+            "weight": 16
+          },
+          {
+            "block": "gtceu:dripstone_pyrite_ore",
+            "weight": 4
+          }
+        ],
+        "tfc:rock/raw/diorite": [
+          {
+            "block": "gtceu:diorite_tricalcium_phosphate_ore",
+            "weight": 24
+          },
+          {
+            "block": "gtceu:raw_tricalcium_phosphate_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:diorite_apatite_ore",
+            "weight": 16
+          },
+          {
+            "block": "gtceu:diorite_pyrite_ore",
+            "weight": 4
+          }
+        ],
+        "tfc:rock/raw/gabbro": [
+          {
+            "block": "gtceu:gabbro_tricalcium_phosphate_ore",
+            "weight": 24
+          },
+          {
+            "block": "gtceu:raw_tricalcium_phosphate_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:gabbro_apatite_ore",
+            "weight": 16
+          },
+          {
+            "block": "gtceu:gabbro_pyrite_ore",
+            "weight": 4
+          }
+        ],
+        "tfc:rock/raw/granite": [
+          {
+            "block": "gtceu:granite_tricalcium_phosphate_ore",
+            "weight": 24
+          },
+          {
+            "block": "gtceu:raw_tricalcium_phosphate_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:granite_apatite_ore",
+            "weight": 16
+          },
+          {
+            "block": "gtceu:granite_pyrite_ore",
+            "weight": 4
+          }
+        ]
+      }
+    },
+    "beneath_psg": {
+      "random_name": "beneath_psg",
+      "rarity": 30,
+      "size": 50,
+      "height": 10,
+      "min_y": 0,
+      "max_y": 80,
+      "density": 0.18,
+      "project": false,
+      "project_offset": false,
+      "near_lava": false,
+      "biomes": "#tfg:nether/is_lava_floes",
+      "type": "disc",
+      "blocks": {
+        "minecraft:blackstone": [
+          {
+            "block": "gtceu:pyroxenite_irarsite_ore",
+            "weight": 30
+          },
+          {
+            "block": "gtceu:raw_irarsite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:pyroxenite_ruarsite_ore",
+            "weight": 28
+          },
+          {
+            "block": "gtceu:pyroxenite_ferhodsite_ore",
+            "weight": 22
+          }
+        ],
+        "minecraft:magma_block": [
+          {
+            "block": "gtceu:pyroxenite_irarsite_ore",
+            "weight": 30
+          },
+          {
+            "block": "gtceu:raw_irarsite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:pyroxenite_ruarsite_ore",
+            "weight": 28
+          },
+          {
+            "block": "gtceu:pyroxenite_ferhodsite_ore",
+            "weight": 22
+          }
+        ],
+        "minecraft:deepslate": [
+          {
+            "block": "gtceu:deepslate_irarsite_ore",
+            "weight": 30
+          },
+          {
+            "block": "gtceu:raw_irarsite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:deepslate_ruarsite_ore",
+            "weight": 28
+          },
+          {
+            "block": "gtceu:deepslate_ferhodsite_ore",
+            "weight": 22
+          }
+        ],
+        "tfc:rock/raw/basalt": [
+          {
+            "block": "gtceu:basalt_irarsite_ore",
+            "weight": 30
+          },
+          {
+            "block": "gtceu:raw_irarsite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:basalt_ruarsite_ore",
+            "weight": 28
+          },
+          {
+            "block": "gtceu:basalt_ferhodsite_ore",
+            "weight": 22
+          }
+        ],
+        "minecraft:basalt": [
+          {
+            "block": "gtceu:basalt_irarsite_ore",
+            "weight": 30
+          },
+          {
+            "block": "gtceu:raw_irarsite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:basalt_ruarsite_ore",
+            "weight": 28
+          },
+          {
+            "block": "gtceu:basalt_ferhodsite_ore",
+            "weight": 22
+          }
+        ]
+      }
+    },
+    "beneath_quartz": {
+      "random_name": "beneath_quartz",
+      "rarity": 20,
+      "height": 60,
+      "radius": 15,
+      "min_y": 80,
+      "max_y": 140,
+      "min_skew": 5,
+      "max_skew": 15,
+      "min_slant": 2,
+      "max_slant": 5,
+      "sign": 0.5,
+      "density": 0.22,
+      "project": false,
+      "project_offset": false,
+      "near_lava": false,
+      "biomes": "#tfg:nether/is_thorny_brambles",
+      "type": "pipe",
+      "blocks": {
+        "tfc:rock/raw/schist": [
+          {
+            "block": "gtceu:schist_nether_quartz_ore",
+            "weight": 32
+          },
+          {
+            "block": "gtceu:raw_nether_quartz_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:schist_quartzite_ore",
+            "weight": 20
+          },
+          {
+            "block": "gtceu:schist_barite_ore",
+            "weight": 12
+          },
+          {
+            "block": "gtceu:schist_zeolite_ore",
+            "weight": 8
+          }
+        ],
+        "tfc:rock/raw/gneiss": [
+          {
+            "block": "gtceu:gneiss_nether_quartz_ore",
+            "weight": 32
+          },
+          {
+            "block": "gtceu:raw_nether_quartz_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:gneiss_quartzite_ore",
+            "weight": 20
+          },
+          {
+            "block": "gtceu:gneiss_barite_ore",
+            "weight": 12
+          },
+          {
+            "block": "gtceu:gneiss_zeolite_ore",
+            "weight": 8
+          }
+        ],
+        "minecraft:tuff": [
+          {
+            "block": "gtceu:tuff_nether_quartz_ore",
+            "weight": 32
+          },
+          {
+            "block": "gtceu:raw_nether_quartz_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:tuff_quartzite_ore",
+            "weight": 20
+          },
+          {
+            "block": "gtceu:tuff_barite_ore",
+            "weight": 12
+          },
+          {
+            "block": "gtceu:tuff_zeolite_ore",
+            "weight": 8
+          }
+        ],
+        "minecraft:deepslate": [
+          {
+            "block": "gtceu:deepslate_nether_quartz_ore",
+            "weight": 32
+          },
+          {
+            "block": "gtceu:raw_nether_quartz_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:deepslate_quartzite_ore",
+            "weight": 20
+          },
+          {
+            "block": "gtceu:deepslate_barite_ore",
+            "weight": 12
+          },
+          {
+            "block": "gtceu:deepslate_zeolite_ore",
+            "weight": 8
+          }
+        ],
+        "minecraft:dripstone_block": [
+          {
+            "block": "gtceu:dripstone_nether_quartz_ore",
+            "weight": 32
+          },
+          {
+            "block": "gtceu:raw_nether_quartz_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:dripstone_quartzite_ore",
+            "weight": 20
+          },
+          {
+            "block": "gtceu:dripstone_barite_ore",
+            "weight": 12
+          },
+          {
+            "block": "gtceu:dripstone_zeolite_ore",
+            "weight": 8
+          }
+        ],
+        "tfc:rock/raw/diorite": [
+          {
+            "block": "gtceu:diorite_nether_quartz_ore",
+            "weight": 32
+          },
+          {
+            "block": "gtceu:raw_nether_quartz_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:diorite_quartzite_ore",
+            "weight": 20
+          },
+          {
+            "block": "gtceu:diorite_barite_ore",
+            "weight": 12
+          },
+          {
+            "block": "gtceu:diorite_zeolite_ore",
+            "weight": 8
+          }
+        ],
+        "tfc:rock/raw/gabbro": [
+          {
+            "block": "gtceu:gabbro_nether_quartz_ore",
+            "weight": 32
+          },
+          {
+            "block": "gtceu:raw_nether_quartz_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:gabbro_quartzite_ore",
+            "weight": 20
+          },
+          {
+            "block": "gtceu:gabbro_barite_ore",
+            "weight": 12
+          },
+          {
+            "block": "gtceu:gabbro_zeolite_ore",
+            "weight": 8
+          }
+        ],
+        "tfc:rock/raw/granite": [
+          {
+            "block": "gtceu:granite_nether_quartz_ore",
+            "weight": 32
+          },
+          {
+            "block": "gtceu:raw_nether_quartz_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:granite_quartzite_ore",
+            "weight": 20
+          },
+          {
+            "block": "gtceu:granite_barite_ore",
+            "weight": 12
+          },
+          {
+            "block": "gtceu:granite_zeolite_ore",
+            "weight": 8
+          }
+        ]
+      }
+    },
+    "beneath_realgar": {
+      "random_name": "beneath_realgar",
+      "rarity": 20,
+      "size": 23,
+      "min_y": 80,
+      "max_y": 140,
+      "density": 0.25,
+      "project": false,
+      "project_offset": false,
+      "near_lava": false,
+      "biomes": "#tfg:nether/is_geothermal_springs",
+      "type": "cluster",
+      "blocks": {
+        "tfc:rock/raw/schist": [
+          {
+            "block": "gtceu:schist_realgar_ore",
+            "weight": 24
+          },
+          {
+            "block": "gtceu:raw_realgar_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:schist_stibnite_ore",
+            "weight": 12
+          },
+          {
+            "block": "gtceu:schist_cinnabar_ore",
+            "weight": 4
+          }
+        ],
+        "tfc:rock/raw/gneiss": [
+          {
+            "block": "gtceu:gneiss_realgar_ore",
+            "weight": 24
+          },
+          {
+            "block": "gtceu:raw_realgar_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:gneiss_stibnite_ore",
+            "weight": 12
+          },
+          {
+            "block": "gtceu:gneiss_cinnabar_ore",
+            "weight": 4
+          }
+        ],
+        "minecraft:tuff": [
+          {
+            "block": "gtceu:tuff_realgar_ore",
+            "weight": 24
+          },
+          {
+            "block": "gtceu:raw_realgar_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:tuff_stibnite_ore",
+            "weight": 12
+          },
+          {
+            "block": "gtceu:tuff_cinnabar_ore",
+            "weight": 4
+          }
+        ],
+        "minecraft:deepslate": [
+          {
+            "block": "gtceu:deepslate_realgar_ore",
+            "weight": 24
+          },
+          {
+            "block": "gtceu:raw_realgar_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:deepslate_stibnite_ore",
+            "weight": 12
+          },
+          {
+            "block": "gtceu:deepslate_cinnabar_ore",
+            "weight": 4
+          }
+        ],
+        "minecraft:dripstone_block": [
+          {
+            "block": "gtceu:dripstone_realgar_ore",
+            "weight": 24
+          },
+          {
+            "block": "gtceu:raw_realgar_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:dripstone_stibnite_ore",
+            "weight": 12
+          },
+          {
+            "block": "gtceu:dripstone_cinnabar_ore",
+            "weight": 4
+          }
+        ],
+        "tfc:rock/raw/diorite": [
+          {
+            "block": "gtceu:diorite_realgar_ore",
+            "weight": 24
+          },
+          {
+            "block": "gtceu:raw_realgar_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:diorite_stibnite_ore",
+            "weight": 12
+          },
+          {
+            "block": "gtceu:diorite_cinnabar_ore",
+            "weight": 4
+          }
+        ],
+        "tfc:rock/raw/gabbro": [
+          {
+            "block": "gtceu:gabbro_realgar_ore",
+            "weight": 24
+          },
+          {
+            "block": "gtceu:raw_realgar_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:gabbro_stibnite_ore",
+            "weight": 12
+          },
+          {
+            "block": "gtceu:gabbro_cinnabar_ore",
+            "weight": 4
+          }
+        ],
+        "tfc:rock/raw/granite": [
+          {
+            "block": "gtceu:granite_realgar_ore",
+            "weight": 24
+          },
+          {
+            "block": "gtceu:raw_realgar_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:granite_stibnite_ore",
+            "weight": 12
+          },
+          {
+            "block": "gtceu:granite_cinnabar_ore",
+            "weight": 4
+          }
+        ]
+      }
+    },
+    "beneath_redstone": {
+      "random_name": "beneath_redstone",
+      "rarity": 10,
+      "height": 60,
+      "radius": 12,
+      "min_y": 0,
+      "max_y": 80,
+      "min_skew": 5,
+      "max_skew": 15,
+      "min_slant": 2,
+      "max_slant": 5,
+      "sign": 0.5,
+      "density": 0.2,
+      "project": false,
+      "project_offset": false,
+      "near_lava": false,
+      "biomes": "#tfg:nether/is_basalt_deltas",
+      "type": "pipe",
+      "blocks": {
+        "minecraft:blackstone": [
+          {
+            "block": "gtceu:pyroxenite_redstone_ore",
+            "weight": 60
+          },
+          {
+            "block": "gtceu:raw_redstone_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:pyroxenite_cinnabar_ore",
+            "weight": 30
+          },
+          {
+            "block": "gtceu:pyroxenite_nether_quartz_ore",
+            "weight": 20
+          },
+          {
+            "block": "gtceu:pyroxenite_ruby_ore",
+            "weight": 10
+          }
+        ],
+        "minecraft:magma_block": [
+          {
+            "block": "gtceu:pyroxenite_redstone_ore",
+            "weight": 60
+          },
+          {
+            "block": "gtceu:raw_redstone_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:pyroxenite_cinnabar_ore",
+            "weight": 30
+          },
+          {
+            "block": "gtceu:pyroxenite_nether_quartz_ore",
+            "weight": 20
+          },
+          {
+            "block": "gtceu:pyroxenite_ruby_ore",
+            "weight": 10
+          }
+        ],
+        "minecraft:deepslate": [
+          {
+            "block": "gtceu:deepslate_redstone_ore",
+            "weight": 60
+          },
+          {
+            "block": "gtceu:raw_redstone_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:deepslate_cinnabar_ore",
+            "weight": 30
+          },
+          {
+            "block": "gtceu:deepslate_nether_quartz_ore",
+            "weight": 20
+          },
+          {
+            "block": "gtceu:deepslate_ruby_ore",
+            "weight": 10
+          }
+        ],
+        "tfc:rock/raw/basalt": [
+          {
+            "block": "gtceu:basalt_redstone_ore",
+            "weight": 60
+          },
+          {
+            "block": "gtceu:raw_redstone_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:basalt_cinnabar_ore",
+            "weight": 30
+          },
+          {
+            "block": "gtceu:basalt_nether_quartz_ore",
+            "weight": 20
+          },
+          {
+            "block": "gtceu:basalt_ruby_ore",
+            "weight": 10
+          }
+        ],
+        "minecraft:basalt": [
+          {
+            "block": "gtceu:basalt_redstone_ore",
+            "weight": 60
+          },
+          {
+            "block": "gtceu:raw_redstone_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:basalt_cinnabar_ore",
+            "weight": 30
+          },
+          {
+            "block": "gtceu:basalt_nether_quartz_ore",
+            "weight": 20
+          },
+          {
+            "block": "gtceu:basalt_ruby_ore",
+            "weight": 10
+          }
+        ]
+      }
+    },
+    "beneath_salt": {
+      "random_name": "beneath_salt",
+      "rarity": 10,
+      "height": 60,
+      "radius": 10,
+      "min_y": 140,
+      "max_y": 190,
+      "min_skew": 5,
+      "max_skew": 15,
+      "min_slant": 2,
+      "max_slant": 5,
+      "sign": 0.5,
+      "density": 0.28,
+      "project": false,
+      "project_offset": false,
+      "near_lava": false,
+      "biomes": "#tfg:nether/is_salt_caves",
+      "type": "pipe",
+      "blocks": {
+        "tfc:rock/raw/phyllite": [
+          {
+            "block": "gtceu:phyllite_salt_ore",
+            "weight": 70
+          },
+          {
+            "block": "gtceu:raw_salt_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:phyllite_rock_salt_ore",
+            "weight": 50
+          },
+          {
+            "block": "gtceu:phyllite_trona_ore",
+            "weight": 20
+          }
+        ],
+        "tfc:rock/raw/schist": [
+          {
+            "block": "gtceu:schist_salt_ore",
+            "weight": 70
+          },
+          {
+            "block": "gtceu:raw_salt_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:schist_rock_salt_ore",
+            "weight": 50
+          },
+          {
+            "block": "gtceu:schist_trona_ore",
+            "weight": 20
+          }
+        ],
+        "tfc:rock/raw/gneiss": [
+          {
+            "block": "gtceu:gneiss_salt_ore",
+            "weight": 70
+          },
+          {
+            "block": "gtceu:raw_salt_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:gneiss_rock_salt_ore",
+            "weight": 50
+          },
+          {
+            "block": "gtceu:gneiss_trona_ore",
+            "weight": 20
+          }
+        ],
+        "tfc:rock/raw/marble": [
+          {
+            "block": "gtceu:marble_salt_ore",
+            "weight": 70
+          },
+          {
+            "block": "gtceu:raw_salt_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:marble_rock_salt_ore",
+            "weight": 50
+          },
+          {
+            "block": "gtceu:marble_trona_ore",
+            "weight": 20
+          }
+        ],
+        "tfc:rock/raw/slate": [
+          {
+            "block": "gtceu:slate_salt_ore",
+            "weight": 70
+          },
+          {
+            "block": "gtceu:raw_salt_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:slate_rock_salt_ore",
+            "weight": 50
+          },
+          {
+            "block": "gtceu:slate_trona_ore",
+            "weight": 20
+          }
+        ],
+        "minecraft:deepslate": [
+          {
+            "block": "gtceu:deepslate_salt_ore",
+            "weight": 70
+          },
+          {
+            "block": "gtceu:raw_salt_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:deepslate_rock_salt_ore",
+            "weight": 50
+          },
+          {
+            "block": "gtceu:deepslate_trona_ore",
+            "weight": 20
+          }
+        ],
+        "minecraft:dripstone_block": [
+          {
+            "block": "gtceu:dripstone_salt_ore",
+            "weight": 70
+          },
+          {
+            "block": "gtceu:raw_salt_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:dripstone_rock_salt_ore",
+            "weight": 50
+          },
+          {
+            "block": "gtceu:dripstone_trona_ore",
+            "weight": 20
+          }
+        ],
+        "minecraft:tuff": [
+          {
+            "block": "gtceu:tuff_salt_ore",
+            "weight": 70
+          },
+          {
+            "block": "gtceu:raw_salt_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:tuff_rock_salt_ore",
+            "weight": 50
+          },
+          {
+            "block": "gtceu:tuff_trona_ore",
+            "weight": 20
+          }
+        ],
+        "tfc:rock/raw/diorite": [
+          {
+            "block": "gtceu:diorite_salt_ore",
+            "weight": 70
+          },
+          {
+            "block": "gtceu:raw_salt_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:diorite_rock_salt_ore",
+            "weight": 50
+          },
+          {
+            "block": "gtceu:diorite_trona_ore",
+            "weight": 20
+          }
+        ]
+      }
+    },
+    "beneath_sulfur": {
+      "random_name": "beneath_sulfur",
+      "rarity": 10,
+      "size": 29,
+      "min_y": 0,
+      "max_y": 80,
+      "density": 0.35,
+      "project": false,
+      "project_offset": false,
+      "near_lava": false,
+      "biomes": "#tfg:nether/is_lava_floes",
+      "type": "cluster",
+      "blocks": {
+        "minecraft:blackstone": [
+          {
+            "block": "gtceu:pyroxenite_sulfur_ore",
+            "weight": 18
+          },
+          {
+            "block": "gtceu:raw_sulfur_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:pyroxenite_pyrite_ore",
+            "weight": 8
+          },
+          {
+            "block": "gtceu:pyroxenite_stibnite_ore",
+            "weight": 2
+          }
+        ],
+        "minecraft:magma_block": [
+          {
+            "block": "gtceu:pyroxenite_sulfur_ore",
+            "weight": 18
+          },
+          {
+            "block": "gtceu:raw_sulfur_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:pyroxenite_pyrite_ore",
+            "weight": 8
+          },
+          {
+            "block": "gtceu:pyroxenite_stibnite_ore",
+            "weight": 2
+          }
+        ],
+        "minecraft:deepslate": [
+          {
+            "block": "gtceu:deepslate_sulfur_ore",
+            "weight": 18
+          },
+          {
+            "block": "gtceu:raw_sulfur_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:deepslate_pyrite_ore",
+            "weight": 8
+          },
+          {
+            "block": "gtceu:deepslate_stibnite_ore",
+            "weight": 2
+          }
+        ],
+        "tfc:rock/raw/basalt": [
+          {
+            "block": "gtceu:basalt_sulfur_ore",
+            "weight": 18
+          },
+          {
+            "block": "gtceu:raw_sulfur_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:basalt_pyrite_ore",
+            "weight": 8
+          },
+          {
+            "block": "gtceu:basalt_stibnite_ore",
+            "weight": 2
+          }
+        ],
+        "minecraft:basalt": [
+          {
+            "block": "gtceu:basalt_sulfur_ore",
+            "weight": 18
+          },
+          {
+            "block": "gtceu:raw_sulfur_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:basalt_pyrite_ore",
+            "weight": 8
+          },
+          {
+            "block": "gtceu:basalt_stibnite_ore",
+            "weight": 2
+          }
+        ]
+      }
+    },
+    "beneath_tin": {
+      "random_name": "beneath_tin",
+      "rarity": 10,
+      "size": 25,
+      "min_y": 140,
+      "max_y": 190,
+      "density": 0.25,
+      "project": false,
+      "project_offset": false,
+      "near_lava": false,
+      "biomes": "#tfg:nether/is_decaying_caverns",
+      "type": "cluster",
+      "blocks": {
+        "tfc:rock/raw/phyllite": [
+          {
+            "block": "gtceu:phyllite_cassiterite_ore",
+            "weight": 14
+          },
+          {
+            "block": "gtceu:raw_cassiterite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:phyllite_tin_ore",
+            "weight": 4
+          }
+        ],
+        "tfc:rock/raw/schist": [
+          {
+            "block": "gtceu:schist_cassiterite_ore",
+            "weight": 14
+          },
+          {
+            "block": "gtceu:raw_cassiterite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:schist_tin_ore",
+            "weight": 4
+          }
+        ],
+        "tfc:rock/raw/gneiss": [
+          {
+            "block": "gtceu:gneiss_cassiterite_ore",
+            "weight": 14
+          },
+          {
+            "block": "gtceu:raw_cassiterite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:gneiss_tin_ore",
+            "weight": 4
+          }
+        ],
+        "tfc:rock/raw/marble": [
+          {
+            "block": "gtceu:marble_cassiterite_ore",
+            "weight": 14
+          },
+          {
+            "block": "gtceu:raw_cassiterite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:marble_tin_ore",
+            "weight": 4
+          }
+        ],
+        "tfc:rock/raw/slate": [
+          {
+            "block": "gtceu:slate_cassiterite_ore",
+            "weight": 14
+          },
+          {
+            "block": "gtceu:raw_cassiterite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:slate_tin_ore",
+            "weight": 4
+          }
+        ],
+        "minecraft:deepslate": [
+          {
+            "block": "gtceu:deepslate_cassiterite_ore",
+            "weight": 14
+          },
+          {
+            "block": "gtceu:raw_cassiterite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:deepslate_tin_ore",
+            "weight": 4
+          }
+        ],
+        "minecraft:dripstone_block": [
+          {
+            "block": "gtceu:dripstone_cassiterite_ore",
+            "weight": 14
+          },
+          {
+            "block": "gtceu:raw_cassiterite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:dripstone_tin_ore",
+            "weight": 4
+          }
+        ],
+        "minecraft:tuff": [
+          {
+            "block": "gtceu:tuff_cassiterite_ore",
+            "weight": 14
+          },
+          {
+            "block": "gtceu:raw_cassiterite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:tuff_tin_ore",
+            "weight": 4
+          }
+        ],
+        "tfc:rock/raw/diorite": [
+          {
+            "block": "gtceu:diorite_cassiterite_ore",
+            "weight": 14
+          },
+          {
+            "block": "gtceu:raw_cassiterite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:diorite_tin_ore",
+            "weight": 4
+          }
+        ]
+      }
+    },
+    "beneath_zinc": {
+      "random_name": "beneath_zinc",
+      "rarity": 10,
+      "size": 25,
+      "min_y": 140,
+      "max_y": 190,
+      "density": 0.25,
+      "project": false,
+      "project_offset": false,
+      "near_lava": false,
+      "biomes": "#tfg:nether/is_muggy_bog",
+      "type": "cluster",
+      "blocks": {
+        "tfc:rock/raw/phyllite": [
+          {
+            "block": "gtceu:phyllite_sphalerite_ore",
+            "weight": 18
+          },
+          {
+            "block": "gtceu:raw_sphalerite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:phyllite_galena_ore",
+            "weight": 9
+          },
+          {
+            "block": "gtceu:phyllite_sulfur_ore",
+            "weight": 3
+          }
+        ],
+        "tfc:rock/raw/schist": [
+          {
+            "block": "gtceu:schist_sphalerite_ore",
+            "weight": 18
+          },
+          {
+            "block": "gtceu:raw_sphalerite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:schist_galena_ore",
+            "weight": 9
+          },
+          {
+            "block": "gtceu:schist_sulfur_ore",
+            "weight": 3
+          }
+        ],
+        "tfc:rock/raw/gneiss": [
+          {
+            "block": "gtceu:gneiss_sphalerite_ore",
+            "weight": 18
+          },
+          {
+            "block": "gtceu:raw_sphalerite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:gneiss_galena_ore",
+            "weight": 9
+          },
+          {
+            "block": "gtceu:gneiss_sulfur_ore",
+            "weight": 3
+          }
+        ],
+        "tfc:rock/raw/marble": [
+          {
+            "block": "gtceu:marble_sphalerite_ore",
+            "weight": 18
+          },
+          {
+            "block": "gtceu:raw_sphalerite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:marble_galena_ore",
+            "weight": 9
+          },
+          {
+            "block": "gtceu:marble_sulfur_ore",
+            "weight": 3
+          }
+        ],
+        "tfc:rock/raw/slate": [
+          {
+            "block": "gtceu:slate_sphalerite_ore",
+            "weight": 18
+          },
+          {
+            "block": "gtceu:raw_sphalerite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:slate_galena_ore",
+            "weight": 9
+          },
+          {
+            "block": "gtceu:slate_sulfur_ore",
+            "weight": 3
+          }
+        ],
+        "minecraft:deepslate": [
+          {
+            "block": "gtceu:deepslate_sphalerite_ore",
+            "weight": 18
+          },
+          {
+            "block": "gtceu:raw_sphalerite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:deepslate_galena_ore",
+            "weight": 9
+          },
+          {
+            "block": "gtceu:deepslate_sulfur_ore",
+            "weight": 3
+          }
+        ],
+        "minecraft:dripstone_block": [
+          {
+            "block": "gtceu:dripstone_sphalerite_ore",
+            "weight": 18
+          },
+          {
+            "block": "gtceu:raw_sphalerite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:dripstone_galena_ore",
+            "weight": 9
+          },
+          {
+            "block": "gtceu:dripstone_sulfur_ore",
+            "weight": 3
+          }
+        ],
+        "minecraft:tuff": [
+          {
+            "block": "gtceu:tuff_sphalerite_ore",
+            "weight": 18
+          },
+          {
+            "block": "gtceu:raw_sphalerite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:tuff_galena_ore",
+            "weight": 9
+          },
+          {
+            "block": "gtceu:tuff_sulfur_ore",
+            "weight": 3
+          }
+        ],
+        "tfc:rock/raw/diorite": [
+          {
+            "block": "gtceu:diorite_sphalerite_ore",
+            "weight": 18
+          },
+          {
+            "block": "gtceu:raw_sphalerite_block",
+            "weight": 1
+          },
+          {
+            "block": "gtceu:diorite_galena_ore",
+            "weight": 9
+          },
+          {
+            "block": "gtceu:diorite_sulfur_ore",
+            "weight": 3
+          }
+        ]
+      }
+    }
+  },
+  "biome_tags": {
+    "tfg:nether/has_garnet_sands": [
+      "tfg:nether/tar_pools",
+      "tfg:nether/salt_caves",
+      "tfg:nether/thorny_brambles"
+    ],
+    "tfg:nether/has_oilsands": [
+      "tfg:nether/tar_pools"
+    ],
+    "tfg:nether/is_ash_forest": [
+      "tfg:nether/ash_forest"
+    ],
+    "tfg:nether/is_basalt_deltas": [
+      "tfg:nether/basalt_deltas"
+    ],
+    "tfg:nether/is_decaying_caverns": [
+      "tfg:nether/decaying_caverns"
+    ],
+    "tfg:nether/is_geothermal_springs": [
+      "tfg:nether/geothermal_springs"
+    ],
+    "tfg:nether/is_lava_floes": [
+      "tfg:nether/lava_floes"
+    ],
+    "tfg:nether/is_lush_hollow": [
+      "tfg:nether/lush_hollow"
+    ],
+    "tfg:nether/is_muggy_bog": [
+      "tfg:nether/muggy_bog"
+    ],
+    "tfg:nether/is_salt_caves": [
+      "tfg:nether/salt_caves"
+    ],
+    "tfg:nether/is_tar_pools": [
+      "tfg:nether/tar_pools"
+    ],
+    "tfg:nether/is_thorny_brambles": [
+      "tfg:nether/thorny_brambles"
+    ],
+    "tfg:nether/is_webbed_lair": [
+      "tfg:nether/webbed_lair"
+    ]
+  },
+  "structures": [
+    {
+      "id": "tfg:beneath/tower",
+      "salt": 264226226,
+      "spacing": 15,
+      "separation": 5,
+      "biomes": [
+        "tfg:nether/decaying_caverns",
+        "tfg:nether/salt_caves",
+        "tfg:nether/muggy_bog",
+        "tfg:nether/webbed_lair",
+        "tfg:nether/lush_hollow",
+        "tfg:nether/geothermal_springs",
+        "tfg:nether/tar_pools",
+        "tfg:nether/thorny_brambles",
+        "tfg:nether/basalt_deltas",
+        "tfg:nether/ash_forest",
+        "tfg:nether/lava_floes"
+      ],
+      "exclusion_zone": {
+        "other_set": "minecraft:nether_complexes",
+        "chunk_count": 3
+      },
+      "start_y": 93
+    },
+    {
+      "id": "tfg:beneath/outpost",
+      "salt": 264552552,
+      "spacing": 15,
+      "separation": 5,
+      "biomes": [
+        "tfg:nether/decaying_caverns",
+        "tfg:nether/salt_caves",
+        "tfg:nether/muggy_bog",
+        "tfg:nether/webbed_lair",
+        "tfg:nether/lush_hollow",
+        "tfg:nether/geothermal_springs",
+        "tfg:nether/tar_pools",
+        "tfg:nether/thorny_brambles",
+        "tfg:nether/basalt_deltas",
+        "tfg:nether/ash_forest",
+        "tfg:nether/lava_floes"
+      ],
+      "exclusion_zone": {
+        "other_set": "tfg:beneath/tower",
+        "chunk_count": 3
+      },
+      "start_y": 93
+    }
+  ]
+}

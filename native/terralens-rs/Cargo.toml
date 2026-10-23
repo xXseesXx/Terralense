@@ -1,0 +1,66 @@
+[package]
+name = "terralens"
+version = "0.3.0"
+edition = "2024"
+rust-version = "1.88"
+license = "EUPL-1.2"
+repository = "https://github.com/xXseesXx/Terralense"
+description = "Native Rust TerraFirmaGreg seed atlas"
+
+[features]
+default = ["gui"]
+gui = []
+# Opt-in tools for maintainers; never enabled by build.sh or release CI.
+diagnostics = ["gui"]
+
+[[bin]]
+name = "terralens"
+path = "src/main.rs"
+required-features = ["gui"]
+
+[dependencies]
+ab_glyph = "0.2.32"
+eframe = { version = "0.33", default-features = false, features = ["default_fonts", "glow", "wayland", "x11", "persistence"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = { version = "1", features = ["float_roundtrip"] }
+flate2 = "1"
+rayon = "1"
+crossbeam-channel = "0.5"
+lru = "0.16"
+image = { version = "0.25", default-features = false, features = ["png"] }
+md5 = "0.8"
+
+[profile.release]
+debug = 0
+debug-assertions = false
+lto = "thin"
+codegen-units = 8
+strip = true
+
+[[example]]
+name = "beneath_validation"
+required-features = ["diagnostics"]
+
+[[example]]
+name = "streaming"
+required-features = ["diagnostics"]
+
+[[example]]
+name = "structure_coverage"
+required-features = ["diagnostics"]
+
+[[example]]
+name = "surface_preview"
+required-features = ["diagnostics"]
+
+[[example]]
+name = "surface_validation"
+required-features = ["diagnostics"]
+
+[[example]]
+name = "wayland_background_probe"
+required-features = ["diagnostics"]
+
+[[example]]
+name = "zoom_streaming"
+required-features = ["diagnostics"]

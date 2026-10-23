@@ -1,0 +1,582 @@
+{
+  "source": "TerraFirmaGreg-Core-Modern 0.9.25 and GTCEu 7.5.3 installed in the TerraFirmaGreg-Modern Prism instance; Beneath entries use normalized configured-feature dominant block weights and installed GT material/icon-set definitions",
+  "count": 64,
+  "materials": [
+    {
+      "vein": "deep_apatite",
+      "material": "apatite",
+      "tfg_icon_set": "prismatic_ruby",
+      "texture_family": "diamond",
+      "primary_rgb": "#06CDF1",
+      "secondary_rgb": "#701C07",
+      "asset": "gt_diamond_06cdf1_701c07.png"
+    },
+    {
+      "vein": "deep_banded_iron",
+      "material": "goethite",
+      "tfg_icon_set": "bladed",
+      "texture_family": "fine",
+      "primary_rgb": "#97873A",
+      "secondary_rgb": "#313131",
+      "asset": "gt_fine_97873a_313131.png"
+    },
+    {
+      "vein": "deep_bauxite",
+      "material": "ilmenite",
+      "tfg_icon_set": "monoclinic_gem_horizontal",
+      "texture_family": "diamond",
+      "primary_rgb": "#2B2A24",
+      "secondary_rgb": "#2B1700",
+      "asset": "gt_diamond_2b2a24_2b1700.png"
+    },
+    {
+      "vein": "deep_copper_iron",
+      "material": "chalcopyrite",
+      "tfg_icon_set": "bladed",
+      "texture_family": "fine",
+      "primary_rgb": "#96C185",
+      "secondary_rgb": "#E3AF1A",
+      "asset": "gt_fine_96c185_e3af1a.png"
+    },
+    {
+      "vein": "deep_copper_tin",
+      "material": "chalcopyrite",
+      "tfg_icon_set": "bladed",
+      "texture_family": "fine",
+      "primary_rgb": "#96C185",
+      "secondary_rgb": "#E3AF1A",
+      "asset": "gt_fine_96c185_e3af1a.png"
+    },
+    {
+      "vein": "deep_galena",
+      "material": "galena",
+      "tfg_icon_set": "cubic_shiny",
+      "texture_family": "shiny",
+      "primary_rgb": "#F3E8FA",
+      "secondary_rgb": "#331D42",
+      "asset": "gt_shiny_f3e8fa_331d42.png"
+    },
+    {
+      "vein": "deep_iron",
+      "material": "goethite",
+      "tfg_icon_set": "bladed",
+      "texture_family": "fine",
+      "primary_rgb": "#97873A",
+      "secondary_rgb": "#313131",
+      "asset": "gt_fine_97873a_313131.png"
+    },
+    {
+      "vein": "deep_kyanite",
+      "material": "kyanite",
+      "tfg_icon_set": "bladed",
+      "texture_family": "fine",
+      "primary_rgb": "#D5FFFF",
+      "secondary_rgb": "#5A69D6",
+      "asset": "gt_fine_d5ffff_5a69d6.png"
+    },
+    {
+      "vein": "deep_lazurite_calcite",
+      "material": "lazurite",
+      "tfg_icon_set": "cubic_ruby",
+      "texture_family": "diamond",
+      "primary_rgb": "#2836F1",
+      "secondary_rgb": "#183CA3",
+      "asset": "gt_diamond_2836f1_183ca3.png"
+    },
+    {
+      "vein": "deep_magnetite_olivine",
+      "material": "fullers earth",
+      "tfg_icon_set": "fine",
+      "texture_family": "fine",
+      "primary_rgb": "#F3EFBB",
+      "secondary_rgb": "#B8D066",
+      "asset": "gt_fine_f3efbb_b8d066.png"
+    },
+    {
+      "vein": "deep_manganese",
+      "material": "grossular",
+      "tfg_icon_set": "monoclinic_ruby",
+      "texture_family": "diamond",
+      "primary_rgb": "#FFB777",
+      "secondary_rgb": "#856F48",
+      "asset": "gt_diamond_ffb777_856f48.png"
+    },
+    {
+      "vein": "deep_molybdenum",
+      "material": "wulfenite",
+      "tfg_icon_set": "sheet_metallic",
+      "texture_family": "metallic",
+      "primary_rgb": "#FF9000",
+      "secondary_rgb": "#FF0000",
+      "asset": "gt_metallic_ff9000_ff0000.png"
+    },
+    {
+      "vein": "deep_monazite",
+      "material": "bastnasite",
+      "tfg_icon_set": "prismatic_ruby",
+      "texture_family": "diamond",
+      "primary_rgb": "#CAAB60",
+      "secondary_rgb": "#C8502D",
+      "asset": "gt_diamond_caab60_c8502d.png"
+    },
+    {
+      "vein": "deep_scheelite",
+      "material": "scheelite",
+      "tfg_icon_set": "bladed",
+      "texture_family": "fine",
+      "primary_rgb": "#D7E8B3",
+      "secondary_rgb": "#143CAE",
+      "asset": "gt_fine_d7e8b3_143cae.png"
+    },
+    {
+      "vein": "deep_tantalite",
+      "material": "grossular",
+      "tfg_icon_set": "monoclinic_ruby",
+      "texture_family": "diamond",
+      "primary_rgb": "#FFB777",
+      "secondary_rgb": "#856F48",
+      "asset": "gt_diamond_ffb777_856f48.png"
+    },
+    {
+      "vein": "deep_thorianite",
+      "material": "thorium",
+      "tfg_icon_set": "cubic_metallic",
+      "texture_family": "metallic",
+      "primary_rgb": "#25411B",
+      "secondary_rgb": "#051E05",
+      "asset": "gt_metallic_25411b_051e05.png"
+    },
+    {
+      "vein": "deep_topaz",
+      "material": "blue topaz",
+      "tfg_icon_set": "tfc_topaz",
+      "texture_family": "diamond",
+      "primary_rgb": "#DBFEFF",
+      "secondary_rgb": "#A0C4D7",
+      "asset": "gt_diamond_dbfeff_a0c4d7.png"
+    },
+    {
+      "vein": "high_lead",
+      "material": "lead",
+      "tfg_icon_set": "cubic_dull",
+      "texture_family": "dull",
+      "primary_rgb": "#7E6F82",
+      "secondary_rgb": "#290633",
+      "asset": "gt_dull_7e6f82_290633.png"
+    },
+    {
+      "vein": "high_realgar",
+      "material": "chalcopyrite",
+      "tfg_icon_set": "bladed",
+      "texture_family": "fine",
+      "primary_rgb": "#96C185",
+      "secondary_rgb": "#E3AF1A",
+      "asset": "gt_fine_96c185_e3af1a.png"
+    },
+    {
+      "vein": "normal_copper",
+      "material": "chalcopyrite",
+      "tfg_icon_set": "bladed",
+      "texture_family": "fine",
+      "primary_rgb": "#96C185",
+      "secondary_rgb": "#E3AF1A",
+      "asset": "gt_fine_96c185_e3af1a.png"
+    },
+    {
+      "vein": "normal_copper_gypsum",
+      "material": "chalcocite",
+      "tfg_icon_set": "monoclinic_dull",
+      "texture_family": "dull",
+      "primary_rgb": "#657882",
+      "secondary_rgb": "#33302E",
+      "asset": "gt_dull_657882_33302e.png"
+    },
+    {
+      "vein": "normal_galena",
+      "material": "galena",
+      "tfg_icon_set": "cubic_shiny",
+      "texture_family": "shiny",
+      "primary_rgb": "#F3E8FA",
+      "secondary_rgb": "#331D42",
+      "asset": "gt_shiny_f3e8fa_331d42.png"
+    },
+    {
+      "vein": "normal_iron",
+      "material": "yellow limonite",
+      "tfg_icon_set": "tfc_limonite",
+      "texture_family": "metallic",
+      "primary_rgb": "#F5E315",
+      "secondary_rgb": "#C06F33",
+      "asset": "gt_metallic_f5e315_c06f33.png"
+    },
+    {
+      "vein": "normal_mica",
+      "material": "mica",
+      "tfg_icon_set": "sheet_rough",
+      "texture_family": "fine",
+      "primary_rgb": "#ECFEFF",
+      "secondary_rgb": "#C2A03C",
+      "asset": "gt_fine_ecfeff_c2a03c.png"
+    },
+    {
+      "vein": "normal_quartz",
+      "material": "barite",
+      "tfg_icon_set": "bladed",
+      "texture_family": "fine",
+      "primary_rgb": "#E8E2D1",
+      "secondary_rgb": "#F4B74B",
+      "asset": "gt_fine_e8e2d1_f4b74b.png"
+    },
+    {
+      "vein": "normal_spodumene",
+      "material": "spodumene",
+      "tfg_icon_set": "sheet_rough",
+      "texture_family": "fine",
+      "primary_rgb": "#FFBCBC",
+      "secondary_rgb": "#C490FF",
+      "asset": "gt_fine_ffbcbc_c490ff.png"
+    },
+    {
+      "vein": "normal_sulfide",
+      "material": "bornite",
+      "tfg_icon_set": "cubic_shiny",
+      "texture_family": "shiny",
+      "primary_rgb": "#FFE05A",
+      "secondary_rgb": "#442602",
+      "asset": "gt_shiny_ffe05a_442602.png"
+    },
+    {
+      "vein": "normal_tarkianite",
+      "material": "tarkianite",
+      "tfg_icon_set": "monoclinic_gem_horizontal",
+      "texture_family": "diamond",
+      "primary_rgb": "#8BB054",
+      "secondary_rgb": "#3D8021",
+      "asset": "gt_diamond_8bb054_3d8021.png"
+    },
+    {
+      "vein": "sand_basaltic",
+      "material": "basaltic mineral sand",
+      "tfg_icon_set": "sand",
+      "texture_family": "fine",
+      "primary_rgb": "#5C5C5C",
+      "secondary_rgb": "#283228",
+      "asset": "gt_fine_5c5c5c_283228.png"
+    },
+    {
+      "vein": "sand_garnet",
+      "material": "garnet sand",
+      "tfg_icon_set": "sand",
+      "texture_family": "fine",
+      "primary_rgb": "#CC4C25",
+      "secondary_rgb": "#510B04",
+      "asset": "gt_fine_cc4c25_510b04.png"
+    },
+    {
+      "vein": "sand_granitic",
+      "material": "granitic mineral sand",
+      "tfg_icon_set": "sand",
+      "texture_family": "fine",
+      "primary_rgb": "#D69077",
+      "secondary_rgb": "#71352C",
+      "asset": "gt_fine_d69077_71352c.png"
+    },
+    {
+      "vein": "sand_tin",
+      "material": "cassiterite sand",
+      "tfg_icon_set": "sand",
+      "texture_family": "fine",
+      "primary_rgb": "#89847E",
+      "secondary_rgb": "#3B3B35",
+      "asset": "gt_fine_89847e_3b3b35.png"
+    },
+    {
+      "vein": "surface_limonite",
+      "material": "yellow limonite",
+      "tfg_icon_set": "tfc_limonite",
+      "texture_family": "metallic",
+      "primary_rgb": "#F5E315",
+      "secondary_rgb": "#C06F33",
+      "asset": "gt_metallic_f5e315_c06f33.png"
+    },
+    {
+      "vein": "surface_mica",
+      "material": "mica",
+      "tfg_icon_set": "sheet_rough",
+      "texture_family": "fine",
+      "primary_rgb": "#ECFEFF",
+      "secondary_rgb": "#C2A03C",
+      "asset": "gt_fine_ecfeff_c2a03c.png"
+    },
+    {
+      "vein": "surface_tricalcium_phosphate",
+      "material": "tricalcium phosphate",
+      "tfg_icon_set": "sheet_rough",
+      "texture_family": "fine",
+      "primary_rgb": "#FFFDDB",
+      "secondary_rgb": "#FFFF00",
+      "asset": "gt_fine_fffddb_ffff00.png"
+    },
+    {
+      "vein": "beneath_aluminium",
+      "material": "alunite",
+      "tfg_icon_set": "granular_fine",
+      "texture_family": "fine",
+      "primary_rgb": "#FBD677",
+      "secondary_rgb": "#E11E0A",
+      "asset": "beneath_aluminium.png"
+    },
+    {
+      "vein": "beneath_bismuth",
+      "material": "bismuth",
+      "tfg_icon_set": "tfc_bismuth",
+      "texture_family": "shiny",
+      "primary_rgb": "#5FDDDD",
+      "secondary_rgb": "#517385",
+      "asset": "beneath_bismuth.png"
+    },
+    {
+      "vein": "beneath_coal_anthracite",
+      "material": "anthracite",
+      "tfg_icon_set": "anthracite",
+      "texture_family": "fine",
+      "primary_rgb": "#292626",
+      "secondary_rgb": "#471A16",
+      "asset": "beneath_coal_anthracite.png"
+    },
+    {
+      "vein": "beneath_coal_bituminous",
+      "material": "coal",
+      "tfg_icon_set": "lignite",
+      "texture_family": "fine",
+      "primary_rgb": "#393E41",
+      "secondary_rgb": "#101015",
+      "asset": "beneath_coal_bituminous.png"
+    },
+    {
+      "vein": "beneath_copper_native",
+      "material": "copper",
+      "tfg_icon_set": "tfc_copper",
+      "texture_family": "shiny",
+      "primary_rgb": "#E77C56",
+      "secondary_rgb": "#E4673E",
+      "asset": "beneath_copper_native.png"
+    },
+    {
+      "vein": "beneath_copper_sulfide",
+      "material": "chalcocite",
+      "tfg_icon_set": "monoclinic_dull",
+      "texture_family": "dull",
+      "primary_rgb": "#657882",
+      "secondary_rgb": "#33302E",
+      "asset": "beneath_copper_sulfide.png"
+    },
+    {
+      "vein": "beneath_copper_tetrahedrite",
+      "material": "tetrahedrite",
+      "tfg_icon_set": "tfc_tetrahedrite",
+      "texture_family": "dull",
+      "primary_rgb": "#A3A09B",
+      "secondary_rgb": "#143313",
+      "asset": "beneath_copper_tetrahedrite.png"
+    },
+    {
+      "vein": "beneath_gold",
+      "material": "gold",
+      "tfg_icon_set": "tfc_gold",
+      "texture_family": "shiny",
+      "primary_rgb": "#FDF55F",
+      "secondary_rgb": "#F25833",
+      "asset": "beneath_gold.png"
+    },
+    {
+      "vein": "beneath_gold_rich",
+      "material": "gold",
+      "tfg_icon_set": "tfc_gold",
+      "texture_family": "shiny",
+      "primary_rgb": "#FDF55F",
+      "secondary_rgb": "#F25833",
+      "asset": "beneath_gold_rich.png"
+    },
+    {
+      "vein": "beneath_graphite",
+      "material": "graphite",
+      "tfg_icon_set": "tfc_graphite",
+      "texture_family": "fine",
+      "primary_rgb": "#A8A89E",
+      "secondary_rgb": "#172602",
+      "asset": "beneath_graphite.png"
+    },
+    {
+      "vein": "beneath_iron_banded",
+      "material": "goethite",
+      "tfg_icon_set": "bladed",
+      "texture_family": "fine",
+      "primary_rgb": "#97873A",
+      "secondary_rgb": "#313131",
+      "asset": "beneath_iron_banded.png"
+    },
+    {
+      "vein": "beneath_iron_hematite",
+      "material": "hematite",
+      "tfg_icon_set": "tfc_hematite",
+      "texture_family": "metallic",
+      "primary_rgb": "#FF7161",
+      "secondary_rgb": "#330817",
+      "asset": "beneath_iron_hematite.png"
+    },
+    {
+      "vein": "beneath_iron_magnetite",
+      "material": "magnetite",
+      "tfg_icon_set": "tfc_magnetite",
+      "texture_family": "dull",
+      "primary_rgb": "#9D9D9D",
+      "secondary_rgb": "#06070E",
+      "asset": "beneath_iron_magnetite.png"
+    },
+    {
+      "vein": "beneath_lead_silver",
+      "material": "galena",
+      "tfg_icon_set": "cubic_shiny",
+      "texture_family": "shiny",
+      "primary_rgb": "#F3E8FA",
+      "secondary_rgb": "#331D42",
+      "asset": "beneath_lead_silver.png"
+    },
+    {
+      "vein": "beneath_lithium",
+      "material": "spodumene",
+      "tfg_icon_set": "sheet_rough",
+      "texture_family": "fine",
+      "primary_rgb": "#FFBCBC",
+      "secondary_rgb": "#C490FF",
+      "asset": "beneath_lithium.png"
+    },
+    {
+      "vein": "beneath_manganese",
+      "material": "pyrolusite",
+      "tfg_icon_set": "botryoidal",
+      "texture_family": "metallic",
+      "primary_rgb": "#C7B5AB",
+      "secondary_rgb": "#595756",
+      "asset": "beneath_manganese.png"
+    },
+    {
+      "vein": "beneath_molydbenum",
+      "material": "wulfenite",
+      "tfg_icon_set": "sheet_metallic",
+      "texture_family": "metallic",
+      "primary_rgb": "#FF9000",
+      "secondary_rgb": "#FF0000",
+      "asset": "beneath_molydbenum.png"
+    },
+    {
+      "vein": "beneath_nickel",
+      "material": "pentlandite",
+      "tfg_icon_set": "granular_lapis",
+      "texture_family": "fine",
+      "primary_rgb": "#E3CF13",
+      "secondary_rgb": "#29315B",
+      "asset": "beneath_nickel.png"
+    },
+    {
+      "vein": "beneath_phlogopite",
+      "material": "phlogopite",
+      "tfg_icon_set": "sheet_metallic",
+      "texture_family": "metallic",
+      "primary_rgb": "#D8A260",
+      "secondary_rgb": "#5A3712",
+      "asset": "beneath_phlogopite.png"
+    },
+    {
+      "vein": "beneath_phosphate",
+      "material": "tricalcium phosphate",
+      "tfg_icon_set": "sheet_rough",
+      "texture_family": "fine",
+      "primary_rgb": "#FFFDDB",
+      "secondary_rgb": "#FFFF00",
+      "asset": "beneath_phosphate.png"
+    },
+    {
+      "vein": "beneath_psg",
+      "material": "irarsite",
+      "tfg_icon_set": "monoclinic_quartz",
+      "texture_family": "fine",
+      "primary_rgb": "#9F9FD2",
+      "secondary_rgb": "#5555CC",
+      "asset": "beneath_psg.png"
+    },
+    {
+      "vein": "beneath_quartz",
+      "material": "nether quartz",
+      "tfg_icon_set": "nether_quartz",
+      "texture_family": "fine",
+      "primary_rgb": "#F8EFE3",
+      "secondary_rgb": "#E6C1BB",
+      "asset": "beneath_quartz.png"
+    },
+    {
+      "vein": "beneath_realgar",
+      "material": "realgar",
+      "tfg_icon_set": "prismatic_ruby",
+      "texture_family": "diamond",
+      "primary_rgb": "#FF3D33",
+      "secondary_rgb": "#3F0110",
+      "asset": "beneath_realgar.png"
+    },
+    {
+      "vein": "beneath_redstone",
+      "material": "redstone",
+      "tfg_icon_set": "tfc_redstone",
+      "texture_family": "fine",
+      "primary_rgb": "#FF0000",
+      "secondary_rgb": "#340605",
+      "asset": "beneath_redstone.png"
+    },
+    {
+      "vein": "beneath_salt",
+      "material": "salt",
+      "tfg_icon_set": "cubic_gem_horizontal",
+      "texture_family": "diamond",
+      "primary_rgb": "#FAFAFA",
+      "secondary_rgb": "#FFFFFF",
+      "asset": "beneath_salt.png"
+    },
+    {
+      "vein": "beneath_sulfur",
+      "material": "sulfur",
+      "tfg_icon_set": "tfc_sulfur",
+      "texture_family": "fine",
+      "primary_rgb": "#FDFF31",
+      "secondary_rgb": "#FFB400",
+      "asset": "beneath_sulfur.png"
+    },
+    {
+      "vein": "beneath_tin",
+      "material": "cassiterite",
+      "tfg_icon_set": "tfc_cassiterite",
+      "texture_family": "shiny",
+      "primary_rgb": "#89847E",
+      "secondary_rgb": "#3B3B35",
+      "asset": "beneath_tin.png"
+    },
+    {
+      "vein": "beneath_zinc",
+      "material": "sphalerite",
+      "tfg_icon_set": "tfc_sphalerite",
+      "texture_family": "dull",
+      "primary_rgb": "#FFDC88",
+      "secondary_rgb": "#0F1605",
+      "asset": "beneath_zinc.png"
+    },
+    {
+      "vein": "beneath_coal_lignite",
+      "material": "lignite",
+      "tfg_icon_set": "lignite",
+      "texture_family": "tfc_normal_raw_item",
+      "primary_rgb": null,
+      "secondary_rgb": null,
+      "asset": "lignite.png"
+    }
+  ]
+}

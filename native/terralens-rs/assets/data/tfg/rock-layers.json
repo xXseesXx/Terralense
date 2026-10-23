@@ -1,0 +1,210 @@
+{
+  "_meta": {
+    "tool": "tools/extract-tfg-rock-layers.mjs",
+    "source": "<instance>/saves/New World/level.dat",
+    "note": "TerraFirmaCraft tfc:overworld preset rock layers, in the order found in three local Core Modern 0.9.25 saves; matched against the Core 0.9.25 preset."
+  },
+  "bottom": [
+    "gneiss",
+    "schist",
+    "diorite",
+    "granite",
+    "gabbro"
+  ],
+  "land": [
+    "igneous_extrusive",
+    "sedimentary"
+  ],
+  "oceanFloor": [
+    "igneous_extrusive"
+  ],
+  "volcanic": [
+    "igneous_extrusive",
+    "igneous_extrusive_x2"
+  ],
+  "uplift": [
+    "sedimentary",
+    "uplift"
+  ],
+  "layers": [
+    {
+      "id": "felsic",
+      "entries": [
+        [
+          "granite",
+          "bottom"
+        ]
+      ]
+    },
+    {
+      "id": "intermediate",
+      "entries": [
+        [
+          "diorite",
+          "bottom"
+        ]
+      ]
+    },
+    {
+      "id": "mafic",
+      "entries": [
+        [
+          "gabbro",
+          "bottom"
+        ]
+      ]
+    },
+    {
+      "id": "igneous_extrusive",
+      "entries": [
+        [
+          "basalt",
+          "mafic"
+        ],
+        [
+          "andesite",
+          "intermediate"
+        ],
+        [
+          "rhyolite",
+          "felsic"
+        ],
+        [
+          "dacite",
+          "intermediate"
+        ]
+      ]
+    },
+    {
+      "id": "igneous_extrusive_x2",
+      "entries": [
+        [
+          "basalt",
+          "igneous_extrusive"
+        ],
+        [
+          "andesite",
+          "igneous_extrusive"
+        ],
+        [
+          "rhyolite",
+          "igneous_extrusive"
+        ],
+        [
+          "dacite",
+          "igneous_extrusive"
+        ]
+      ]
+    },
+    {
+      "id": "phyllite",
+      "entries": [
+        [
+          "phyllite",
+          "bottom"
+        ],
+        [
+          "schist",
+          "bottom"
+        ],
+        [
+          "gneiss",
+          "bottom"
+        ]
+      ]
+    },
+    {
+      "id": "slate",
+      "entries": [
+        [
+          "slate",
+          "bottom"
+        ],
+        [
+          "phyllite",
+          "phyllite"
+        ]
+      ]
+    },
+    {
+      "id": "marble",
+      "entries": [
+        [
+          "marble",
+          "bottom"
+        ]
+      ]
+    },
+    {
+      "id": "quartzite",
+      "entries": [
+        [
+          "quartzite",
+          "bottom"
+        ]
+      ]
+    },
+    {
+      "id": "sedimentary",
+      "entries": [
+        [
+          "shale",
+          "slate"
+        ],
+        [
+          "chert",
+          "quartzite"
+        ],
+        [
+          "claystone",
+          "slate"
+        ],
+        [
+          "limestone",
+          "marble"
+        ],
+        [
+          "dolomite",
+          "marble"
+        ],
+        [
+          "chalk",
+          "marble"
+        ],
+        [
+          "conglomerate",
+          "slate"
+        ]
+      ]
+    },
+    {
+      "id": "uplift",
+      "entries": [
+        [
+          "quartzite",
+          "bottom"
+        ],
+        [
+          "marble",
+          "bottom"
+        ],
+        [
+          "granite",
+          "sedimentary"
+        ],
+        [
+          "slate",
+          "phyllite"
+        ],
+        [
+          "diorite",
+          "sedimentary"
+        ],
+        [
+          "gabbro",
+          "sedimentary"
+        ]
+      ]
+    }
+  ]
+}

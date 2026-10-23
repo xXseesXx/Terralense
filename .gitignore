@@ -1,0 +1,22 @@
+# Build products and local runtime data
+**/target/
+**/__pycache__/
+*.py[cod]
+*.log
+*.partial
+.env
+.env.*
+
+# Retired prototypes and the local upstream research checkout
+/upstream/
+/native/terralens-scan/
+/terralens.py
+/structure_catalog.py
+/scripts/
+
+# Machine-specific captures and historical browser validation
+/docs/*.json
+/docs/*.png
+!/docs/native-qol-export.png
+/docs/VALIDATION.md
+/docs/*.local.md

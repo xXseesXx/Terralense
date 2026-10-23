@@ -1,0 +1,70 @@
+{
+  "source": "Installed TFG Core Modern 0.9.21 with TFC 3.2.24 and installed KubeJS tags.overworld.js",
+  "tagScriptSha256": "3c4e98f04c8b9d73785266230fde16430dbb0fbd5ac16ca629c20555c25496c8",
+  "configuredFeature": {
+    "type": "tfc:kaolin_disc_vein",
+    "config": {
+      "rarity": 40,
+      "min_y": 75,
+      "max_y": 110,
+      "size": 18,
+      "height": 6,
+      "density": 1.0,
+      "random_name": "kaolin",
+      "biomes": "#tfc:kaolin_clay_spawns_in",
+      "indicator": {
+        "depth": 35,
+        "spread": 5,
+        "rarity": 10,
+        "underground_rarity": 1,
+        "underground_count": 0,
+        "blocks": [
+          {
+            "block": "tfc:plant/blood_lily"
+          }
+        ]
+      },
+      "blocks": []
+    }
+  },
+  "placedFeature": {
+    "feature": "tfc:vein/kaolin_disc",
+    "placement": [
+      {
+        "type": "tfc:climate",
+        "min_temperature": 18,
+        "min_rainfall": 300
+      }
+    ]
+  },
+  "biomes": [
+    "tfc:plateau",
+    "tfc:highlands",
+    "tfc:old_mountains",
+    "tfc:rolling_hills",
+    "tfg:earth/rolling_hills",
+    "tfg:earth/highlands",
+    "tfg:earth/plateau",
+    "tfg:earth/plateau_wide",
+    "tfg:earth/old_mountains",
+    "tfg:earth/tower_karst_hills",
+    "tfg:earth/tower_karst_highlands",
+    "tfg:earth/extreme_doline_plateau",
+    "tfg:earth/extreme_doline_mountains",
+    "tfg:earth/doline_rolling_hills",
+    "tfg:earth/doline_highlands",
+    "tfg:earth/doline_plateau",
+    "tfg:earth/cenote_rolling_hills",
+    "tfg:earth/cenote_highlands",
+    "tfg:earth/cenote_plateau",
+    "tfg:earth/shilin_highlands",
+    "tfg:earth/shilin_plateau",
+    "tfg:earth/active_shield_volcano",
+    "tfg:earth/dormant_shield_volcano",
+    "tfg:earth/extinct_shield_volcano",
+    "tfg:earth/ancient_shield_volcano",
+    "tfg:earth/ice_sheet_shield_volcano",
+    "tfg:earth/glaciated_shield_volcano",
+    "tfg:earth/sunken_shield_volcano"
+  ]
+}
