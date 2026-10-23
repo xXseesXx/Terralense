@@ -76,9 +76,10 @@ path. Recent sources are available from **File → Recent worlds**. Saves are re
 The resizable left control pane has **Search**, **Biomes**, and **Structures** tabs. Search contains
 the **Seeds** shortlist and location finder; Ctrl+F opens **Features** search. The right icon rail
 switches between structure and ore types. Its group and individual controls hide or show features,
-including related structure variants such as villages and unfinished sloops. Right-click a group
-to expand its individual variants; click a child icon to toggle just that variant. Shift-click
-isolates a type or group. This changes display visibility; marker placement remains
+including related structures such as ruins, churches, towers, castles, villages and unfinished
+sloops. Ores group by their configured primary mineral family, with individual vein types below.
+Right-click either kind of group to expand its variants; click a child icon to toggle just that
+variant. Shift-click isolates a type or group. This changes display visibility; marker placement remains
 spatially anchored as you pan, and zoom progressively hides common or less prominent markers
 before rare, important ones. The Structures tab lists visible-area or whole-save structures by
 distance and exports the filtered table. Biomes has editable area coordinates and **From visible**.

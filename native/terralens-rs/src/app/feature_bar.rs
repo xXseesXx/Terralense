@@ -12,6 +12,7 @@ pub struct Entry {
 
 #[derive(Clone, Debug)]
 struct RailEntry {
+    key: String,
     label: String,
     icon_id: String,
     members: Vec<String>,
@@ -21,55 +22,206 @@ fn structure_rows(entries: &[Entry]) -> Vec<RailEntry> {
     let mut groups = std::collections::BTreeMap::<String, RailEntry>::new();
     for entry in entries {
         let (namespace, path) = entry.id.split_once(':').unwrap_or(("", entry.id.as_str()));
-        let leaf = path.rsplit('/').next().unwrap_or(path);
-        let parent = path.rsplit_once('/').map(|(parent, _)| parent);
-        let path_key = |leaf: &str| match parent {
-            Some(parent) => format!("{namespace}:{parent}/{leaf}"),
-            None => format!("{namespace}:{leaf}"),
-        };
-        let leaf_lower = leaf.to_ascii_lowercase();
-        let digsite = leaf_lower == "digsite" || leaf_lower.starts_with("digsite_");
-        let family = if leaf_lower.starts_with("unfinished_sloop_") {
+        let (parent, leaf) = path.rsplit_once('/').unwrap_or(("", path));
+        let lower = leaf.to_ascii_lowercase();
+        let tokens: Vec<_> = lower.split('_').collect();
+        let has = |word: &str| tokens.contains(&word);
+        // Identify the object before its condition: a ruined castle is still a castle,
+        // and a ruined village remains in the village family, rather than generic ruins.
+        let family = if lower == "unfinished_sloop" || lower.starts_with("unfinished_sloop_") {
             Some(("unfinished_sloop", "Unfinished sloops"))
-        } else if leaf_lower.starts_with("unfinished_rowboat_") {
+        } else if lower == "unfinished_rowboat" || lower.starts_with("unfinished_rowboat_") {
             Some(("unfinished_rowboat", "Unfinished rowboats"))
-        } else if leaf_lower.starts_with("village_")
-            || leaf_lower.contains("_village")
-            || leaf_lower == "village"
-        {
+        } else if has("village") || has("villages") {
             Some(("village", "Villages"))
-        } else if leaf_lower == "desert_ruins_small" {
-            Some(("desert_ruins", "Desert ruins"))
-        } else if leaf_lower == "mesa_temple_small" {
-            Some(("mesa_temple", "Mesa temples"))
+        } else if has("digsite") || lower.contains("dig_site") {
+            Some(("digsite", "Dig sites"))
+        } else if has("church") || has("churches") {
+            Some(("church", "Churches"))
+        } else if has("towerhouse") || has("towerhouses") {
+            Some(("towerhouse", "Towerhouses"))
+        } else if has("tower") || has("towers") {
+            Some(("tower", "Towers"))
+        } else if has("castle") || has("castles") {
+            Some(("castle", "Castles"))
+        } else if has("temple") || has("temples") {
+            Some(("temple", "Temples"))
+        } else if has("monument") || has("monuments") {
+            Some(("monument", "Monuments"))
+        } else if has("ruin") || has("ruins") {
+            Some(("ruins", "Ruins"))
+        } else if has("shipwreck") || has("shipwrecks") {
+            Some(("shipwreck", "Shipwrecks"))
+        } else if has("stronghold") || has("strongholds") {
+            Some(("stronghold", "Strongholds"))
+        } else if has("camp") || has("camps") {
+            Some(("camp", "Camps"))
         } else {
             None
         };
-        let numbered = leaf
-            .rsplit_once('_')
-            .filter(|(_, suffix)| !suffix.is_empty() && suffix.bytes().all(|b| b.is_ascii_digit()));
-        let (key, label) = if digsite {
-            (path_key("digsite"), "Dig sites".to_owned())
-        } else if let Some((base, label)) = family {
-            (path_key(base), label.to_owned())
-        } else if let Some(base) = ["_small", "_large"]
+        let base = lower
+            .trim_end_matches(|c: char| c.is_ascii_digit())
+            .trim_end_matches('_');
+        let base = ["_small", "_large"]
             .iter()
-            .find_map(|suffix| leaf_lower.strip_suffix(suffix))
-        {
-            (path_key(base), base.replace('_', " "))
-        } else if let Some((base, _)) = numbered {
-            (path_key(base), base.replace('_', " "))
-        } else {
-            (path_key(leaf), entry.label.clone())
-        };
-        let group = groups.entry(key).or_insert_with(|| RailEntry {
+            .find_map(|suffix| base.strip_suffix(suffix))
+            .unwrap_or(base);
+        let (family, label) = family
+            .map(|(key, label)| (key, label.to_owned()))
+            .unwrap_or_else(|| {
+                (
+                    base,
+                    if base == lower {
+                        entry.label.clone()
+                    } else {
+                        base.replace('_', " ")
+                    },
+                )
+            });
+        let key = format!("structure:{namespace}:{parent}/{family}");
+        let group = groups.entry(key.clone()).or_insert_with(|| RailEntry {
+            key,
             label,
             icon_id: entry.id.clone(),
             members: Vec::new(),
         });
         group.members.push(entry.id.clone());
     }
-    groups.into_values().collect()
+    finish_rows(groups)
+}
+
+/// Mineral families follow the configured primary output, including raw blocks and
+/// host-rock variants. Vein IDs remain intact as the individually selectable children.
+fn ore_rows(entries: &[Entry]) -> Vec<RailEntry> {
+    static FAMILIES: std::sync::OnceLock<std::collections::HashMap<String, String>> =
+        std::sync::OnceLock::new();
+    let families = FAMILIES.get_or_init(|| {
+        let mut families = std::collections::HashMap::new();
+        for json in [
+            include_str!("../../assets/data/tfg/veins.json"),
+            include_str!("../beneath/ore-features.json"),
+        ] {
+            let data: serde_json::Value =
+                serde_json::from_str(json).expect("embedded vein catalog");
+            for (id, vein) in data["veins"].as_object().into_iter().flatten() {
+                let mut weights = std::collections::BTreeMap::<String, u64>::new();
+                for (host, outputs) in vein["blocks"].as_object().into_iter().flatten() {
+                    let host_leaf = host.rsplit([':', '/']).next().unwrap_or(host);
+                    let host_prefix = if host.contains(":sand/") {
+                        format!("{host_leaf}_sand_")
+                    } else {
+                        format!("{host_leaf}_")
+                    };
+                    for output in outputs.as_array().into_iter().flatten() {
+                        let Some(block) = output["block"].as_str() else {
+                            continue;
+                        };
+                        let local = block.rsplit(':').next().unwrap_or(block);
+                        let material = local
+                            .strip_prefix("raw_")
+                            .and_then(|value| value.strip_suffix("_block"))
+                            .or_else(|| {
+                                local
+                                    .strip_prefix(&host_prefix)
+                                    .and_then(|value| value.strip_suffix("_ore"))
+                            });
+                        if let Some(material) = material {
+                            *weights.entry(material.to_owned()).or_default() +=
+                                output["weight"].as_u64().unwrap_or(1);
+                        }
+                    }
+                }
+                if let Some((material, _)) = weights
+                    .into_iter()
+                    .max_by(|a, b| a.1.cmp(&b.1).then_with(|| b.0.cmp(&a.0)))
+                {
+                    families.insert(id.clone(), mineral_family(&material).to_owned());
+                }
+            }
+        }
+        families
+    });
+    let mut groups = std::collections::BTreeMap::<String, RailEntry>::new();
+    for entry in entries {
+        let (namespace, path) = entry.id.split_once(':').unwrap_or(("", entry.id.as_str()));
+        let (parent, leaf) = path.rsplit_once('/').unwrap_or(("", path));
+        let dimension = if leaf.starts_with("beneath_") {
+            "beneath"
+        } else {
+            "overworld"
+        };
+        let family = if leaf.ends_with("_dike") {
+            "rock_dikes"
+        } else {
+            families.get(&entry.id).map(String::as_str).unwrap_or(leaf)
+        };
+        let key = format!("ore:{namespace}:{parent}/{dimension}/{family}");
+        let group = groups.entry(key.clone()).or_insert_with(|| RailEntry {
+            key,
+            label: family.replace('_', " "),
+            icon_id: entry.id.clone(),
+            members: Vec::new(),
+        });
+        // Prefer a normal-depth raw ore sprite over a surface or exotic variant.
+        if ore_icon_order(&entry.id) < ore_icon_order(&group.icon_id) {
+            group.icon_id = entry.id.clone();
+        }
+        group.members.push(entry.id.clone());
+    }
+    let mut rows = finish_rows(groups);
+    for row in &mut rows {
+        if row.members.len() == 1 {
+            if let Some(entry) = entries.iter().find(|entry| entry.id == row.icon_id) {
+                row.label = entry.label.clone();
+            }
+        }
+    }
+    rows
+}
+
+fn mineral_family(material: &str) -> &str {
+    match material {
+        "copper" | "native_copper" | "chalcopyrite" | "chalcocite" | "bornite" | "malachite"
+        | "tetrahedrite" => "copper",
+        "iron" | "goethite" | "yellow_limonite" | "limonite" | "hematite" | "magnetite"
+        | "vanadium_magnetite" => "iron",
+        "coal" | "lignite" | "anthracite" => "coal",
+        "cassiterite" | "cassiterite_sand" | "tin" => "tin",
+        "galena" | "lead" => "lead_and_silver",
+        "sphalerite" | "zinc" => "zinc",
+        "garnierite" | "pentlandite" | "nickel" => "nickel",
+        "quartz" | "quartzite" | "nether_quartz" => "quartz",
+        "salt" | "rock_salt" | "sylvite" => "salt",
+        "mica" | "phlogopite" => "mica",
+        "apatite" | "tricalcium_phosphate" => "phosphate",
+        _ => material,
+    }
+}
+
+fn ore_icon_order(id: &str) -> (u8, &str) {
+    (
+        if id.starts_with("normal_") {
+            0
+        } else if id.starts_with("beneath_") {
+            1
+        } else if id.starts_with("surface_") {
+            2
+        } else {
+            3
+        },
+        id,
+    )
+}
+
+fn finish_rows(groups: std::collections::BTreeMap<String, RailEntry>) -> Vec<RailEntry> {
+    groups
+        .into_values()
+        .map(|mut row| {
+            row.members.sort();
+            row.members.dedup();
+            row
+        })
+        .collect()
 }
 
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
@@ -159,14 +311,7 @@ impl State {
                     };
                     let rows: Vec<RailEntry> = match self.group {
                         Mode::Structures => structure_rows(entries),
-                        Mode::Ores => entries
-                            .iter()
-                            .map(|e| RailEntry {
-                                label: e.label.clone(),
-                                icon_id: e.id.clone(),
-                                members: vec![e.id.clone()],
-                            })
-                            .collect(),
+                        Mode::Ores => ore_rows(entries),
                     };
                     if draw_icon_button(
                         ui,
@@ -282,7 +427,7 @@ impl State {
                                         format!(
                                             " · {} variants · right-click to {}",
                                             entry.members.len(),
-                                            if self.expanded.contains(&entry.icon_id) {
+                                            if self.expanded.contains(&entry.key) {
                                                 "collapse"
                                             } else {
                                                 "expand"
@@ -318,9 +463,9 @@ impl State {
                                     }
                                 }
                                 if response.secondary_clicked() {
-                                    if kind == MarkerKind::Structure && entry.members.len() > 1 {
-                                        if !self.expanded.insert(entry.icon_id.clone()) {
-                                            self.expanded.remove(&entry.icon_id);
+                                    if entry.members.len() > 1 {
+                                        if !self.expanded.insert(entry.key.clone()) {
+                                            self.expanded.remove(&entry.key);
                                         }
                                     } else {
                                         prefs.solo_feature(
@@ -346,10 +491,7 @@ impl State {
                                         egui::Color32::from_black_alpha(112),
                                     );
                                 }
-                                if kind == MarkerKind::Structure
-                                    && entry.members.len() > 1
-                                    && self.expanded.contains(&entry.icon_id)
-                                {
+                                if entry.members.len() > 1 && self.expanded.contains(&entry.key) {
                                     for member in &entry.members {
                                         let member_entry = entries.iter().find(|e| &e.id == member);
                                         let label = member_entry
@@ -358,25 +500,33 @@ impl State {
                                         let hidden = is_hidden(prefs, &kind, member);
                                         ui.horizontal(|ui| {
                                             ui.add_space(3.);
-                                            let texture = structure_cache.get(ctx, member);
+                                            let texture = match kind {
+                                                MarkerKind::Ore => ore_cache
+                                                    .get(ctx, member)
+                                                    .map(|texture| texture.id()),
+                                                _ => Some(structure_cache.get(ctx, member).id()),
+                                            };
                                             let tint = if hidden {
                                                 egui::Color32::from_gray(105)
                                             } else {
                                                 egui::Color32::WHITE
                                             };
-                                            let child = ui
-                                                .add_sized(
+                                            let child = if let Some(texture) = texture {
+                                                ui.add_sized(
                                                     Vec2::splat(31.),
                                                     egui::Button::image(
                                                         egui::Image::new((
-                                                            texture.id(),
+                                                            texture,
                                                             Vec2::splat(25.),
                                                         ))
                                                         .tint(tint),
                                                     )
                                                     .selected(!hidden),
                                                 )
-                                                .on_hover_text(format!("{label} · {member}"));
+                                            } else {
+                                                draw_icon_button(ui, RailIcon::Unknown, label)
+                                            }
+                                            .on_hover_text(format!("{label} · {member}"));
                                             if child.clicked() {
                                                 if ui.input(|i| i.modifiers.shift) {
                                                     prefs.solo_feature(
@@ -508,6 +658,164 @@ fn is_hidden(prefs: &DisplayPrefs, kind: &MarkerKind, id: &str) -> bool {
 mod tests {
     use super::*;
 
+    fn entry(id: &str) -> Entry {
+        Entry {
+            id: id.into(),
+            label: id.replace('_', " "),
+        }
+    }
+
+    #[test]
+    fn ore_families_use_actual_outputs_and_preserve_each_vein_control() {
+        let entries = [
+            "normal_copper",
+            "normal_copper_gypsum",
+            "surface_native_copper",
+            "high_realgar",
+            "deep_copper_sulfide",
+            "high_sulfur",
+            "normal_coal",
+            "surface_coal",
+            "high_coal",
+            "sand_tin",
+            "deep_asbestos",
+            "high_tin",
+            "normal_gold",
+            "surface_gold",
+        ]
+        .map(entry);
+        let rows = ore_rows(&entries);
+        let copper = rows.iter().find(|row| row.label == "copper").unwrap();
+        assert_eq!(
+            copper.members,
+            [
+                "high_realgar",
+                "normal_copper",
+                "normal_copper_gypsum",
+                "surface_native_copper"
+            ]
+        );
+        assert_eq!(copper.icon_id, "normal_copper");
+        // This mixed vein's main output is sulfur despite its legacy name.
+        let sulfur = rows.iter().find(|row| row.label == "sulfur").unwrap();
+        assert_eq!(sulfur.members, ["deep_copper_sulfide", "high_sulfur"]);
+        assert_eq!(
+            rows.iter()
+                .find(|row| row.label == "coal")
+                .unwrap()
+                .members
+                .len(),
+            3
+        );
+        assert_eq!(
+            rows.iter().find(|row| row.label == "tin").unwrap().members,
+            ["deep_asbestos", "high_tin", "sand_tin"]
+        );
+        let mut prefs = DisplayPrefs::default();
+        prefs.set_feature_group_visible(&MarkerKind::Ore, &copper.members, false);
+        prefs.set_feature_visible(&MarkerKind::Ore, "normal_copper", true);
+        assert!(!is_hidden(&prefs, &MarkerKind::Ore, "normal_copper"));
+        assert!(is_hidden(&prefs, &MarkerKind::Ore, "surface_native_copper"));
+        assert!(!is_hidden(&prefs, &MarkerKind::Ore, "normal_gold"));
+    }
+
+    #[test]
+    fn ore_groups_partition_real_catalog_and_keep_dimensions_and_unknown_ids_distinct() {
+        let (ores, _) = super::super::workspace::feature_catalog();
+        let entries: Vec<_> = ores
+            .iter()
+            .map(|(id, label)| Entry {
+                id: id.clone(),
+                label: label.clone(),
+            })
+            .collect();
+        let rows = ore_rows(&entries);
+        let mut members: Vec<_> = rows
+            .iter()
+            .flat_map(|row| row.members.iter().cloned())
+            .collect();
+        members.sort();
+        let mut expected: Vec<_> = entries.iter().map(|entry| entry.id.clone()).collect();
+        expected.sort();
+        assert_eq!(
+            members, expected,
+            "every vein remains selectable exactly once"
+        );
+        assert!(rows.len() < entries.len() * 3 / 4);
+        for row in &rows {
+            assert!(
+                crate::ore_icons::icon_png(&row.icon_id).is_some(),
+                "{}",
+                row.icon_id
+            );
+            let beneath = row.members[0].starts_with("beneath_");
+            assert!(
+                row.members
+                    .iter()
+                    .all(|id| id.starts_with("beneath_") == beneath)
+            );
+        }
+        let mut reversed = entries.clone();
+        reversed.reverse();
+        let identity = |rows: Vec<RailEntry>| {
+            rows.into_iter()
+                .map(|row| (row.key, row.icon_id, row.members))
+                .collect::<Vec<_>>()
+        };
+        assert_eq!(identity(rows), identity(ore_rows(&reversed)));
+        let unknown = ore_rows(&[entry("custom:normal_copper"), entry("other:normal_copper")]);
+        assert_eq!(unknown.len(), 2);
+    }
+
+    #[test]
+    fn ruin_church_and_building_families_cover_variants_without_swallowing_other_objects() {
+        let entries = [
+            "tfc_ruins:ruins",
+            "tfc_ruins:ruin_small",
+            "tfc_ruins:ruin_beach",
+            "tfc_ruins:ruin_rich",
+            "other:ruin_small",
+            "tfc_ruined_world:limestone_church",
+            "tfc_ruined_world:small_limestone_church_2",
+            "tfc_ruined_world:medium_gneiss_church",
+            "tfc_ruined_world:towerhouse_1",
+            "tfc_ruined_world:tower_1",
+            "tfc_ruined_world:castle_1",
+            "wan:desert_ruins",
+            "wan:desert_ruins_small",
+            "wan:ruined_castle",
+            "wan:ice_spike_castle",
+            "wan:abandoned_village",
+            "wan:mesa_temple",
+            "wan:mesa_temple_small",
+        ]
+        .map(entry);
+        let rows = structure_rows(&entries);
+        let group = |id: &str| {
+            rows.iter()
+                .find(|row| row.members.iter().any(|member| member == id))
+                .unwrap()
+        };
+        assert_eq!(group("tfc_ruins:ruins").members.len(), 4);
+        assert_eq!(group("other:ruin_small").members.len(), 1);
+        assert_eq!(group("tfc_ruined_world:limestone_church").members.len(), 3);
+        assert_ne!(
+            group("tfc_ruined_world:towerhouse_1").key,
+            group("tfc_ruined_world:tower_1").key
+        );
+        assert_ne!(
+            group("tfc_ruined_world:towerhouse_1").key,
+            group("tfc_ruined_world:castle_1").key
+        );
+        assert_eq!(group("wan:desert_ruins").members.len(), 2);
+        assert_eq!(
+            group("wan:ruined_castle").members,
+            ["wan:ice_spike_castle", "wan:ruined_castle"]
+        );
+        assert_eq!(group("wan:abandoned_village").members.len(), 1);
+        assert_eq!(group("wan:mesa_temple").members.len(), 2);
+    }
+
     #[test]
     fn preference_helpers_toggle_solo_and_restore_types_independently() {
         let mut prefs = DisplayPrefs::default();
@@ -607,7 +915,7 @@ mod tests {
             },
         ];
         let groups = structure_rows(&structures);
-        let tower = groups.iter().find(|g| g.label == "tower").unwrap();
+        let tower = groups.iter().find(|g| g.label == "Towers").unwrap();
         assert_eq!(tower.members, ["mod:tower_1", "mod:tower_2"]);
         assert!(groups.iter().any(|g| g.members == ["other:tower_1"]));
         let digsites = groups
@@ -655,27 +963,6 @@ mod tests {
                 .iter()
                 .any(|g| g.members == ["wan_ancient_beasts:training_outpost"])
         );
-
-        let ores = [
-            Entry {
-                id: "normal_gold".into(),
-                label: "Gold".into(),
-            },
-            Entry {
-                id: "normal_iron".into(),
-                label: "Iron".into(),
-            },
-        ];
-        let ore_rows: Vec<_> = ores
-            .iter()
-            .map(|e| RailEntry {
-                label: e.label.clone(),
-                icon_id: e.id.clone(),
-                members: vec![e.id.clone()],
-            })
-            .collect();
-        assert_eq!(ore_rows.len(), 2);
-        assert_ne!(ore_rows[0].members, ore_rows[1].members);
 
         let mut prefs = DisplayPrefs::default();
         prefs.set_feature_group_visible(&MarkerKind::Structure, &tower.members, false);
