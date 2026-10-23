@@ -49,7 +49,9 @@ no Minecraft installation, Java process or game launch.
 The catalogs contain the active 27 Moon and 28 Mars TFC vein configurations. Native vein-start
 sampling follows configured cluster, disc and pipe RNG, rarity, Y and geometry settings. Markers
 are searchable by vein and mineral contents and grouped by their configured primary output.
-Existing matching raw-mineral artwork is reused; unknown minerals are not given unrelated art.
+All 55 configured planetary vein types have transparent raw-mineral artwork for their primary
+output, including the installed material colors and icon-set overrides. Shared minerals reuse
+one cached texture across dimensions and marker positions.
 Replacement host blocks are not checked throughout each vein, so a start alone does not prove
 that every configured ore block exists there.
 

@@ -2,10 +2,165 @@
 //! PNGs are embedded into the executable, then uploaded lazily the first time a vein type is shown.
 #[cfg(feature = "gui")]
 use eframe::egui::{self, TextureHandle};
-#[cfg(feature = "gui")]
-use std::collections::HashMap;
+use std::{collections::HashMap, sync::OnceLock};
 
 const ICONS: &[(&str, &[u8])] = &[
+    (
+        "planetary_almandine",
+        include_bytes!("../assets/ore-icons/planetary/almandine.png"),
+    ),
+    (
+        "planetary_amethyst",
+        include_bytes!("../assets/ore-icons/planetary/amethyst.png"),
+    ),
+    (
+        "planetary_apatite",
+        include_bytes!("../assets/ore-icons/planetary/apatite.png"),
+    ),
+    (
+        "planetary_bastnasite",
+        include_bytes!("../assets/ore-icons/planetary/bastnasite.png"),
+    ),
+    (
+        "planetary_bismuth",
+        include_bytes!("../assets/ore-icons/planetary/bismuth.png"),
+    ),
+    (
+        "planetary_blue_topaz",
+        include_bytes!("../assets/ore-icons/planetary/blue_topaz.png"),
+    ),
+    (
+        "planetary_bornite",
+        include_bytes!("../assets/ore-icons/planetary/bornite.png"),
+    ),
+    (
+        "planetary_cassiterite",
+        include_bytes!("../assets/ore-icons/planetary/cassiterite.png"),
+    ),
+    (
+        "planetary_certus_quartz",
+        include_bytes!("../assets/ore-icons/planetary/certus_quartz.png"),
+    ),
+    (
+        "planetary_chalcopyrite",
+        include_bytes!("../assets/ore-icons/planetary/chalcopyrite.png"),
+    ),
+    (
+        "planetary_chromite",
+        include_bytes!("../assets/ore-icons/planetary/chromite.png"),
+    ),
+    (
+        "planetary_coal",
+        include_bytes!("../assets/ore-icons/planetary/coal.png"),
+    ),
+    (
+        "planetary_electrotine",
+        include_bytes!("../assets/ore-icons/planetary/electrotine.png"),
+    ),
+    (
+        "planetary_emerald",
+        include_bytes!("../assets/ore-icons/planetary/emerald.png"),
+    ),
+    (
+        "planetary_galena",
+        include_bytes!("../assets/ore-icons/planetary/galena.png"),
+    ),
+    (
+        "planetary_garnierite",
+        include_bytes!("../assets/ore-icons/planetary/garnierite.png"),
+    ),
+    (
+        "planetary_gold",
+        include_bytes!("../assets/ore-icons/planetary/gold.png"),
+    ),
+    (
+        "planetary_graphite",
+        include_bytes!("../assets/ore-icons/planetary/graphite.png"),
+    ),
+    (
+        "planetary_grossular",
+        include_bytes!("../assets/ore-icons/planetary/grossular.png"),
+    ),
+    (
+        "planetary_gypsum",
+        include_bytes!("../assets/ore-icons/planetary/gypsum.png"),
+    ),
+    (
+        "planetary_hematite",
+        include_bytes!("../assets/ore-icons/planetary/hematite.png"),
+    ),
+    (
+        "planetary_ilmenite",
+        include_bytes!("../assets/ore-icons/planetary/ilmenite.png"),
+    ),
+    (
+        "planetary_kyanite",
+        include_bytes!("../assets/ore-icons/planetary/kyanite.png"),
+    ),
+    (
+        "planetary_lazurite",
+        include_bytes!("../assets/ore-icons/planetary/lazurite.png"),
+    ),
+    (
+        "planetary_pitchblende",
+        include_bytes!("../assets/ore-icons/planetary/pitchblende.png"),
+    ),
+    (
+        "planetary_pyrite",
+        include_bytes!("../assets/ore-icons/planetary/pyrite.png"),
+    ),
+    (
+        "planetary_pyrochlore",
+        include_bytes!("../assets/ore-icons/planetary/pyrochlore.png"),
+    ),
+    (
+        "planetary_pyrolusite",
+        include_bytes!("../assets/ore-icons/planetary/pyrolusite.png"),
+    ),
+    (
+        "planetary_quartzite",
+        include_bytes!("../assets/ore-icons/planetary/quartzite.png"),
+    ),
+    (
+        "planetary_redstone",
+        include_bytes!("../assets/ore-icons/planetary/redstone.png"),
+    ),
+    (
+        "planetary_scheelite",
+        include_bytes!("../assets/ore-icons/planetary/scheelite.png"),
+    ),
+    (
+        "planetary_silver",
+        include_bytes!("../assets/ore-icons/planetary/silver.png"),
+    ),
+    (
+        "planetary_soapstone",
+        include_bytes!("../assets/ore-icons/planetary/soapstone.png"),
+    ),
+    (
+        "planetary_sphalerite",
+        include_bytes!("../assets/ore-icons/planetary/sphalerite.png"),
+    ),
+    (
+        "planetary_spodumene",
+        include_bytes!("../assets/ore-icons/planetary/spodumene.png"),
+    ),
+    (
+        "planetary_tetrahedrite",
+        include_bytes!("../assets/ore-icons/planetary/tetrahedrite.png"),
+    ),
+    (
+        "planetary_trona",
+        include_bytes!("../assets/ore-icons/planetary/trona.png"),
+    ),
+    (
+        "planetary_tungstate",
+        include_bytes!("../assets/ore-icons/planetary/tungstate.png"),
+    ),
+    (
+        "planetary_wulfenite",
+        include_bytes!("../assets/ore-icons/planetary/wulfenite.png"),
+    ),
     (
         "beneath_aluminium",
         include_bytes!("../assets/ore-icons/beneath_aluminium.png"),
@@ -161,34 +316,6 @@ const ICONS: &[(&str, &[u8])] = &[
     (
         "normal_tin",
         include_bytes!("../assets/ore-icons/normal_cassiterite.png"),
-    ),
-    (
-        "planet_silver",
-        include_bytes!("../assets/ore-icons/normal_native_silver.png"),
-    ),
-    (
-        "planet_graphite",
-        include_bytes!("../assets/ore-icons/graphite.png"),
-    ),
-    (
-        "planet_gypsum",
-        include_bytes!("../assets/ore-icons/gypsum.png"),
-    ),
-    (
-        "planet_pyrite",
-        include_bytes!("../assets/ore-icons/pyrite.png"),
-    ),
-    (
-        "planet_emerald",
-        include_bytes!("../assets/ore-icons/emerald.png"),
-    ),
-    (
-        "planet_topaz",
-        include_bytes!("../assets/ore-icons/topaz.png"),
-    ),
-    (
-        "planet_lapis",
-        include_bytes!("../assets/ore-icons/lapis_lazuli.png"),
     ),
     (
         "beneath_realgar",
@@ -613,12 +740,8 @@ pub struct IconCache {
 impl IconCache {
     /// Returns a cached GPU texture for the stable part of an ore marker's id.
     pub fn get(&mut self, ctx: &egui::Context, vein_id: &str) -> Option<&TextureHandle> {
-        let vein_id = vein_id.split('@').next().unwrap_or(vein_id);
-        let lookup = beneath_icon(vein_id)
-            .or_else(|| planetary_icon(vein_id))
-            .unwrap_or(vein_id);
-        let (key, bytes) = ICONS.iter().find(|(key, _)| *key == lookup)?;
-        self.textures.entry(*key).or_insert_with(|| {
+        let (key, bytes) = icon_asset(vein_id)?;
+        self.textures.entry(key).or_insert_with(|| {
             let rgba = image::load_from_memory(bytes)
                 .expect("bundled ore icon must be valid PNG")
                 .to_rgba8();
@@ -636,14 +759,17 @@ impl IconCache {
 
 /// Bundled PNG bytes for a vein icon, usable by both the viewer and headless exporters.
 pub fn icon_png(vein_id: &str) -> Option<&'static [u8]> {
+    icon_asset(vein_id).map(|(_, bytes)| bytes)
+}
+
+fn icon_asset(vein_id: &str) -> Option<(&'static str, &'static [u8])> {
+    static ASSETS: OnceLock<HashMap<&'static str, &'static [u8]>> = OnceLock::new();
+    let assets = ASSETS.get_or_init(|| ICONS.iter().copied().collect());
     let id = vein_id.split('@').next().unwrap_or(vein_id);
-    let lookup = beneath_icon(id)
-        .or_else(|| planetary_icon(id))
-        .unwrap_or(id);
-    ICONS
-        .iter()
-        .find(|(key, _)| *key == lookup)
-        .map(|(_, bytes)| *bytes)
+    let lookup = planetary_icon(id).unwrap_or(id);
+    assets
+        .get_key_value(lookup)
+        .map(|(key, bytes)| (*key, *bytes))
 }
 
 /// Material name represented by the icon; useful in marker lists and tooltips.
@@ -652,7 +778,7 @@ pub fn material_name(vein_id: &str) -> Option<&'static str> {
     if let Some((_, material)) = BENEATH_MATERIALS.iter().find(|(id, _)| *id == vein_id) {
         return Some(material);
     }
-    if let Some((_, material)) = PLANETARY_MATERIALS.iter().find(|(id, _)| *id == vein_id) {
+    if let Some((_, material, _)) = PLANETARY_ICONS.iter().find(|(id, _, _)| *id == vein_id) {
         return Some(material);
     }
     match vein_id {
@@ -741,62 +867,119 @@ pub fn material_name(vein_id: &str) -> Option<&'static str> {
     }
 }
 
-/// Exact in-game raw mineral art available for planetary veins. Configurations whose dominant
-/// output has no matching bundled raw-material sprite intentionally return `None`.
+/// Effective installed raw-ore item artwork, including TFG's model and tint overrides.
 fn planetary_icon(id: &str) -> Option<&'static str> {
-    match id {
-        "moon:moon_gold" | "mars:mars_gold" => Some("normal_gold"),
-        "moon:moon_silver" => Some("planet_silver"),
-        "moon:moon_graphite" | "mars:mars_graphite" => Some("planet_graphite"),
-        "moon:moon_beryllium" | "mars:mars_beryllium" => Some("planet_emerald"),
-        "moon:moon_gypsum" => Some("planet_gypsum"),
-        "moon:moon_sphalerite" => Some("normal_sphalerite"),
-        "moon:moon_tetrahedrite" | "mars:mars_stibnite" | "mars:mars_surface_tetrahedrite" => {
-            Some("normal_tetrahedrite")
-        }
-        "moon:moon_redstone" => Some("beneath_redstone"),
-        "moon:moon_topaz" => Some("planet_topaz"),
-        "moon:moon_cassiterite" | "mars:mars_surface_cassiterite" => Some("normal_tin"),
-        "mars:mars_coal" => Some("bituminous_coal"),
-        "mars:mars_galena" | "mars:mars_surface_nickel_galena" => Some("normal_galena"),
-        "mars:mars_hematite" | "mars:mars_surface_hematite" => Some("surface_hematite"),
-        "mars:mars_nickel" | "moon:moon_garnierite" => Some("normal_garnierite"),
-        "mars:mars_lapis" => Some("planet_lapis"),
-        "mars:mars_salt" => Some("normal_spodumene"),
-        "mars:mars_sulfur" => Some("planet_pyrite"),
-        "mars:mars_surface_bismuthinite" => Some("normal_bismuth"),
-        _ => None,
-    }
+    PLANETARY_ICONS
+        .iter()
+        .find(|(vein, _, _)| *vein == id)
+        .map(|(_, _, icon)| *icon)
 }
 
-const PLANETARY_MATERIALS: &[(&str, &str)] = &[
-    ("moon:moon_gold", "gold"),
-    ("mars:mars_gold", "gold"),
-    ("moon:moon_silver", "silver"),
-    ("moon:moon_graphite", "graphite"),
-    ("mars:mars_graphite", "graphite"),
-    ("moon:moon_beryllium", "emerald"),
-    ("mars:mars_beryllium", "emerald"),
-    ("moon:moon_gypsum", "gypsum"),
-    ("moon:moon_sphalerite", "sphalerite"),
-    ("moon:moon_tetrahedrite", "tetrahedrite"),
-    ("mars:mars_stibnite", "tetrahedrite"),
-    ("mars:mars_surface_tetrahedrite", "tetrahedrite"),
-    ("moon:moon_redstone", "redstone"),
-    ("moon:moon_topaz", "topaz"),
-    ("moon:moon_cassiterite", "cassiterite"),
-    ("mars:mars_surface_cassiterite", "cassiterite"),
-    ("mars:mars_coal", "coal"),
-    ("mars:mars_galena", "galena"),
-    ("mars:mars_surface_nickel_galena", "galena"),
-    ("mars:mars_hematite", "hematite"),
-    ("mars:mars_surface_hematite", "hematite"),
-    ("mars:mars_nickel", "garnierite"),
-    ("moon:moon_garnierite", "garnierite"),
-    ("mars:mars_lapis", "lazurite"),
-    ("mars:mars_salt", "spodumene"),
-    ("mars:mars_sulfur", "pyrite"),
-    ("mars:mars_surface_bismuthinite", "bismuthinite"),
+// Registry ID, displayed primary material, shared embedded sprite key.
+const PLANETARY_ICONS: &[(&str, &str, &str)] = &[
+    ("moon:moon_apatite", "pyrochlore", "planetary_pyrochlore"),
+    ("moon:moon_bauxite", "ilmenite", "planetary_ilmenite"),
+    ("moon:moon_beryllium", "emerald", "planetary_emerald"),
+    (
+        "moon:moon_cassiterite",
+        "cassiterite",
+        "planetary_cassiterite",
+    ),
+    ("moon:moon_desh", "ilmenite", "planetary_ilmenite"),
+    ("moon:moon_garnet", "amethyst", "planetary_amethyst"),
+    ("moon:moon_garnierite", "garnierite", "planetary_garnierite"),
+    ("moon:moon_gold", "gold", "planetary_gold"),
+    ("moon:moon_graphite", "graphite", "planetary_graphite"),
+    ("moon:moon_gypsum", "gypsum", "planetary_gypsum"),
+    ("moon:moon_lubricant", "soapstone", "planetary_soapstone"),
+    ("moon:moon_magnetite", "chromite", "planetary_chromite"),
+    ("moon:moon_manganese", "grossular", "planetary_grossular"),
+    ("moon:moon_mica", "kyanite", "planetary_kyanite"),
+    ("moon:moon_molybdenum", "wulfenite", "planetary_wulfenite"),
+    ("moon:moon_monazite", "bastnasite", "planetary_bastnasite"),
+    ("moon:moon_pyrolusite", "pyrolusite", "planetary_pyrolusite"),
+    (
+        "moon:moon_quartz",
+        "certus quartz",
+        "planetary_certus_quartz",
+    ),
+    ("moon:moon_redstone", "redstone", "planetary_redstone"),
+    (
+        "moon:moon_saltpeter",
+        "electrotine",
+        "planetary_electrotine",
+    ),
+    ("moon:moon_sapphire", "almandine", "planetary_almandine"),
+    ("moon:moon_scheelite", "tungstate", "planetary_tungstate"),
+    ("moon:moon_sheldonite", "bornite", "planetary_bornite"),
+    ("moon:moon_silver", "silver", "planetary_silver"),
+    ("moon:moon_sphalerite", "sphalerite", "planetary_sphalerite"),
+    (
+        "moon:moon_tetrahedrite",
+        "tetrahedrite",
+        "planetary_tetrahedrite",
+    ),
+    ("moon:moon_topaz", "blue topaz", "planetary_blue_topaz"),
+    ("mars:deep_mars_chromite", "redstone", "planetary_redstone"),
+    (
+        "mars:deep_mars_pitchblende",
+        "pitchblende",
+        "planetary_pitchblende",
+    ),
+    ("mars:deep_mars_sheldonite", "bornite", "planetary_bornite"),
+    ("mars:mars_almandine", "almandine", "planetary_almandine"),
+    ("mars:mars_apatite", "apatite", "planetary_apatite"),
+    ("mars:mars_beryllium", "emerald", "planetary_emerald"),
+    ("mars:mars_coal", "coal", "planetary_coal"),
+    ("mars:mars_copper", "chalcopyrite", "planetary_chalcopyrite"),
+    ("mars:mars_galena", "galena", "planetary_galena"),
+    ("mars:mars_gold", "gold", "planetary_gold"),
+    ("mars:mars_graphite", "graphite", "planetary_graphite"),
+    ("mars:mars_hematite", "hematite", "planetary_hematite"),
+    ("mars:mars_lapis", "lazurite", "planetary_lazurite"),
+    ("mars:mars_lubricant", "trona", "planetary_trona"),
+    ("mars:mars_neodynium", "bastnasite", "planetary_bastnasite"),
+    ("mars:mars_nickel", "garnierite", "planetary_garnierite"),
+    (
+        "mars:mars_pitchblende",
+        "pitchblende",
+        "planetary_pitchblende",
+    ),
+    ("mars:mars_quartzite", "quartzite", "planetary_quartzite"),
+    ("mars:mars_salt", "spodumene", "planetary_spodumene"),
+    (
+        "mars:mars_stibnite",
+        "tetrahedrite",
+        "planetary_tetrahedrite",
+    ),
+    ("mars:mars_sulfur", "pyrite", "planetary_pyrite"),
+    (
+        "mars:mars_surface_bismuthinite",
+        "bismuth",
+        "planetary_bismuth",
+    ),
+    (
+        "mars:mars_surface_cassiterite",
+        "cassiterite",
+        "planetary_cassiterite",
+    ),
+    (
+        "mars:mars_surface_hematite",
+        "hematite",
+        "planetary_hematite",
+    ),
+    (
+        "mars:mars_surface_nickel_galena",
+        "galena",
+        "planetary_galena",
+    ),
+    (
+        "mars:mars_surface_tetrahedrite",
+        "tetrahedrite",
+        "planetary_tetrahedrite",
+    ),
+    ("mars:mars_tantalite", "pyrolusite", "planetary_pyrolusite"),
+    ("mars:mars_tungsten", "scheelite", "planetary_scheelite"),
 ];
 
 // The normal UI and the Beneath share the bundled, in-game raw mineral sprites. IDs resolve to
@@ -832,13 +1015,6 @@ const BENEATH_MATERIALS: &[(&str, &str)] = &[
     ("beneath_tin", "cassiterite"),
     ("beneath_zinc", "sphalerite"),
 ];
-fn beneath_icon(vein_id: &str) -> Option<&'static str> {
-    ICONS
-        .iter()
-        .find(|(key, _)| *key == vein_id && key.starts_with("beneath_"))
-        .map(|(key, _)| *key)
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -858,7 +1034,7 @@ mod tests {
             assert!((1..=64).contains(&icon.height()));
         }
         for (id, _) in BENEATH_MATERIALS {
-            let resolved = beneath_icon(id).expect("Beneath icon mapping");
+            let (resolved, _) = icon_asset(id).expect("Beneath icon mapping");
             assert!(
                 ICONS.iter().any(|(icon, _)| *icon == resolved),
                 "missing bundled icon for {id} -> {resolved}"
@@ -911,26 +1087,107 @@ mod tests {
         ];
         assert_eq!(BENEATH_MATERIALS, expected);
         for (id, _) in expected {
-            let resolved = beneath_icon(id).unwrap();
+            let (resolved, _) = icon_asset(id).unwrap();
             assert_eq!(resolved, id);
             assert!(ICONS.iter().any(|(key, _)| *key == resolved));
         }
     }
 
     #[test]
-    fn planetary_ore_icons_use_only_known_raw_material_art() {
-        for id in [
-            "moon:moon_gold@1,2",
-            "moon:moon_silver@1,2",
-            "mars:mars_graphite@1,2",
-            "mars:mars_hematite@1,2",
-        ] {
-            assert!(
-                icon_png(id).is_some(),
-                "missing known planetary art for {id}"
-            );
-            assert!(material_name(id).is_some(), "missing material for {id}");
+    fn every_planetary_vein_has_transparent_raw_ore_art_for_its_primary_material() {
+        let data: serde_json::Value = serde_json::from_str(include_str!(
+            "planetary/feature-assets/moon-mars-features.json"
+        ))
+        .unwrap();
+        let mut count = 0;
+        for dimension in ["moon", "mars"] {
+            for (id, vein) in data[dimension]["veins"].as_object().unwrap() {
+                let key = format!("{dimension}:{id}");
+                let placed = format!("{key}@-29,103");
+                let png =
+                    icon_png(&placed).unwrap_or_else(|| panic!("missing raw ore art for {key}"));
+                assert_eq!(
+                    png,
+                    icon_png(&key).unwrap(),
+                    "placement suffix changed {key}"
+                );
+                let icon = image::load_from_memory(png).unwrap().to_rgba8();
+                assert_eq!(
+                    icon.dimensions(),
+                    (16, 16),
+                    "wrong sprite dimensions for {key}"
+                );
+                assert!(
+                    icon.pixels().any(|p| p.0[3] == 0),
+                    "opaque backdrop on {key}"
+                );
+                assert!(icon.pixels().any(|p| p.0[3] > 0), "empty icon for {key}");
+
+                // Compare with the real configured output weights, after removing only
+                // the host-rock prefix. Vein names can name a secondary mineral.
+                let mut weights = std::collections::BTreeMap::<String, u64>::new();
+                for blocks in vein["config"]["blocks"].as_array().unwrap() {
+                    let mut hosts: Vec<_> = blocks["replace"]
+                        .as_array()
+                        .unwrap()
+                        .iter()
+                        .map(|host| {
+                            format!(
+                                "{}_",
+                                host.as_str().unwrap().rsplit([':', '/']).next().unwrap()
+                            )
+                        })
+                        .collect();
+                    hosts.sort_by_key(|s| std::cmp::Reverse(s.len()));
+                    for output in blocks["with"].as_array().unwrap() {
+                        let block = output["block"]
+                            .as_str()
+                            .unwrap()
+                            .rsplit(':')
+                            .next()
+                            .unwrap();
+                        let material = if let Some(raw) = block
+                            .strip_prefix("raw_")
+                            .and_then(|v| v.strip_suffix("_block"))
+                        {
+                            raw
+                        } else {
+                            let ore = block.strip_suffix("_ore").expect("planetary ore output");
+                            hosts
+                                .iter()
+                                .find_map(|host| ore.strip_prefix(host.as_str()))
+                                .unwrap_or(ore)
+                        };
+                        *weights.entry(material.to_owned()).or_default() +=
+                            output["weight"].as_u64().unwrap_or(1);
+                    }
+                }
+                let (primary, _) = weights
+                    .into_iter()
+                    .max_by(|a, b| a.1.cmp(&b.1).then_with(|| b.0.cmp(&a.0)))
+                    .unwrap();
+                let represented =
+                    material_name(&placed).unwrap_or_else(|| panic!("missing material for {key}"));
+                assert_eq!(
+                    represented.replace(' ', "_"),
+                    primary,
+                    "wrong raw mineral artwork for {key}"
+                );
+                count += 1;
+            }
         }
-        assert!(icon_png("moon:moon_apatite@1,2").is_none());
+        assert_eq!(count, 55);
+        assert!(icon_png("moon:not_a_vein@1,2").is_none());
+    }
+
+    #[cfg(feature = "gui")]
+    #[test]
+    fn planetary_markers_and_dimensions_share_a_single_texture_per_mineral() {
+        let ctx = egui::Context::default();
+        let mut cache = IconCache::default();
+        let moon = cache.get(&ctx, "moon:moon_gold@-20,13").unwrap().id();
+        let mars = cache.get(&ctx, "mars:mars_gold@900,-400").unwrap().id();
+        assert_eq!(moon, mars);
+        assert_eq!(cache.textures.len(), 1);
     }
 }

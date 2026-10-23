@@ -1,0 +1,1328 @@
+{
+  "format": 1,
+  "source_instance": "TerraFirmaGreg-Modern installed assets, GTCEu 7.5.3 and TFG Core 0.9.25",
+  "dominant_rule": "Sum configured-feature block output weights by normalized material after stripping all recognized host rock prefixes; ties choose lexicographically smallest material id. Raw block outputs are excluded from ore material scoring.",
+  "materials": [
+    {
+      "material": "almandine",
+      "asset": "almandine.png",
+      "primary_rgb": "#A21717",
+      "secondary_rgb": "#4B1E0C",
+      "icon_set": "cubic_shiny",
+      "resolved_model_set": "cubic_shiny",
+      "definition_class": "FirstDegreeMaterials.java",
+      "model_source": "kubejs/assets/gtceu/models/item/material_sets/cubic_shiny/raw_ore.json",
+      "texture_sources": [
+        "kubejs/assets/gtceu/textures/item/material_sets/cubic/raw_ore.png",
+        "kubejs/assets/gtceu/textures/item/material_sets/cubic/raw_ore_secondary.png",
+        "kubejs/assets/gtceu/textures/item/material_sets/cubic/raw_ore_overlay.png"
+      ],
+      "model_texture_layers": [
+        "gtceu:item/material_sets/cubic/raw_ore",
+        "gtceu:item/material_sets/cubic/raw_ore_secondary",
+        "gtceu:item/material_sets/cubic/raw_ore_overlay"
+      ],
+      "icon_set_parent_chain": [
+        "cubic_shiny"
+      ],
+      "material_definition_source": "gtceu-1.20.1-7.5.3.jar!/com/gregtechceu/gtceu/common/data/materials/FirstDegreeMaterials.java",
+      "icon_set_override_source": "TerraFirmaGreg-Core-Modern-0.9.25/kubejs/startup_scripts/tfg/icon_sets.js"
+    },
+    {
+      "material": "amethyst",
+      "asset": "amethyst.png",
+      "primary_rgb": "#CFA0F3",
+      "secondary_rgb": "#734FBC",
+      "icon_set": "tfc_amethyst",
+      "resolved_model_set": "tfc_amethyst",
+      "definition_class": "SecondDegreeMaterials.java",
+      "model_source": "kubejs/assets/gtceu/models/item/material_sets/tfc_amethyst/raw_ore.json",
+      "texture_sources": [
+        "kubejs/assets/gtceu/textures/item/material_sets/monoclinic/raw_ore.png",
+        "kubejs/assets/gtceu/textures/item/material_sets/monoclinic/raw_ore_secondary.png",
+        "kubejs/assets/gtceu/textures/item/material_sets/monoclinic/raw_ore_overlay.png"
+      ],
+      "model_texture_layers": [
+        "gtceu:item/material_sets/monoclinic/raw_ore",
+        "gtceu:item/material_sets/monoclinic/raw_ore_secondary",
+        "gtceu:item/material_sets/monoclinic/raw_ore_overlay"
+      ],
+      "icon_set_parent_chain": [
+        "tfc_amethyst"
+      ],
+      "material_definition_source": "gtceu-1.20.1-7.5.3.jar!/com/gregtechceu/gtceu/common/data/materials/SecondDegreeMaterials.java",
+      "icon_set_override_source": "TerraFirmaGreg-Core-Modern-0.9.25/kubejs/startup_scripts/tfg/icon_sets.js"
+    },
+    {
+      "material": "apatite",
+      "asset": "apatite.png",
+      "primary_rgb": "#06CDF1",
+      "secondary_rgb": "#701C07",
+      "icon_set": "prismatic_ruby",
+      "resolved_model_set": "prismatic_ruby",
+      "definition_class": "SecondDegreeMaterials.java",
+      "model_source": "kubejs/assets/gtceu/models/item/material_sets/prismatic_ruby/raw_ore.json",
+      "texture_sources": [
+        "kubejs/assets/gtceu/textures/item/material_sets/prismatic/raw_ore.png",
+        "kubejs/assets/gtceu/textures/item/material_sets/prismatic/raw_ore_secondary.png",
+        "kubejs/assets/gtceu/textures/item/material_sets/prismatic/raw_ore_overlay.png"
+      ],
+      "model_texture_layers": [
+        "gtceu:item/material_sets/prismatic/raw_ore",
+        "gtceu:item/material_sets/prismatic/raw_ore_secondary",
+        "gtceu:item/material_sets/prismatic/raw_ore_overlay"
+      ],
+      "icon_set_parent_chain": [
+        "prismatic_ruby"
+      ],
+      "material_definition_source": "gtceu-1.20.1-7.5.3.jar!/com/gregtechceu/gtceu/common/data/materials/SecondDegreeMaterials.java",
+      "icon_set_override_source": "TerraFirmaGreg-Core-Modern-0.9.25/kubejs/startup_scripts/tfg/icon_sets.js"
+    },
+    {
+      "material": "bastnasite",
+      "asset": "bastnasite.png",
+      "primary_rgb": "#CAAB60",
+      "secondary_rgb": "#C8502D",
+      "icon_set": "prismatic_ruby",
+      "resolved_model_set": "prismatic_ruby",
+      "definition_class": "FirstDegreeMaterials.java",
+      "model_source": "kubejs/assets/gtceu/models/item/material_sets/prismatic_ruby/raw_ore.json",
+      "texture_sources": [
+        "kubejs/assets/gtceu/textures/item/material_sets/prismatic/raw_ore.png",
+        "kubejs/assets/gtceu/textures/item/material_sets/prismatic/raw_ore_secondary.png",
+        "kubejs/assets/gtceu/textures/item/material_sets/prismatic/raw_ore_overlay.png"
+      ],
+      "model_texture_layers": [
+        "gtceu:item/material_sets/prismatic/raw_ore",
+        "gtceu:item/material_sets/prismatic/raw_ore_secondary",
+        "gtceu:item/material_sets/prismatic/raw_ore_overlay"
+      ],
+      "icon_set_parent_chain": [
+        "prismatic_ruby"
+      ],
+      "material_definition_source": "gtceu-1.20.1-7.5.3.jar!/com/gregtechceu/gtceu/common/data/materials/FirstDegreeMaterials.java",
+      "icon_set_override_source": "TerraFirmaGreg-Core-Modern-0.9.25/kubejs/startup_scripts/tfg/icon_sets.js"
+    },
+    {
+      "material": "bismuth",
+      "asset": "bismuth.png",
+      "primary_rgb": "#5FDDDD",
+      "secondary_rgb": "#517385",
+      "icon_set": "tfc_bismuth",
+      "resolved_model_set": "shiny",
+      "definition_class": "ElementMaterials.java",
+      "model_source": "gtceu-1.20.1-7.5.3.jar!/assets/gtceu/models/item/material_sets/shiny/raw_ore.json",
+      "texture_sources": [
+        "gtceu-1.20.1-7.5.3.jar!/assets/gtceu/textures/item/material_sets/shiny/raw_ore.png",
+        "gtceu-1.20.1-7.5.3.jar!/assets/gtceu/textures/item/material_sets/shiny/raw_ore_secondary.png",
+        "gtceu-1.20.1-7.5.3.jar!/assets/gtceu/textures/item/material_sets/shiny/raw_ore_overlay.png"
+      ],
+      "model_texture_layers": [
+        "gtceu:item/material_sets/shiny/raw_ore",
+        "gtceu:item/material_sets/shiny/raw_ore_secondary",
+        "gtceu:item/material_sets/shiny/raw_ore_overlay"
+      ],
+      "icon_set_parent_chain": [
+        "tfc_bismuth",
+        "bright",
+        "shiny"
+      ],
+      "material_definition_source": "gtceu-1.20.1-7.5.3.jar!/com/gregtechceu/gtceu/common/data/materials/ElementMaterials.java",
+      "icon_set_override_source": "TerraFirmaGreg-Core-Modern-0.9.25/kubejs/startup_scripts/tfg/icon_sets.js"
+    },
+    {
+      "material": "blue_topaz",
+      "asset": "blue_topaz.png",
+      "primary_rgb": "#DBFEFF",
+      "secondary_rgb": "#A0C4D7",
+      "icon_set": "tfc_topaz",
+      "resolved_model_set": "tfc_topaz",
+      "definition_class": "FirstDegreeMaterials.java",
+      "model_source": "kubejs/assets/gtceu/models/item/material_sets/tfc_topaz/raw_ore.json",
+      "texture_sources": [
+        "kubejs/assets/gtceu/textures/item/material_sets/monoclinic/raw_ore.png",
+        "kubejs/assets/gtceu/textures/item/material_sets/monoclinic/raw_ore_secondary.png",
+        "kubejs/assets/gtceu/textures/item/material_sets/monoclinic/raw_ore_overlay.png"
+      ],
+      "model_texture_layers": [
+        "gtceu:item/material_sets/monoclinic/raw_ore",
+        "gtceu:item/material_sets/monoclinic/raw_ore_secondary",
+        "gtceu:item/material_sets/monoclinic/raw_ore_overlay"
+      ],
+      "icon_set_parent_chain": [
+        "tfc_topaz"
+      ],
+      "material_definition_source": "gtceu-1.20.1-7.5.3.jar!/com/gregtechceu/gtceu/common/data/materials/FirstDegreeMaterials.java",
+      "icon_set_override_source": "TerraFirmaGreg-Core-Modern-0.9.25/kubejs/startup_scripts/tfg/icon_sets.js"
+    },
+    {
+      "material": "bornite",
+      "asset": "bornite.png",
+      "primary_rgb": "#FFE05A",
+      "secondary_rgb": "#442602",
+      "icon_set": "cubic_shiny",
+      "resolved_model_set": "cubic_shiny",
+      "definition_class": "FirstDegreeMaterials.java",
+      "model_source": "kubejs/assets/gtceu/models/item/material_sets/cubic_shiny/raw_ore.json",
+      "texture_sources": [
+        "kubejs/assets/gtceu/textures/item/material_sets/cubic/raw_ore.png",
+        "kubejs/assets/gtceu/textures/item/material_sets/cubic/raw_ore_secondary.png",
+        "kubejs/assets/gtceu/textures/item/material_sets/cubic/raw_ore_overlay.png"
+      ],
+      "model_texture_layers": [
+        "gtceu:item/material_sets/cubic/raw_ore",
+        "gtceu:item/material_sets/cubic/raw_ore_secondary",
+        "gtceu:item/material_sets/cubic/raw_ore_overlay"
+      ],
+      "icon_set_parent_chain": [
+        "cubic_shiny"
+      ],
+      "material_definition_source": "gtceu-1.20.1-7.5.3.jar!/com/gregtechceu/gtceu/common/data/materials/FirstDegreeMaterials.java",
+      "icon_set_override_source": "TerraFirmaGreg-Core-Modern-0.9.25/kubejs/startup_scripts/tfg/icon_sets.js"
+    },
+    {
+      "material": "cassiterite",
+      "asset": "cassiterite.png",
+      "primary_rgb": "#89847E",
+      "secondary_rgb": "#3B3B35",
+      "icon_set": "tfc_cassiterite",
+      "resolved_model_set": "shiny",
+      "definition_class": "FirstDegreeMaterials.java",
+      "model_source": "gtceu-1.20.1-7.5.3.jar!/assets/gtceu/models/item/material_sets/shiny/raw_ore.json",
+      "texture_sources": [
+        "gtceu-1.20.1-7.5.3.jar!/assets/gtceu/textures/item/material_sets/shiny/raw_ore.png",
+        "gtceu-1.20.1-7.5.3.jar!/assets/gtceu/textures/item/material_sets/shiny/raw_ore_secondary.png",
+        "gtceu-1.20.1-7.5.3.jar!/assets/gtceu/textures/item/material_sets/shiny/raw_ore_overlay.png"
+      ],
+      "model_texture_layers": [
+        "gtceu:item/material_sets/shiny/raw_ore",
+        "gtceu:item/material_sets/shiny/raw_ore_secondary",
+        "gtceu:item/material_sets/shiny/raw_ore_overlay"
+      ],
+      "icon_set_parent_chain": [
+        "tfc_cassiterite",
+        "bright",
+        "shiny"
+      ],
+      "material_definition_source": "gtceu-1.20.1-7.5.3.jar!/com/gregtechceu/gtceu/common/data/materials/FirstDegreeMaterials.java",
+      "icon_set_override_source": "TerraFirmaGreg-Core-Modern-0.9.25/kubejs/startup_scripts/tfg/icon_sets.js"
+    },
+    {
+      "material": "certus_quartz",
+      "asset": "certus_quartz.png",
+      "primary_rgb": "#C2D6FF",
+      "secondary_rgb": "#86BACF",
+      "icon_set": "certus",
+      "resolved_model_set": "quartz",
+      "definition_class": "FirstDegreeMaterials.java",
+      "model_source": "kubejs/assets/gtceu/models/item/material_sets/quartz/raw_ore.json",
+      "texture_sources": [
+        "kubejs/assets/gtceu/textures/item/material_sets/monoclinic/raw_ore.png",
+        "kubejs/assets/gtceu/textures/item/material_sets/monoclinic/raw_ore_secondary.png",
+        "kubejs/assets/gtceu/textures/item/material_sets/monoclinic/raw_ore_overlay.png"
+      ],
+      "model_texture_layers": [
+        "gtceu:item/material_sets/monoclinic/raw_ore",
+        "gtceu:item/material_sets/monoclinic/raw_ore_secondary",
+        "gtceu:item/material_sets/monoclinic/raw_ore_overlay"
+      ],
+      "icon_set_parent_chain": [
+        "certus",
+        "quartz"
+      ],
+      "material_definition_source": "gtceu-1.20.1-7.5.3.jar!/com/gregtechceu/gtceu/common/data/materials/FirstDegreeMaterials.java",
+      "icon_set_override_source": "TerraFirmaGreg-Core-Modern-0.9.25/kubejs/startup_scripts/tfg/icon_sets.js"
+    },
+    {
+      "material": "chalcopyrite",
+      "asset": "chalcopyrite.png",
+      "primary_rgb": "#96C185",
+      "secondary_rgb": "#E3AF1A",
+      "icon_set": "bladed",
+      "resolved_model_set": "bladed",
+      "definition_class": "FirstDegreeMaterials.java",
+      "model_source": "kubejs/assets/gtceu/models/item/material_sets/bladed/raw_ore.json",
+      "texture_sources": [
+        "kubejs/assets/gtceu/textures/item/material_sets/bladed/raw_ore.png",
+        "kubejs/assets/gtceu/textures/item/material_sets/bladed/raw_ore_secondary.png",
+        "kubejs/assets/gtceu/textures/item/material_sets/bladed/raw_ore_overlay.png"
+      ],
+      "model_texture_layers": [
+        "gtceu:item/material_sets/bladed/raw_ore",
+        "gtceu:item/material_sets/bladed/raw_ore_secondary",
+        "gtceu:item/material_sets/bladed/raw_ore_overlay"
+      ],
+      "icon_set_parent_chain": [
+        "bladed"
+      ],
+      "material_definition_source": "gtceu-1.20.1-7.5.3.jar!/com/gregtechceu/gtceu/common/data/materials/FirstDegreeMaterials.java",
+      "icon_set_override_source": "TerraFirmaGreg-Core-Modern-0.9.25/kubejs/startup_scripts/tfg/icon_sets.js"
+    },
+    {
+      "material": "chromite",
+      "asset": "chromite.png",
+      "primary_rgb": "#C5C1A8",
+      "secondary_rgb": "#4C1A69",
+      "icon_set": "tfc_chromite",
+      "resolved_model_set": "dull",
+      "definition_class": "FirstDegreeMaterials.java",
+      "model_source": "kubejs/assets/gtceu/models/item/material_sets/dull/raw_ore.json",
+      "texture_sources": [
+        "kubejs/assets/gtceu/textures/item/material_sets/granular/raw_ore.png",
+        "kubejs/assets/gtceu/textures/item/material_sets/granular/raw_ore_secondary.png",
+        "kubejs/assets/gtceu/textures/item/material_sets/granular/raw_ore_overlay.png"
+      ],
+      "model_texture_layers": [
+        "gtceu:item/material_sets/granular/raw_ore",
+        "gtceu:item/material_sets/granular/raw_ore_secondary",
+        "gtceu:item/material_sets/granular/raw_ore_overlay"
+      ],
+      "icon_set_parent_chain": [
+        "tfc_chromite",
+        "dull"
+      ],
+      "material_definition_source": "gtceu-1.20.1-7.5.3.jar!/com/gregtechceu/gtceu/common/data/materials/FirstDegreeMaterials.java",
+      "icon_set_override_source": "TerraFirmaGreg-Core-Modern-0.9.25/kubejs/startup_scripts/tfg/icon_sets.js"
+    },
+    {
+      "material": "coal",
+      "asset": "coal.png",
+      "primary_rgb": "#393E41",
+      "secondary_rgb": "#101015",
+      "icon_set": "lignite",
+      "resolved_model_set": "fine",
+      "definition_class": "FirstDegreeMaterials.java",
+      "model_source": "kubejs/assets/gtceu/models/item/material_sets/fine/raw_ore.json",
+      "texture_sources": [
+        "kubejs/assets/gtceu/textures/item/material_sets/granular/raw_ore.png",
+        "kubejs/assets/gtceu/textures/item/material_sets/granular/raw_ore_secondary.png",
+        "kubejs/assets/gtceu/textures/item/material_sets/granular/raw_ore_overlay.png"
+      ],
+      "model_texture_layers": [
+        "gtceu:item/material_sets/granular/raw_ore",
+        "gtceu:item/material_sets/granular/raw_ore_secondary",
+        "gtceu:item/material_sets/granular/raw_ore_overlay"
+      ],
+      "icon_set_parent_chain": [
+        "lignite",
+        "rough",
+        "fine"
+      ],
+      "material_definition_source": "gtceu-1.20.1-7.5.3.jar!/com/gregtechceu/gtceu/common/data/materials/FirstDegreeMaterials.java",
+      "icon_set_override_source": "TerraFirmaGreg-Core-Modern-0.9.25/kubejs/startup_scripts/tfg/icon_sets.js"
+    },
+    {
+      "material": "electrotine",
+      "asset": "electrotine.png",
+      "primary_rgb": "#83CBF5",
+      "secondary_rgb": "#004585",
+      "icon_set": "certus",
+      "resolved_model_set": "quartz",
+      "definition_class": "HigherDegreeMaterials.java",
+      "model_source": "kubejs/assets/gtceu/models/item/material_sets/quartz/raw_ore.json",
+      "texture_sources": [
+        "kubejs/assets/gtceu/textures/item/material_sets/monoclinic/raw_ore.png",
+        "kubejs/assets/gtceu/textures/item/material_sets/monoclinic/raw_ore_secondary.png",
+        "kubejs/assets/gtceu/textures/item/material_sets/monoclinic/raw_ore_overlay.png"
+      ],
+      "model_texture_layers": [
+        "gtceu:item/material_sets/monoclinic/raw_ore",
+        "gtceu:item/material_sets/monoclinic/raw_ore_secondary",
+        "gtceu:item/material_sets/monoclinic/raw_ore_overlay"
+      ],
+      "icon_set_parent_chain": [
+        "certus",
+        "quartz"
+      ],
+      "material_definition_source": "gtceu-1.20.1-7.5.3.jar!/com/gregtechceu/gtceu/common/data/materials/HigherDegreeMaterials.java",
+      "icon_set_override_source": "TerraFirmaGreg-Core-Modern-0.9.25/kubejs/startup_scripts/tfg/icon_sets.js"
+    },
+    {
+      "material": "emerald",
+      "asset": "emerald.png",
+      "primary_rgb": "#17FF6C",
+      "secondary_rgb": "#003F00",
+      "icon_set": "tfc_emerald",
+      "resolved_model_set": "tfc_emerald",
+      "definition_class": "FirstDegreeMaterials.java",
+      "model_source": "kubejs/assets/gtceu/models/item/material_sets/tfc_emerald/raw_ore.json",
+      "texture_sources": [
+        "kubejs/assets/gtceu/textures/item/material_sets/prismatic/raw_ore.png",
+        "kubejs/assets/gtceu/textures/item/material_sets/prismatic/raw_ore_secondary.png",
+        "kubejs/assets/gtceu/textures/item/material_sets/prismatic/raw_ore_overlay.png"
+      ],
+      "model_texture_layers": [
+        "gtceu:item/material_sets/prismatic/raw_ore",
+        "gtceu:item/material_sets/prismatic/raw_ore_secondary",
+        "gtceu:item/material_sets/prismatic/raw_ore_overlay"
+      ],
+      "icon_set_parent_chain": [
+        "tfc_emerald"
+      ],
+      "material_definition_source": "gtceu-1.20.1-7.5.3.jar!/com/gregtechceu/gtceu/common/data/materials/FirstDegreeMaterials.java",
+      "icon_set_override_source": "TerraFirmaGreg-Core-Modern-0.9.25/kubejs/startup_scripts/tfg/icon_sets.js"
+    },
+    {
+      "material": "galena",
+      "asset": "galena.png",
+      "primary_rgb": "#F3E8FA",
+      "secondary_rgb": "#331D42",
+      "icon_set": "cubic_shiny",
+      "resolved_model_set": "cubic_shiny",
+      "definition_class": "FirstDegreeMaterials.java",
+      "model_source": "kubejs/assets/gtceu/models/item/material_sets/cubic_shiny/raw_ore.json",
+      "texture_sources": [
+        "kubejs/assets/gtceu/textures/item/material_sets/cubic/raw_ore.png",
+        "kubejs/assets/gtceu/textures/item/material_sets/cubic/raw_ore_secondary.png",
+        "kubejs/assets/gtceu/textures/item/material_sets/cubic/raw_ore_overlay.png"
+      ],
+      "model_texture_layers": [
+        "gtceu:item/material_sets/cubic/raw_ore",
+        "gtceu:item/material_sets/cubic/raw_ore_secondary",
+        "gtceu:item/material_sets/cubic/raw_ore_overlay"
+      ],
+      "icon_set_parent_chain": [
+        "cubic_shiny"
+      ],
+      "material_definition_source": "gtceu-1.20.1-7.5.3.jar!/com/gregtechceu/gtceu/common/data/materials/FirstDegreeMaterials.java",
+      "icon_set_override_source": "TerraFirmaGreg-Core-Modern-0.9.25/kubejs/startup_scripts/tfg/icon_sets.js"
+    },
+    {
+      "material": "garnierite",
+      "asset": "garnierite.png",
+      "primary_rgb": "#32C880",
+      "secondary_rgb": "#344028",
+      "icon_set": "tfc_garnierite",
+      "resolved_model_set": "shiny",
+      "definition_class": "FirstDegreeMaterials.java",
+      "model_source": "gtceu-1.20.1-7.5.3.jar!/assets/gtceu/models/item/material_sets/shiny/raw_ore.json",
+      "texture_sources": [
+        "gtceu-1.20.1-7.5.3.jar!/assets/gtceu/textures/item/material_sets/shiny/raw_ore.png",
+        "gtceu-1.20.1-7.5.3.jar!/assets/gtceu/textures/item/material_sets/shiny/raw_ore_secondary.png",
+        "gtceu-1.20.1-7.5.3.jar!/assets/gtceu/textures/item/material_sets/shiny/raw_ore_overlay.png"
+      ],
+      "model_texture_layers": [
+        "gtceu:item/material_sets/shiny/raw_ore",
+        "gtceu:item/material_sets/shiny/raw_ore_secondary",
+        "gtceu:item/material_sets/shiny/raw_ore_overlay"
+      ],
+      "icon_set_parent_chain": [
+        "tfc_garnierite",
+        "bright",
+        "shiny"
+      ],
+      "material_definition_source": "gtceu-1.20.1-7.5.3.jar!/com/gregtechceu/gtceu/common/data/materials/FirstDegreeMaterials.java",
+      "icon_set_override_source": "TerraFirmaGreg-Core-Modern-0.9.25/kubejs/startup_scripts/tfg/icon_sets.js"
+    },
+    {
+      "material": "gold",
+      "asset": "gold.png",
+      "primary_rgb": "#FDF55F",
+      "secondary_rgb": "#F25833",
+      "icon_set": "tfc_gold",
+      "resolved_model_set": "shiny",
+      "definition_class": "ElementMaterials.java",
+      "model_source": "gtceu-1.20.1-7.5.3.jar!/assets/gtceu/models/item/material_sets/shiny/raw_ore.json",
+      "texture_sources": [
+        "gtceu-1.20.1-7.5.3.jar!/assets/gtceu/textures/item/material_sets/shiny/raw_ore.png",
+        "gtceu-1.20.1-7.5.3.jar!/assets/gtceu/textures/item/material_sets/shiny/raw_ore_secondary.png",
+        "gtceu-1.20.1-7.5.3.jar!/assets/gtceu/textures/item/material_sets/shiny/raw_ore_overlay.png"
+      ],
+      "model_texture_layers": [
+        "gtceu:item/material_sets/shiny/raw_ore",
+        "gtceu:item/material_sets/shiny/raw_ore_secondary",
+        "gtceu:item/material_sets/shiny/raw_ore_overlay"
+      ],
+      "icon_set_parent_chain": [
+        "tfc_gold",
+        "shiny"
+      ],
+      "material_definition_source": "gtceu-1.20.1-7.5.3.jar!/com/gregtechceu/gtceu/common/data/materials/ElementMaterials.java",
+      "icon_set_override_source": "TerraFirmaGreg-Core-Modern-0.9.25/kubejs/startup_scripts/tfg/icon_sets.js"
+    },
+    {
+      "material": "graphite",
+      "asset": "graphite.png",
+      "primary_rgb": "#A8A89E",
+      "secondary_rgb": "#172602",
+      "icon_set": "tfc_graphite",
+      "resolved_model_set": "tfc_graphite",
+      "definition_class": "FirstDegreeMaterials.java",
+      "model_source": "kubejs/assets/gtceu/models/item/material_sets/tfc_graphite/raw_ore.json",
+      "texture_sources": [
+        "kubejs/assets/gtceu/textures/item/material_sets/granular/raw_ore.png",
+        "kubejs/assets/gtceu/textures/item/material_sets/granular/raw_ore_secondary.png",
+        "kubejs/assets/gtceu/textures/item/material_sets/granular/raw_ore_overlay.png"
+      ],
+      "model_texture_layers": [
+        "gtceu:item/material_sets/granular/raw_ore",
+        "gtceu:item/material_sets/granular/raw_ore_secondary",
+        "gtceu:item/material_sets/granular/raw_ore_overlay"
+      ],
+      "icon_set_parent_chain": [
+        "tfc_graphite"
+      ],
+      "material_definition_source": "gtceu-1.20.1-7.5.3.jar!/com/gregtechceu/gtceu/common/data/materials/FirstDegreeMaterials.java",
+      "icon_set_override_source": "TerraFirmaGreg-Core-Modern-0.9.25/kubejs/startup_scripts/tfg/icon_sets.js"
+    },
+    {
+      "material": "grossular",
+      "asset": "grossular.png",
+      "primary_rgb": "#FFB777",
+      "secondary_rgb": "#856F48",
+      "icon_set": "monoclinic_ruby",
+      "resolved_model_set": "monoclinic_ruby",
+      "definition_class": "FirstDegreeMaterials.java",
+      "model_source": "kubejs/assets/gtceu/models/item/material_sets/monoclinic_ruby/raw_ore.json",
+      "texture_sources": [
+        "kubejs/assets/gtceu/textures/item/material_sets/monoclinic/raw_ore.png",
+        "kubejs/assets/gtceu/textures/item/material_sets/monoclinic/raw_ore_secondary.png",
+        "kubejs/assets/gtceu/textures/item/material_sets/monoclinic/raw_ore_overlay.png"
+      ],
+      "model_texture_layers": [
+        "gtceu:item/material_sets/monoclinic/raw_ore",
+        "gtceu:item/material_sets/monoclinic/raw_ore_secondary",
+        "gtceu:item/material_sets/monoclinic/raw_ore_overlay"
+      ],
+      "icon_set_parent_chain": [
+        "monoclinic_ruby"
+      ],
+      "material_definition_source": "gtceu-1.20.1-7.5.3.jar!/com/gregtechceu/gtceu/common/data/materials/FirstDegreeMaterials.java",
+      "icon_set_override_source": "TerraFirmaGreg-Core-Modern-0.9.25/kubejs/startup_scripts/tfg/icon_sets.js"
+    },
+    {
+      "material": "gypsum",
+      "asset": "gypsum.png",
+      "primary_rgb": "#FFFAEC",
+      "secondary_rgb": "#71570A",
+      "icon_set": "tfc_gypsum",
+      "resolved_model_set": "tfc_gypsum",
+      "definition_class": "SecondDegreeMaterials.java",
+      "model_source": "kubejs/assets/gtceu/models/item/material_sets/tfc_gypsum/raw_ore.json",
+      "texture_sources": [
+        "kubejs/assets/gtceu/textures/item/material_sets/sheet/raw_ore.png",
+        "kubejs/assets/gtceu/textures/item/material_sets/sheet/raw_ore_secondary.png",
+        "kubejs/assets/gtceu/textures/item/material_sets/sheet/raw_ore_overlay.png"
+      ],
+      "model_texture_layers": [
+        "gtceu:item/material_sets/sheet/raw_ore",
+        "gtceu:item/material_sets/sheet/raw_ore_secondary",
+        "gtceu:item/material_sets/sheet/raw_ore_overlay"
+      ],
+      "icon_set_parent_chain": [
+        "tfc_gypsum"
+      ],
+      "material_definition_source": "gtceu-1.20.1-7.5.3.jar!/com/gregtechceu/gtceu/common/data/materials/SecondDegreeMaterials.java",
+      "icon_set_override_source": "TerraFirmaGreg-Core-Modern-0.9.25/kubejs/startup_scripts/tfg/icon_sets.js"
+    },
+    {
+      "material": "hematite",
+      "asset": "hematite.png",
+      "primary_rgb": "#FF7161",
+      "secondary_rgb": "#330817",
+      "icon_set": "tfc_hematite",
+      "resolved_model_set": "metallic",
+      "definition_class": "FirstDegreeMaterials.java",
+      "model_source": "gtceu-1.20.1-7.5.3.jar!/assets/gtceu/models/item/material_sets/metallic/raw_ore.json",
+      "texture_sources": [
+        "gtceu-1.20.1-7.5.3.jar!/assets/gtceu/textures/item/material_sets/metallic/raw_ore.png",
+        "gtceu-1.20.1-7.5.3.jar!/assets/gtceu/textures/item/material_sets/metallic/raw_ore_secondary.png"
+      ],
+      "model_texture_layers": [
+        "gtceu:item/material_sets/metallic/raw_ore",
+        "gtceu:item/material_sets/metallic/raw_ore_secondary"
+      ],
+      "icon_set_parent_chain": [
+        "tfc_hematite",
+        "metallic"
+      ],
+      "material_definition_source": "gtceu-1.20.1-7.5.3.jar!/com/gregtechceu/gtceu/common/data/materials/FirstDegreeMaterials.java",
+      "icon_set_override_source": "TerraFirmaGreg-Core-Modern-0.9.25/kubejs/startup_scripts/tfg/icon_sets.js"
+    },
+    {
+      "material": "ilmenite",
+      "asset": "ilmenite.png",
+      "primary_rgb": "#2B2A24",
+      "secondary_rgb": "#2B1700",
+      "icon_set": "monoclinic_gem_horizontal",
+      "resolved_model_set": "monoclinic_gem_horizontal",
+      "definition_class": "FirstDegreeMaterials.java",
+      "model_source": "kubejs/assets/gtceu/models/item/material_sets/monoclinic_gem_horizontal/raw_ore.json",
+      "texture_sources": [
+        "kubejs/assets/gtceu/textures/item/material_sets/monoclinic/raw_ore.png",
+        "kubejs/assets/gtceu/textures/item/material_sets/monoclinic/raw_ore_secondary.png",
+        "kubejs/assets/gtceu/textures/item/material_sets/monoclinic/raw_ore_overlay.png"
+      ],
+      "model_texture_layers": [
+        "gtceu:item/material_sets/monoclinic/raw_ore",
+        "gtceu:item/material_sets/monoclinic/raw_ore_secondary",
+        "gtceu:item/material_sets/monoclinic/raw_ore_overlay"
+      ],
+      "icon_set_parent_chain": [
+        "monoclinic_gem_horizontal"
+      ],
+      "material_definition_source": "gtceu-1.20.1-7.5.3.jar!/com/gregtechceu/gtceu/common/data/materials/FirstDegreeMaterials.java",
+      "icon_set_override_source": "TerraFirmaGreg-Core-Modern-0.9.25/kubejs/startup_scripts/tfg/icon_sets.js"
+    },
+    {
+      "material": "kyanite",
+      "asset": "kyanite.png",
+      "primary_rgb": "#D5FFFF",
+      "secondary_rgb": "#5A69D6",
+      "icon_set": "bladed",
+      "resolved_model_set": "bladed",
+      "definition_class": "FirstDegreeMaterials.java",
+      "model_source": "kubejs/assets/gtceu/models/item/material_sets/bladed/raw_ore.json",
+      "texture_sources": [
+        "kubejs/assets/gtceu/textures/item/material_sets/bladed/raw_ore.png",
+        "kubejs/assets/gtceu/textures/item/material_sets/bladed/raw_ore_secondary.png",
+        "kubejs/assets/gtceu/textures/item/material_sets/bladed/raw_ore_overlay.png"
+      ],
+      "model_texture_layers": [
+        "gtceu:item/material_sets/bladed/raw_ore",
+        "gtceu:item/material_sets/bladed/raw_ore_secondary",
+        "gtceu:item/material_sets/bladed/raw_ore_overlay"
+      ],
+      "icon_set_parent_chain": [
+        "bladed"
+      ],
+      "material_definition_source": "gtceu-1.20.1-7.5.3.jar!/com/gregtechceu/gtceu/common/data/materials/FirstDegreeMaterials.java",
+      "icon_set_override_source": "TerraFirmaGreg-Core-Modern-0.9.25/kubejs/startup_scripts/tfg/icon_sets.js"
+    },
+    {
+      "material": "lazurite",
+      "asset": "lazurite.png",
+      "primary_rgb": "#2836F1",
+      "secondary_rgb": "#183CA3",
+      "icon_set": "cubic_ruby",
+      "resolved_model_set": "cubic_ruby",
+      "definition_class": "FirstDegreeMaterials.java",
+      "model_source": "kubejs/assets/gtceu/models/item/material_sets/cubic_ruby/raw_ore.json",
+      "texture_sources": [
+        "kubejs/assets/gtceu/textures/item/material_sets/cubic/raw_ore.png",
+        "kubejs/assets/gtceu/textures/item/material_sets/cubic/raw_ore_secondary.png",
+        "kubejs/assets/gtceu/textures/item/material_sets/cubic/raw_ore_overlay.png"
+      ],
+      "model_texture_layers": [
+        "gtceu:item/material_sets/cubic/raw_ore",
+        "gtceu:item/material_sets/cubic/raw_ore_secondary",
+        "gtceu:item/material_sets/cubic/raw_ore_overlay"
+      ],
+      "icon_set_parent_chain": [
+        "cubic_ruby"
+      ],
+      "material_definition_source": "gtceu-1.20.1-7.5.3.jar!/com/gregtechceu/gtceu/common/data/materials/FirstDegreeMaterials.java",
+      "icon_set_override_source": "TerraFirmaGreg-Core-Modern-0.9.25/kubejs/startup_scripts/tfg/icon_sets.js"
+    },
+    {
+      "material": "pitchblende",
+      "asset": "pitchblende.png",
+      "primary_rgb": "#FFD647",
+      "secondary_rgb": "#0D1E2F",
+      "icon_set": "botryoidal",
+      "resolved_model_set": "botryoidal",
+      "definition_class": "SecondDegreeMaterials.java",
+      "model_source": "kubejs/assets/gtceu/models/item/material_sets/botryoidal/raw_ore.json",
+      "texture_sources": [
+        "kubejs/assets/gtceu/textures/item/material_sets/botryoidal/raw_ore.png",
+        "kubejs/assets/gtceu/textures/item/material_sets/botryoidal/raw_ore_secondary.png",
+        "kubejs/assets/gtceu/textures/item/material_sets/botryoidal/raw_ore_overlay.png"
+      ],
+      "model_texture_layers": [
+        "gtceu:item/material_sets/botryoidal/raw_ore",
+        "gtceu:item/material_sets/botryoidal/raw_ore_secondary",
+        "gtceu:item/material_sets/botryoidal/raw_ore_overlay"
+      ],
+      "icon_set_parent_chain": [
+        "botryoidal"
+      ],
+      "material_definition_source": "gtceu-1.20.1-7.5.3.jar!/com/gregtechceu/gtceu/common/data/materials/SecondDegreeMaterials.java",
+      "icon_set_override_source": "TerraFirmaGreg-Core-Modern-0.9.25/kubejs/startup_scripts/tfg/icon_sets.js"
+    },
+    {
+      "material": "pyrite",
+      "asset": "pyrite.png",
+      "primary_rgb": "#FFFEE6",
+      "secondary_rgb": "#B69F4E",
+      "icon_set": "tfc_pyrite",
+      "resolved_model_set": "tfc_pyrite",
+      "definition_class": "FirstDegreeMaterials.java",
+      "model_source": "kubejs/assets/gtceu/models/item/material_sets/tfc_pyrite/raw_ore.json",
+      "texture_sources": [
+        "kubejs/assets/gtceu/textures/item/material_sets/cubic/raw_ore.png",
+        "kubejs/assets/gtceu/textures/item/material_sets/cubic/raw_ore_secondary.png",
+        "kubejs/assets/gtceu/textures/item/material_sets/cubic/raw_ore_overlay.png"
+      ],
+      "model_texture_layers": [
+        "gtceu:item/material_sets/cubic/raw_ore",
+        "gtceu:item/material_sets/cubic/raw_ore_secondary",
+        "gtceu:item/material_sets/cubic/raw_ore_overlay"
+      ],
+      "icon_set_parent_chain": [
+        "tfc_pyrite"
+      ],
+      "material_definition_source": "gtceu-1.20.1-7.5.3.jar!/com/gregtechceu/gtceu/common/data/materials/FirstDegreeMaterials.java",
+      "icon_set_override_source": "TerraFirmaGreg-Core-Modern-0.9.25/kubejs/startup_scripts/tfg/icon_sets.js"
+    },
+    {
+      "material": "pyrochlore",
+      "asset": "pyrochlore.png",
+      "primary_rgb": "#5B4838",
+      "secondary_rgb": "#331400",
+      "icon_set": "monoclinic_quartz",
+      "resolved_model_set": "monoclinic_quartz",
+      "definition_class": "FirstDegreeMaterials.java",
+      "model_source": "kubejs/assets/gtceu/models/item/material_sets/monoclinic_quartz/raw_ore.json",
+      "texture_sources": [
+        "kubejs/assets/gtceu/textures/item/material_sets/monoclinic/raw_ore.png",
+        "kubejs/assets/gtceu/textures/item/material_sets/monoclinic/raw_ore_secondary.png",
+        "kubejs/assets/gtceu/textures/item/material_sets/monoclinic/raw_ore_overlay.png"
+      ],
+      "model_texture_layers": [
+        "gtceu:item/material_sets/monoclinic/raw_ore",
+        "gtceu:item/material_sets/monoclinic/raw_ore_secondary",
+        "gtceu:item/material_sets/monoclinic/raw_ore_overlay"
+      ],
+      "icon_set_parent_chain": [
+        "monoclinic_quartz"
+      ],
+      "material_definition_source": "gtceu-1.20.1-7.5.3.jar!/com/gregtechceu/gtceu/common/data/materials/FirstDegreeMaterials.java",
+      "icon_set_override_source": "TerraFirmaGreg-Core-Modern-0.9.25/kubejs/startup_scripts/tfg/icon_sets.js"
+    },
+    {
+      "material": "pyrolusite",
+      "asset": "pyrolusite.png",
+      "primary_rgb": "#C7B5AB",
+      "secondary_rgb": "#595756",
+      "icon_set": "botryoidal",
+      "resolved_model_set": "botryoidal",
+      "definition_class": "FirstDegreeMaterials.java",
+      "model_source": "kubejs/assets/gtceu/models/item/material_sets/botryoidal/raw_ore.json",
+      "texture_sources": [
+        "kubejs/assets/gtceu/textures/item/material_sets/botryoidal/raw_ore.png",
+        "kubejs/assets/gtceu/textures/item/material_sets/botryoidal/raw_ore_secondary.png",
+        "kubejs/assets/gtceu/textures/item/material_sets/botryoidal/raw_ore_overlay.png"
+      ],
+      "model_texture_layers": [
+        "gtceu:item/material_sets/botryoidal/raw_ore",
+        "gtceu:item/material_sets/botryoidal/raw_ore_secondary",
+        "gtceu:item/material_sets/botryoidal/raw_ore_overlay"
+      ],
+      "icon_set_parent_chain": [
+        "botryoidal"
+      ],
+      "material_definition_source": "gtceu-1.20.1-7.5.3.jar!/com/gregtechceu/gtceu/common/data/materials/FirstDegreeMaterials.java",
+      "icon_set_override_source": "TerraFirmaGreg-Core-Modern-0.9.25/kubejs/startup_scripts/tfg/icon_sets.js"
+    },
+    {
+      "material": "quartzite",
+      "asset": "quartzite.png",
+      "primary_rgb": "#F2F5ED",
+      "secondary_rgb": "#B8E2B8",
+      "icon_set": "quartz",
+      "resolved_model_set": "quartz",
+      "definition_class": "FirstDegreeMaterials.java",
+      "model_source": "kubejs/assets/gtceu/models/item/material_sets/quartz/raw_ore.json",
+      "texture_sources": [
+        "kubejs/assets/gtceu/textures/item/material_sets/monoclinic/raw_ore.png",
+        "kubejs/assets/gtceu/textures/item/material_sets/monoclinic/raw_ore_secondary.png",
+        "kubejs/assets/gtceu/textures/item/material_sets/monoclinic/raw_ore_overlay.png"
+      ],
+      "model_texture_layers": [
+        "gtceu:item/material_sets/monoclinic/raw_ore",
+        "gtceu:item/material_sets/monoclinic/raw_ore_secondary",
+        "gtceu:item/material_sets/monoclinic/raw_ore_overlay"
+      ],
+      "icon_set_parent_chain": [
+        "quartz"
+      ],
+      "material_definition_source": "gtceu-1.20.1-7.5.3.jar!/com/gregtechceu/gtceu/common/data/materials/FirstDegreeMaterials.java",
+      "icon_set_override_source": "TerraFirmaGreg-Core-Modern-0.9.25/kubejs/startup_scripts/tfg/icon_sets.js"
+    },
+    {
+      "material": "redstone",
+      "asset": "redstone.png",
+      "primary_rgb": "#FF0000",
+      "secondary_rgb": "#340605",
+      "icon_set": "tfc_redstone",
+      "resolved_model_set": "tfc_redstone",
+      "definition_class": "SecondDegreeMaterials.java",
+      "model_source": "kubejs/assets/gtceu/models/item/material_sets/tfc_redstone/raw_ore.json",
+      "texture_sources": [
+        "kubejs/assets/gtceu/textures/item/material_sets/granular/raw_ore.png",
+        "kubejs/assets/gtceu/textures/item/material_sets/granular/raw_ore_secondary.png",
+        "kubejs/assets/gtceu/textures/item/material_sets/granular/raw_ore_overlay.png"
+      ],
+      "model_texture_layers": [
+        "gtceu:item/material_sets/granular/raw_ore",
+        "gtceu:item/material_sets/granular/raw_ore_secondary",
+        "gtceu:item/material_sets/granular/raw_ore_overlay"
+      ],
+      "icon_set_parent_chain": [
+        "tfc_redstone"
+      ],
+      "material_definition_source": "gtceu-1.20.1-7.5.3.jar!/com/gregtechceu/gtceu/common/data/materials/SecondDegreeMaterials.java",
+      "icon_set_override_source": "TerraFirmaGreg-Core-Modern-0.9.25/kubejs/startup_scripts/tfg/icon_sets.js"
+    },
+    {
+      "material": "scheelite",
+      "asset": "scheelite.png",
+      "primary_rgb": "#D7E8B3",
+      "secondary_rgb": "#143CAE",
+      "icon_set": "bladed",
+      "resolved_model_set": "bladed",
+      "definition_class": "FirstDegreeMaterials.java",
+      "model_source": "kubejs/assets/gtceu/models/item/material_sets/bladed/raw_ore.json",
+      "texture_sources": [
+        "kubejs/assets/gtceu/textures/item/material_sets/bladed/raw_ore.png",
+        "kubejs/assets/gtceu/textures/item/material_sets/bladed/raw_ore_secondary.png",
+        "kubejs/assets/gtceu/textures/item/material_sets/bladed/raw_ore_overlay.png"
+      ],
+      "model_texture_layers": [
+        "gtceu:item/material_sets/bladed/raw_ore",
+        "gtceu:item/material_sets/bladed/raw_ore_secondary",
+        "gtceu:item/material_sets/bladed/raw_ore_overlay"
+      ],
+      "icon_set_parent_chain": [
+        "bladed"
+      ],
+      "material_definition_source": "gtceu-1.20.1-7.5.3.jar!/com/gregtechceu/gtceu/common/data/materials/FirstDegreeMaterials.java",
+      "icon_set_override_source": "TerraFirmaGreg-Core-Modern-0.9.25/kubejs/startup_scripts/tfg/icon_sets.js"
+    },
+    {
+      "material": "silver",
+      "asset": "silver.png",
+      "primary_rgb": "#DCDCFF",
+      "secondary_rgb": "#5A4705",
+      "icon_set": "tfc_silver",
+      "resolved_model_set": "shiny",
+      "definition_class": "ElementMaterials.java",
+      "model_source": "gtceu-1.20.1-7.5.3.jar!/assets/gtceu/models/item/material_sets/shiny/raw_ore.json",
+      "texture_sources": [
+        "gtceu-1.20.1-7.5.3.jar!/assets/gtceu/textures/item/material_sets/shiny/raw_ore.png",
+        "gtceu-1.20.1-7.5.3.jar!/assets/gtceu/textures/item/material_sets/shiny/raw_ore_secondary.png",
+        "gtceu-1.20.1-7.5.3.jar!/assets/gtceu/textures/item/material_sets/shiny/raw_ore_overlay.png"
+      ],
+      "model_texture_layers": [
+        "gtceu:item/material_sets/shiny/raw_ore",
+        "gtceu:item/material_sets/shiny/raw_ore_secondary",
+        "gtceu:item/material_sets/shiny/raw_ore_overlay"
+      ],
+      "icon_set_parent_chain": [
+        "tfc_silver",
+        "shiny"
+      ],
+      "material_definition_source": "gtceu-1.20.1-7.5.3.jar!/com/gregtechceu/gtceu/common/data/materials/ElementMaterials.java",
+      "icon_set_override_source": "TerraFirmaGreg-Core-Modern-0.9.25/kubejs/startup_scripts/tfg/icon_sets.js"
+    },
+    {
+      "material": "soapstone",
+      "asset": "soapstone.png",
+      "primary_rgb": "#5A7261",
+      "secondary_rgb": "#464C4B",
+      "icon_set": "monoclinic_gem_horizontal",
+      "resolved_model_set": "monoclinic_gem_horizontal",
+      "definition_class": "FirstDegreeMaterials.java",
+      "model_source": "kubejs/assets/gtceu/models/item/material_sets/monoclinic_gem_horizontal/raw_ore.json",
+      "texture_sources": [
+        "kubejs/assets/gtceu/textures/item/material_sets/monoclinic/raw_ore.png",
+        "kubejs/assets/gtceu/textures/item/material_sets/monoclinic/raw_ore_secondary.png",
+        "kubejs/assets/gtceu/textures/item/material_sets/monoclinic/raw_ore_overlay.png"
+      ],
+      "model_texture_layers": [
+        "gtceu:item/material_sets/monoclinic/raw_ore",
+        "gtceu:item/material_sets/monoclinic/raw_ore_secondary",
+        "gtceu:item/material_sets/monoclinic/raw_ore_overlay"
+      ],
+      "icon_set_parent_chain": [
+        "monoclinic_gem_horizontal"
+      ],
+      "material_definition_source": "gtceu-1.20.1-7.5.3.jar!/com/gregtechceu/gtceu/common/data/materials/FirstDegreeMaterials.java",
+      "icon_set_override_source": "TerraFirmaGreg-Core-Modern-0.9.25/kubejs/startup_scripts/tfg/icon_sets.js"
+    },
+    {
+      "material": "sphalerite",
+      "asset": "sphalerite.png",
+      "primary_rgb": "#FFDC88",
+      "secondary_rgb": "#0F1605",
+      "icon_set": "tfc_sphalerite",
+      "resolved_model_set": "dull",
+      "definition_class": "FirstDegreeMaterials.java",
+      "model_source": "kubejs/assets/gtceu/models/item/material_sets/dull/raw_ore.json",
+      "texture_sources": [
+        "kubejs/assets/gtceu/textures/item/material_sets/granular/raw_ore.png",
+        "kubejs/assets/gtceu/textures/item/material_sets/granular/raw_ore_secondary.png",
+        "kubejs/assets/gtceu/textures/item/material_sets/granular/raw_ore_overlay.png"
+      ],
+      "model_texture_layers": [
+        "gtceu:item/material_sets/granular/raw_ore",
+        "gtceu:item/material_sets/granular/raw_ore_secondary",
+        "gtceu:item/material_sets/granular/raw_ore_overlay"
+      ],
+      "icon_set_parent_chain": [
+        "tfc_sphalerite",
+        "dull"
+      ],
+      "material_definition_source": "gtceu-1.20.1-7.5.3.jar!/com/gregtechceu/gtceu/common/data/materials/FirstDegreeMaterials.java",
+      "icon_set_override_source": "TerraFirmaGreg-Core-Modern-0.9.25/kubejs/startup_scripts/tfg/icon_sets.js"
+    },
+    {
+      "material": "spodumene",
+      "asset": "spodumene.png",
+      "primary_rgb": "#FFBCBC",
+      "secondary_rgb": "#C490FF",
+      "icon_set": "sheet_rough",
+      "resolved_model_set": "sheet_rough",
+      "definition_class": "FirstDegreeMaterials.java",
+      "model_source": "kubejs/assets/gtceu/models/item/material_sets/sheet_rough/raw_ore.json",
+      "texture_sources": [
+        "kubejs/assets/gtceu/textures/item/material_sets/sheet/raw_ore.png",
+        "kubejs/assets/gtceu/textures/item/material_sets/sheet/raw_ore_secondary.png",
+        "kubejs/assets/gtceu/textures/item/material_sets/sheet/raw_ore_overlay.png"
+      ],
+      "model_texture_layers": [
+        "gtceu:item/material_sets/sheet/raw_ore",
+        "gtceu:item/material_sets/sheet/raw_ore_secondary",
+        "gtceu:item/material_sets/sheet/raw_ore_overlay"
+      ],
+      "icon_set_parent_chain": [
+        "sheet_rough"
+      ],
+      "material_definition_source": "gtceu-1.20.1-7.5.3.jar!/com/gregtechceu/gtceu/common/data/materials/FirstDegreeMaterials.java",
+      "icon_set_override_source": "TerraFirmaGreg-Core-Modern-0.9.25/kubejs/startup_scripts/tfg/icon_sets.js"
+    },
+    {
+      "material": "tetrahedrite",
+      "asset": "tetrahedrite.png",
+      "primary_rgb": "#A3A09B",
+      "secondary_rgb": "#143313",
+      "icon_set": "tfc_tetrahedrite",
+      "resolved_model_set": "dull",
+      "definition_class": "FirstDegreeMaterials.java",
+      "model_source": "kubejs/assets/gtceu/models/item/material_sets/dull/raw_ore.json",
+      "texture_sources": [
+        "kubejs/assets/gtceu/textures/item/material_sets/granular/raw_ore.png",
+        "kubejs/assets/gtceu/textures/item/material_sets/granular/raw_ore_secondary.png",
+        "kubejs/assets/gtceu/textures/item/material_sets/granular/raw_ore_overlay.png"
+      ],
+      "model_texture_layers": [
+        "gtceu:item/material_sets/granular/raw_ore",
+        "gtceu:item/material_sets/granular/raw_ore_secondary",
+        "gtceu:item/material_sets/granular/raw_ore_overlay"
+      ],
+      "icon_set_parent_chain": [
+        "tfc_tetrahedrite",
+        "dull"
+      ],
+      "material_definition_source": "gtceu-1.20.1-7.5.3.jar!/com/gregtechceu/gtceu/common/data/materials/FirstDegreeMaterials.java",
+      "icon_set_override_source": "TerraFirmaGreg-Core-Modern-0.9.25/kubejs/startup_scripts/tfg/icon_sets.js"
+    },
+    {
+      "material": "trona",
+      "asset": "trona.png",
+      "primary_rgb": "#E6E6A5",
+      "secondary_rgb": "#87875F",
+      "icon_set": "bladed",
+      "resolved_model_set": "bladed",
+      "definition_class": "SecondDegreeMaterials.java",
+      "model_source": "kubejs/assets/gtceu/models/item/material_sets/bladed/raw_ore.json",
+      "texture_sources": [
+        "kubejs/assets/gtceu/textures/item/material_sets/bladed/raw_ore.png",
+        "kubejs/assets/gtceu/textures/item/material_sets/bladed/raw_ore_secondary.png",
+        "kubejs/assets/gtceu/textures/item/material_sets/bladed/raw_ore_overlay.png"
+      ],
+      "model_texture_layers": [
+        "gtceu:item/material_sets/bladed/raw_ore",
+        "gtceu:item/material_sets/bladed/raw_ore_secondary",
+        "gtceu:item/material_sets/bladed/raw_ore_overlay"
+      ],
+      "icon_set_parent_chain": [
+        "bladed"
+      ],
+      "material_definition_source": "gtceu-1.20.1-7.5.3.jar!/com/gregtechceu/gtceu/common/data/materials/SecondDegreeMaterials.java",
+      "icon_set_override_source": "TerraFirmaGreg-Core-Modern-0.9.25/kubejs/startup_scripts/tfg/icon_sets.js"
+    },
+    {
+      "material": "tungstate",
+      "asset": "tungstate.png",
+      "primary_rgb": "#E0FFC4",
+      "secondary_rgb": "#AB4400",
+      "icon_set": "bladed",
+      "resolved_model_set": "bladed",
+      "definition_class": "FirstDegreeMaterials.java",
+      "model_source": "kubejs/assets/gtceu/models/item/material_sets/bladed/raw_ore.json",
+      "texture_sources": [
+        "kubejs/assets/gtceu/textures/item/material_sets/bladed/raw_ore.png",
+        "kubejs/assets/gtceu/textures/item/material_sets/bladed/raw_ore_secondary.png",
+        "kubejs/assets/gtceu/textures/item/material_sets/bladed/raw_ore_overlay.png"
+      ],
+      "model_texture_layers": [
+        "gtceu:item/material_sets/bladed/raw_ore",
+        "gtceu:item/material_sets/bladed/raw_ore_secondary",
+        "gtceu:item/material_sets/bladed/raw_ore_overlay"
+      ],
+      "icon_set_parent_chain": [
+        "bladed"
+      ],
+      "material_definition_source": "gtceu-1.20.1-7.5.3.jar!/com/gregtechceu/gtceu/common/data/materials/FirstDegreeMaterials.java",
+      "icon_set_override_source": "TerraFirmaGreg-Core-Modern-0.9.25/kubejs/startup_scripts/tfg/icon_sets.js"
+    },
+    {
+      "material": "wulfenite",
+      "asset": "wulfenite.png",
+      "primary_rgb": "#FF9000",
+      "secondary_rgb": "#FF0000",
+      "icon_set": "sheet_metallic",
+      "resolved_model_set": "sheet_metallic",
+      "definition_class": "FirstDegreeMaterials.java",
+      "model_source": "kubejs/assets/gtceu/models/item/material_sets/sheet_metallic/raw_ore.json",
+      "texture_sources": [
+        "kubejs/assets/gtceu/textures/item/material_sets/sheet/raw_ore.png",
+        "kubejs/assets/gtceu/textures/item/material_sets/sheet/raw_ore_secondary.png",
+        "kubejs/assets/gtceu/textures/item/material_sets/sheet/raw_ore_overlay.png"
+      ],
+      "model_texture_layers": [
+        "gtceu:item/material_sets/sheet/raw_ore",
+        "gtceu:item/material_sets/sheet/raw_ore_secondary",
+        "gtceu:item/material_sets/sheet/raw_ore_overlay"
+      ],
+      "icon_set_parent_chain": [
+        "sheet_metallic"
+      ],
+      "material_definition_source": "gtceu-1.20.1-7.5.3.jar!/com/gregtechceu/gtceu/common/data/materials/FirstDegreeMaterials.java",
+      "icon_set_override_source": "TerraFirmaGreg-Core-Modern-0.9.25/kubejs/startup_scripts/tfg/icon_sets.js"
+    }
+  ],
+  "veins": [
+    {
+      "id": "moon:moon_apatite",
+      "material": "pyrochlore",
+      "dominant_weight": 120,
+      "weight_tie_rule": "lexicographically_smallest"
+    },
+    {
+      "id": "moon:moon_bauxite",
+      "material": "ilmenite",
+      "dominant_weight": 240,
+      "weight_tie_rule": "lexicographically_smallest"
+    },
+    {
+      "id": "moon:moon_beryllium",
+      "material": "emerald",
+      "dominant_weight": 150,
+      "weight_tie_rule": "lexicographically_smallest"
+    },
+    {
+      "id": "moon:moon_cassiterite",
+      "material": "cassiterite",
+      "dominant_weight": 140,
+      "weight_tie_rule": "lexicographically_smallest"
+    },
+    {
+      "id": "moon:moon_desh",
+      "material": "ilmenite",
+      "dominant_weight": 120,
+      "weight_tie_rule": "lexicographically_smallest"
+    },
+    {
+      "id": "moon:moon_garnet",
+      "material": "amethyst",
+      "dominant_weight": 120,
+      "weight_tie_rule": "lexicographically_smallest"
+    },
+    {
+      "id": "moon:moon_garnierite",
+      "material": "garnierite",
+      "dominant_weight": 75,
+      "weight_tie_rule": "lexicographically_smallest"
+    },
+    {
+      "id": "moon:moon_gold",
+      "material": "gold",
+      "dominant_weight": 165,
+      "weight_tie_rule": "lexicographically_smallest"
+    },
+    {
+      "id": "moon:moon_graphite",
+      "material": "graphite",
+      "dominant_weight": 250,
+      "weight_tie_rule": "lexicographically_smallest"
+    },
+    {
+      "id": "moon:moon_gypsum",
+      "material": "gypsum",
+      "dominant_weight": 105,
+      "weight_tie_rule": "lexicographically_smallest"
+    },
+    {
+      "id": "moon:moon_lubricant",
+      "material": "soapstone",
+      "dominant_weight": 150,
+      "weight_tie_rule": "lexicographically_smallest"
+    },
+    {
+      "id": "moon:moon_magnetite",
+      "material": "chromite",
+      "dominant_weight": 160,
+      "weight_tie_rule": "lexicographically_smallest"
+    },
+    {
+      "id": "moon:moon_manganese",
+      "material": "grossular",
+      "dominant_weight": 180,
+      "weight_tie_rule": "lexicographically_smallest"
+    },
+    {
+      "id": "moon:moon_mica",
+      "material": "kyanite",
+      "dominant_weight": 140,
+      "weight_tie_rule": "lexicographically_smallest"
+    },
+    {
+      "id": "moon:moon_molybdenum",
+      "material": "wulfenite",
+      "dominant_weight": 160,
+      "weight_tie_rule": "lexicographically_smallest"
+    },
+    {
+      "id": "moon:moon_monazite",
+      "material": "bastnasite",
+      "dominant_weight": 200,
+      "weight_tie_rule": "lexicographically_smallest"
+    },
+    {
+      "id": "moon:moon_pyrolusite",
+      "material": "pyrolusite",
+      "dominant_weight": 200,
+      "weight_tie_rule": "lexicographically_smallest"
+    },
+    {
+      "id": "moon:moon_quartz",
+      "material": "certus_quartz",
+      "dominant_weight": 405,
+      "weight_tie_rule": "lexicographically_smallest"
+    },
+    {
+      "id": "moon:moon_redstone",
+      "material": "redstone",
+      "dominant_weight": 135,
+      "weight_tie_rule": "lexicographically_smallest"
+    },
+    {
+      "id": "moon:moon_saltpeter",
+      "material": "electrotine",
+      "dominant_weight": 180,
+      "weight_tie_rule": "lexicographically_smallest"
+    },
+    {
+      "id": "moon:moon_sapphire",
+      "material": "almandine",
+      "dominant_weight": 70,
+      "weight_tie_rule": "lexicographically_smallest"
+    },
+    {
+      "id": "moon:moon_scheelite",
+      "material": "tungstate",
+      "dominant_weight": 150,
+      "weight_tie_rule": "lexicographically_smallest"
+    },
+    {
+      "id": "moon:moon_sheldonite",
+      "material": "bornite",
+      "dominant_weight": 105,
+      "weight_tie_rule": "lexicographically_smallest"
+    },
+    {
+      "id": "moon:moon_silver",
+      "material": "silver",
+      "dominant_weight": 225,
+      "weight_tie_rule": "lexicographically_smallest"
+    },
+    {
+      "id": "moon:moon_sphalerite",
+      "material": "sphalerite",
+      "dominant_weight": 250,
+      "weight_tie_rule": "lexicographically_smallest"
+    },
+    {
+      "id": "moon:moon_tetrahedrite",
+      "material": "tetrahedrite",
+      "dominant_weight": 160,
+      "weight_tie_rule": "lexicographically_smallest"
+    },
+    {
+      "id": "moon:moon_topaz",
+      "material": "blue_topaz",
+      "dominant_weight": 315,
+      "weight_tie_rule": "lexicographically_smallest"
+    },
+    {
+      "id": "mars:deep_mars_chromite",
+      "material": "redstone",
+      "dominant_weight": 180,
+      "weight_tie_rule": "lexicographically_smallest"
+    },
+    {
+      "id": "mars:deep_mars_pitchblende",
+      "material": "pitchblende",
+      "dominant_weight": 200,
+      "weight_tie_rule": "lexicographically_smallest"
+    },
+    {
+      "id": "mars:deep_mars_sheldonite",
+      "material": "bornite",
+      "dominant_weight": 140,
+      "weight_tie_rule": "lexicographically_smallest"
+    },
+    {
+      "id": "mars:mars_almandine",
+      "material": "almandine",
+      "dominant_weight": 350,
+      "weight_tie_rule": "lexicographically_smallest"
+    },
+    {
+      "id": "mars:mars_apatite",
+      "material": "apatite",
+      "dominant_weight": 450,
+      "weight_tie_rule": "lexicographically_smallest"
+    },
+    {
+      "id": "mars:mars_beryllium",
+      "material": "emerald",
+      "dominant_weight": 200,
+      "weight_tie_rule": "lexicographically_smallest"
+    },
+    {
+      "id": "mars:mars_coal",
+      "material": "coal",
+      "dominant_weight": 700,
+      "weight_tie_rule": "lexicographically_smallest"
+    },
+    {
+      "id": "mars:mars_copper",
+      "material": "chalcopyrite",
+      "dominant_weight": 650,
+      "weight_tie_rule": "lexicographically_smallest"
+    },
+    {
+      "id": "mars:mars_galena",
+      "material": "galena",
+      "dominant_weight": 270,
+      "weight_tie_rule": "lexicographically_smallest"
+    },
+    {
+      "id": "mars:mars_gold",
+      "material": "gold",
+      "dominant_weight": 330,
+      "weight_tie_rule": "lexicographically_smallest"
+    },
+    {
+      "id": "mars:mars_graphite",
+      "material": "graphite",
+      "dominant_weight": 315,
+      "weight_tie_rule": "lexicographically_smallest"
+    },
+    {
+      "id": "mars:mars_hematite",
+      "material": "hematite",
+      "dominant_weight": 450,
+      "weight_tie_rule": "lexicographically_smallest"
+    },
+    {
+      "id": "mars:mars_lapis",
+      "material": "lazurite",
+      "dominant_weight": 175,
+      "weight_tie_rule": "lexicographically_smallest"
+    },
+    {
+      "id": "mars:mars_lubricant",
+      "material": "trona",
+      "dominant_weight": 275,
+      "weight_tie_rule": "lexicographically_smallest"
+    },
+    {
+      "id": "mars:mars_neodynium",
+      "material": "bastnasite",
+      "dominant_weight": 400,
+      "weight_tie_rule": "lexicographically_smallest"
+    },
+    {
+      "id": "mars:mars_nickel",
+      "material": "garnierite",
+      "dominant_weight": 225,
+      "weight_tie_rule": "lexicographically_smallest"
+    },
+    {
+      "id": "mars:mars_pitchblende",
+      "material": "pitchblende",
+      "dominant_weight": 350,
+      "weight_tie_rule": "lexicographically_smallest"
+    },
+    {
+      "id": "mars:mars_quartzite",
+      "material": "quartzite",
+      "dominant_weight": 315,
+      "weight_tie_rule": "lexicographically_smallest"
+    },
+    {
+      "id": "mars:mars_salt",
+      "material": "spodumene",
+      "dominant_weight": 315,
+      "weight_tie_rule": "lexicographically_smallest"
+    },
+    {
+      "id": "mars:mars_stibnite",
+      "material": "tetrahedrite",
+      "dominant_weight": 550,
+      "weight_tie_rule": "lexicographically_smallest"
+    },
+    {
+      "id": "mars:mars_sulfur",
+      "material": "pyrite",
+      "dominant_weight": 360,
+      "weight_tie_rule": "lexicographically_smallest"
+    },
+    {
+      "id": "mars:mars_surface_bismuthinite",
+      "material": "bismuth",
+      "dominant_weight": 300,
+      "weight_tie_rule": "lexicographically_smallest"
+    },
+    {
+      "id": "mars:mars_surface_cassiterite",
+      "material": "cassiterite",
+      "dominant_weight": 825,
+      "weight_tie_rule": "lexicographically_smallest"
+    },
+    {
+      "id": "mars:mars_surface_hematite",
+      "material": "hematite",
+      "dominant_weight": 750,
+      "weight_tie_rule": "lexicographically_smallest"
+    },
+    {
+      "id": "mars:mars_surface_nickel_galena",
+      "material": "galena",
+      "dominant_weight": 450,
+      "weight_tie_rule": "lexicographically_smallest"
+    },
+    {
+      "id": "mars:mars_surface_tetrahedrite",
+      "material": "tetrahedrite",
+      "dominant_weight": 900,
+      "weight_tie_rule": "lexicographically_smallest"
+    },
+    {
+      "id": "mars:mars_tantalite",
+      "material": "pyrolusite",
+      "dominant_weight": 360,
+      "weight_tie_rule": "lexicographically_smallest"
+    },
+    {
+      "id": "mars:mars_tungsten",
+      "material": "scheelite",
+      "dominant_weight": 315,
+      "weight_tie_rule": "lexicographically_smallest"
+    }
+  ]
+}

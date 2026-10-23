@@ -50,6 +50,8 @@ material colors and TFG icon-set overrides. Those assets retain their respective
 TerraLens does not claim authorship of them. The exact material/layer provenance is in
 [native/terralens-rs/assets/ore-icons/README.md](native/terralens-rs/assets/ore-icons/README.md)
 and its `vein-materials.json`.
+Planetary icons also resolve the installed KubeJS item models and texture overrides before falling
+back to GTCEu assets; their per-material sources are recorded in `ore-icons/planetary/manifest.json`.
 
 GTCEu credits Gregtech: Refreshed / ULSTICK, Ghostipedia, ZedTech contributors, TTFTCUTS, Rosethorns
 and other contributors for its artwork; its full credited-works list is at

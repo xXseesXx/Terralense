@@ -7,3 +7,8 @@ The source artwork comes from the installed `TerraFirmaGreg-Core-Modern-0.9.25.j
 Dikes and gravel use their actual TFC loose-rock textures; kaolin uses the actual TFC clay item texture.
 
 `vein-materials.json` lists the GT-backed vein icons with their material, TFG icon-set override, resolved texture family, and exact primary/secondary RGB values. Its Beneath entries use each configured vein's dominant weighted ore material. Their 16×16 icons are baked from the installed GTCEu raw-ore item layers using that material's installed colors and the terminal texture family reached through its TFG/GTCEu icon-set parent chain. The Beneath material labels and dominant-material selections are checked against the normalized installed vein configurations in Rust tests.
+
+The [planetary catalog](planetary/README.md) covers every configured Moon and Mars vein. Its
+manifest records the primary mineral, exact texture source and material colors; common minerals
+share one texture in the viewer. Catalog tests verify all 55 types, their configured primary
+outputs, transparent sprite silhouettes and position-independent lookup.

@@ -1,7 +1,7 @@
 # Native validation
 
 The published release was checked on Linux against TFG Core 0.9.25, TFC 3.2.25, Beneath 1.0.6
-and Ad Astra 1.15.21. The Moon/Mars release passes **276 release tests**: 252 library, twelve engine-process, ten parity
+and Ad Astra 1.15.21. The Moon/Mars release passes **277 release tests**: 253 library, twelve engine-process, ten parity
 and two release-CLI checks. Formatting, the headless build and the opt-in diagnostic targets pass.
 This includes 39 Atlas tests covering cache reuse across zoom levels, refinement, family coverage,
 adjacent boundaries, split continuation, same-root panning and dimension-aware spawn/player pins.
@@ -70,6 +70,11 @@ See [planetary generation](PLANETARY-GENERATION.md) for the denominators and lim
   raw ore artwork. Clusters use representative artwork and counts without a disc background.
   Sprite tests cover alpha, the mineshaft opening, TFG symbol routing and distinct vanilla textures
   sharing a structure family. Export tests check transparent icon corners on the map image.
+- The planetary ore catalog covers all 27 Moon and 28 Mars vein types with 39 shared mineral
+  sprites. Full-catalog checks compare artwork labels with configured primary output weights,
+  decode every PNG, require transparent silhouettes, and verify that placed markers across
+  dimensions share one GPU texture per mineral. Sources include effective KubeJS item-model
+  texture overrides as well as the installed GTCEu color and icon-set definitions.
 - Native asynchronous file picking was opened on the desktop. Portable source fixtures and a real
   engine child test check source import and failure replies; they do not simulate an OS chooser.
   File/folder world IDs agree, and same-named worlds from different locations remain distinct.
