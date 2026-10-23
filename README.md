@@ -143,11 +143,11 @@ fixtures. Elevation is an estimate. Ore pins and outlined/unconfirmed structure 
 predictions; saved structure starts confirm recorded generation, not whether a structure has been
 looted or modified. Tree counts estimate generation attempts, and habitat search is sampled.
 
-Registered structures remain available in their dimension's controls even when a 100 km audit
-finds no placement or the native sampler cannot match their biome tags. Audit misses are not a
-blacklist. Seed previews still apply supported placement and literal biome checks; saved starts
-provide independent positions for any mod's structures. See the
-[structure audit](docs/STRUCTURE-GENERATION.md).
+Structure controls use a reviewed list for the installed TFG worldgen profile. TFG villages,
+the temperate house and all compatible TFC ruin variants stay available; vanilla villages,
+strongholds and other pack-incompatible structures are culled. The 100 km diagnostic scan does
+not decide availability. Saved starts remain independent evidence for imported/custom worlds.
+See the [structure review](docs/STRUCTURE-GENERATION.md).
 
 Structure bounds and block cutaways require saved structure data. Ungenerated jigsaw layouts are
 not simulated, so a structure without a recorded box keeps its placement location. Terrain-dependent placement,

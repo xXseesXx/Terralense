@@ -1,9 +1,9 @@
-//! Registered structure controls and precise seed-preview biome support.
+//! Structure availability reviewed for the installed TFG 0.9.25 generation profiles.
 //!
-//! Catalog discovery is deliberately broader than the pinned sampler's biome intersections:
-//! a negative sample or an incomplete static profile cannot remove a registered control.
-//! Placement checks still compare literal registry IDs, without guessing biome aliases.
-//! Saved starts remain independent evidence and never depend on preview support.
+//! Compatible registry IDs are explicit: TFG settlements are distinct from vanilla villages,
+//! and a mod being installed does not enable its structures in TFC world generation.
+//! The catalog never depends on finding a hit in a particular seed or search radius.
+//! Saved starts remain independent evidence for imported/custom worlds.
 use crate::dimension::Dimension;
 use serde_json::Value;
 use std::{
@@ -33,47 +33,55 @@ fn explicitly_disabled(child: &Value) -> bool {
         .is_some_and(Vec::is_empty)
 }
 
-/// Identify the dimension of a registry biome, including native biomes outside our sampler.
-/// This only sorts controls into dimensions; it never substitutes IDs in placement gates.
-fn biome_dimension(id: &str) -> Option<Dimension> {
-    match id {
-        "minecraft:nether_wastes"
-        | "minecraft:soul_sand_valley"
-        | "minecraft:crimson_forest"
-        | "minecraft:warped_forest"
-        | "minecraft:basalt_deltas" => Some(Dimension::Beneath),
-        "minecraft:the_end"
-        | "minecraft:end_highlands"
-        | "minecraft:end_midlands"
-        | "minecraft:small_end_islands"
-        | "minecraft:end_barrens" => None,
-        _ if id.starts_with("tfg:nether/") => Some(Dimension::Beneath),
-        _ if id.starts_with("tfg:moon/") || id.starts_with("ad_astra:lunar_") => {
-            Some(Dimension::Moon)
-        }
-        _ if id.starts_with("tfg:mars/") || id.starts_with("ad_astra:martian_") => {
-            Some(Dimension::Mars)
-        }
-        _ if id.starts_with("minecraft:")
-            || id.starts_with("tfg:earth/")
-            || id.starts_with("tfc:") =>
-        {
-            Some(Dimension::Overworld)
-        }
-        _ => None,
+// Reviewed against current KubeJS sets/tags and mod resources, not the seed-zero scan.
+// See docs/STRUCTURE-GENERATION.md for the family decisions and source evidence.
+fn reviewed_ids(dimension: Dimension) -> &'static [&'static str] {
+    match dimension {
+        Dimension::Overworld => &[
+            "tfc_ruined_world:ancient_monument_1",
+            "tfc_ruined_world:ancient_monument_2",
+            "tfc_ruined_world:castle_1",
+            "tfc_ruined_world:castle_2",
+            "tfc_ruined_world:limestone_church",
+            "tfc_ruined_world:medium_gneiss_church",
+            "tfc_ruined_world:small_gneiss_church",
+            "tfc_ruined_world:small_limestone_church",
+            "tfc_ruined_world:small_limestone_church_2",
+            "tfc_ruined_world:tower_1",
+            "tfc_ruined_world:tower_2",
+            "tfc_ruined_world:tower_3",
+            "tfc_ruined_world:tower_4",
+            "tfc_ruined_world:tower_5",
+            "tfc_ruined_world:towerhouse_1",
+            "tfc_ruined_world:towerhouse_2",
+            "tfc_ruins:ruin_beach",
+            "tfc_ruins:ruin_rich",
+            "tfc_ruins:ruin_small",
+            "tfg:aqueduct/aqueduct",
+            "tfg:illagers/arabic_village_living",
+            "tfg:illagers/camps",
+            "tfg:illagers/forest_roaming",
+            "tfg:illagers/malay_village_living",
+            "tfg:illagers/norse_village_living",
+            "tfg:illagers/norse_village_ruined",
+            "tfg:illagers/yurts_village_living",
+            "tfg:mineshaft/mineshaft",
+            "tfg:ocean/ocean_moai_0",
+            "tfg:temperate/plains_temperate_house_0",
+        ],
+        Dimension::Beneath => &[
+            "minecraft:bastion_remnant",
+            "minecraft:nether_fossil",
+            "tfg:beneath/tower",
+        ],
+        Dimension::Moon => &[
+            "tfg:moon/cheese_ores",
+            "tfg:moon/meteors",
+            "tfg:moon/moon_rabbit_houses",
+            "tfg:moon/moonbase",
+        ],
+        Dimension::Mars => &[],
     }
-}
-
-fn plausible_dimension(child: &Value, dimension: Dimension) -> bool {
-    child["dimension_biomes"][dimension.id()]
-        .as_array()
-        .is_some_and(|biomes| !biomes.is_empty())
-        || child["resolved_selector_biomes"]
-            .as_array()
-            .into_iter()
-            .flatten()
-            .filter_map(Value::as_str)
-            .any(|biome| biome_dimension(biome) == Some(dimension))
 }
 
 fn profiles() -> &'static HashMap<Dimension, Profile> {
@@ -89,15 +97,13 @@ fn profiles() -> &'static HashMap<Dimension, Profile> {
                     let set_id = set["id"].as_str().expect("structure set id");
                     for child in set["children"].as_array().expect("structure children") {
                         let id = child["id"].as_str().expect("structure id");
-                        if explicitly_disabled(child) {
+                        if !reviewed_ids(dimension).contains(&id) || explicitly_disabled(child) {
                             continue;
                         }
-                        if plausible_dimension(child, dimension) {
-                            registered.insert(id.to_owned());
-                            sets.entry(set_id.to_owned())
-                                .or_default()
-                                .push(id.to_owned());
-                        }
+                        registered.insert(id.to_owned());
+                        sets.entry(set_id.to_owned())
+                            .or_default()
+                            .push(id.to_owned());
                         let allowed: HashSet<String> = child["dimension_biomes"][dimension.id()]
                             .as_array()
                             .into_iter()
@@ -140,8 +146,7 @@ pub fn catalog(dimension: Dimension) -> &'static Vec<(String, String)> {
     &profiles()[&dimension].catalog
 }
 
-/// Registered, dimension-appropriate controls and set aliases, independent of sample hits.
-/// This is catalog availability, not a promise that the seed preview can place the type.
+/// Compatible installed-pack types and set aliases, independent of sampling and zoom.
 pub fn enabled(dimension: Dimension, id: &str) -> bool {
     let id = id.split('@').next().unwrap_or(id);
     let profile = &profiles()[&dimension];
@@ -153,7 +158,7 @@ pub fn enabled(dimension: Dimension, id: &str) -> bool {
 }
 
 /// Literal current-profile biome intersection for the seed placement scanner.
-/// A missing intersection limits this scanner; it does not blacklist the catalog entry.
+/// The reviewed compatibility list and seed-specific placement checks are separate.
 pub fn biome_compatible(dimension: Dimension, id: &str) -> bool {
     allowed_biomes(dimension, id).is_some_and(|biomes| !biomes.is_empty())
 }
@@ -190,14 +195,14 @@ mod tests {
 
     #[test]
     fn explicit_empty_and_wrong_dimension_profiles_stay_disabled() {
-        assert!(enabled(Dimension::Beneath, "minecraft:fortress"));
+        assert!(!enabled(Dimension::Beneath, "minecraft:fortress"));
         assert!(!biome_compatible(Dimension::Beneath, "minecraft:fortress"));
         assert!(!enabled(Dimension::Beneath, "tfg:beneath/outpost"));
         assert!(enabled(Dimension::Beneath, "minecraft:bastion_remnant"));
         assert!(enabled(Dimension::Beneath, "minecraft:nether_fossil"));
         assert!(enabled(Dimension::Moon, "tfg:moon/moonbase@-31,17"));
-        assert!(enabled(Dimension::Moon, "ad_astra:moon_dungeon"));
-        assert!(enabled(Dimension::Mars, "ad_astra:mars_temple"));
+        assert!(!enabled(Dimension::Moon, "ad_astra:moon_dungeon"));
+        assert!(!enabled(Dimension::Mars, "ad_astra:mars_temple"));
         assert!(!biome_compatible(Dimension::Moon, "ad_astra:moon_dungeon"));
         assert!(!biome_compatible(Dimension::Mars, "ad_astra:mars_temple"));
         assert!(!enabled(Dimension::Overworld, "tfg:moon/moonbase"));
@@ -321,27 +326,34 @@ mod tests {
     }
 
     #[test]
-    fn negative_sample_or_static_biome_mismatch_cannot_blacklist_registered_settlements() {
+    fn reviewed_pack_keeps_tfg_settlements_and_culls_incompatible_families() {
         for id in [
+            "minecraft:stronghold",
+            "minecraft:strongholds",
+            "minecraft:ancient_city",
             "minecraft:village_plains",
             "minecraft:village_desert",
             "minecraft:village_savanna",
             "minecraft:village_snowy",
             "minecraft:village_taiga",
+            "minecraft:mineshaft",
+            "minecraft:shipwreck",
+            "minecraft:pillager_outpost",
+            "minecraft:desert_pyramid",
             "wan_ancient_beasts:abandoned_village",
+            "wan_ancient_beasts:ancient_nest",
+            "species:wraptor_coop",
+            "ae2:meteorite",
+            "alekiships:unfinished_sloop_oak",
+            "arthropocolypse:desert_nest",
         ] {
-            assert!(enabled(Dimension::Overworld, id), "{id}");
+            assert!(!enabled(Dimension::Overworld, id), "{id}");
             assert!(
-                catalog(Dimension::Overworld)
+                !catalog(Dimension::Overworld)
                     .iter()
                     .any(|(candidate, _)| candidate == id),
                 "{id}"
             );
-            assert!(
-                !biome_compatible(Dimension::Overworld, id),
-                "no fabricated biome alias: {id}"
-            );
-            assert!(!enabled(Dimension::Moon, id), "wrong dimension: {id}");
         }
         for id in [
             "tfg:illagers/arabic_village_living",
@@ -360,5 +372,74 @@ mod tests {
             !enabled(Dimension::Beneath, "tfg:beneath/outpost"),
             "explicit pack disable"
         );
+    }
+
+    #[test]
+    fn reviewed_membership_covers_every_variant_without_using_scan_hits() {
+        let definitions = source()["structures"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|entry| entry["id"].as_str().unwrap())
+            .collect::<HashSet<_>>();
+        for dimension in Dimension::ALL {
+            let reviewed = reviewed_ids(dimension)
+                .iter()
+                .copied()
+                .collect::<HashSet<_>>();
+            let controls = catalog(dimension)
+                .iter()
+                .map(|(id, _)| id.as_str())
+                .collect::<HashSet<_>>();
+            assert_eq!(controls, reviewed, "{dimension:?}");
+            for id in reviewed {
+                assert!(
+                    definitions.contains(id),
+                    "missing installed definition: {id}"
+                );
+            }
+        }
+        // Actual TFG village variants, including the less common ruined Norse child.
+        assert_eq!(
+            reviewed_ids(Dimension::Overworld)
+                .iter()
+                .filter(|id| id.contains("village"))
+                .count(),
+            5
+        );
+        assert_eq!(
+            reviewed_ids(Dimension::Overworld)
+                .iter()
+                .filter(|id| id.starts_with("tfc_ruined_world:"))
+                .count(),
+            16
+        );
+    }
+
+    #[test]
+    fn explicit_primal_tag_clears_are_resolved_before_compatibility_review() {
+        for tag in [
+            "wan_ancient_beasts:has_structure/abandoned_village",
+            "wan_ancient_beasts:has_structure/ancient_nest",
+            "wan_ancient_beasts:has_structure/digsite_plains",
+            "wan_ancient_beasts:has_structure/ruined_castle",
+        ] {
+            let gate = &source()["biome_gate_tags"][tag];
+            assert!(
+                gate["resolved_biomes"].as_array().unwrap().is_empty(),
+                "{tag}"
+            );
+            assert!(
+                gate["kubejs_remove_all"]
+                    .as_array()
+                    .unwrap()
+                    .iter()
+                    .any(|origin| origin
+                        .as_str()
+                        .unwrap()
+                        .contains("wan_ancient_beasts/tags.js:")),
+                "{tag}"
+            );
+        }
     }
 }

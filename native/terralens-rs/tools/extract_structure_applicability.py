@@ -54,37 +54,46 @@ if constfile.exists():
  txtc=constfile.read_text()
  for m in re.finditer(r'global\.(\w+_BIOMES)\s*=\s*\[(.*?)\]\s*;',txtc,re.S):
   biome_constants[m.group(1)]=re.findall(r"['\"]([^'\"]+)['\"]",m.group(2))
-# KubeJS server tag event scripts: simple static event.add/remove calls only, preserve path/line provenance.
+# KubeJS biome-tag events. Keep the supported static operations in source order so
+# event.removeAll really clears earlier jar/datapack values before later additions.
+# This deliberately handles literal values/arrays and the pack's global.*_BIOMES loops;
+# it does not attempt to execute arbitrary JavaScript.
+script_biome_ops=collections.defaultdict(list)
 script_add_biome=collections.defaultdict(list); script_remove_biome=collections.defaultdict(list)
+script_remove_all_biome=collections.defaultdict(list)
 script_add_struct=collections.defaultdict(list); script_remove_struct=collections.defaultdict(list)
-for p in (KUBE/'server_scripts').rglob('*.js'):
+interesting_tag=lambda tag: ('has_structure' in tag or tag.startswith('minecraft:is_') or tag=='tfg:nether_biomes')
+for p in sorted((KUBE/'server_scripts').rglob('*.js')):
  txt=p.read_text(errors='replace')
- # single-value literal calls. Array values handled separately below.
- pat=r"event\.(add|remove)\(\s*['\"]([^'\"]+)['\"]\s*,\s*['\"]([^'\"]+)['\"]\s*\)"
- for m in re.finditer(pat,txt):
-  meth,tag,val=m.groups(); line=txt.count('\n',0,m.start())+1
-  if 'has_structure' in tag or tag.startswith('minecraft:is_') or tag=='tfg:nether_biomes':
-   (script_add_biome if meth=='add' else script_remove_biome)[tag].append((val,f'KubeJS/server_scripts/{p.relative_to(KUBE/"server_scripts").as_posix()}:{line}'))
-# Expand literal biome-id arrays used in global.*_BIOMES.forEach loops; this is used by the current Moon tags script.
-for p in (KUBE/'server_scripts').rglob('*.js'):
- txt=p.read_text(errors='replace')
- for m in re.finditer(r'global\.(\w+_BIOMES)\.forEach\(\s*(\w+)\s*=>\s*\{(.*?)\n\s*\}\s*\)',txt,re.S):
-  group,var,body=m.groups(); line=txt.count('\n',0,m.start())+1
-  values=biome_constants.get(group,[])
-  for em in re.finditer(r"event\.(add|remove)\(\s*['\"]([^'\"]+)['\"]\s*,\s*"+re.escape(var)+r"\s*\)",body):
-   meth,tag=em.groups(); target=script_add_biome if meth=='add' else script_remove_biome
-   for val in values: target[tag].append((val,f'KubeJS/server_scripts/{p.relative_to(KUBE/"server_scripts").as_posix()}:{line}'))
-
-# Simple literal `event.add('tag', ['a','b'])` or tags as arrays.
-patarr=r"event\.(add|remove)\(\s*['\"]([^'\"]+)['\"]\s*,\s*\[([^\]]*)\]\s*\)"
-for p in (KUBE/'server_scripts').rglob('*.js'):
- txt=p.read_text(errors='replace')
- for m in re.finditer(patarr,txt,re.S):
-  meth,tag,body=m.groups()
-  vals=re.findall(r"['\"]([^'\"]+)['\"]",body); line=txt.count('\n',0,m.start())+1
-  if 'has_structure' in tag or tag.startswith('minecraft:is_') or tag=='tfg:nether_biomes':
-   target=script_add_biome if meth=='add' else script_remove_biome
-   for val in vals: target[tag].append((val,f'KubeJS/server_scripts/{p.relative_to(KUBE/"server_scripts").as_posix()}:{line}'))
+ rel=f'KubeJS/server_scripts/{p.relative_to(KUBE/"server_scripts").as_posix()}'
+ ops=[]
+ call_pat=r"event\.(add|remove|removeAll)\s*\(\s*(['\"])([^'\"]+)\2\s*(?:,\s*(\[[^\]]*\]|(['\"])([^'\"]*)\5|(\w+)))?\s*\)"
+ for m in re.finditer(call_pat,txt):
+  meth,_,tag,arg,_,literal,variable=m.groups()
+  if not interesting_tag(tag): continue
+  line=txt.count('\n',0,m.start())+1
+  src=f'{rel}:{line}'
+  if meth=='removeAll':
+   ops.append((m.start(),'removeAll',tag,None,src))
+  elif literal is not None:
+   ops.append((m.start(),meth,tag,literal,src))
+  elif arg and arg.startswith('['):
+   for val in re.findall(r"['\"]([^'\"]+)['\"]",arg):
+    ops.append((m.start(),'array_'+meth,tag,val,src))
+ # Expand known static biome arrays used by forEach callbacks, preserving their source offsets.
+ for lm in re.finditer(r'global\.(\w+_BIOMES)\.forEach\(\s*(\w+)\s*=>\s*\{(.*?)\n\s*\}\s*\)',txt,re.S):
+  group,var,body=lm.groups()
+  for em in re.finditer(r"event\.(add|remove)\s*\(\s*(['\"])([^'\"]+)\2\s*,\s*"+re.escape(var)+r"\s*\)",body):
+   meth,_,tag=em.groups()
+   if not interesting_tag(tag): continue
+   offset=lm.start(3)+em.start()
+   src=f'{rel}:{txt.count(chr(10),0,offset)+1}'
+   for val in biome_constants.get(group,[]): ops.append((offset,meth,tag,val,src))
+ for _,meth,tag,val,src in sorted(ops,key=lambda op:op[0]):
+  script_biome_ops[tag].append({'op':meth,'value':val,'source':src})
+  if meth in ('add','array_add'): script_add_biome[tag].append((val,src))
+  elif meth in ('remove','array_remove'): script_remove_biome[tag].append((val,src))
+  elif meth=='removeAll': script_remove_all_biome[tag].append(src)
 # Make explicit biome universe from level.dat for the 3 configured multidimensional sources + known TFC/TFG Overworld registry.
 # Exact profiles from level.dat, parsed before output.
 # Worldgen biome ids from actual saved generator profile; TFC Overworld is a custom source,
@@ -153,10 +162,12 @@ def merged_tag_values(tag, data):
  for obj,src in data.get(tag,[]):
   if obj.get('replace') is True: vals=[]
   vals.extend([normalize_ref(v) for v in obj.get('values',[]) if normalize_ref(v)])
- # Apply KubeJS static event operations late; only script tag mutations we statically parsed.
- for val,_ in script_add_biome.get(tag,[]): vals.append(val)
- for val,_ in script_remove_biome.get(tag,[]):
-  vals=[v for v in vals if v!=val]
+ # KubeJS tag callbacks run after data-pack tag resources; replay supported operations
+ # in script/file encounter order, including removeAll resets.
+ for op in script_biome_ops.get(tag,[]):
+  if op['op']=='removeAll': vals=[]
+  elif op['op'] in ('add','array_add'): vals.append(op['value'])
+  elif op['op'] in ('remove','array_remove'): vals=[v for v in vals if v!=op['value']]
  # deduplicate while preserving first occurrence
  return list(dict.fromkeys(vals))
 
@@ -266,7 +277,8 @@ for tag in sorted(used_gate_tags):
   'resolved_biomes':sorted(resolve_biome_tag(tag)),
   'resource_sources':[src for _,src in biome_tags.get(tag,[])],
   'kubejs_additions':[{'value':v,'source':s} for v,s in script_add_biome.get(tag,[])],
-  'kubejs_removals':[{'value':v,'source':s} for v,s in script_remove_biome.get(tag,[])]
+  'kubejs_removals':[{'value':v,'source':s} for v,s in script_remove_biome.get(tag,[])],
+  'kubejs_remove_all':script_remove_all_biome.get(tag,[])
  }
 # Verify all non-vanilla structure set / structure definitions in the pack's existing runtime snapshot exist in current raw sources.
 runtime=json.loads(args.runtime_snapshot.read_text()) if args.runtime_snapshot else {'definitions':[]}
@@ -317,7 +329,7 @@ for path in (KUBE/'server_scripts').rglob('*.js'):
  if re.search(r'has_structure|_BIOMES|nether_biomes',path.read_text(errors='ignore')):source_files.add(path)
 for path in (KUBE/'data').glob('*/dimension/*.json'):source_files.add(path)
 source_hashes=[]
-for path in sorted(source_files,key=lambda p:p.name):
+for path in sorted(source_files,key=lambda p:p.name if p.suffix=='.jar' else p.relative_to(KUBE).as_posix()):
  if not path.is_file():continue
  source_hashes.append({'file':path.name if path.suffix=='.jar' else path.relative_to(KUBE).as_posix(),'sha256':hashlib.sha256(path.read_bytes()).hexdigest()})
 
@@ -327,7 +339,7 @@ out={
  'provenance':{
   'instance':'Prism TerraFirmaGreg-Modern installed pack; Minecraft 1.20.1; TFG Core Modern 0.9.25; GTCEu 7.5.3',
   'reference':'Existing supplied level.dat WorldGenSettings plus installed mod jars and current KubeJS data/scripts; read-only audit; no Minecraft launch and no save writes.',
-  'resource_merge':'Structure/structure-set definitions use current KubeJS datapack entries over installed jar resources by identifier. Biome tags merge installed jar tag JSON, KubeJS datapack JSON, and statically readable literal KubeJS event.add/remove calls. The installed runtime snapshot independently matches all 27 non-vanilla sets and 63 referenced structures in this resource inventory.',
+  'resource_merge':'Structure/structure-set definitions use current KubeJS datapack entries over installed jar resources by identifier. Biome tags merge installed jar tag JSON and KubeJS datapack JSON, then replay statically readable KubeJS biome-tag event.add/remove/removeAll operations in sorted script-file and source order. Literal arrays and global.*_BIOMES.forEach loops are expanded; arbitrary JavaScript is not executed. The installed runtime snapshot independently cross-checks its 27 sets and 63 referenced structures against this broader resource inventory.',
   'overworld_pool':'The saved world uses the custom tfc:overworld biome source. Source eligibility uses the 109 TFG Earth biome IDs registered by current TFG Core 0.9.25 TFGBiomes; the separate 139-ID TFG Earth plus legacy TFC registry-resource superset is retained for audit only. All IDs are raw registry identifiers; vanilla biome names are never aliased to TFC names.',
   'eligibility':'A biome intersection means source-level biome gating can succeed; it does not guarantee placement or terrain viability. `scanner_eligible_dimensions` additionally requires a placement type implemented by the current scanner. Scanner callers should also enforce per-type distance limits (the request is 100 km), frequency, height/terrain checks, and a concrete supported structure ID.',
   'source_version_note':'The older assets/data/tfg/structures.json is from TFG Core 0.9.21 and was not used; current structures and sets were reread from installed TFG Core 0.9.25 KubeJS data and all installed 1.20.1 mod resources.',
@@ -344,7 +356,7 @@ out={
  'eligible_by_dimension':summary,
  'runtime_resource_crosscheck':runtime_crosscheck,
  'unresolved_references':unresolved,
- 'tag_script_changes':{'biome_tags':{tag:[{'value':v,'source':s} for v,s in vals] for tag,vals in script_add_biome.items()},'removed':{tag:[{'value':v,'source':s} for v,s in vals] for tag,vals in script_remove_biome.items()}}
+ 'tag_script_changes':{'operations':{tag:ops for tag,ops in script_biome_ops.items()},'biome_tags':{tag:[{'value':v,'source':s} for v,s in vals] for tag,vals in script_add_biome.items()},'removed':{tag:[{'value':v,'source':s} for v,s in vals] for tag,vals in script_remove_biome.items()},'removed_all':{tag:srcs for tag,srcs in script_remove_all_biome.items()}}
 }
 path=args.output;path.parent.mkdir(parents=True,exist_ok=True);path.write_text(json.dumps(out,indent=2)+'\n')
 print('biome pool sizes', {k:len(v) for k,v in profiles.items()})

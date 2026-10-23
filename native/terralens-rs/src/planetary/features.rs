@@ -657,8 +657,11 @@ mod tests {
         assert!(mo.iter().all(|(id, _)| id.starts_with("moon:")));
         assert!(ra.iter().all(|(id, _)| id.starts_with("mars:")));
         assert!(ms.iter().any(|(id, _)| id == "tfg:moon/moonbase"));
-        assert!(ms.iter().any(|(id, _)| id == "ad_astra:moon_dungeon"));
-        assert!(rs.iter().any(|(id, _)| id == "ad_astra:mars_temple"));
+        assert!(ms.iter().all(|(id, _)| id != "ad_astra:moon_dungeon"));
+        assert!(
+            rs.is_empty(),
+            "No installed structure has a TFG Mars biome selector"
+        );
         assert!(ms.iter().all(|(id, _)| id != "ad_astra:mars_temple"));
         assert!(rs.iter().all(|(id, _)| id != "ad_astra:moon_dungeon"));
     }

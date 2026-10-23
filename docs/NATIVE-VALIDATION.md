@@ -1,7 +1,7 @@
 # Native validation
 
 The published release was checked on Linux against TFG Core 0.9.25, TFC 3.2.25, Beneath 1.0.6
-and Ad Astra 1.15.21. The current release passes **289 release tests**: 265 library, twelve engine-process, ten parity
+and Ad Astra 1.15.21. The current release passes **291 release tests**: 267 library, twelve engine-process, ten parity
 and two release-CLI checks. Formatting, the headless build and the opt-in diagnostic targets pass.
 This includes 40 Atlas tests covering cache reuse across zoom levels, refinement, family coverage,
 adjacent boundaries, split continuation, same-root panning and dimension-aware spawn/player pins.
@@ -56,19 +56,20 @@ The installed source inventory covers all 66 sets and 131 distinct structure IDs
 vanilla definitions, effective KubeJS selectors and literal nested biome tags. The 100 km
 seed-zero audit stops independently at the first viable placement for each weighted member.
 It found every source-compatible type: 30 Overworld, three Beneath, four Moon and zero Mars.
-The remaining per-dimension entries have no literal biome intersection in that pinned snapshot.
-They remain in dimension-appropriate controls: a failed sample or incomplete native sampler
-cannot blacklist a registered structure. Source checks still constrain preview positions and
-only the explicitly empty Beneath outpost selector is treated as a pack disable. Actual saved
-starts remain visible independently. A separate read-only check across four Overworld saves
-found 1,048 recorded starts in 453,668 chunks and no excluded recorded registry IDs.
+Catalog membership uses an explicit installed-pack compatibility review, independently from
+scan results: 30 Overworld, three Beneath, four Moon and zero Mars structure types. Vanilla
+villages/strongholds and pack-disabled Primal/Ancient Beasts entries are culled; every TFG
+village, temperate house, TFC towerhouse/church/monument variant remains. Portable regressions
+check every reviewed registry ID, all five TFG village variants, both towerhouses, dimension
+isolation and the exclusion of incompatible families. A source regression verifies that the
+pack's explicit Primal/Ancient Beasts `removeAll` calls clear its structure biome tags. Preview biome matching and user visibility
+are separate from compatibility. A scan miss cannot change the catalog.
 
-Portable release tests verify full audit coverage, current raw biome pools, separate preview
-support and catalog availability, dimension-specific controls, retained unverified village
-entries, and all 29 independently recorded saved types in the pinned audit.
-The opt-in diagnostics regression additionally checks that all 37 reported witness locations
-are returned by the production dimension scanners. Audit and finder use the same biome probes,
-including Beneath at Y=93, and preserve all children in the weighted draw.
+The opt-in diagnostics regression checks all 37 witness locations against production scanners.
+Audit and finder use the same biome probes, including Beneath at Y=93, and preserve all children
+in the weighted draw. A separate read-only check across four Overworld saves found 1,048 starts
+in 453,668 chunks; every recorded registry ID is retained. The pinned report retains independent
+evidence for 29 recorded types across Overworld and Moon.
 
 Candidate placement does not simulate successful Minecraft structure generation. Separate
 read-only world-0 evidence confirms 25 Overworld types (278 starts) and all four Moon types
