@@ -75,6 +75,10 @@ See [planetary generation](PLANETARY-GENERATION.md) for the denominators and lim
   decode every PNG, require transparent silhouettes, and verify that placed markers across
   dimensions share one GPU texture per mineral. Sources include effective KubeJS item-model
   texture overrides as well as the installed GTCEu color and icon-set definitions.
+- Moon cheese, Moon bases and rabbit houses have distinct sprites in the map, icon rail and
+  exports. The personal build embeds Ad Astra's local cheese item image; dome and rabbit-nest-box
+  artwork is original transparent 32px pixel art. Routing tests cover recorded IDs and placement
+  suffixes. The source-only build also compiles without the optional local game image.
 - Native asynchronous file picking was opened on the desktop. Portable source fixtures and a real
   engine child test check source import and failure replies; they do not simulate an OS chooser.
   File/folder world IDs agree, and same-named worlds from different locations remain distinct.

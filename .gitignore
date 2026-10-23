@@ -7,6 +7,9 @@
 .env
 .env.*
 
+# Optional artwork imported from the user's own game installation
+/native/terralens-rs/local-assets/
+
 # Retired prototypes and the local upstream research checkout
 /upstream/
 /native/terralens-scan/

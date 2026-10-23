@@ -120,16 +120,25 @@ pub fn family(id: &str) -> Family {
 enum Sprite {
     Cubiomes(&'static str),
     Tfg(Family),
+    MoonCheese,
+    MoonBase,
+    MoonRabbitHouse,
     Glyph(Family),
 }
 
 fn sprite(id: &str) -> Sprite {
-    let kind = family(id);
+    let id = id.split('@').next().unwrap_or(id).to_ascii_lowercase();
+    match id.as_str() {
+        "tfg:moon/cheese_ores" => return Sprite::MoonCheese,
+        "tfg:moon/moonbase" => return Sprite::MoonBase,
+        "tfg:moon/moon_rabbit_houses" => return Sprite::MoonRabbitHouse,
+        _ => {}
+    }
+    let kind = family(&id);
     // Mineshafts use the requested timber opening rather than Cubiomes' rail symbol.
     if matches!(kind, Family::Mine | Family::Camp | Family::Church) {
         return Sprite::Tfg(kind);
     }
-    let id = id.split('@').next().unwrap_or(id).to_ascii_lowercase();
     let vanilla = id.strip_prefix("minecraft:").and_then(|path| match path {
         "world_spawn" => Some("spawn"),
         "fortress" | "nether_fortress" | "nether_complexes" => Some("fortress"),
@@ -236,6 +245,9 @@ fn cubiomes_image(name: &str) -> RgbaImage {
 pub fn raster(id: &str, size: u32) -> RgbaImage {
     let image = match sprite(id) {
         Sprite::Cubiomes(name) => cubiomes_image(name),
+        Sprite::MoonCheese => moon_cheese(),
+        Sprite::MoonBase => tfg::moon_dome(),
+        Sprite::MoonRabbitHouse => tfg::moon_rabbit_house(),
         Sprite::Tfg(Family::Camp) => tfg::campfire(),
         Sprite::Tfg(Family::Settlement) => tfg::village_head(),
         Sprite::Tfg(Family::Ruin) => tfg::cracked_limestone_brick(),
@@ -245,6 +257,23 @@ pub fn raster(id: &str, size: u32) -> RgbaImage {
         Sprite::Glyph(kind) => glyph(kind),
     };
     fit_silhouette(&image, size.clamp(8, 128))
+}
+
+fn moon_cheese() -> RgbaImage {
+    use std::sync::OnceLock;
+    const LOCAL_PNG: &[u8] = include_bytes!(concat!(env!("OUT_DIR"), "/ad-astra-cheese.png"));
+    static IMAGE: OnceLock<RgbaImage> = OnceLock::new();
+    IMAGE
+        .get_or_init(|| {
+            if LOCAL_PNG.is_empty() {
+                tfg::cheese_wedge()
+            } else {
+                image::load_from_memory(LOCAL_PNG)
+                    .expect("local Ad Astra cheese PNG")
+                    .to_rgba8()
+            }
+        })
+        .clone()
 }
 
 fn fit_silhouette(image: &RgbaImage, size: u32) -> RgbaImage {
@@ -473,6 +502,12 @@ mod tests {
     use super::*;
     #[test]
     fn requested_tfg_symbols_and_cubiomes_variants_keep_their_identity() {
+        assert_eq!(sprite("tfg:moon/cheese_ores@-9,24"), Sprite::MoonCheese);
+        assert_eq!(sprite("tfg:moon/moonbase"), Sprite::MoonBase);
+        assert_eq!(
+            sprite("tfg:moon/moon_rabbit_houses"),
+            Sprite::MoonRabbitHouse
+        );
         assert_eq!(sprite("tfg:illagers/camps"), Sprite::Tfg(Family::Camp));
         assert_eq!(
             sprite("tfg:illagers/illager_camps"),
@@ -508,6 +543,9 @@ mod tests {
             "tfc_ruined_world:limestone_church",
             "tfg:mineshaft/mineshaft",
             "minecraft:stronghold",
+            "tfg:moon/cheese_ores",
+            "tfg:moon/moonbase",
+            "tfg:moon/moon_rabbit_houses",
         ] {
             let icon = raster(id, 32);
             assert!(icon.pixels().any(|pixel| pixel[3] == 0), "{id}");
@@ -566,6 +604,9 @@ mod tests {
             "tfg:beneath/tower",
             "minecraft:nether_fortress",
             "minecraft:ruined_portal",
+            "tfg:moon/cheese_ores",
+            "tfg:moon/moonbase",
+            "tfg:moon/moon_rabbit_houses",
         ];
         let images: Vec<_> = ids.iter().map(|id| raster(id, 32).into_raw()).collect();
         for i in 0..images.len() {

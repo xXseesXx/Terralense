@@ -263,6 +263,255 @@ pub(super) fn mineshaft_arch() -> RgbaImage {
     im
 }
 
+pub(super) fn moon_dome() -> RgbaImage {
+    let mut im = canvas();
+    let outline = [48, 55, 61, 255];
+    let shell = [105, 113, 119, 255];
+    let shell_light = [151, 159, 163, 255];
+    let shell_shadow = [75, 84, 91, 255];
+    let seam = [57, 67, 73, 255];
+    let glass = [92, 161, 169, 255];
+    let glass_light = [151, 204, 205, 255];
+    // Low modular habitat: broad foundation under a faceted pressure dome.
+    poly(
+        &mut im,
+        &[
+            (5, 18),
+            (6, 12),
+            (9, 8),
+            (13, 5),
+            (18, 4),
+            (22, 6),
+            (26, 10),
+            (28, 17),
+            (27, 22),
+            (23, 25),
+            (9, 25),
+            (5, 22),
+        ],
+        outline,
+    );
+    poly(
+        &mut im,
+        &[
+            (7, 18),
+            (8, 13),
+            (11, 9),
+            (15, 7),
+            (18, 7),
+            (22, 9),
+            (25, 13),
+            (26, 18),
+            (24, 21),
+            (10, 21),
+        ],
+        shell,
+    );
+    // Alternating roof panels read as joined metal plates, not a glass bubble.
+    poly(
+        &mut im,
+        &[(9, 13), (12, 9), (15, 8), (15, 20), (9, 20)],
+        shell_light,
+    );
+    poly(
+        &mut im,
+        &[(17, 8), (20, 9), (24, 13), (25, 19), (17, 20)],
+        shell_shadow,
+    );
+    line(&mut im, (16, 7), (16, 21), seam, 1);
+    line(&mut im, (10, 13), (24, 13), seam, 1);
+    line(&mut im, (8, 18), (26, 18), outline, 1);
+    // Small muted-cyan portholes stay subordinate to the silhouette.
+    fill(&mut im, 11, 14, 3, 3, glass);
+    put(&mut im, 11, 14, glass_light);
+    fill(&mut im, 19, 14, 3, 3, glass);
+    put(&mut im, 19, 14, glass_light);
+    // Separate lower foundation and a compact side airlock with a dark hatch.
+    fill(&mut im, 7, 22, 19, 3, [65, 73, 79, 255]);
+    line(&mut im, (9, 25), (24, 25), [179, 182, 176, 255], 1);
+    fill(&mut im, 25, 18, 5, 7, outline);
+    fill(&mut im, 26, 19, 4, 5, shell);
+    fill(&mut im, 27, 20, 2, 3, [55, 65, 71, 255]);
+    put(&mut im, 28, 21, glass);
+    fill(&mut im, 9, 26, 3, 2, shell_shadow);
+    fill(&mut im, 21, 26, 3, 2, shell_shadow);
+    im
+}
+
+pub(super) fn moon_rabbit_house() -> RgbaImage {
+    let mut im = canvas();
+    let dark = [48, 51, 53, 255];
+    let wood = [119, 104, 85, 255];
+    let wood_light = [162, 146, 119, 255];
+    let wood_shadow = [81, 77, 70, 255];
+    let straw = [191, 171, 112, 255];
+    let straw_light = [222, 204, 145, 255];
+    let fur = [218, 220, 216, 255];
+    let fur_light = [241, 241, 232, 255];
+    let fur_shadow = [143, 151, 151, 255];
+    let pink = [190, 112, 126, 255];
+    let pink_light = [226, 156, 164, 255];
+    // Tall ears set the silhouette first; small inset pixels keep them legible.
+    poly(
+        &mut im,
+        &[
+            (10, 15),
+            (9, 8),
+            (10, 3),
+            (13, 2),
+            (16, 9),
+            (18, 8),
+            (20, 2),
+            (23, 3),
+            (24, 9),
+            (22, 16),
+        ],
+        dark,
+    );
+    poly(
+        &mut im,
+        &[(11, 12), (11, 6), (12, 4), (14, 10), (15, 14)],
+        pink,
+    );
+    poly(
+        &mut im,
+        &[(19, 13), (21, 5), (22, 5), (22, 10), (21, 14)],
+        pink_light,
+    );
+    // Boxy nesting shelter with a shaded opening and a broad straw lip.
+    poly(
+        &mut im,
+        &[
+            (4, 16),
+            (8, 13),
+            (24, 13),
+            (28, 16),
+            (28, 27),
+            (25, 30),
+            (7, 30),
+            (4, 27),
+        ],
+        dark,
+    );
+    poly(
+        &mut im,
+        &[
+            (6, 17),
+            (9, 15),
+            (23, 15),
+            (26, 17),
+            (26, 26),
+            (24, 28),
+            (8, 28),
+            (6, 26),
+        ],
+        wood,
+    );
+    fill(&mut im, 8, 17, 4, 2, wood_light);
+    fill(&mut im, 21, 17, 4, 2, wood_shadow);
+    line(&mut im, (7, 22), (25, 22), wood_shadow, 1);
+    line(&mut im, (9, 25), (23, 25), wood_light, 1);
+    // Straw spills across the front edge around the rabbit's little nest.
+    line(&mut im, (5, 21), (10, 19), straw, 2);
+    line(&mut im, (8, 22), (14, 19), straw_light, 1);
+    line(&mut im, (19, 20), (26, 22), straw, 2);
+    line(&mut im, (17, 22), (24, 24), straw_light, 1);
+    // The head and cheeks overlap the box opening so the animal is unmistakable.
+    poly(
+        &mut im,
+        &[
+            (10, 14),
+            (13, 12),
+            (19, 12),
+            (23, 15),
+            (24, 20),
+            (21, 24),
+            (14, 24),
+            (10, 21),
+            (9, 17),
+        ],
+        fur_shadow,
+    );
+    poly(
+        &mut im,
+        &[
+            (11, 15),
+            (14, 13),
+            (19, 13),
+            (22, 16),
+            (22, 20),
+            (19, 22),
+            (14, 22),
+            (11, 20),
+        ],
+        fur,
+    );
+    fill(&mut im, 12, 15, 4, 3, fur_light);
+    put(&mut im, 14, 18, dark);
+    put(&mut im, 20, 18, dark);
+    put(&mut im, 17, 20, [104, 104, 102, 255]);
+    put(&mut im, 16, 21, pink);
+    // A few straw pixels frame the lower silhouette without adding a badge.
+    put(&mut im, 6, 25, straw_light);
+    put(&mut im, 25, 26, straw);
+    im
+}
+
+pub(super) fn cheese_wedge() -> RgbaImage {
+    let mut im = canvas();
+    let rind = [191, 123, 37, 255];
+    let rind_light = [235, 176, 65, 255];
+    let cheese = [255, 215, 87, 255];
+    let cheese_light = [255, 235, 132, 255];
+    let cheese_shadow = [226, 159, 48, 255];
+    let hole = [180, 119, 42, 255];
+    // A chunky triangular wedge, with the rind forming its darker lower crust.
+    poly(
+        &mut im,
+        &[
+            (4, 24),
+            (7, 20),
+            (10, 16),
+            (14, 12),
+            (19, 8),
+            (25, 5),
+            (27, 9),
+            (27, 23),
+            (23, 27),
+            (8, 27),
+        ],
+        rind,
+    );
+    poly(
+        &mut im,
+        &[
+            (6, 22),
+            (10, 17),
+            (14, 13),
+            (19, 9),
+            (24, 7),
+            (25, 10),
+            (25, 21),
+            (22, 24),
+            (9, 24),
+        ],
+        cheese,
+    );
+    line(&mut im, (8, 21), (23, 9), cheese_light, 2);
+    line(&mut im, (9, 25), (23, 25), rind_light, 1);
+    fill(&mut im, 25, 12, 2, 8, cheese_shadow);
+    // Uneven round holes are dark, inset, and varied in size for a readable cheese face.
+    fill(&mut im, 13, 15, 3, 3, hole);
+    put(&mut im, 13, 16, cheese_shadow);
+    fill(&mut im, 19, 12, 2, 2, hole);
+    put(&mut im, 19, 12, cheese_shadow);
+    fill(&mut im, 18, 19, 4, 3, hole);
+    put(&mut im, 18, 20, cheese_shadow);
+    fill(&mut im, 10, 21, 2, 2, hole);
+    put(&mut im, 10, 21, cheese_shadow);
+    im
+}
+
 fn canvas() -> RgbaImage {
     RgbaImage::from_pixel(32, 32, Rgba(CLEAR))
 }
@@ -338,6 +587,9 @@ mod tests {
             cracked_limestone_brick(),
             church_cross(),
             mineshaft_arch(),
+            moon_dome(),
+            moon_rabbit_house(),
+            cheese_wedge(),
         ] {
             assert_eq!(im.dimensions(), (32, 32));
             assert!(im.pixels().any(|p| p[3] == 0));

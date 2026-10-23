@@ -38,7 +38,10 @@ https://github.com/terrarium-earth/Ad-Astra/tree/1.20.1 . Under the Terrarium Li
 `resources/data` are code covered by its MIT permission. A copy is retained in
 [licenses/AD-ASTRA-TERRARIUM.txt](licenses/AD-ASTRA-TERRARIUM.txt). Planetary configuration origins
 and hashes are recorded under `native/terralens-rs/src/planetary/{assets,feature-assets,crater-assets}`.
-No Ad Astra artwork is embedded by this addition. Minecraft 1.20.1 registry parameter data and
+No Ad Astra artwork is distributed in the source tree. Personal builds can embed the user's
+local cheese item texture for the Moon cheese marker; that optional file stays outside Git.
+The Moon pressure dome, rabbit nest box and source-only cheese fallback are original TerraLens
+pixel-art code. Minecraft 1.20.1 registry parameter data and
 small numeric oracle captures are used to validate the independently written Rust samplers.
 
 ## Ore artwork
