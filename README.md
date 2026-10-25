@@ -29,4 +29,6 @@ Enter a seed or use **File → Open world…** / **Open folder…** to select a 
 
 [Validation](docs/NATIVE-VALIDATION.md) · [Terrain accuracy](docs/GENERATOR-ACCURACY.md) · [Vegetation](docs/VEGETATION-GENERATION.md) · [Beneath](docs/BENEATH-GENERATION.md) · [Moon and Mars](docs/PLANETARY-GENERATION.md) · [Release notes](CHANGELOG.md)
 
+Big thanks to **[OutCrop](https://github.com/PauAixala/outcropmap)** by **Pau Aixalà**, the original foundation for TerraLens and its world-generation work.
+
 Source license: [EUPL-1.2](LICENSE). Third-party assets and notices: [NOTICE](NOTICE.md) and [licenses](licenses/). TerraLens is independent of Minecraft, TerraFirmaCraft, TerraFirmaGreg, Cubiomes Viewer and Amidst.
