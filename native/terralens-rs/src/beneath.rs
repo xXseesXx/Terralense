@@ -272,7 +272,7 @@ impl Beneath {
             } else {
                 (0, vec![0.0])
             };
-            let seed = (java_hash(&name) as i64) ^ positional_seed;
+            let seed = (java_hash(name) as i64) ^ positional_seed;
             indexes.insert(name, noises.len());
             noises.push(NormalNoise::new(&mut JavaRandom::new(seed), first, &amps));
         }

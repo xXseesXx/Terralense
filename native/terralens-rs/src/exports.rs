@@ -91,10 +91,84 @@ pub struct Outcome {
     #[serde(default)]
     pub data: Option<serde_json::Value>,
 }
+
+/// Resolve a safe player-feet Y from a probe already returned by the background
+/// generator. The probe is ignored unless it describes the exact destination block.
+/// Overworld terrain-noise height is intentionally not used: it can differ from the
+/// resolved surface around rivers, caves, and saved terrain.
+pub fn destination_y(
+    point: Point,
+    probe: Option<&crate::model::Probe>,
+    dimension: crate::dimension::Dimension,
+    slice_y: i32,
+    explicit_y: Option<f64>,
+) -> Option<i32> {
+    if let Some(y) = explicit_y.filter(|y| y.is_finite()) {
+        return Some(y.round() as i32);
+    }
+    if dimension == crate::dimension::Dimension::Beneath {
+        return Some(dimension.clamp_y(slice_y));
+    }
+    let probe = probe.filter(|probe| {
+        probe.point.x.floor() == point.x.floor() && probe.point.z.floor() == point.z.floor()
+    })?;
+    use crate::dimension::Dimension;
+    let surface = match dimension {
+        Dimension::Overworld => [
+            probe.surface_water_y,
+            probe.surface_lava,
+            probe.surface_magma,
+            probe.ground_y,
+        ]
+        .into_iter()
+        .flatten()
+        .max(),
+        Dimension::Moon | Dimension::Mars => probe
+            .height
+            .filter(|height| height.is_finite())
+            .map(|height| height.round() as i32),
+        Dimension::Beneath => unreachable!("handled above"),
+    }?;
+    (surface != i32::MIN).then(|| surface.saturating_add(1))
+}
+
+/// Coordinate to use when a waypoint needs an integer Y even though no surface
+/// probe is available. Teleport commands should instead leave Y relative (`~`).
+pub fn waypoint_y(
+    point: Point,
+    probe: Option<&crate::model::Probe>,
+    dimension: crate::dimension::Dimension,
+    slice_y: i32,
+    explicit_y: Option<f64>,
+) -> i32 {
+    destination_y(point, probe, dimension, slice_y, explicit_y)
+        .unwrap_or_else(|| dimension.default_y())
+}
+
+pub fn teleport_command(point: Point, y: Option<i32>) -> String {
+    format!(
+        "/tp @s {} {} {}",
+        point.x.floor() as i64,
+        y.map_or_else(|| "~".to_owned(), |value| value.to_string()),
+        point.z.floor() as i64
+    )
+}
 pub fn default_directory() -> PathBuf {
     std::env::var_os("XDG_DOWNLOAD_DIR")
         .map(PathBuf::from)
         .filter(|p| p.is_absolute())
+        .or_else(|| {
+            #[cfg(target_os = "windows")]
+            {
+                std::env::var_os("USERPROFILE")
+                    .map(PathBuf::from)
+                    .map(|profile| profile.join("Downloads"))
+            }
+            #[cfg(not(target_os = "windows"))]
+            {
+                None
+            }
+        })
         .or_else(|| std::env::var_os("HOME").map(|h| PathBuf::from(h).join("Downloads")))
         .unwrap_or_else(std::env::temp_dir)
         .join("TerraLens")
@@ -508,6 +582,8 @@ fn render_map(
     let mut img = ImageBuffer::<Rgba<u8>, Vec<u8>>::new(width, height);
     let dx = (bounds.max_x - bounds.min_x) / f64::from(width);
     let dz = (bounds.max_z - bounds.min_z) / f64::from(height);
+    let sampler =
+        atlas::RasterSampler::new(world, layer, display, [dx.abs().max(1.), dz.abs().max(1.)]);
     for tz in (0..height).step_by(64) {
         for tx in (0..width).step_by(64) {
             for py in tz..(tz + 64).min(height) {
@@ -517,13 +593,7 @@ fn render_map(
                 let z = (bounds.min_z + (f64::from(py) + 0.5) * dz).floor() as i32;
                 for px in tx..(tx + 64).min(width) {
                     let x = (bounds.min_x + (f64::from(px) + 0.5) * dx).floor() as i32;
-                    img.put_pixel(
-                        px,
-                        py,
-                        Rgba(atlas::raster_color_with_display(
-                            world, layer, x, z, display,
-                        )),
-                    );
+                    img.put_pixel(px, py, Rgba(sampler.color(x, z, cancel)));
                 }
             }
         }
@@ -585,30 +655,48 @@ fn compose_map(
         if matches!(
             &marker.kind,
             crate::model::MarkerKind::Structure
+                | crate::model::MarkerKind::Volcano
                 | crate::model::MarkerKind::Spawn
                 | crate::model::MarkerKind::Player
         ) {
-            let icon =
-                crate::structure_icons::raster(&marker.id, crate::structure_icons::MAP_ICON_SIZE);
+            let bpp = ((bounds.max_x - bounds.min_x) / width as f64)
+                .max((bounds.max_z - bounds.min_z) / height as f64);
+            let opacity = crate::structure_icons::map_opacity(&marker.kind, bpp, false);
+            if opacity == 0 {
+                continue;
+            }
+            let mut icon = if let Some(uuid) = crate::structure_icons::player_uuid(&marker.id) {
+                crate::player_heads::export_head(uuid, crate::structure_icons::MAP_ICON_SIZE)
+                    .unwrap_or_else(|| {
+                        crate::player_heads::fallback_head(crate::structure_icons::MAP_ICON_SIZE)
+                    })
+            } else {
+                crate::structure_icons::raster(&marker.id, crate::structure_icons::MAP_ICON_SIZE)
+            };
+            if opacity < 255 {
+                for pixel in icon.pixels_mut() {
+                    pixel[3] = (u16::from(pixel[3]) * u16::from(opacity) / 255) as u8;
+                }
+            }
             composite_center(image, &icon, px as i32, py as i32);
             continue;
         }
-        if matches!(&marker.kind, crate::model::MarkerKind::Ore) {
-            if let Some(bytes) = crate::ore_icons::icon_png(&marker.id) {
-                if let Ok(icon) = image::load_from_memory(bytes) {
-                    let icon = image::imageops::resize(
-                        &icon.to_rgba8(),
-                        28,
-                        28,
-                        image::imageops::FilterType::Nearest,
-                    );
-                    composite_center(image, &icon, px as i32, py as i32);
-                    continue;
-                }
-            }
+        if matches!(&marker.kind, crate::model::MarkerKind::Ore)
+            && let Some(bytes) = crate::ore_icons::icon_png(&marker.id)
+            && let Ok(icon) = image::load_from_memory(bytes)
+        {
+            let icon = image::imageops::resize(
+                &icon.to_rgba8(),
+                28,
+                28,
+                image::imageops::FilterType::Nearest,
+            );
+            composite_center(image, &icon, px as i32, py as i32);
+            continue;
         }
         let color = match &marker.kind {
             crate::model::MarkerKind::Structure => [255, 170, 55, 255],
+            crate::model::MarkerKind::Volcano => [244, 116, 49, 255],
             crate::model::MarkerKind::Spawn => [255, 220, 112, 255],
             crate::model::MarkerKind::Player => [137, 207, 255, 255],
             crate::model::MarkerKind::Tree => [130, 255, 120, 255],
@@ -874,7 +962,7 @@ fn draw_legend(
             }
         }
         draw_text(img, x, y, &scale.low, [245, 248, 252, 255]);
-        let right = format!("{}", scale.high);
+        let right = scale.high.to_string();
         let right_x = x + width - text_width(&right, 12.0).ceil() as i32;
         draw_text(img, right_x, y, &right, [245, 248, 252, 255]);
         return;
@@ -914,6 +1002,7 @@ fn export_markers(
         }
         let kind = match &m.kind {
             crate::model::MarkerKind::Structure => "structure",
+            crate::model::MarkerKind::Volcano => "volcano",
             crate::model::MarkerKind::Spawn => "spawn",
             crate::model::MarkerKind::Player => "player",
             crate::model::MarkerKind::Ore => "ore",
@@ -1067,6 +1156,162 @@ pub fn xaero_waypoint(name: &str, p: Point, y: i32, color: u8) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
+    fn probe_at(x: f64, z: f64) -> crate::model::Probe {
+        crate::model::Probe {
+            point: Point { x, z },
+            ..Default::default()
+        }
+    }
+
+    #[test]
+    fn teleport_y_uses_exact_resolved_surface_and_negative_block_coordinates() {
+        let point = Point {
+            x: -123.8,
+            z: -456.2,
+        };
+        let mut probe = probe_at(-124., -457.);
+        probe.ground_y = Some(91);
+        assert_eq!(
+            destination_y(
+                point,
+                Some(&probe),
+                crate::dimension::Dimension::Overworld,
+                96,
+                None
+            ),
+            Some(92)
+        );
+        assert_eq!(teleport_command(point, Some(92)), "/tp @s -124 92 -457");
+        probe.ground_y = Some(319);
+        assert_eq!(
+            destination_y(
+                point,
+                Some(&probe),
+                crate::dimension::Dimension::Overworld,
+                96,
+                None
+            ),
+            Some(320),
+            "feet must remain above the highest legal solid block"
+        );
+    }
+
+    #[test]
+    fn teleport_fluid_surface_takes_precedence_and_unknown_stays_relative() {
+        let point = Point { x: 7., z: 8. };
+        let mut probe = probe_at(7., 8.);
+        probe.ground_y = Some(54);
+        probe.surface_water_y = Some(63);
+        assert_eq!(
+            destination_y(
+                point,
+                Some(&probe),
+                crate::dimension::Dimension::Overworld,
+                96,
+                None
+            ),
+            Some(64)
+        );
+        let stale = probe_at(8., 8.);
+        assert_eq!(
+            destination_y(
+                point,
+                Some(&stale),
+                crate::dimension::Dimension::Overworld,
+                96,
+                None
+            ),
+            None
+        );
+        assert_eq!(teleport_command(point, None), "/tp @s 7 ~ 8");
+    }
+
+    #[test]
+    fn teleport_dimensions_use_slice_planetary_height_or_marker_y() {
+        use crate::dimension::Dimension;
+        let point = Point { x: 0., z: 0. };
+        assert_eq!(
+            destination_y(point, None, Dimension::Beneath, 118, None),
+            Some(118)
+        );
+        let mut planet = probe_at(0., 0.);
+        planet.height = Some(103.4);
+        assert_eq!(
+            destination_y(point, Some(&planet), Dimension::Moon, 96, None),
+            Some(104)
+        );
+        assert_eq!(
+            destination_y(point, None, Dimension::Mars, 96, Some(71.)),
+            Some(71)
+        );
+    }
+
+    #[test]
+    fn close_volcano_pins_leave_lava_pixels_visible_in_composed_maps() {
+        use crate::model::MarkerKind;
+        let rgb = crate::volcanic_lava::COLOR;
+        let mut image = ImageBuffer::from_pixel(64, 64, Rgba([rgb[0], rgb[1], rgb[2], 255]));
+        let mut before = image.clone();
+        let marker = Marker {
+            id: "terralens:volcano/cinder_cone@32,32".into(),
+            label: "Cinder cone".into(),
+            namespace: "terralens".into(),
+            x: 32.,
+            z: 32.,
+            y: Some(104.),
+            kind: MarkerKind::Volcano,
+            confirmed: false,
+            min_y: None,
+            max_y: None,
+            bounds: None,
+            detail: String::new(),
+            color: rgb,
+        };
+        compose_map(
+            &mut image,
+            Bounds {
+                min_x: 0.,
+                min_z: 0.,
+                max_x: 64.,
+                max_z: 64.,
+            },
+            Layer::Biomes,
+            &[marker],
+            &Composition::default(),
+            &|| false,
+        )
+        .unwrap();
+        compose_map(
+            &mut before,
+            Bounds {
+                min_x: 0.,
+                min_z: 0.,
+                max_x: 64.,
+                max_z: 64.,
+            },
+            Layer::Biomes,
+            &[],
+            &Composition::default(),
+            &|| false,
+        )
+        .unwrap();
+        assert!(
+            image.pixels().zip(before.pixels()).all(|(a, b)| a == b),
+            "the navigation sprite must not cover the lava surface at block zoom"
+        );
+        assert_eq!(
+            crate::structure_icons::map_opacity(&MarkerKind::Volcano, 1., true),
+            255
+        );
+        assert_eq!(
+            crate::structure_icons::map_opacity(&MarkerKind::Structure, 1., false),
+            255
+        );
+        assert_eq!(
+            crate::structure_icons::map_opacity(&MarkerKind::Volcano, 4., false),
+            255
+        );
+    }
     #[test]
     fn xaero_safe_negatives() {
         assert_eq!(
@@ -1137,7 +1382,7 @@ mod tests {
     }
 
     #[test]
-    fn composed_map_keeps_spawn_and_player_icons_distinct_and_transparent() {
+    fn composed_map_keeps_spawn_symbol_and_draws_a_minecraft_player_head() {
         let mut image = ImageBuffer::from_pixel(140, 100, Rgba([20, 40, 60, 255]));
         let marker = |id: &str, label: &str, x, z, kind| Marker {
             id: id.into(),
@@ -1172,7 +1417,7 @@ mod tests {
                 "minecraft:player/abc",
                 "Player",
                 110.,
-                90.,
+                50.,
                 crate::model::MarkerKind::Player,
             ),
         ];
@@ -1185,11 +1430,15 @@ mod tests {
             &|| false,
         )
         .unwrap();
-        let spawn_rect = image::imageops::crop_imm(&image, 34, 34, 32, 32).to_image();
-        let player_rect = image::imageops::crop_imm(&image, 94, 74, 32, 32).to_image();
+        let spawn_rect =
+            image::imageops::crop_imm(&image, project_x(50., bounds, 140) - 16, 34, 32, 32)
+                .to_image();
+        let player_rect =
+            image::imageops::crop_imm(&image, project_x(110., bounds, 140) - 16, 34, 32, 32)
+                .to_image();
         assert_ne!(spawn_rect.as_raw(), player_rect.as_raw());
         assert_eq!(spawn_rect.get_pixel(0, 0).0, [20, 40, 60, 255]);
-        assert_eq!(player_rect.get_pixel(0, 0).0, [20, 40, 60, 255]);
+        assert_eq!(player_rect, crate::player_heads::fallback_head(32));
     }
     #[test]
     fn composed_structure_glyph_is_placed_at_footprint_center() {

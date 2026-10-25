@@ -1,0 +1,54 @@
+[
+  {
+    "binary": "/tmp/terralens-lake-volcanic-before",
+    "chunk": [
+      1550,
+      704
+    ],
+    "exact": 0,
+    "columns": 256,
+    "blocks": {
+      "tfg:coarse_dirt/sandy_loam": 256
+    }
+  },
+  {
+    "binary": "/tmp/terralens-lake-volcanic-before",
+    "chunk": [
+      1536,
+      704
+    ],
+    "exact": 256,
+    "columns": 256,
+    "blocks": {
+      "tfc:rock/cobble/rhyolite": 5,
+      "tfc:rock/raw/rhyolite": 9,
+      "tfg:coarse_dirt/sandy_loam": 242
+    }
+  },
+  {
+    "binary": "/home/xxseesxx/Projects/TerraLens/native/terralens-rs/target/release/terralens",
+    "chunk": [
+      1550,
+      704
+    ],
+    "exact": 256,
+    "columns": 256,
+    "blocks": {
+      "tfc:rock/raw/rhyolite": 256
+    }
+  },
+  {
+    "binary": "/home/xxseesxx/Projects/TerraLens/native/terralens-rs/target/release/terralens",
+    "chunk": [
+      1536,
+      704
+    ],
+    "exact": 256,
+    "columns": 256,
+    "blocks": {
+      "tfc:rock/cobble/rhyolite": 5,
+      "tfc:rock/raw/rhyolite": 9,
+      "tfg:coarse_dirt/sandy_loam": 242
+    }
+  }
+]

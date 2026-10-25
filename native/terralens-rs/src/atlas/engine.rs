@@ -118,28 +118,9 @@ impl Client {
             };
         }
         let exe = std::env::current_exe();
-        let child_result = exe.map_err(|e| e.to_string()).and_then(|exe| {
-            // `nice` reserves CPU time for the window manager and interactive UI. It execs the
-            // Rust binary, so the child remains the same process and PID.
-            let mut cmd = Command::new("nice");
-            cmd.args(["-n", "5"]).arg(exe).arg("--engine");
-            cmd.env("RAYON_NUM_THREADS", "2");
-            cmd.stdin(Stdio::piped())
-                .stdout(Stdio::piped())
-                .stderr(Stdio::null());
-            cmd.spawn()
-                .or_else(|_| {
-                    let mut fallback = Command::new(std::env::current_exe()?);
-                    fallback
-                        .arg("--engine")
-                        .env("RAYON_NUM_THREADS", "2")
-                        .stdin(Stdio::piped())
-                        .stdout(Stdio::piped())
-                        .stderr(Stdio::null())
-                        .spawn()
-                })
-                .map_err(|e| e.to_string())
-        });
+        let child_result = exe
+            .and_then(spawn_engine_process)
+            .map_err(|e| e.to_string());
         let mut pid = None;
         match child_result {
             Ok(mut child) => {
@@ -273,6 +254,58 @@ impl Client {
     }
 }
 
+#[cfg(unix)]
+fn spawn_engine_process(exe: PathBuf) -> io::Result<std::process::Child> {
+    // `nice` leaves CPU time for the window manager and interactive UI. It execs the
+    // Rust binary, so the engine keeps the same process ID.
+    let mut command = Command::new("nice");
+    command.args(["-n", "5"]).arg(&exe).arg("--engine");
+    command
+        .env("RAYON_NUM_THREADS", "2")
+        .stdin(Stdio::piped())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::null());
+    command.spawn().or_else(|_| {
+        let mut fallback = Command::new(exe);
+        fallback
+            .arg("--engine")
+            .env("RAYON_NUM_THREADS", "2")
+            .stdin(Stdio::piped())
+            .stdout(Stdio::piped())
+            .stderr(Stdio::null())
+            .spawn()
+    })
+}
+
+#[cfg(windows)]
+fn spawn_engine_process(exe: PathBuf) -> io::Result<std::process::Child> {
+    use std::os::windows::process::CommandExt;
+
+    // Keep the worker attached to its explicit IPC pipes without opening a console window.
+    const CREATE_NO_WINDOW: u32 = 0x0800_0000;
+    let mut command = Command::new(exe);
+    command
+        .arg("--engine")
+        .creation_flags(CREATE_NO_WINDOW)
+        .env("RAYON_NUM_THREADS", "2")
+        .stdin(Stdio::piped())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::null());
+    command.spawn()
+}
+
+#[cfg(not(any(unix, windows)))]
+fn spawn_engine_process(exe: PathBuf) -> io::Result<std::process::Child> {
+    let mut command = Command::new(exe);
+    command
+        .arg("--engine")
+        .env("RAYON_NUM_THREADS", "2")
+        .stdin(Stdio::piped())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::null());
+    command.spawn()
+}
+
 impl Drop for Client {
     fn drop(&mut self) {
         self.stopping.store(true, Ordering::Relaxed);
@@ -355,6 +388,7 @@ fn job_epoch(job: &Job) -> u64 {
         | Job::Probe(spec, ..)
         | Job::Trees(spec, ..)
         | Job::Features(spec, ..)
+        | Job::InspectStructure(spec, ..)
         | Job::Surface(spec, ..)
         | Job::Search(spec, ..)
         | Job::Analyze(spec, ..)
@@ -377,7 +411,7 @@ fn enqueue_latest(tx: &Sender<Job>, rx: &Receiver<Job>, job: Job, epoch: u64) {
         .collect();
     waiting.push(job);
     for next in waiting {
-        // The command reader is the only producer; at most eight job kinds fit.
+        // The command reader is the only producer; all job kinds fit in this queue.
         let _ = tx.try_send(next);
     }
 }
@@ -583,14 +617,35 @@ fn read_frame<T: for<'de> Deserialize<'de>>(r: &mut impl Read) -> io::Result<Opt
 }
 fn write_reply(w: &mut impl Write, reply: &Reply) -> io::Result<()> {
     if let Reply::Tile(_, _, tile) = reply {
-        let mut bulk = Vec::with_capacity(tile.pixels.len() * 4 + tile.biomes.len() * 2);
+        let mut bulk = Vec::with_capacity(tile.pixels.len() * 4 + tile.biomes.len() * 3);
         for color in &tile.pixels {
             bulk.extend_from_slice(&color.to_array());
         }
         for biome in &tile.biomes {
             bulk.extend_from_slice(&biome.to_le_bytes());
         }
+        bulk.extend(tile.surface_water.iter().map(|water| u8::from(*water)));
         write_frame(w, reply, &bulk)
+    } else if let Reply::StructurePreview(epoch, serial, Ok(preview)) = reply {
+        // Keep repeated block identifiers out of JSON and off the event thread. A
+        // bounded palette plus fixed-size records also keeps a large village well
+        // below the IPC limit without reducing its geometry to a solid rectangle.
+        let bulk = encode_shape(&preview.blocks)?;
+        let meta = crate::structure_preview::StructurePreview {
+            structure_id: preview.structure_id.clone(),
+            bounds: preview.bounds,
+            source: preview.source,
+            pieces: preview.pieces.clone(),
+            blocks: Vec::new(),
+            containers: preview.containers.clone(),
+            notes: preview.notes.clone(),
+            complete: preview.complete,
+        };
+        write_frame(
+            w,
+            &Reply::StructurePreview(*epoch, *serial, Ok(meta)),
+            &bulk,
+        )
     } else {
         write_frame(w, reply, &[])
     }
@@ -635,8 +690,10 @@ fn read_reply(r: &mut impl Read) -> io::Result<Option<Reply>> {
         let biome_count = resolution.checked_mul(resolution).ok_or_else(|| {
             io::Error::new(io::ErrorKind::InvalidData, "tile dimensions overflow")
         })?;
+        let water_count = biome_count;
         let expected = pixel_bytes
             .checked_add(biome_count * 2)
+            .and_then(|n| n.checked_add(water_count))
             .ok_or_else(|| io::Error::new(io::ErrorKind::InvalidData, "tile payload overflow"))?;
         if resolution > 256 || bulk.len() != expected {
             return Err(io::Error::new(
@@ -646,14 +703,30 @@ fn read_reply(r: &mut impl Read) -> io::Result<Option<Reply>> {
         }
         tile.pixels.extend(
             bulk[..pixel_bytes]
-                .chunks_exact(4)
+                .as_chunks::<4>()
+                .0
+                .iter()
                 .map(|p| egui::Color32::from_rgba_premultiplied(p[0], p[1], p[2], p[3])),
         );
+        let biome_end = pixel_bytes + biome_count * 2;
         tile.biomes.extend(
-            bulk[pixel_bytes..]
-                .chunks_exact(2)
+            bulk[pixel_bytes..biome_end]
+                .as_chunks::<2>()
+                .0
+                .iter()
                 .map(|p| u16::from_le_bytes([p[0], p[1]])),
         );
+        let water = &bulk[biome_end..];
+        if water.iter().any(|value| *value > 1) {
+            return Err(io::Error::new(
+                io::ErrorKind::InvalidData,
+                "invalid tile water mask",
+            ));
+        }
+        tile.surface_water
+            .extend(water.iter().map(|value| *value != 0));
+    } else if let Reply::StructurePreview(_, _, Ok(preview)) = &mut reply {
+        preview.blocks = decode_shape(&bulk)?;
     } else if !bulk.is_empty() {
         return Err(io::Error::new(
             io::ErrorKind::InvalidData,
@@ -663,9 +736,161 @@ fn read_reply(r: &mut impl Read) -> io::Result<Option<Reply>> {
     Ok(Some(reply))
 }
 
+fn shape_error(message: &str) -> io::Error {
+    io::Error::new(io::ErrorKind::InvalidData, message)
+}
+
+fn encode_shape(blocks: &[crate::structure_preview::ShapeBlock]) -> io::Result<Vec<u8>> {
+    use std::collections::HashMap;
+    if blocks.len() > crate::structure_preview::MAX_SHAPE_BLOCKS {
+        return Err(shape_error("structure shape exceeds block limit"));
+    }
+    let mut palette = Vec::new();
+    let mut indices = HashMap::new();
+    for block in blocks {
+        if !indices.contains_key(block.block.as_str()) {
+            if block.block.len() > 512 || palette.len() >= 8192 {
+                return Err(shape_error("structure palette exceeds limit"));
+            }
+            indices.insert(block.block.as_str(), palette.len() as u32);
+            palette.push(block.block.as_str());
+        }
+    }
+    let mut out = Vec::with_capacity(blocks.len() * 19 + 256);
+    out.extend_from_slice(b"TSB1");
+    out.extend_from_slice(&(palette.len() as u32).to_le_bytes());
+    for name in palette {
+        out.extend_from_slice(&(name.len() as u16).to_le_bytes());
+        out.extend_from_slice(name.as_bytes());
+    }
+    out.extend_from_slice(&(blocks.len() as u32).to_le_bytes());
+    for block in blocks {
+        out.extend_from_slice(&block.pos.x.to_le_bytes());
+        out.extend_from_slice(&block.pos.y.to_le_bytes());
+        out.extend_from_slice(&block.pos.z.to_le_bytes());
+        out.extend_from_slice(&indices[block.block.as_str()].to_le_bytes());
+        out.extend_from_slice(&block.color);
+    }
+    Ok(out)
+}
+
+fn decode_shape(mut bytes: &[u8]) -> io::Result<Vec<crate::structure_preview::ShapeBlock>> {
+    use crate::structure_preview::{BlockPos, MAX_SHAPE_BLOCKS, ShapeBlock};
+    fn take<'a>(bytes: &mut &'a [u8], count: usize) -> io::Result<&'a [u8]> {
+        if count > bytes.len() {
+            return Err(shape_error("truncated structure shape"));
+        }
+        let (head, tail) = bytes.split_at(count);
+        *bytes = tail;
+        Ok(head)
+    }
+    fn integer(bytes: &mut &[u8]) -> io::Result<u32> {
+        Ok(u32::from_le_bytes(take(bytes, 4)?.try_into().unwrap()))
+    }
+    if take(&mut bytes, 4)? != b"TSB1" {
+        return Err(shape_error("invalid structure shape version"));
+    }
+    let count = integer(&mut bytes)? as usize;
+    if count > 8192 {
+        return Err(shape_error("structure palette exceeds limit"));
+    }
+    let mut palette = Vec::with_capacity(count);
+    for _ in 0..count {
+        let length = u16::from_le_bytes(take(&mut bytes, 2)?.try_into().unwrap()) as usize;
+        if length > 512 {
+            return Err(shape_error("structure block name exceeds limit"));
+        }
+        palette.push(
+            std::str::from_utf8(take(&mut bytes, length)?)
+                .map_err(io::Error::other)?
+                .to_owned(),
+        );
+    }
+    let count = integer(&mut bytes)? as usize;
+    if count > MAX_SHAPE_BLOCKS || bytes.len() != count * 19 {
+        return Err(shape_error("invalid structure block count"));
+    }
+    let mut blocks = Vec::with_capacity(count);
+    for _ in 0..count {
+        let pos = BlockPos {
+            x: integer(&mut bytes)? as i32,
+            y: integer(&mut bytes)? as i32,
+            z: integer(&mut bytes)? as i32,
+        };
+        let index = integer(&mut bytes)? as usize;
+        let block = palette
+            .get(index)
+            .ok_or_else(|| shape_error("invalid structure palette index"))?
+            .clone();
+        let color = take(&mut bytes, 3)?.try_into().unwrap();
+        blocks.push(ShapeBlock { pos, block, color });
+    }
+    Ok(blocks)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn large_structure_transport_preserves_blocks_below_ipc_limits() {
+        use crate::structure_preview::{BlockPos, PreviewSource, ShapeBlock, StructurePreview};
+        let mut preview = StructurePreview::empty("test:village", PreviewSource::Saved);
+        preview.blocks = (0..160_000)
+            .map(|i| ShapeBlock {
+                pos: BlockPos {
+                    x: -1024 + i % 400,
+                    y: -32 + i / 10_000,
+                    z: i / 400,
+                },
+                block: if i % 2 == 0 {
+                    "tfc:rock/bricks/limestone"
+                } else {
+                    "minecraft:chest"
+                }
+                .into(),
+                color: [95, 123, 247],
+            })
+            .collect();
+        let mut bytes = Vec::new();
+        write_reply(&mut bytes, &Reply::StructurePreview(4, 7, Ok(preview))).unwrap();
+        assert!(
+            bytes.len() < 4 * 1024 * 1024,
+            "palette transport must avoid megabytes of repeated JSON strings"
+        );
+        let Some(Reply::StructurePreview(epoch, serial, Ok(decoded))) =
+            read_reply(&mut bytes.as_slice()).unwrap()
+        else {
+            panic!("wrong reply")
+        };
+        assert_eq!((epoch, serial), (4, 7));
+        assert_eq!(decoded.blocks.len(), 160_000);
+        assert_eq!(
+            decoded.blocks[159_999].pos,
+            BlockPos {
+                x: -625,
+                y: -17,
+                z: 399
+            }
+        );
+        assert_eq!(decoded.blocks[159_999].block, "minecraft:chest");
+        assert_eq!(decoded.blocks[0].color, [95, 123, 247]);
+    }
+
+    #[test]
+    fn structure_shape_transport_rejects_bad_indices_and_truncation() {
+        use crate::structure_preview::{BlockPos, ShapeBlock};
+        let blocks = vec![ShapeBlock {
+            pos: BlockPos { x: 1, y: 2, z: -3 },
+            block: "test:block".into(),
+            color: [1, 2, 3],
+        }];
+        let mut bytes = encode_shape(&blocks).unwrap();
+        assert!(decode_shape(&bytes[..bytes.len() - 1]).is_err());
+        let index = bytes.len() - 7;
+        bytes[index..index + 4].copy_from_slice(&99_u32.to_le_bytes());
+        assert!(decode_shape(&bytes).is_err());
+    }
     #[test]
     fn ingress_coalesces_superseded_jobs_without_blocking_cancellation() {
         use crate::model::{Point, Settings};
@@ -676,6 +901,8 @@ mod tests {
             display: crate::display::DisplayPrefs::default(),
             dimension: crate::dimension::Dimension::Overworld,
             slice_y: 96,
+            world_path: None,
+            source_revision: 0,
         };
         let (tx, rx) = bounded(3);
         enqueue_latest(
@@ -772,6 +999,7 @@ mod tests {
             resolution: 1,
             pixels: vec![egui::Color32::from_rgba_unmultiplied(80, 120, 200, 128); 9],
             biomes: vec![493],
+            surface_water: vec![true],
         };
         let expected_pixels = tile.pixels.clone();
         let mut bytes = Vec::new();
@@ -784,5 +1012,6 @@ mod tests {
         assert_eq!((epoch, revision), (4, 7));
         assert_eq!(decoded.pixels, expected_pixels);
         assert_eq!(decoded.biomes, [493]);
+        assert_eq!(decoded.surface_water, [true]);
     }
 }

@@ -1,6 +1,10 @@
 //! Slim icon-only right rail for per-type structure and ore visibility.
 use crate::{
-    dimension::Dimension, display::DisplayPrefs, model::MarkerKind, ore_icons, structure_icons,
+    dimension::Dimension,
+    display::DisplayPrefs,
+    model::MarkerKind,
+    ore_icons, structure_icons,
+    structure_loot::{self, RuinGroup},
 };
 use eframe::egui::{self, Align, Context, Layout, Sense, Vec2};
 
@@ -12,6 +16,7 @@ pub struct Entry {
 
 #[derive(Clone, Debug)]
 struct RailEntry {
+    kind: MarkerKind,
     key: String,
     label: String,
     icon_id: String,
@@ -21,14 +26,31 @@ struct RailEntry {
 fn structure_rows(entries: &[Entry]) -> Vec<RailEntry> {
     let mut groups = std::collections::BTreeMap::<String, RailEntry>::new();
     for entry in entries {
-        let is_ruin = crate::structure_icons::ruin_topic(&entry.id).is_some();
+        let kind = if crate::volcano::is_volcano_id(&entry.id) {
+            MarkerKind::Volcano
+        } else {
+            MarkerKind::Structure
+        };
+        if kind == MarkerKind::Volcano {
+            let key = "volcano:group".to_owned();
+            let group = groups.entry(key.clone()).or_insert_with(|| RailEntry {
+                kind: MarkerKind::Volcano,
+                key,
+                label: "Volcanoes".to_owned(),
+                icon_id: entry.id.clone(),
+                members: Vec::new(),
+            });
+            group.members.push(entry.id.clone());
+            continue;
+        }
+        let ruin_group = structure_loot::ruin_group(&entry.id);
         let (namespace, path) = entry.id.split_once(':').unwrap_or(("", entry.id.as_str()));
         let (parent, leaf) = path.rsplit_once('/').unwrap_or(("", path));
         let lower = leaf.to_ascii_lowercase();
         let tokens: Vec<_> = lower.split('_').collect();
         let has = |word: &str| tokens.contains(&word);
-        // Ruin classifier takes precedence over object type. This consolidates
-        // abandoned churches, towers, villages, and monuments into one control.
+        // Container/loot evidence distinguishes useless remains from ruined buildings.
+        // Unknown structures stay visible rather than being declared loot-free by name.
         let family = if lower == "unfinished_sloop" || lower.starts_with("unfinished_sloop_") {
             Some(("unfinished_sloop", "Unfinished sloops"))
         } else if lower == "unfinished_rowboat" || lower.starts_with("unfinished_rowboat_") {
@@ -79,20 +101,28 @@ fn structure_rows(entries: &[Entry]) -> Vec<RailEntry> {
                     },
                 )
             });
-        let key = if is_ruin {
-            "structure:ruins".to_owned()
-        } else {
-            format!("structure:{namespace}:{parent}/{family}")
+        let (key, label, icon_id) = match ruin_group {
+            Some(RuinGroup::Lootless) => (
+                "structure:ruins".to_owned(),
+                "Ruins".to_owned(),
+                "terralens:ruins".to_owned(),
+            ),
+            Some(RuinGroup::Building) => (
+                "structure:ruined_buildings".to_owned(),
+                "Ruined buildings".to_owned(),
+                "terralens:ruined_buildings".to_owned(),
+            ),
+            None => (
+                format!("structure:{namespace}:{parent}/{family}"),
+                label,
+                entry.id.clone(),
+            ),
         };
-        let label = if is_ruin { "Ruins".to_owned() } else { label };
         let group = groups.entry(key.clone()).or_insert_with(|| RailEntry {
+            kind: MarkerKind::Structure,
             key,
             label,
-            icon_id: if is_ruin {
-                "terralens:ruins".to_owned()
-            } else {
-                entry.id.clone()
-            },
+            icon_id,
             members: Vec::new(),
         });
         group.members.push(entry.id.clone());
@@ -227,6 +257,7 @@ fn ore_rows(entries: &[Entry]) -> Vec<RailEntry> {
         };
         let key = format!("ore:{dimension}:{namespace}:{parent}/{family}");
         let group = groups.entry(key.clone()).or_insert_with(|| RailEntry {
+            kind: MarkerKind::Ore,
             key,
             label: family.replace('_', " "),
             icon_id: entry.id.clone(),
@@ -240,10 +271,10 @@ fn ore_rows(entries: &[Entry]) -> Vec<RailEntry> {
     }
     let mut rows = finish_rows(groups);
     for row in &mut rows {
-        if row.members.len() == 1 {
-            if let Some(entry) = entries.iter().find(|entry| entry.id == row.icon_id) {
-                row.label = entry.label.clone();
-            }
+        if row.members.len() == 1
+            && let Some(entry) = entries.iter().find(|entry| entry.id == row.icon_id)
+        {
+            row.label = entry.label.clone();
         }
     }
     rows
@@ -308,15 +339,19 @@ pub struct State {
 }
 
 impl State {
+    #[cfg(test)]
     pub(super) fn mode(&self) -> Mode {
         self.group
     }
+    #[cfg(test)]
     pub(super) fn set_mode(&mut self, mode: Mode) {
         self.group = mode;
     }
+    #[cfg(test)]
     pub(super) fn ores_mode(&self) -> bool {
         self.mode() == Mode::Ores
     }
+    #[cfg(test)]
     pub(super) fn set_ores_mode(&mut self, ores: bool) {
         self.set_mode(if ores { Mode::Ores } else { Mode::Structures });
     }
@@ -334,7 +369,11 @@ impl State {
         ores: &[Entry],
         structures: &[Entry],
     ) {
-        self.set_ores_mode(prefs.feature_bar_ores);
+        self.group = if prefs.feature_bar_ores {
+            Mode::Ores
+        } else {
+            Mode::Structures
+        };
         egui::SidePanel::right("feature-icon-rail")
             .resizable(false)
             .exact_width(46.)
@@ -393,14 +432,14 @@ impl State {
                         set_group_visible(show_ores, show_structures, &kind, !globally_visible);
                     }
                     let mut enable_group = false;
-                    let group_ids: Vec<String> = rows
-                        .iter()
-                        .flat_map(|row| row.members.iter().cloned())
-                        .collect();
                     ui.vertical(|ui| {
                         let visible = rows
                             .iter()
-                            .filter(|row| row.members.iter().any(|id| !is_hidden(prefs, &kind, id)))
+                            .filter(|row| {
+                                row.members
+                                    .iter()
+                                    .any(|id| !is_hidden(prefs, &row.kind, id))
+                            })
                             .count();
                         let total = rows.len();
                         if draw_icon_button(
@@ -410,7 +449,7 @@ impl State {
                         )
                         .clicked()
                         {
-                            prefs.set_feature_group_visible(&kind, &group_ids, true);
+                            set_ids_visible(prefs, &rows, true);
                             enable_group = true;
                         }
                         if draw_icon_button(
@@ -420,7 +459,7 @@ impl State {
                         )
                         .clicked()
                         {
-                            prefs.set_feature_group_visible(&kind, &group_ids, false);
+                            set_ids_visible(prefs, &rows, false);
                         }
                         if draw_icon_button(
                             ui,
@@ -429,7 +468,7 @@ impl State {
                         )
                         .clicked()
                         {
-                            prefs.set_feature_group_visible(&kind, &group_ids, true);
+                            set_ids_visible(prefs, &rows, true);
                             enable_group = true;
                         }
                     });
@@ -445,10 +484,10 @@ impl State {
                                 let visible_count = entry
                                     .members
                                     .iter()
-                                    .filter(|id| !is_hidden(prefs, &kind, id))
+                                    .filter(|id| !is_hidden(prefs, &entry.kind, id))
                                     .count();
                                 let visible = visible_count > 0;
-                                let response = match kind {
+                                let response = match &entry.kind {
                                     MarkerKind::Ore => {
                                         ore_cache.get(ctx, &entry.icon_id).map(|texture| {
                                             let tint = if visible {
@@ -469,7 +508,7 @@ impl State {
                                             )
                                         })
                                     }
-                                    MarkerKind::Structure => Some({
+                                    MarkerKind::Structure | MarkerKind::Volcano => Some({
                                         let texture = structure_cache.get(ctx, &entry.icon_id);
                                         let tint = if visible {
                                             egui::Color32::WHITE
@@ -515,18 +554,10 @@ impl State {
                                 if response.clicked() {
                                     let shift = ui.input(|i| i.modifiers.shift);
                                     if shift {
-                                        prefs.set_feature_group_visible(&kind, &group_ids, false);
-                                        prefs.set_feature_group_visible(
-                                            &kind,
-                                            &entry.members,
-                                            true,
-                                        );
+                                        set_ids_visible(prefs, &rows, false);
+                                        set_row_visible(prefs, entry, true);
                                     } else {
-                                        prefs.set_feature_group_visible(
-                                            &kind,
-                                            &entry.members,
-                                            !visible,
-                                        );
+                                        set_row_visible(prefs, entry, !visible);
                                     }
                                     if !globally_visible {
                                         set_group_visible(show_ores, show_structures, &kind, true);
@@ -539,8 +570,10 @@ impl State {
                                         }
                                     } else {
                                         prefs.solo_feature(
-                                            &kind,
-                                            rows.iter().flat_map(|row| row.members.iter().cloned()),
+                                            &entry.kind,
+                                            rows.iter()
+                                                .filter(|row| row.kind == entry.kind)
+                                                .flat_map(|row| row.members.iter().cloned()),
                                             entry
                                                 .members
                                                 .first()
@@ -571,7 +604,12 @@ impl State {
                                         let label = member_entry
                                             .map(|e| e.label.as_str())
                                             .unwrap_or(member);
-                                        let hidden = is_hidden(prefs, &kind, member);
+                                        let member_kind = if crate::volcano::is_volcano_id(member) {
+                                            MarkerKind::Volcano
+                                        } else {
+                                            entry.kind.clone()
+                                        };
+                                        let hidden = is_hidden(prefs, &member_kind, member);
                                         ui.horizontal(|ui| {
                                             ui.add_space(3.);
                                             let texture = match kind {
@@ -604,15 +642,20 @@ impl State {
                                             if child.clicked() {
                                                 if ui.input(|i| i.modifiers.shift) {
                                                     prefs.solo_feature(
-                                                        &kind,
-                                                        rows.iter().flat_map(|row| {
-                                                            row.members.iter().cloned()
-                                                        }),
+                                                        &entry.kind,
+                                                        rows.iter()
+                                                            .filter(|row| row.kind == entry.kind)
+                                                            .flat_map(|row| {
+                                                                row.members.iter().cloned()
+                                                            }),
                                                         member,
                                                     );
                                                 } else {
-                                                    prefs
-                                                        .set_feature_visible(&kind, member, hidden);
+                                                    prefs.set_feature_visible(
+                                                        &member_kind,
+                                                        member,
+                                                        hidden,
+                                                    );
                                                 }
                                                 if !globally_visible {
                                                     set_group_visible(
@@ -630,7 +673,7 @@ impl State {
                         });
                 });
             });
-        prefs.feature_bar_ores = self.ores_mode();
+        prefs.feature_bar_ores = self.group == Mode::Ores;
     }
 }
 
@@ -638,7 +681,18 @@ fn set_group_visible(ores: &mut bool, structures: &mut bool, kind: &MarkerKind, 
     match kind {
         MarkerKind::Ore => *ores = visible,
         MarkerKind::Structure => *structures = visible,
+        MarkerKind::Volcano => *structures = visible,
         _ => {}
+    }
+}
+
+fn set_row_visible(prefs: &mut DisplayPrefs, row: &RailEntry, visible: bool) {
+    prefs.set_feature_group_visible(&row.kind, &row.members, visible);
+}
+
+fn set_ids_visible(prefs: &mut DisplayPrefs, rows: &[RailEntry], visible: bool) {
+    for row in rows {
+        set_row_visible(prefs, row, visible);
     }
 }
 
@@ -724,6 +778,7 @@ fn is_hidden(prefs: &DisplayPrefs, kind: &MarkerKind, id: &str) -> bool {
     match kind {
         MarkerKind::Ore => prefs.hidden_ore_ids.iter().any(|hidden| hidden == id),
         MarkerKind::Structure => prefs.hidden_structure_ids.iter().any(|hidden| hidden == id),
+        MarkerKind::Volcano => prefs.hidden_volcano_ids.iter().any(|hidden| hidden == id),
         _ => false,
     }
 }
@@ -737,6 +792,27 @@ mod tests {
             id: id.into(),
             label: id.replace('_', " "),
         }
+    }
+
+    #[test]
+    fn volcanoes_are_one_expandable_rail_group_with_individual_kind_controls() {
+        let rows = structure_rows(&[
+            entry("minecraft:village_plains"),
+            entry("terralens:volcano/active_cinder_cone"),
+            entry("terralens:volcano/dormant_shield"),
+        ]);
+        let volcanoes = rows.iter().find(|row| row.label == "Volcanoes").unwrap();
+        assert_eq!(volcanoes.kind, MarkerKind::Volcano);
+        assert_eq!(volcanoes.members.len(), 2);
+        let village = rows
+            .iter()
+            .find(|row| {
+                row.members
+                    .iter()
+                    .any(|id| id == "minecraft:village_plains")
+            })
+            .unwrap();
+        assert_eq!(village.kind, MarkerKind::Structure);
     }
 
     #[test]
@@ -867,27 +943,17 @@ mod tests {
     }
 
     #[test]
-    fn ruin_church_and_building_families_cover_variants_without_swallowing_other_objects() {
+    fn loot_bearing_and_unknown_ruined_buildings_do_not_hide_with_stone_ruins() {
         let entries = [
-            "tfc_ruins:ruins",
             "tfc_ruins:ruin_small",
             "tfc_ruins:ruin_beach",
             "tfc_ruins:ruin_rich",
-            "other:ruin_small",
-            "tfc_ruined_world:limestone_church",
             "tfc_ruined_world:small_limestone_church_2",
-            "tfc_ruined_world:medium_gneiss_church",
             "tfc_ruined_world:towerhouse_1",
-            "tfc_ruined_world:tower_1",
-            "tfc_ruined_world:castle_1",
-            "wan:desert_ruins",
-            "wan:desert_ruins_small",
-            "wan:ruined_castle",
-            "wan:ice_spike_castle",
-            "wan:abandoned_village",
             "tfg:aqueduct/aqueduct",
-            "tfg:ocean/ocean_moai",
             "tfg:ocean/ocean_moai_0",
+            "custom:abandoned_shrine",
+            "wan:ice_spike_castle",
             "wan:mesa_temple",
             "wan:mesa_temple_small",
         ]
@@ -898,29 +964,31 @@ mod tests {
                 .find(|row| row.members.iter().any(|member| member == id))
                 .unwrap()
         };
-        let ruins = group("tfc_ruins:ruins");
-        assert_eq!(ruins.key, "structure:ruins");
-        assert_eq!(ruins.label, "Ruins");
-        assert_eq!(ruins.icon_id, "terralens:ruins");
-        assert_eq!(ruins.members.len(), 18);
         for id in [
+            "tfc_ruins:ruin_small",
+            "tfc_ruins:ruin_beach",
             "tfc_ruins:ruin_rich",
-            "other:ruin_small",
+            "custom:abandoned_shrine",
+        ] {
+            assert_eq!(group(id).key, "structure:ruined_buildings", "{id}");
+            assert_eq!(group(id).label, "Ruined buildings");
+            assert_eq!(group(id).icon_id, "terralens:ruined_buildings");
+        }
+        for id in [
             "tfc_ruined_world:small_limestone_church_2",
             "tfc_ruined_world:towerhouse_1",
-            "tfc_ruined_world:tower_1",
-            "tfc_ruined_world:castle_1",
-            "wan:desert_ruins_small",
-            "wan:ruined_castle",
-            "wan:abandoned_village",
             "tfg:aqueduct/aqueduct",
-            "tfg:ocean/ocean_moai",
             "tfg:ocean/ocean_moai_0",
         ] {
             assert_eq!(group(id).key, "structure:ruins", "{id}");
+            assert_eq!(group(id).icon_id, "terralens:ruins");
         }
         assert_ne!(group("wan:ice_spike_castle").key, "structure:ruins");
         assert_eq!(group("wan:mesa_temple").members.len(), 2);
+        assert_eq!(
+            rows.iter().map(|row| row.members.len()).sum::<usize>(),
+            entries.len()
+        );
     }
 
     #[test]
@@ -1016,6 +1084,10 @@ mod tests {
                 label: "Arabic village living".into(),
             },
             Entry {
+                id: "tfg:illagers/norse_village_living".into(),
+                label: "Norse village living".into(),
+            },
+            Entry {
                 id: "tfg:illagers/norse_village_ruined".into(),
                 label: "Norse village ruined".into(),
             },
@@ -1052,14 +1124,17 @@ mod tests {
             .find(|g| g.label == "Unfinished rowboats")
             .unwrap();
         assert_eq!(rowboat.members, ["alekiships:unfinished_rowboat_oak"]);
-        let ruins = groups.iter().find(|g| g.key == "structure:ruins").unwrap();
+        let ruins = groups
+            .iter()
+            .find(|g| g.key == "structure:ruined_buildings")
+            .unwrap();
         assert!(
             ruins
                 .members
                 .contains(&"wan_ancient_beasts:abandoned_village".to_owned())
         );
         assert!(
-            ruins
+            !ruins
                 .members
                 .contains(&"tfg:illagers/norse_village_ruined".to_owned())
         );
@@ -1070,7 +1145,17 @@ mod tests {
                     .contains(&"tfg:illagers/arabic_village".to_owned())
             })
             .unwrap();
-        assert_eq!(tfg_villages.members.len(), 2);
+        assert_eq!(tfg_villages.members.len(), 4);
+        assert!(
+            tfg_villages
+                .members
+                .contains(&"tfg:illagers/norse_village_living".to_owned())
+        );
+        assert!(
+            tfg_villages
+                .members
+                .contains(&"tfg:illagers/norse_village_ruined".to_owned())
+        );
         assert!(
             groups
                 .iter()
@@ -1105,43 +1190,60 @@ mod tests {
     }
 
     #[test]
-    fn every_installed_tfc_ruin_profile_uses_the_single_ruins_group() {
+    fn installed_ruin_styles_partition_by_audited_loot_and_preserve_every_variant() {
         let (_, catalog) = super::super::workspace::feature_catalog_for(Dimension::Overworld);
         let installed: Vec<_> = catalog
             .iter()
-            .filter(|(id, _)| {
-                id.starts_with("tfc_ruins:")
-                    || id.starts_with("tfc_ruined_world:")
-                    || id == "tfg:aqueduct/aqueduct"
-                    || id == "tfg:ocean/ocean_moai_0"
-            })
+            .filter(|(id, _)| structure_icons::ruin_topic(id).is_some())
             .map(|(id, label)| Entry {
                 id: id.clone(),
                 label: label.clone(),
             })
             .collect();
-        assert!(!installed.is_empty());
         let rows = structure_rows(&installed);
-        assert_eq!(rows.len(), 1);
-        assert_eq!(rows[0].key, "structure:ruins");
-        assert_eq!(rows[0].members.len(), installed.len());
-        assert!(rows[0].members.iter().any(|id| id.contains("church")));
-        assert!(rows[0].members.iter().any(|id| id.contains("towerhouse")));
-        assert!(rows[0].members.iter().any(|id| id.contains("monument")));
+        assert_eq!(rows.len(), 2);
+        let stones = rows
+            .iter()
+            .find(|row| row.key == "structure:ruins")
+            .unwrap();
+        let buildings = rows
+            .iter()
+            .find(|row| row.key == "structure:ruined_buildings")
+            .unwrap();
+        assert_eq!(
+            rows.iter().map(|row| row.members.len()).sum::<usize>(),
+            installed.len()
+        );
+        assert!(stones.members.iter().any(|id| id.contains("church")));
+        assert!(stones.members.iter().any(|id| id.contains("towerhouse")));
+        assert!(stones.members.iter().any(|id| id.contains("monument")));
         assert!(
-            rows[0]
+            stones
                 .members
                 .iter()
-                .any(|id| id == "tfg:ocean/ocean_moai_0")
+                .all(|id| !structure_loot::has_loot(id))
         );
+        assert!(
+            buildings
+                .members
+                .iter()
+                .all(|id| structure_loot::has_loot(id))
+        );
+        assert!(
+            buildings
+                .members
+                .iter()
+                .any(|id| id == "tfc_ruins:ruin_small")
+        );
+        assert!(!stones.members.iter().any(|id| id == "tfc_ruins:ruin_small"));
     }
 
     #[test]
-    fn canonical_ruins_icon_never_becomes_a_preference_id_for_singleton_group() {
+    fn canonical_building_icon_never_becomes_a_preference_id_for_singleton_group() {
         let entries = [entry("mod:abandoned_shrine")];
         let rows = structure_rows(&entries);
         assert_eq!(rows.len(), 1);
-        assert_eq!(rows[0].icon_id, "terralens:ruins");
+        assert_eq!(rows[0].icon_id, "terralens:ruined_buildings");
         assert_eq!(rows[0].members, ["mod:abandoned_shrine"]);
         let mut prefs = DisplayPrefs {
             hidden_structure_ids: Vec::new(),

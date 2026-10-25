@@ -1,5 +1,6 @@
 //! TFG biome IDs, predicates, selection and the TFC layered area machinery.
 pub mod area;
+pub mod block;
 pub mod choose;
 pub mod forest;
 pub mod ids;

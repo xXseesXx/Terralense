@@ -1,0 +1,60 @@
+{
+  "schema": 1,
+  "seed": 0,
+  "saved_world": true,
+  "scope": "Release child engine, cold tile then layer switch; complete RGBA/biome/water payload SHA-256; excludes native GPU presentation",
+  "results": [
+    {
+      "case": "ground-block-save",
+      "layer": "Ground",
+      "seconds": 0.670847,
+      "sha256": "02060266b07862ed29ffe1f20223f7b6833d6ac8b62caf01e247846436879361",
+      "bulk_bytes": 462864
+    },
+    {
+      "case": "ground-medium-seed",
+      "layer": "Ground",
+      "seconds": 1.696822,
+      "sha256": "3d4e1727933d8413e8dbaf2b08c1f4e47484e1ca656c0d99c6269ad0cc450ac3",
+      "bulk_bytes": 462864
+    },
+    {
+      "case": "ground-medium-save",
+      "layer": "Ground",
+      "seconds": 1.673736,
+      "sha256": "30c8c3a202185a451bb760aada4e31a2e00c3b942f89f21713837551ce5b9799",
+      "bulk_bytes": 462864
+    },
+    {
+      "case": "ground-far-seed",
+      "layer": "Ground",
+      "seconds": 1.330019,
+      "sha256": "9f075c0325405829110959b2c62190e26d5ddfc2f00466f8f93e21f189b8f89d",
+      "bulk_bytes": 29712
+    },
+    {
+      "case": "ground-far-save",
+      "layer": "Ground",
+      "seconds": 1.32792,
+      "sha256": "9f075c0325405829110959b2c62190e26d5ddfc2f00466f8f93e21f189b8f89d",
+      "bulk_bytes": 29712
+    }
+  ],
+  "default_layer_parity": {
+    "cases": 22,
+    "all_rgba_biome_water_payloads_unchanged": true,
+    "comparison": "Existing default terrain baseline; Ground/grass options disabled."
+  },
+  "ground_png_checks": {
+    "ground_grass_pixels_identical": true,
+    "texture_color_pixels_checked": 8704,
+    "lava_pixels": 2400,
+    "magma_pixels": 1376
+  },
+  "saved_ground_max_blocks_per_pixel": 4,
+  "notes": [
+    "Cold process measurements, 2 Rayon threads; excludes GPU presentation.",
+    "Medium ground with an opened save improved from 13.145s before the saved-ground scale limit to 1.674s.",
+    "Existing saved volcanic fluid corrections remain active; medium seed/save payloads can differ for those physical surfaces."
+  ]
+}

@@ -11,7 +11,7 @@ pub(super) struct FeatureEntries {
 impl TerraLensApp {
     pub(super) fn top_bar(&mut self, ctx: &egui::Context) {
         egui::TopBottomPanel::top("desktop-menu").frame(panel_frame()).show(ctx, |ui| {
-            egui::MenuBar::new().ui(ui, |ui| {
+            menus::bar().ui(ui, |ui| {
                 ui.menu_button("File", |ui| {
                     if menu(ui,"New seed", "Ctrl+N") { self.activate_seed(0,ctx); self.seed_input="0".into(); ui.close(); }
                     ui.separator();
@@ -27,6 +27,10 @@ impl TerraLensApp {
                         }
                         if self.prefs.recent_sources.is_empty() { ui.add_enabled(false,egui::Button::new("No recent worlds")); }
                     });
+                    if ui.add_enabled(self.selected.is_some() && !self.discovering, egui::Button::new("Reload world").shortcut_text("Ctrl+R"))
+                        .on_hover_text("Read newly saved chunks and player locations while keeping this view").clicked() {
+                        self.reload_world(); ui.close();
+                    }
                     if menu(ui,"Close world", "Ctrl+W") { self.close_source(ctx); ui.close(); }
                     ui.separator();
                     if ui.button("Import seed list…").clicked() { self.request_file(file_dialogs::Kind::ImportSeeds); ui.close(); }
@@ -43,10 +47,13 @@ impl TerraLensApp {
                     if ui.button("Search visible area").clicked() { self.search_visible(); ui.close(); }
                 });
                 ui.menu_button("Map", |ui| {
+                    ui.menu_button(format!("Terrain detail · {}", self.prefs.display.terrain_preset().label()), |ui| {
+                        display_panel::terrain_detail_controls(ui, &mut self.prefs.display);
+                    });
                     ui.menu_button("Previous seeds", |ui| {
                         let history=self.prefs.navigation.history().to_vec();
                         for view in history.into_iter().rev().take(24) {
-                            if let Some(seed)=view.seed {if ui.button(seed.to_string()).clicked(){self.apply_view(view,ctx);ui.close();}}
+                            if let Some(seed)=view.seed&& ui.button(seed.to_string()).clicked(){self.apply_view(view,ctx);ui.close();}
                         }
                     });
                     if menu(ui,"Go to coordinates…", "Ctrl+G") { self.prefs.navigation.open_jump(&self.current_view()); ui.close(); }
@@ -56,21 +63,36 @@ impl TerraLensApp {
                     }
                     if ui.button("Copy seed").on_hover_text(format!("{} visited views", self.prefs.navigation.history().len())).clicked() { if let Some(seed)=self.current_view().seed {ctx.copy_text(seed.to_string());} ui.close(); }
                     ui.separator();
-                    ui.checkbox(&mut self.prefs.tools.coordinate_grid,"Coordinate grid");
-                    ui.checkbox(&mut self.prefs.tools.chunk_grid,"Chunk grid");
-                    ui.checkbox(&mut self.prefs.tools.region_grid,"Region grid");
-                    ui.checkbox(&mut self.prefs.tools.scale_bar,"Scale bar");
-                    ui.checkbox(&mut self.prefs.connected_highlight,"Connected-region highlight");
+                    ui.menu_button("Map guides", |ui| {
+                        ui.checkbox(&mut self.prefs.tools.coordinate_grid,"Coordinate grid");
+                        ui.checkbox(&mut self.prefs.tools.chunk_grid,"Chunk grid");
+                        ui.checkbox(&mut self.prefs.tools.region_grid,"Region grid");
+                        ui.checkbox(&mut self.prefs.tools.scale_bar,"Scale bar");
+                        ui.checkbox(&mut self.prefs.connected_highlight,"Connected-region highlight");
+                    });
+                    if ui.button("Display options…").clicked() {
+                        self.show_preferences = true;
+                        ui.close();
+                    }
                     let mut legend=self.legend.is_open();
                     if ui.checkbox(&mut legend,"Layer legend").changed() {self.legend.set_open(legend);self.prefs.show_legend=legend;}
                     ui.checkbox(&mut self.prefs.control_dock,"Control pane");
                     ui.separator();
                     if ui.add_enabled(self.tools.has_overlay(),egui::Button::new("Clear measurement / selection")).clicked() {self.tools.clear_selection();ui.close();}
                 });
-                ui.menu_button("Layer", |ui| {
-                    for (index,layer) in Layer::ALL.iter().enumerate().filter(|(_,layer)|TerraLensApp::layer_supported(self.prefs.dimension, **layer)) {
-                        if ui.selectable_value(&mut self.prefs.layer,index,layer.label()).clicked() {ui.close();}
+                ui.menu_button("Layers", |ui| {
+                    let fallback = Layer::ALL.get(self.prefs.layer).copied().unwrap_or(Layer::Biomes);
+                    if let Some(layer) = display_panel::layer_composition(
+                        ui,
+                        &mut self.prefs.display,
+                        self.prefs.dimension,
+                        fallback,
+                    ) {
+                        self.prefs.layer = Layer::ALL.iter().position(|candidate| *candidate == layer).unwrap_or(0);
                     }
+                    ui.separator();
+                    ui.checkbox(&mut self.prefs.display.terrain.surface_litter, "Surface litter")
+                        .on_hover_text("Show generated sticks, loose rocks, ground leaves, dry grass, salt, and other small surface details. Sampling can add work per map tile.");
                 });
                 ui.menu_button("Tools", |ui| {
                     if ui.button("Biome analysis").clicked() {self.prefs.dock_tab=1;self.prefs.control_dock=true;ui.close();}
@@ -91,8 +113,62 @@ impl TerraLensApp {
                 ui.with_layout(Layout::right_to_left(Align::Center), |ui| {
                     if self.file_dialogs.busy() || self.discovering {ui.spinner();}
                     if !self.prefs.control_dock && ui.small_button("Controls").clicked() {self.prefs.control_dock=true;}
+                    if self.prefs.dimension == Dimension::Overworld {
+                        self.season_control(ui);
+                    }
                 });
             });
+        });
+    }
+
+    fn season_control(&mut self, ui: &mut egui::Ui) {
+        const MONTHS: [&str; 12] = [
+            "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+        ];
+        let fallback = Layer::ALL
+            .get(self.prefs.layer)
+            .copied()
+            .unwrap_or(Layer::Biomes);
+        let seasonal_surfaces = self.prefs.display.grass_colors
+            || self.prefs.display.trees
+            || self.prefs.display.terrain.surface_litter
+            || self.prefs.display.terrain.rivers_lakes
+            || self.prefs.display.layer_enabled(Layer::Water, fallback);
+        let season = self
+            .prefs
+            .display
+            .simulated_season()
+            .filter(|_| seasonal_surfaces);
+        // Old sessions retain their annual average until the slider is moved.
+        let mut month = season.map_or(5.5, |value| value * 12.);
+        if icons::button(ui, icons::Icon::Season)
+            .on_hover_text("Reset to annual-average colors")
+            .clicked()
+        {
+            self.prefs.display.season = None;
+        }
+        let label = season.map_or("Average", |value| MONTHS[(value * 12.) as usize]);
+        ui.label(RichText::new(label).small().color(MUTED));
+        ui.scope(|ui| {
+            ui.spacing_mut().slider_width = (ui.available_width() - 8.).clamp(80., 180.);
+            let mut response = ui.add_enabled(
+                seasonal_surfaces,
+                egui::Slider::new(&mut month, 0. ..=11.999)
+                    .show_value(false)
+                    .step_by(1. / 32.),
+            );
+            response = response.on_hover_text(if seasonal_surfaces {
+                format!(
+                    "Simulated time of year · {}\nAverage seasonal colors without daily weather.\nAffects enabled grass, trees, litter, and water surfaces.",
+                    MONTHS[(month as usize).min(11)],
+                )
+            } else {
+                "Seasonal coloring is inactive. Enable Grass colors, Trees, Surface litter, detailed river/lake surfaces, or the Water layer to use this control."
+                    .to_owned()
+            });
+            if response.changed() {
+                self.prefs.display.season = Some((month / 12.).rem_euclid(1.));
+            }
         });
     }
 
@@ -116,9 +192,24 @@ impl TerraLensApp {
                 });
                 ui.separator();
                 let pinned = self.selected_marker.is_some();
+                let remaining_height = ui.available_height();
+                let inspector_height = if pinned {
+                    (remaining_height * 0.58)
+                        .clamp(180., 460.)
+                        .min((remaining_height - 132.).max(0.))
+                } else {
+                    0.
+                };
+                let search_height = if pinned {
+                    (remaining_height - inspector_height - 12.)
+                        .max(120.)
+                        .min(remaining_height)
+                } else {
+                    remaining_height
+                };
                 egui::ScrollArea::vertical()
                     .id_salt("control-dock-scroll")
-                    .max_height((ui.available_height() - if pinned { 155. } else { 0. }).max(120.))
+                    .max_height(search_height)
                     .show(ui, |ui| match self.prefs.dock_tab {
                         1 => self.biome_analysis(ui),
                         2 => self.structure_analysis(ui),
@@ -159,7 +250,7 @@ impl TerraLensApp {
                     ui.separator();
                     egui::ScrollArea::vertical()
                         .id_salt("pinned-inspector")
-                        .max_height(165.)
+                        .max_height(inspector_height)
                         .show(ui, |ui| self.selected_marker_panel(ui));
                 }
             });
@@ -313,11 +404,20 @@ impl TerraLensApp {
                     );
                 }
             }
+            if self.prefs.dimension == Dimension::Overworld {
+                entries.extend(
+                    workspace::volcano_catalog_for(self.prefs.dimension)
+                        .iter()
+                        .map(|(id, label)| ((*id).to_owned(), (*label).to_owned())),
+                );
+            }
             self.feature_entries.structures = entries
                 .into_iter()
                 .map(|(id, label)| feature_bar::Entry {
+                    label: crate::structure_loot::display_name(&id)
+                        .map(str::to_owned)
+                        .unwrap_or_else(|| tooltip::display_marker_name(&label)),
                     id,
-                    label: tooltip::display_marker_name(&label),
                 })
                 .collect();
             self.feature_entries.key = Some(key);
@@ -392,10 +492,9 @@ impl TerraLensApp {
         }
         if let Some(analysis_panel::Action::Analyze(query)) =
             analysis_panel::show_controls(ui, &mut self.location_query, bounds, 0)
+            && let Some(atlas) = &mut self.atlas
         {
-            if let Some(atlas) = &mut self.atlas {
-                atlas.analyze(query);
-            }
+            atlas.analyze(query);
         }
         if let Some(atlas) = &mut self.atlas {
             analysis_panel::show_report(ui, atlas.analysis_report());
@@ -437,10 +536,11 @@ impl TerraLensApp {
                 .map(|candidate| candidate.marker());
             self.set_center(point);
         }
-        if let Some(atlas) = &mut self.atlas {
-            if atlas.tasks_busy() && ui.button("Stop").clicked() {
-                atlas.cancel_tasks();
-            }
+        if let Some(atlas) = &mut self.atlas
+            && atlas.tasks_busy()
+            && ui.button("Stop").clicked()
+        {
+            atlas.cancel_tasks();
         }
     }
 
@@ -465,10 +565,7 @@ impl TerraLensApp {
         };
         let query = self.structure_query.to_ascii_lowercase();
         markers.retain(|marker| {
-            marker.kind == MarkerKind::Structure
-                && (query.is_empty()
-                    || marker.label.to_ascii_lowercase().contains(&query)
-                    || marker.id.to_ascii_lowercase().contains(&query))
+            marker.kind == MarkerKind::Structure && crate::search::matches_query(marker, &query)
         });
         let origin = self.current_center();
         markers.sort_by(|a, b| {
@@ -493,7 +590,7 @@ impl TerraLensApp {
                         ui.image((texture.id(), Vec2::splat(24.)));
                         let text = format!(
                             "{} · {:.1} km",
-                            tooltip::display_marker_name(&marker.label),
+                            tooltip::marker_name(marker),
                             marker.map_point().distance(origin) / 1000.
                         );
                         if ui
@@ -529,21 +626,17 @@ impl TerraLensApp {
                 .open(&mut open)
                 .show(ctx, |ui| {
                     ui.horizontal(|ui| {
-                        ui.checkbox(
-                            &mut self.prefs.allow_detail_rendering,
-                            "Block detail rendering",
-                        );
                         if ui.small_button("Close").clicked() {
                             self.show_preferences = false;
                         }
                     });
-                    ui.checkbox(&mut self.prefs.surface_detail, "Detail at close zoom");
-                    if self.prefs.dimension.is_planetary() {
-                        ui.checkbox(&mut self.prefs.tooltip.height, "Elevation");
-                    } else {
-                        self.prefs.tooltip.show_preferences(ui);
-                    }
-                    ui.separator();
+                    menus::settings(ui, "Tooltip", |ui| {
+                        if self.prefs.dimension.is_planetary() {
+                            ui.checkbox(&mut self.prefs.tooltip.height, "Elevation");
+                        } else {
+                            self.prefs.tooltip.show_preferences(ui);
+                        }
+                    });
                     self.display_controls(ui);
                 });
             self.show_preferences &= open;

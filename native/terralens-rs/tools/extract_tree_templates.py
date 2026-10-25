@@ -290,6 +290,7 @@ class DataSources:
 def tree_entry(config: dict):
     climate = config.get("climate", {})
     result = {key: config.get(key) for key in (*TREE_VARIANTS, "old_growth_chance", "spoiler_old_growth_chance", "dead_chance")}
+    result["floating"] = bool(config.get("floating", False))
     result["climate"] = {
         key: climate[key]
         for key in ("min_temperature", "max_temperature", "min_rainfall", "max_rainfall")
@@ -337,6 +338,7 @@ def configured_tree(feature_id: str, configured: dict, sources: DataSources):
     feature = {
         "width": width,
         "height": height,
+        "ground_type": config.get("placement", {}).get("ground_type", "normal"),
         "trunk": tree_trunk(config),
         "root_system": root_config(config.get("root_system")),
         "variants": [],

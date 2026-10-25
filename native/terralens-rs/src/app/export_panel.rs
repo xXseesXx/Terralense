@@ -46,12 +46,13 @@ impl State {
         &mut self,
         ui: &mut Ui,
         bounds: Bounds,
-        _dimension: Dimension,
+        dimension: Dimension,
         _layer: Layer,
         _markers: &[Marker],
         selected: Option<&Marker>,
         _legend_snapshot: Option<&LegendSnapshot>,
         _palette: Palette,
+        selected_y: Option<i32>,
     ) -> Option<Request> {
         let req = None;
         if self.keep_aspect && bounds.max_x > bounds.min_x && bounds.max_z > bounds.min_z {
@@ -100,21 +101,22 @@ impl State {
         {
             self.pending_picker = Some(Picker::Markers);
         }
-        if let Some(m) = selected {
-            if ui
+        if let Some(m) = selected
+            && ui
                 .button("Copy Xaero share text")
                 .on_hover_text("Paste this in Minecraft chat; Xaero players can add the waypoint")
                 .clicked()
-            {
-                let y = m.y.unwrap_or(64.).round().clamp(-2048., 4096.) as i32;
-                ui.ctx().copy_text(exports::xaero_share(
-                    &m.label,
-                    m.map_point(),
-                    y,
-                    color_for(m),
-                ));
-                self.status = Some("Xaero share copied".into());
-            }
+        {
+            let y = selected_y.unwrap_or_else(|| {
+                exports::waypoint_y(m.map_point(), None, dimension, dimension.default_y(), m.y)
+            });
+            ui.ctx().copy_text(exports::xaero_share(
+                &m.label,
+                m.map_point(),
+                y,
+                color_for(m),
+            ));
+            self.status = Some("Xaero share copied".into());
         }
         if let Some(s) = &self.status {
             ui.label(s);
@@ -272,6 +274,7 @@ fn geology_names() -> Vec<String> {
 fn color_for(m: &Marker) -> u8 {
     match &m.kind {
         crate::model::MarkerKind::Structure => 14,
+        crate::model::MarkerKind::Volcano => 14,
         crate::model::MarkerKind::Spawn => 15,
         crate::model::MarkerKind::Player => 12,
         crate::model::MarkerKind::Ore => 6,

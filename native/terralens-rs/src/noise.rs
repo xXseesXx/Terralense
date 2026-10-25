@@ -870,7 +870,7 @@ fn simplex_single(seed: i32, x: f64, y: f64) -> f32 {
     j = j.wrapping_mul(PRIME_Y);
     let i1 = i.wrapping_add(PRIME_X);
     let j1 = j.wrapping_add(PRIME_Y);
-    let g = f(G2 as f64);
+    let g = f(G2);
     let t = f(f(xi + yi) * g);
     let x0 = f(xi - t);
     let y0 = f(yi - t);
@@ -883,8 +883,8 @@ fn simplex_single(seed: i32, x: f64, y: f64) -> f32 {
     let a1_scale = f(2.0 * (1.0 - 2.0 * G2) * (1.0 / G2 - 2.0));
     let a1_offset = f(-2.0 * (1.0 - 2.0 * G2) * (1.0 - 2.0 * G2));
     let a1 = f(f(a1_scale * t) + f(a1_offset + a0));
-    let x1 = f(x0 - f((1.0 - 2.0 * G2) as f64));
-    let y1 = f(y0 - f((1.0 - 2.0 * G2) as f64));
+    let x1 = f(x0 - f(1.0 - 2.0 * G2));
+    let y1 = f(y0 - f(1.0 - 2.0 * G2));
     let aa = f(a1 * a1);
     value = f(value + f(f(aa * aa) * grad(seed, i1, j1, x1, y1)));
     let xmy = f(xi - yi);
@@ -896,8 +896,8 @@ fn simplex_single(seed: i32, x: f64, y: f64) -> f32 {
     };
     if t as f64 > G2 {
         if f(xi + xmy) > 1. {
-            let ox = f(x0 + f((3.0 * G2 - 2.0) as f64));
-            let oy = f(y0 + f((3.0 * G2 - 1.0) as f64));
+            let ox = f(x0 + f(3.0 * G2 - 2.0));
+            let oy = f(y0 + f(3.0 * G2 - 1.0));
             let a = f(f(2. / 3.) - f(ox * ox) - f(oy * oy));
             contribution(
                 a,
@@ -908,13 +908,13 @@ fn simplex_single(seed: i32, x: f64, y: f64) -> f32 {
             );
         } else {
             let ox = f(x0 + g);
-            let oy = f(y0 + f((G2 - 1.) as f64));
+            let oy = f(y0 + f(G2 - 1.));
             let a = f(f(2. / 3.) - f(ox * ox) - f(oy * oy));
             contribution(a, i, j1, ox, oy);
         }
         if f(yi - xmy) > 1. {
-            let ox = f(x0 + f((3. * G2 - 1.) as f64));
-            let oy = f(y0 + f((3. * G2 - 2.) as f64));
+            let ox = f(x0 + f(3. * G2 - 1.));
+            let oy = f(y0 + f(3. * G2 - 2.));
             let a = f(f(2. / 3.) - f(ox * ox) - f(oy * oy));
             contribution(
                 a,
@@ -924,31 +924,31 @@ fn simplex_single(seed: i32, x: f64, y: f64) -> f32 {
                 oy,
             );
         } else {
-            let ox = f(x0 + f((G2 - 1.) as f64));
+            let ox = f(x0 + f(G2 - 1.));
             let oy = f(y0 + g);
             let a = f(f(2. / 3.) - f(ox * ox) - f(oy * oy));
             contribution(a, i.wrapping_add(PRIME_X), j, ox, oy);
         }
     } else {
         if f(xi + xmy) < 0. {
-            let ox = f(x0 + f((1. - G2) as f64));
+            let ox = f(x0 + f(1. - G2));
             let oy = f(y0 - g);
             let a = f(f(2. / 3.) - f(ox * ox) - f(oy * oy));
             contribution(a, i.wrapping_sub(PRIME_X), j, ox, oy);
         } else {
-            let ox = f(x0 + f((G2 - 1.) as f64));
+            let ox = f(x0 + f(G2 - 1.));
             let oy = f(y0 + g);
             let a = f(f(2. / 3.) - f(ox * ox) - f(oy * oy));
             contribution(a, i.wrapping_add(PRIME_X), j, ox, oy);
         }
         if yi < xmy {
             let ox = f(x0 - g);
-            let oy = f(y0 - f((G2 - 1.) as f64));
+            let oy = f(y0 - f(G2 - 1.));
             let a = f(f(2. / 3.) - f(ox * ox) - f(oy * oy));
             contribution(a, i, j.wrapping_sub(PRIME_Y), ox, oy);
         } else {
             let ox = f(x0 + g);
-            let oy = f(y0 + f((G2 - 1.) as f64));
+            let oy = f(y0 + f(G2 - 1.));
             let a = f(f(2. / 3.) - f(ox * ox) - f(oy * oy));
             contribution(a, i, j1, ox, oy);
         }
@@ -1177,6 +1177,28 @@ impl TfgCellular2D {
             f2: d1,
             noise: f(nh as f64 * (1.0 / 2147483648.0)) as f64,
             angle: diamond_angle(dx, dy),
+        }
+    }
+
+    /// Returns the exact jittered feature point owned by a cellular lattice coordinate.
+    /// Unlike sampling `cell()` at the lattice intersection, this cannot select a neighbor
+    /// when two adjacent jitter offsets happen to be unusually close together.
+    pub fn feature_point(&self, cx: i32, cy: i32) -> Cell {
+        let h = hash2d(
+            self.seed,
+            cx.wrapping_mul(PRIME_X),
+            cy.wrapping_mul(PRIME_Y),
+        );
+        let idx = (h & 510) as usize;
+        let px = cx as f64 + f(RAND_VECS[idx]) as f64 * self.jitter as f64;
+        let py = cy as f64 + f(RAND_VECS[idx | 1]) as f64 * self.jitter as f64;
+        Cell {
+            x: px / self.frequency,
+            y: py / self.frequency,
+            cx,
+            cy,
+            noise: f(h as f64 * (1.0 / 2147483648.0)) as f64,
+            ..Cell::default()
         }
     }
 }

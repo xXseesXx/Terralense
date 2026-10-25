@@ -1,3 +1,5 @@
 * text=auto eol=lf
 *.png binary
 *.ttf binary
+# Retain original upstream notice bytes, including their final blank lines.
+licenses/rust/** whitespace=-blank-at-eof

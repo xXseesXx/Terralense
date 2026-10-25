@@ -1,0 +1,72 @@
+{
+  "schema": 1,
+  "provenance": {
+    "kind": "read_only_saved_chunk_observation",
+    "world_alias": "world0",
+    "dimension": "minecraft:overworld",
+    "seed": 0,
+    "chunk": [1231, -204],
+    "block_origin": [19696, -3264]
+  },
+  "structure": {
+    "registry_id": "tfc_ruins:ruin_small",
+    "start_chunk": [1231, -204],
+    "start_references": 0,
+    "start_piece_position": [19696, 69, -3264],
+    "template_id": "tfc_ruins:ruin_small/ruin_8",
+    "processor_id": "tfc_ruins:ruin_small",
+    "rotation": "NONE",
+    "bounds_inclusive": {
+      "min": [19696, 69, -3264],
+      "max": [19703, 75, -3258]
+    },
+    "mapper_marker": {
+      "saved_structure_id": "tfc_ruins:ruin_small",
+      "raw_start_point": [19704.0, -3256.0],
+      "map_point_from_bounds": [19700.0, -3260.5],
+      "source_confirmed": true
+    },
+    "seed_prediction": {
+      "marker_id": "tfc_ruins:ruin_small@1231,-204",
+      "point": [19704.0, -3256.0],
+      "generation_confirmed": false
+    }
+  },
+  "container_block_entities": [
+    {
+      "block_id": "tfc:ceramic/large_vessel",
+      "block_entity_id": "tfc:large_vessel",
+      "position": [19698, 71, -3259],
+      "properties": {
+        "sealed": true,
+        "powered": false,
+        "axis": "z"
+      },
+      "inventory_items_summary": [
+        { "id": "tfc:straw", "count": 6 },
+        { "id": "tfc:ore/small_sphalerite", "count": 6 }
+      ],
+      "loot_table": null
+    },
+    {
+      "block_id": "tfc:ceramic/large_vessel",
+      "block_entity_id": "tfc:large_vessel",
+      "position": [19697, 74, -3261],
+      "properties": {
+        "sealed": true,
+        "powered": false,
+        "axis": "z"
+      },
+      "inventory_items_summary": [
+        { "id": "minecraft:clay_ball", "count": 18 }
+      ],
+      "loot_table": null
+    }
+  ],
+  "evidence_notes": [
+    "Structure start and piece bounds were read from the target chunk's structures.starts NBT.",
+    "Both vessel block states were checked at their listed coordinates; both are sealed large-vessel blocks.",
+    "Inventories are saved block-entity Items entries, not unresolved loot-table references.",
+    "The target chunk block palette includes tfc:mud_bricks/silt and tfc:mud_bricks/silt_slab."
+  ]
+}

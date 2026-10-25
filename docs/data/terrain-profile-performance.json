@@ -1,0 +1,149 @@
+{
+  "scope": "Fresh release child engine per case, two workers; cold Biomes then Rainfall layer. Full terrain preserves source detail without visual trees/grass/litter; Fast skips terrain generators. Different water/biome precision is intentional. Excludes GPU and UI presentation.",
+  "results": [
+    {
+      "case": "local-volcano",
+      "layer": "Biomes",
+      "seconds": 0.798751,
+      "sha256": "7d9a156f19da782f3c009b7ddd810efadd2e9596546d6f9fddde211832527593",
+      "bulk_bytes": 462864,
+      "profile": "previous"
+    },
+    {
+      "case": "local-volcano",
+      "layer": "Rainfall",
+      "seconds": 0.039125,
+      "sha256": "fd50cb5278971c5aa0d5a15bff0f8a23c6e3296f30d1cd22722abfa399dc7da1",
+      "bulk_bytes": 462864,
+      "profile": "previous"
+    },
+    {
+      "case": "medium-region",
+      "layer": "Biomes",
+      "seconds": 3.183013,
+      "sha256": "f57687228619dcd1b4da6f49bb57b68897ef7f627f6c6987f3f8b0fab0b9926b",
+      "bulk_bytes": 462864,
+      "profile": "previous"
+    },
+    {
+      "case": "medium-region",
+      "layer": "Rainfall",
+      "seconds": 0.175403,
+      "sha256": "d28f895c624b2ea18b3a2886b0eb4ddad18b65721cc2e457edc9cd56f24e593c",
+      "bulk_bytes": 462864,
+      "profile": "previous"
+    },
+    {
+      "case": "continent-overview",
+      "layer": "Biomes",
+      "seconds": 1.682338,
+      "sha256": "ea0801cb7010882eda588d5361c902a4a2aff9d0f546678b960ef1f65259b894",
+      "bulk_bytes": 29712,
+      "profile": "previous"
+    },
+    {
+      "case": "continent-overview",
+      "layer": "Rainfall",
+      "seconds": 0.05693,
+      "sha256": "5a4dc97dbe1ab5ecd5765bdc251389209df5f7aec22f00c52c370c04ace3fc2c",
+      "bulk_bytes": 29712,
+      "profile": "previous"
+    },
+    {
+      "case": "local-volcano",
+      "layer": "Biomes",
+      "seconds": 0.174389,
+      "sha256": "9c9cd34336c7c0d9761de5bd637b882e39669151e0af4263999dafccb4d065e4",
+      "bulk_bytes": 462864,
+      "profile": "fast"
+    },
+    {
+      "case": "local-volcano",
+      "layer": "Rainfall",
+      "seconds": 0.038571,
+      "sha256": "d80cd4b7728a6ee872e2b23a2112082abc8caaa767e5e97843a30354d87a5837",
+      "bulk_bytes": 462864,
+      "profile": "fast"
+    },
+    {
+      "case": "medium-region",
+      "layer": "Biomes",
+      "seconds": 0.38423,
+      "sha256": "efa21008469f58e104b98ca95b2e7af9dffb16f2c8da10141be13909449784dd",
+      "bulk_bytes": 462864,
+      "profile": "fast"
+    },
+    {
+      "case": "medium-region",
+      "layer": "Rainfall",
+      "seconds": 0.192493,
+      "sha256": "40e3f5c0d91c32f485e428eed2642e39d946faeda337dc3b82f47ed7b4856b9f",
+      "bulk_bytes": 462864,
+      "profile": "fast"
+    },
+    {
+      "case": "continent-overview",
+      "layer": "Biomes",
+      "seconds": 1.215246,
+      "sha256": "18b7cd323742e88bf62fcf8f9c3648391015ee57e3b5cde0d4d18faa8df02f06",
+      "bulk_bytes": 29712,
+      "profile": "fast"
+    },
+    {
+      "case": "continent-overview",
+      "layer": "Rainfall",
+      "seconds": 0.060484,
+      "sha256": "fbea8e43c88a2f35904ba5b2a537ced6d642623771c217a25de4390762d50228",
+      "bulk_bytes": 29712,
+      "profile": "fast"
+    },
+    {
+      "case": "local-volcano",
+      "layer": "Biomes",
+      "seconds": 0.814663,
+      "sha256": "7d9a156f19da782f3c009b7ddd810efadd2e9596546d6f9fddde211832527593",
+      "bulk_bytes": 462864,
+      "profile": "full-terrain"
+    },
+    {
+      "case": "local-volcano",
+      "layer": "Rainfall",
+      "seconds": 0.040869,
+      "sha256": "fd50cb5278971c5aa0d5a15bff0f8a23c6e3296f30d1cd22722abfa399dc7da1",
+      "bulk_bytes": 462864,
+      "profile": "full-terrain"
+    },
+    {
+      "case": "medium-region",
+      "layer": "Biomes",
+      "seconds": 3.203279,
+      "sha256": "f57687228619dcd1b4da6f49bb57b68897ef7f627f6c6987f3f8b0fab0b9926b",
+      "bulk_bytes": 462864,
+      "profile": "full-terrain"
+    },
+    {
+      "case": "medium-region",
+      "layer": "Rainfall",
+      "seconds": 0.168416,
+      "sha256": "d28f895c624b2ea18b3a2886b0eb4ddad18b65721cc2e457edc9cd56f24e593c",
+      "bulk_bytes": 462864,
+      "profile": "full-terrain"
+    },
+    {
+      "case": "continent-overview",
+      "layer": "Biomes",
+      "seconds": 1.651728,
+      "sha256": "ea0801cb7010882eda588d5361c902a4a2aff9d0f546678b960ef1f65259b894",
+      "bulk_bytes": 29712,
+      "profile": "full-terrain"
+    },
+    {
+      "case": "continent-overview",
+      "layer": "Rainfall",
+      "seconds": 0.057949,
+      "sha256": "5a4dc97dbe1ab5ecd5765bdc251389209df5f7aec22f00c52c370c04ace3fc2c",
+      "bulk_bytes": 29712,
+      "profile": "full-terrain"
+    }
+  ]
+}

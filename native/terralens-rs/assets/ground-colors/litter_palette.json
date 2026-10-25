@@ -1,0 +1,890 @@
+{
+  "afc:wood/fallen_leaves/acacia_koa": {
+    "opacity": 207,
+    "rgb": [
+      118,
+      117,
+      117
+    ]
+  },
+  "afc:wood/fallen_leaves/atlas_cedar": {
+    "opacity": 135,
+    "rgb": [
+      144,
+      144,
+      144
+    ]
+  },
+  "afc:wood/fallen_leaves/bald_cypress": {
+    "opacity": 107,
+    "rgb": [
+      167,
+      167,
+      167
+    ]
+  },
+  "afc:wood/fallen_leaves/balsam_fir": {
+    "opacity": 135,
+    "rgb": [
+      88,
+      95,
+      95
+    ]
+  },
+  "afc:wood/fallen_leaves/baobab": {
+    "opacity": 219,
+    "rgb": [
+      158,
+      158,
+      158
+    ]
+  },
+  "afc:wood/fallen_leaves/bigleaf_maple": {
+    "opacity": 155,
+    "rgb": [
+      156,
+      156,
+      156
+    ]
+  },
+  "afc:wood/fallen_leaves/black_oak": {
+    "opacity": 179,
+    "rgb": [
+      154,
+      154,
+      154
+    ]
+  },
+  "afc:wood/fallen_leaves/black_spruce": {
+    "opacity": 135,
+    "rgb": [
+      78,
+      78,
+      78
+    ]
+  },
+  "afc:wood/fallen_leaves/coast_redwood": {
+    "opacity": 199,
+    "rgb": [
+      118,
+      118,
+      118
+    ]
+  },
+  "afc:wood/fallen_leaves/coast_spruce": {
+    "opacity": 135,
+    "rgb": [
+      96,
+      96,
+      96
+    ]
+  },
+  "afc:wood/fallen_leaves/cypress": {
+    "opacity": 199,
+    "rgb": [
+      96,
+      96,
+      96
+    ]
+  },
+  "afc:wood/fallen_leaves/eucalyptus": {
+    "opacity": 211,
+    "rgb": [
+      153,
+      153,
+      153
+    ]
+  },
+  "afc:wood/fallen_leaves/fig": {
+    "opacity": 171,
+    "rgb": [
+      155,
+      154,
+      147
+    ]
+  },
+  "afc:wood/fallen_leaves/flame_of_the_forest": {
+    "opacity": 187,
+    "rgb": [
+      145,
+      145,
+      145
+    ]
+  },
+  "afc:wood/fallen_leaves/giant_rosewood": {
+    "opacity": 167,
+    "rgb": [
+      149,
+      153,
+      144
+    ]
+  },
+  "afc:wood/fallen_leaves/gum_arabic": {
+    "opacity": 131,
+    "rgb": [
+      152,
+      152,
+      152
+    ]
+  },
+  "afc:wood/fallen_leaves/hevea": {
+    "opacity": 175,
+    "rgb": [
+      105,
+      105,
+      105
+    ]
+  },
+  "afc:wood/fallen_leaves/horsetail_ironwood": {
+    "opacity": 187,
+    "rgb": [
+      122,
+      122,
+      122
+    ]
+  },
+  "afc:wood/fallen_leaves/ipe": {
+    "opacity": 179,
+    "rgb": [
+      128,
+      128,
+      128
+    ]
+  },
+  "afc:wood/fallen_leaves/iroko_teak": {
+    "opacity": 187,
+    "rgb": [
+      127,
+      126,
+      126
+    ]
+  },
+  "afc:wood/fallen_leaves/ironwood": {
+    "opacity": 215,
+    "rgb": [
+      159,
+      159,
+      159
+    ]
+  },
+  "afc:wood/fallen_leaves/jaggery_palm": {
+    "opacity": 195,
+    "rgb": [
+      157,
+      157,
+      157
+    ]
+  },
+  "afc:wood/fallen_leaves/lebombo_ironwood": {
+    "opacity": 203,
+    "rgb": [
+      139,
+      139,
+      139
+    ]
+  },
+  "afc:wood/fallen_leaves/live_oak": {
+    "opacity": 167,
+    "rgb": [
+      148,
+      148,
+      148
+    ]
+  },
+  "afc:wood/fallen_leaves/mahogany": {
+    "opacity": 159,
+    "rgb": [
+      103,
+      103,
+      103
+    ]
+  },
+  "afc:wood/fallen_leaves/mountain_ash": {
+    "opacity": 223,
+    "rgb": [
+      120,
+      119,
+      119
+    ]
+  },
+  "afc:wood/fallen_leaves/mountain_fir": {
+    "opacity": 135,
+    "rgb": [
+      78,
+      78,
+      78
+    ]
+  },
+  "afc:wood/fallen_leaves/mpingo_blackwood": {
+    "opacity": 195,
+    "rgb": [
+      151,
+      151,
+      151
+    ]
+  },
+  "afc:wood/fallen_leaves/poplar": {
+    "opacity": 175,
+    "rgb": [
+      159,
+      159,
+      159
+    ]
+  },
+  "afc:wood/fallen_leaves/rainbow_eucalyptus": {
+    "opacity": 175,
+    "rgb": [
+      152,
+      152,
+      152
+    ]
+  },
+  "afc:wood/fallen_leaves/red_pine": {
+    "opacity": 135,
+    "rgb": [
+      149,
+      149,
+      149
+    ]
+  },
+  "afc:wood/fallen_leaves/red_silk_cotton": {
+    "opacity": 159,
+    "rgb": [
+      119,
+      119,
+      119
+    ]
+  },
+  "afc:wood/fallen_leaves/redcedar": {
+    "opacity": 175,
+    "rgb": [
+      118,
+      118,
+      118
+    ]
+  },
+  "afc:wood/fallen_leaves/rubber_fig": {
+    "opacity": 171,
+    "rgb": [
+      155,
+      154,
+      147
+    ]
+  },
+  "afc:wood/fallen_leaves/sapele_mahogany": {
+    "opacity": 175,
+    "rgb": [
+      128,
+      128,
+      128
+    ]
+  },
+  "afc:wood/fallen_leaves/scrub_hickory": {
+    "opacity": 171,
+    "rgb": [
+      105,
+      105,
+      105
+    ]
+  },
+  "afc:wood/fallen_leaves/sitka_spruce": {
+    "opacity": 135,
+    "rgb": [
+      105,
+      105,
+      105
+    ]
+  },
+  "afc:wood/fallen_leaves/small_leaf_mahogany": {
+    "opacity": 131,
+    "rgb": [
+      152,
+      152,
+      152
+    ]
+  },
+  "afc:wood/fallen_leaves/stone_pine": {
+    "opacity": 167,
+    "rgb": [
+      134,
+      134,
+      134
+    ]
+  },
+  "afc:wood/fallen_leaves/tamarack": {
+    "opacity": 167,
+    "rgb": [
+      132,
+      132,
+      132
+    ]
+  },
+  "afc:wood/fallen_leaves/teak": {
+    "opacity": 171,
+    "rgb": [
+      151,
+      151,
+      150
+    ]
+  },
+  "afc:wood/fallen_leaves/tualang": {
+    "opacity": 191,
+    "rgb": [
+      169,
+      169,
+      169
+    ]
+  },
+  "afc:wood/fallen_leaves/weeping_cypress": {
+    "opacity": 187,
+    "rgb": [
+      124,
+      124,
+      124
+    ]
+  },
+  "afc:wood/fallen_leaves/weeping_maple": {
+    "opacity": 179,
+    "rgb": [
+      96,
+      7,
+      29
+    ]
+  },
+  "afc:wood/fallen_leaves/weeping_willow": {
+    "opacity": 203,
+    "rgb": [
+      123,
+      122,
+      122
+    ]
+  },
+  "beneath:wood/fallen_leaves/crimson": {
+    "opacity": 199,
+    "rgb": [
+      126,
+      11,
+      20
+    ]
+  },
+  "beneath:wood/fallen_leaves/warped": {
+    "opacity": 199,
+    "rgb": [
+      20,
+      139,
+      125
+    ]
+  },
+  "firmalife:groundcover/ore/small_chromite": {
+    "opacity": 255,
+    "rgb": [
+      86,
+      70,
+      84
+    ]
+  },
+  "tfc:groundcover/clam": {
+    "opacity": 255,
+    "rgb": [
+      156,
+      150,
+      148
+    ]
+  },
+  "tfc:groundcover/driftwood": {
+    "opacity": 123,
+    "rgb": [
+      158,
+      151,
+      126
+    ]
+  },
+  "tfc:groundcover/guano": {
+    "opacity": 147,
+    "rgb": [
+      83,
+      74,
+      57
+    ]
+  },
+  "tfc:groundcover/mollusk": {
+    "opacity": 255,
+    "rgb": [
+      183,
+      150,
+      119
+    ]
+  },
+  "tfc:groundcover/mussel": {
+    "opacity": 255,
+    "rgb": [
+      62,
+      57,
+      66
+    ]
+  },
+  "tfc:groundcover/pinecone": {
+    "opacity": 239,
+    "rgb": [
+      84,
+      54,
+      13
+    ]
+  },
+  "tfc:groundcover/salt_lick": {
+    "opacity": 255,
+    "rgb": [
+      231,
+      231,
+      231
+    ]
+  },
+  "tfc:groundcover/sea_urchin": {
+    "opacity": 255,
+    "rgb": [
+      64,
+      58,
+      68
+    ]
+  },
+  "tfc:groundcover/sea_urchin_spikes": {
+    "opacity": 0,
+    "rgb": [
+      96,
+      96,
+      96
+    ]
+  },
+  "tfc:groundcover/seaweed": {
+    "opacity": 103,
+    "rgb": [
+      98,
+      96,
+      4
+    ]
+  },
+  "tfc:groundcover/stick": {
+    "opacity": 95,
+    "rgb": [
+      61,
+      55,
+      23
+    ]
+  },
+  "tfc:wood/fallen_leaves/acacia": {
+    "opacity": 147,
+    "rgb": [
+      148,
+      148,
+      148
+    ]
+  },
+  "tfc:wood/fallen_leaves/acacia_fluff": {
+    "opacity": 131,
+    "rgb": [
+      143,
+      143,
+      143
+    ]
+  },
+  "tfc:wood/fallen_leaves/ash": {
+    "opacity": 175,
+    "rgb": [
+      128,
+      128,
+      128
+    ]
+  },
+  "tfc:wood/fallen_leaves/ash_fluff": {
+    "opacity": 55,
+    "rgb": [
+      133,
+      133,
+      133
+    ]
+  },
+  "tfc:wood/fallen_leaves/aspen": {
+    "opacity": 195,
+    "rgb": [
+      167,
+      167,
+      167
+    ]
+  },
+  "tfc:wood/fallen_leaves/aspen_fluff": {
+    "opacity": 87,
+    "rgb": [
+      96,
+      96,
+      96
+    ]
+  },
+  "tfc:wood/fallen_leaves/aspen_frozen": {
+    "opacity": 195,
+    "rgb": [
+      172,
+      202,
+      252
+    ]
+  },
+  "tfc:wood/fallen_leaves/birch": {
+    "opacity": 139,
+    "rgb": [
+      144,
+      144,
+      144
+    ]
+  },
+  "tfc:wood/fallen_leaves/birch_fluff": {
+    "opacity": 95,
+    "rgb": [
+      127,
+      127,
+      127
+    ]
+  },
+  "tfc:wood/fallen_leaves/blackwood": {
+    "opacity": 179,
+    "rgb": [
+      140,
+      140,
+      140
+    ]
+  },
+  "tfc:wood/fallen_leaves/blackwood_fluff": {
+    "opacity": 79,
+    "rgb": [
+      101,
+      104,
+      96
+    ]
+  },
+  "tfc:wood/fallen_leaves/chestnut": {
+    "opacity": 171,
+    "rgb": [
+      105,
+      105,
+      105
+    ]
+  },
+  "tfc:wood/fallen_leaves/chestnut_fluff": {
+    "opacity": 123,
+    "rgb": [
+      41,
+      41,
+      41
+    ]
+  },
+  "tfc:wood/fallen_leaves/douglas_fir": {
+    "opacity": 135,
+    "rgb": [
+      78,
+      78,
+      78
+    ]
+  },
+  "tfc:wood/fallen_leaves/douglas_fir_fluff": {
+    "opacity": 115,
+    "rgb": [
+      134,
+      134,
+      134
+    ]
+  },
+  "tfc:wood/fallen_leaves/douglas_fir_frozen": {
+    "opacity": 147,
+    "rgb": [
+      221,
+      233,
+      247
+    ]
+  },
+  "tfc:wood/fallen_leaves/hickory": {
+    "opacity": 175,
+    "rgb": [
+      106,
+      106,
+      106
+    ]
+  },
+  "tfc:wood/fallen_leaves/hickory_fluff": {
+    "opacity": 115,
+    "rgb": [
+      83,
+      83,
+      83
+    ]
+  },
+  "tfc:wood/fallen_leaves/kapok": {
+    "opacity": 171,
+    "rgb": [
+      151,
+      151,
+      150
+    ]
+  },
+  "tfc:wood/fallen_leaves/kapok_fluff": {
+    "opacity": 127,
+    "rgb": [
+      141,
+      140,
+      141
+    ]
+  },
+  "tfc:wood/fallen_leaves/mangrove": {
+    "opacity": 207,
+    "rgb": [
+      121,
+      119,
+      119
+    ]
+  },
+  "tfc:wood/fallen_leaves/mangrove_fluff": {
+    "opacity": 127,
+    "rgb": [
+      121,
+      119,
+      119
+    ]
+  },
+  "tfc:wood/fallen_leaves/mangrove_top": {
+    "opacity": 207,
+    "rgb": [
+      134,
+      132,
+      132
+    ]
+  },
+  "tfc:wood/fallen_leaves/maple": {
+    "opacity": 203,
+    "rgb": [
+      119,
+      119,
+      119
+    ]
+  },
+  "tfc:wood/fallen_leaves/maple_fluff": {
+    "opacity": 95,
+    "rgb": [
+      146,
+      146,
+      146
+    ]
+  },
+  "tfc:wood/fallen_leaves/oak": {
+    "opacity": 167,
+    "rgb": [
+      148,
+      148,
+      148
+    ]
+  },
+  "tfc:wood/fallen_leaves/oak_fluff": {
+    "opacity": 115,
+    "rgb": [
+      135,
+      134,
+      135
+    ]
+  },
+  "tfc:wood/fallen_leaves/palm": {
+    "opacity": 227,
+    "rgb": [
+      157,
+      157,
+      157
+    ]
+  },
+  "tfc:wood/fallen_leaves/palm_top": {
+    "opacity": 227,
+    "rgb": [
+      170,
+      170,
+      170
+    ]
+  },
+  "tfc:wood/fallen_leaves/pine": {
+    "opacity": 135,
+    "rgb": [
+      105,
+      105,
+      105
+    ]
+  },
+  "tfc:wood/fallen_leaves/pine_fluff": {
+    "opacity": 51,
+    "rgb": [
+      30,
+      30,
+      30
+    ]
+  },
+  "tfc:wood/fallen_leaves/pine_frozen": {
+    "opacity": 143,
+    "rgb": [
+      162,
+      187,
+      230
+    ]
+  },
+  "tfc:wood/fallen_leaves/rosewood": {
+    "opacity": 167,
+    "rgb": [
+      149,
+      153,
+      144
+    ]
+  },
+  "tfc:wood/fallen_leaves/rosewood_fluff": {
+    "opacity": 123,
+    "rgb": [
+      111,
+      111,
+      111
+    ]
+  },
+  "tfc:wood/fallen_leaves/sequoia": {
+    "opacity": 159,
+    "rgb": [
+      84,
+      84,
+      84
+    ]
+  },
+  "tfc:wood/fallen_leaves/sequoia_fluff": {
+    "opacity": 107,
+    "rgb": [
+      26,
+      26,
+      26
+    ]
+  },
+  "tfc:wood/fallen_leaves/spruce": {
+    "opacity": 135,
+    "rgb": [
+      78,
+      78,
+      78
+    ]
+  },
+  "tfc:wood/fallen_leaves/spruce_fluff": {
+    "opacity": 87,
+    "rgb": [
+      84,
+      84,
+      84
+    ]
+  },
+  "tfc:wood/fallen_leaves/spruce_frozen": {
+    "opacity": 135,
+    "rgb": [
+      128,
+      160,
+      219
+    ]
+  },
+  "tfc:wood/fallen_leaves/sycamore": {
+    "opacity": 179,
+    "rgb": [
+      117,
+      117,
+      117
+    ]
+  },
+  "tfc:wood/fallen_leaves/sycamore_fluff": {
+    "opacity": 131,
+    "rgb": [
+      80,
+      80,
+      80
+    ]
+  },
+  "tfc:wood/fallen_leaves/white_cedar": {
+    "opacity": 199,
+    "rgb": [
+      136,
+      136,
+      136
+    ]
+  },
+  "tfc:wood/fallen_leaves/white_cedar_fluff": {
+    "opacity": 95,
+    "rgb": [
+      145,
+      145,
+      145
+    ]
+  },
+  "tfc:wood/fallen_leaves/white_cedar_frozen": {
+    "opacity": 199,
+    "rgb": [
+      172,
+      197,
+      239
+    ]
+  },
+  "tfc:wood/fallen_leaves/willow": {
+    "opacity": 203,
+    "rgb": [
+      123,
+      122,
+      122
+    ]
+  },
+  "tfc:wood/fallen_leaves/willow_fluff": {
+    "opacity": 99,
+    "rgb": [
+      75,
+      75,
+      75
+    ]
+  },
+  "tfc:wood/fallen_leaves/willow_top": {
+    "opacity": 203,
+    "rgb": [
+      129,
+      128,
+      128
+    ]
+  },
+  "tfg:plant/dry_grass": {
+    "opacity": 119,
+    "rgb": [
+      197,
+      174,
+      125
+    ]
+  },
+  "tfg:wood/fallen_leaves/araucaria": {
+    "opacity": 207,
+    "rgb": [
+      121,
+      126,
+      118
+    ]
+  },
+  "tfg:wood/fallen_leaves/beech": {
+    "opacity": 183,
+    "rgb": [
+      169,
+      79,
+      20
+    ]
+  },
+  "tfg:wood/fallen_leaves/ginkgo": {
+    "opacity": 175,
+    "rgb": [
+      231,
+      150,
+      31
+    ]
+  },
+  "tfg:wood/fallen_leaves/mahoe": {
+    "opacity": 215,
+    "rgb": [
+      167,
+      67,
+      77
+    ]
+  }
+}

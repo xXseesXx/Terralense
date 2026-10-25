@@ -135,7 +135,7 @@ pub fn show_report(ui: &mut egui::Ui, report: Option<&Report>) {
     ui.horizontal_wrapped(|ui| {
         metric(
             ui,
-            "Land / sea",
+            "Land / water",
             format!("{} / {}", r.land_samples, r.ocean_samples),
         );
         metric(ui, "Samples", r.sample_count.to_string());

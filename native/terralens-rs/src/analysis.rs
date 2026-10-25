@@ -202,8 +202,7 @@ pub fn analyze(w: &World, q: &Query, cancelled: impl Fn() -> bool) -> Option<Rep
             let z = (b.min_z + (iz as f64 + 0.5) * step)
                 .min(b.max_z - 0.5)
                 .floor() as i32;
-            let id = w.region.biome(x, z);
-            if crate::biome::is_ocean(id) {
+            if w.is_surface_fluid(x, z) {
                 ocean += 1;
                 continue;
             }
@@ -379,7 +378,7 @@ pub fn locate(
         }
         samples += 1;
         let (x, z) = (point.x.floor() as i32, point.z.floor() as i32);
-        if crate::biome::is_ocean(w.region.biome(x, z)) {
+        if w.is_surface_fluid(x, z) {
             continue;
         }
         let climate = w.climate(x, z);

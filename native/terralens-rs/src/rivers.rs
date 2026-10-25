@@ -17,7 +17,9 @@ const RIVER_FEATHER: f64 = 0.8f32 as f64;
 const MIN_BRANCH_ANGLE: f64 = 0.4f32 as f64;
 const MIN_BRANCH_DISTANCE: i32 = 2;
 const MIN_RIVER_EDGE_COUNT: usize = 6;
-const MAX_AFFECTING_GRID_DISTANCE: i32 = 1 + (1.5f32 * RIVER_LENGTH).ceil() as i32;
+// 1 + ceil(1.5f32 * RIVER_LENGTH), evaluated for the upstream length 2.7.
+// Float ceil is not const-stable on the supported Rust 1.88 compiler.
+const MAX_AFFECTING_GRID_DISTANCE: i32 = 6;
 const EDGE_BISECTIONS: usize = 4;
 const JITTER_MAX: f64 = 0.2f32 as f64;
 const JITTER_MIN: f64 = 0.05f32 as f64;
@@ -384,7 +386,7 @@ impl RiverBuilder {
             self.branch.push(edge);
             prev = next;
             prev_dist = next.distance;
-            if prev_dist < RIVER_DEPTH && prev_dist >= MIN_BRANCH_DISTANCE {
+            if (MIN_BRANCH_DISTANCE..RIVER_DEPTH).contains(&prev_dist) {
                 self.branch_queue.push_back(edge);
             }
             i += 1;

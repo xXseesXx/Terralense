@@ -1,0 +1,65 @@
+{
+  "source": "TFC 1.20.1 SpringFeature and HotSpringFeature with TFG Core 0.9.25 placed-feature tags",
+  "decoration_step": 8,
+  "terrain": {
+    "ocean_floor_first_solid_offset": 0,
+    "sea_level": 63,
+    "top_states_assumed_replaceable": true
+  },
+  "features": [
+    {
+      "id": "tfc:random_empty_hot_spring",
+      "chance": 70,
+      "type": "simple_random_selector",
+      "variants": [
+        { "id": "tfc:sapphire_empty_hot_spring", "radius": 14, "fluid": "minecraft:air" },
+        { "id": "tfc:emerald_empty_hot_spring", "radius": 14, "fluid": "minecraft:air" },
+        { "id": "tfc:empty_hot_spring", "radius": 14, "fluid": "minecraft:air" },
+        { "id": "tfc:empty_hot_spring", "radius": 14, "fluid": "minecraft:air" }
+      ]
+    },
+    {
+      "id": "tfg:earth/fluid_vein/spring_water",
+      "step": 3,
+      "chance": 30,
+      "fluid_vein": "tfg:spring_water",
+      "type": "vein_gated_random_selector",
+      "variants": [
+        { "id": "tfc:sapphire_empty_hot_spring", "radius": 14, "fluid": "minecraft:air" },
+        { "id": "tfc:emerald_empty_hot_spring", "radius": 14, "fluid": "minecraft:air" },
+        { "id": "tfc:empty_hot_spring", "radius": 14, "fluid": "minecraft:air" },
+        { "id": "tfc:empty_hot_spring", "radius": 14, "fluid": "minecraft:air" },
+        { "id": "tfc:sapphire_hot_spring", "radius": 14, "fluid": "tfc:fluid/spring_water" },
+        { "id": "tfc:sapphire_hot_spring", "radius": 14, "fluid": "tfc:fluid/spring_water" },
+        { "id": "tfc:sapphire_hot_spring", "radius": 14, "fluid": "tfc:fluid/spring_water" },
+        { "id": "tfc:emerald_hot_spring", "radius": 14, "fluid": "tfc:fluid/spring_water" },
+        { "id": "tfc:emerald_hot_spring", "radius": 14, "fluid": "tfc:fluid/spring_water" },
+        { "id": "tfc:emerald_hot_spring", "radius": 14, "fluid": "tfc:fluid/spring_water" },
+        { "id": "tfc:hot_spring", "radius": 14, "fluid": "tfc:fluid/spring_water" },
+        { "id": "tfc:hot_spring", "radius": 14, "fluid": "tfc:fluid/spring_water" },
+        { "id": "tfc:hot_spring", "radius": 14, "fluid": "tfc:fluid/spring_water" },
+        { "id": "tfc:hot_spring", "radius": 14, "fluid": "tfc:fluid/spring_water" },
+        { "id": "tfc:hot_spring", "radius": 14, "fluid": "tfc:fluid/spring_water" },
+        { "id": "tfc:hot_spring", "radius": 14, "fluid": "tfc:fluid/spring_water" }
+      ]
+    },
+    {
+      "id": "tfc:lava_hot_spring",
+      "chance": 20,
+      "type": "hot_spring",
+      "radius": 10,
+      "fluid": "minecraft:lava",
+      "allow_underwater": true,
+      "fluid_contact": {
+        "lookup_uses_hardened_origin_rock": true,
+        "raw_rock_map_entries": [
+          "rhyolite", "basalt", "andesite", "dacite", "granite", "diorite", "gabbro"
+        ],
+        "weighted_states": [
+          { "material": "magma", "weight": 1 },
+          { "material": "hardened", "weight": 2 }
+        ]
+      }
+    }
+  ]
+}

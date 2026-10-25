@@ -4,7 +4,7 @@
 mod craters;
 mod density;
 pub mod features;
-pub(super) mod noise;
+pub(crate) mod noise;
 pub(super) mod terrain;
 
 use crate::dimension::Dimension;
@@ -320,10 +320,9 @@ fn collect_noise_ids(value: &Value, out: &mut HashSet<String>) {
                     kind,
                     "minecraft:shift" | "minecraft:shift_a" | "minecraft:shift_b"
                 )
-            }) {
-                if let Some(name) = map.get("argument").and_then(Value::as_str) {
-                    out.insert(name.to_owned());
-                }
+            }) && let Some(name) = map.get("argument").and_then(Value::as_str)
+            {
+                out.insert(name.to_owned());
             }
             for v in map.values() {
                 collect_noise_ids(v, out);

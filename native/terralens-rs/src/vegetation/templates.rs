@@ -32,6 +32,8 @@ pub struct TreeEntry {
     pub old_growth_chance: Option<u32>,
     pub spoiler_old_growth_chance: Option<u32>,
     pub dead_chance: Option<u32>,
+    #[serde(default)]
+    pub floating: bool,
     pub climate: ClimateRange,
 }
 
@@ -49,6 +51,8 @@ struct TreeFeature {
     feature_type: TreeFeatureType,
     width: u8,
     height: u8,
+    #[serde(default = "normal_ground_type")]
+    ground_type: String,
     trunk: Option<TreeTrunk>,
     root_system: Option<TreeRoots>,
     #[serde(default)]
@@ -58,6 +62,10 @@ struct TreeFeature {
     #[serde(default)]
     overlay: Option<TreeOverlay>,
     variants: Vec<TemplateVariant>,
+}
+
+fn normal_ground_type() -> String {
+    "normal".to_owned()
 }
 
 #[derive(Clone, Debug, Deserialize)]
@@ -164,6 +172,12 @@ pub fn forest_entry(id: &str) -> Option<&'static TreeEntry> {
     data().entries.get(id)
 }
 
+/// Placement rules read from the installed configured-tree feature data.
+pub(super) fn placement(feature_id: &str) -> Option<(u8, u8, &'static str)> {
+    let feature = data().features.get(feature_id)?;
+    Some((feature.width, feature.height, feature.ground_type.as_str()))
+}
+
 /// Resolve the actual configured tree feature selected by a forest-entry variant.
 pub fn entry_variant(id: &str, variant: TreeVariant) -> Option<&'static str> {
     let entry = forest_entry(id)?;
@@ -210,6 +224,15 @@ pub struct SelectedTemplate {
     rotation: u8,
     mirror: u8,
     trunk_height: i16,
+}
+
+impl SelectedTemplate {
+    /// Apply the same mirror then rotation used by TreeHelpers to a placement
+    /// footprint coordinate.
+    pub(super) fn placement_offset(&self, x: i32, z: i32) -> (i32, i32) {
+        let (x, z) = transform(x as i8, z as i8, self.mirror, self.rotation);
+        (i32::from(x), i32::from(z))
+    }
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]

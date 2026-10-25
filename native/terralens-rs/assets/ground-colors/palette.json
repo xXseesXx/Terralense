@@ -1,0 +1,1012 @@
+{
+  "minecraft:basalt": [
+    79,
+    80,
+    85
+  ],
+  "minecraft:blackstone": [
+    42,
+    35,
+    41
+  ],
+  "minecraft:blue_ice": [
+    116,
+    167,
+    253
+  ],
+  "minecraft:clay": [
+    160,
+    166,
+    180
+  ],
+  "minecraft:coarse_dirt": [
+    119,
+    85,
+    59
+  ],
+  "minecraft:deepslate": [
+    88,
+    88,
+    90
+  ],
+  "minecraft:dirt": [
+    137,
+    98,
+    68
+  ],
+  "minecraft:dirt_path": [
+    147,
+    120,
+    65
+  ],
+  "minecraft:end_stone": [
+    219,
+    223,
+    158
+  ],
+  "minecraft:farmland": [
+    143,
+    103,
+    71
+  ],
+  "minecraft:grass_block": [
+    150,
+    150,
+    150
+  ],
+  "minecraft:gravel": [
+    130,
+    125,
+    124
+  ],
+  "minecraft:ice": [
+    144,
+    183,
+    253
+  ],
+  "minecraft:mud": [
+    59,
+    57,
+    60
+  ],
+  "minecraft:mycelium": [
+    110,
+    98,
+    100
+  ],
+  "minecraft:netherrack": [
+    97,
+    38,
+    38
+  ],
+  "minecraft:packed_ice": [
+    141,
+    179,
+    250
+  ],
+  "minecraft:podzol": [
+    93,
+    63,
+    24
+  ],
+  "minecraft:red_sand": [
+    189,
+    101,
+    32
+  ],
+  "minecraft:rooted_dirt": [
+    145,
+    104,
+    77
+  ],
+  "minecraft:sand": [
+    218,
+    205,
+    161
+  ],
+  "minecraft:snow_block": [
+    249,
+    254,
+    254
+  ],
+  "minecraft:stone": [
+    124,
+    124,
+    124
+  ],
+  "minecraft:tuff": [
+    107,
+    108,
+    103
+  ],
+  "tfc:clay/loam": [
+    100,
+    90,
+    90
+  ],
+  "tfc:clay/sandy_loam": [
+    138,
+    120,
+    100
+  ],
+  "tfc:clay/silt": [
+    125,
+    123,
+    120
+  ],
+  "tfc:clay/silty_loam": [
+    97,
+    95,
+    88
+  ],
+  "tfc:dirt/loam": [
+    69,
+    48,
+    39
+  ],
+  "tfc:dirt/sandy_loam": [
+    133,
+    103,
+    68
+  ],
+  "tfc:dirt/silt": [
+    107,
+    101,
+    91
+  ],
+  "tfc:dirt/silty_loam": [
+    60,
+    58,
+    60
+  ],
+  "tfc:farmland/loam": [
+    56,
+    44,
+    29
+  ],
+  "tfc:farmland/sandy_loam": [
+    92,
+    82,
+    57
+  ],
+  "tfc:farmland/silt": [
+    102,
+    96,
+    91
+  ],
+  "tfc:farmland/silty_loam": [
+    71,
+    62,
+    53
+  ],
+  "tfc:grass_path/loam": [
+    73,
+    53,
+    45
+  ],
+  "tfc:grass_path/sandy_loam": [
+    143,
+    120,
+    79
+  ],
+  "tfc:grass_path/silt": [
+    116,
+    114,
+    107
+  ],
+  "tfc:grass_path/silty_loam": [
+    94,
+    81,
+    62
+  ],
+  "tfc:grass_tint_overlay": [
+    150,
+    150,
+    150
+  ],
+  "tfc:mud/loam": [
+    70,
+    47,
+    37
+  ],
+  "tfc:mud/sandy_loam": [
+    125,
+    96,
+    62
+  ],
+  "tfc:mud/silt": [
+    91,
+    87,
+    78
+  ],
+  "tfc:mud/silty_loam": [
+    59,
+    57,
+    60
+  ],
+  "tfc:muddy_roots/loam": [
+    71,
+    54,
+    37
+  ],
+  "tfc:muddy_roots/sandy_loam": [
+    88,
+    69,
+    45
+  ],
+  "tfc:muddy_roots/silt": [
+    79,
+    67,
+    50
+  ],
+  "tfc:muddy_roots/silty_loam": [
+    69,
+    58,
+    45
+  ],
+  "tfc:raw_sandstone/black": [
+    33,
+    33,
+    33
+  ],
+  "tfc:raw_sandstone/brown": [
+    107,
+    96,
+    83
+  ],
+  "tfc:raw_sandstone/green": [
+    79,
+    90,
+    64
+  ],
+  "tfc:raw_sandstone/pink": [
+    169,
+    119,
+    132
+  ],
+  "tfc:raw_sandstone/red": [
+    138,
+    91,
+    71
+  ],
+  "tfc:raw_sandstone/white": [
+    213,
+    213,
+    213
+  ],
+  "tfc:raw_sandstone/yellow": [
+    216,
+    202,
+    154
+  ],
+  "tfc:rock/cobble/andesite": [
+    94,
+    98,
+    99
+  ],
+  "tfc:rock/cobble/basalt": [
+    53,
+    57,
+    59
+  ],
+  "tfc:rock/cobble/chalk": [
+    174,
+    175,
+    170
+  ],
+  "tfc:rock/cobble/chert": [
+    123,
+    75,
+    66
+  ],
+  "tfc:rock/cobble/claystone": [
+    145,
+    108,
+    77
+  ],
+  "tfc:rock/cobble/conglomerate": [
+    125,
+    116,
+    97
+  ],
+  "tfc:rock/cobble/dacite": [
+    121,
+    124,
+    124
+  ],
+  "tfc:rock/cobble/diorite": [
+    147,
+    147,
+    148
+  ],
+  "tfc:rock/cobble/dolomite": [
+    74,
+    74,
+    82
+  ],
+  "tfc:rock/cobble/gabbro": [
+    104,
+    104,
+    103
+  ],
+  "tfc:rock/cobble/gneiss": [
+    125,
+    117,
+    106
+  ],
+  "tfc:rock/cobble/granite": [
+    142,
+    118,
+    122
+  ],
+  "tfc:rock/cobble/limestone": [
+    161,
+    149,
+    127
+  ],
+  "tfc:rock/cobble/marble": [
+    206,
+    208,
+    209
+  ],
+  "tfc:rock/cobble/phyllite": [
+    97,
+    90,
+    90
+  ],
+  "tfc:rock/cobble/quartzite": [
+    168,
+    158,
+    155
+  ],
+  "tfc:rock/cobble/rhyolite": [
+    128,
+    120,
+    116
+  ],
+  "tfc:rock/cobble/schist": [
+    94,
+    99,
+    84
+  ],
+  "tfc:rock/cobble/shale": [
+    86,
+    83,
+    87
+  ],
+  "tfc:rock/cobble/slate": [
+    134,
+    129,
+    121
+  ],
+  "tfc:rock/gravel/andesite": [
+    96,
+    101,
+    103
+  ],
+  "tfc:rock/gravel/basalt": [
+    45,
+    49,
+    52
+  ],
+  "tfc:rock/gravel/chalk": [
+    188,
+    188,
+    182
+  ],
+  "tfc:rock/gravel/chert": [
+    128,
+    79,
+    69
+  ],
+  "tfc:rock/gravel/claystone": [
+    142,
+    105,
+    75
+  ],
+  "tfc:rock/gravel/conglomerate": [
+    125,
+    115,
+    93
+  ],
+  "tfc:rock/gravel/dacite": [
+    122,
+    125,
+    125
+  ],
+  "tfc:rock/gravel/diorite": [
+    150,
+    150,
+    151
+  ],
+  "tfc:rock/gravel/dolomite": [
+    71,
+    71,
+    79
+  ],
+  "tfc:rock/gravel/gabbro": [
+    91,
+    91,
+    90
+  ],
+  "tfc:rock/gravel/gneiss": [
+    129,
+    121,
+    110
+  ],
+  "tfc:rock/gravel/granite": [
+    159,
+    130,
+    135
+  ],
+  "tfc:rock/gravel/limestone": [
+    169,
+    157,
+    132
+  ],
+  "tfc:rock/gravel/marble": [
+    213,
+    216,
+    217
+  ],
+  "tfc:rock/gravel/phyllite": [
+    97,
+    88,
+    89
+  ],
+  "tfc:rock/gravel/quartzite": [
+    173,
+    163,
+    159
+  ],
+  "tfc:rock/gravel/rhyolite": [
+    132,
+    122,
+    118
+  ],
+  "tfc:rock/gravel/schist": [
+    95,
+    99,
+    82
+  ],
+  "tfc:rock/gravel/shale": [
+    75,
+    73,
+    77
+  ],
+  "tfc:rock/gravel/slate": [
+    134,
+    128,
+    119
+  ],
+  "tfc:rock/magma/andesite": [
+    154,
+    112,
+    81
+  ],
+  "tfc:rock/magma/basalt": [
+    122,
+    81,
+    50
+  ],
+  "tfc:rock/magma/dacite": [
+    172,
+    128,
+    96
+  ],
+  "tfc:rock/magma/diorite": [
+    188,
+    144,
+    112
+  ],
+  "tfc:rock/magma/gabbro": [
+    152,
+    108,
+    76
+  ],
+  "tfc:rock/magma/granite": [
+    179,
+    120,
+    91
+  ],
+  "tfc:rock/magma/rhyolite": [
+    175,
+    124,
+    90
+  ],
+  "tfc:rock/mossy_cobble/andesite": [
+    95,
+    105,
+    83
+  ],
+  "tfc:rock/mossy_cobble/basalt": [
+    75,
+    85,
+    63
+  ],
+  "tfc:rock/mossy_cobble/chalk": [
+    134,
+    143,
+    117
+  ],
+  "tfc:rock/mossy_cobble/chert": [
+    109,
+    94,
+    66
+  ],
+  "tfc:rock/mossy_cobble/claystone": [
+    119,
+    110,
+    71
+  ],
+  "tfc:rock/mossy_cobble/conglomerate": [
+    110,
+    114,
+    81
+  ],
+  "tfc:rock/mossy_cobble/dacite": [
+    108,
+    118,
+    95
+  ],
+  "tfc:rock/mossy_cobble/diorite": [
+    121,
+    129,
+    106
+  ],
+  "tfc:rock/mossy_cobble/dolomite": [
+    85,
+    93,
+    74
+  ],
+  "tfc:rock/mossy_cobble/gabbro": [
+    100,
+    108,
+    84
+  ],
+  "tfc:rock/mossy_cobble/gneiss": [
+    110,
+    114,
+    86
+  ],
+  "tfc:rock/mossy_cobble/granite": [
+    118,
+    114,
+    92
+  ],
+  "tfc:rock/mossy_cobble/limestone": [
+    128,
+    131,
+    96
+  ],
+  "tfc:rock/mossy_cobble/marble": [
+    149,
+    158,
+    135
+  ],
+  "tfc:rock/mossy_cobble/phyllite": [
+    96,
+    101,
+    78
+  ],
+  "tfc:rock/mossy_cobble/quartzite": [
+    131,
+    135,
+    110
+  ],
+  "tfc:rock/mossy_cobble/rhyolite": [
+    112,
+    116,
+    90
+  ],
+  "tfc:rock/mossy_cobble/schist": [
+    95,
+    106,
+    74
+  ],
+  "tfc:rock/mossy_cobble/shale": [
+    91,
+    98,
+    77
+  ],
+  "tfc:rock/mossy_cobble/slate": [
+    114,
+    120,
+    93
+  ],
+  "tfc:rock/raw/andesite": [
+    109,
+    112,
+    113
+  ],
+  "tfc:rock/raw/basalt": [
+    56,
+    60,
+    62
+  ],
+  "tfc:rock/raw/chalk": [
+    194,
+    193,
+    188
+  ],
+  "tfc:rock/raw/chert": [
+    135,
+    84,
+    74
+  ],
+  "tfc:rock/raw/claystone": [
+    150,
+    111,
+    78
+  ],
+  "tfc:rock/raw/conglomerate": [
+    135,
+    126,
+    103
+  ],
+  "tfc:rock/raw/dacite": [
+    135,
+    136,
+    136
+  ],
+  "tfc:rock/raw/diorite": [
+    164,
+    164,
+    165
+  ],
+  "tfc:rock/raw/dolomite": [
+    80,
+    80,
+    88
+  ],
+  "tfc:rock/raw/gabbro": [
+    105,
+    105,
+    104
+  ],
+  "tfc:rock/raw/gneiss": [
+    134,
+    127,
+    115
+  ],
+  "tfc:rock/raw/granite": [
+    149,
+    126,
+    131
+  ],
+  "tfc:rock/raw/limestone": [
+    184,
+    173,
+    150
+  ],
+  "tfc:rock/raw/marble": [
+    222,
+    226,
+    227
+  ],
+  "tfc:rock/raw/phyllite": [
+    104,
+    97,
+    96
+  ],
+  "tfc:rock/raw/quartzite": [
+    183,
+    173,
+    169
+  ],
+  "tfc:rock/raw/rhyolite": [
+    142,
+    132,
+    128
+  ],
+  "tfc:rock/raw/schist": [
+    100,
+    104,
+    85
+  ],
+  "tfc:rock/raw/shale": [
+    85,
+    83,
+    87
+  ],
+  "tfc:rock/raw/slate": [
+    152,
+    145,
+    135
+  ],
+  "tfc:rooted_dirt/loam": [
+    93,
+    64,
+    50
+  ],
+  "tfc:rooted_dirt/sandy_loam": [
+    133,
+    99,
+    68
+  ],
+  "tfc:rooted_dirt/silt": [
+    118,
+    99,
+    84
+  ],
+  "tfc:rooted_dirt/silty_loam": [
+    91,
+    73,
+    66
+  ],
+  "tfc:sand/black": [
+    55,
+    55,
+    55
+  ],
+  "tfc:sand/brown": [
+    146,
+    118,
+    85
+  ],
+  "tfc:sand/green": [
+    99,
+    109,
+    69
+  ],
+  "tfc:sand/pink": [
+    149,
+    111,
+    107
+  ],
+  "tfc:sand/red": [
+    146,
+    98,
+    78
+  ],
+  "tfc:sand/white": [
+    200,
+    200,
+    200
+  ],
+  "tfc:sand/yellow": [
+    218,
+    205,
+    161
+  ],
+  "tfg:clay/alfisol": [
+    122,
+    103,
+    92
+  ],
+  "tfg:clay/mollisol": [
+    88,
+    90,
+    96
+  ],
+  "tfg:clay/oxisol": [
+    146,
+    100,
+    86
+  ],
+  "tfg:clay/podzol": [
+    143,
+    117,
+    108
+  ],
+  "tfg:coarse_dirt/alfisol": [
+    83,
+    52,
+    30
+  ],
+  "tfg:coarse_dirt/loam": [
+    61,
+    41,
+    34
+  ],
+  "tfg:coarse_dirt/mollisol": [
+    33,
+    32,
+    34
+  ],
+  "tfg:coarse_dirt/oxisol": [
+    127,
+    59,
+    33
+  ],
+  "tfg:coarse_dirt/podzol": [
+    106,
+    63,
+    42
+  ],
+  "tfg:coarse_dirt/sandy_loam": [
+    114,
+    87,
+    60
+  ],
+  "tfg:coarse_dirt/silt": [
+    95,
+    91,
+    82
+  ],
+  "tfg:coarse_dirt/silty_loam": [
+    54,
+    52,
+    55
+  ],
+  "tfg:dirt/alfisol": [
+    100,
+    63,
+    35
+  ],
+  "tfg:dirt/mollisol": [
+    40,
+    39,
+    40
+  ],
+  "tfg:dirt/oxisol": [
+    144,
+    67,
+    37
+  ],
+  "tfg:dirt/podzol": [
+    136,
+    85,
+    56
+  ],
+  "tfg:duff/alfisol": [
+    93,
+    63,
+    24
+  ],
+  "tfg:duff/loam": [
+    93,
+    63,
+    24
+  ],
+  "tfg:duff/mollisol": [
+    93,
+    63,
+    24
+  ],
+  "tfg:duff/oxisol": [
+    93,
+    63,
+    24
+  ],
+  "tfg:duff/podzol": [
+    93,
+    63,
+    24
+  ],
+  "tfg:duff/sandy_loam": [
+    93,
+    63,
+    24
+  ],
+  "tfg:duff/silt": [
+    93,
+    63,
+    24
+  ],
+  "tfg:duff/silty_loam": [
+    93,
+    63,
+    24
+  ],
+  "tfg:farmland/alfisol": [
+    99,
+    63,
+    36
+  ],
+  "tfg:farmland/mollisol": [
+    42,
+    38,
+    33
+  ],
+  "tfg:farmland/oxisol": [
+    130,
+    62,
+    37
+  ],
+  "tfg:farmland/podzol": [
+    121,
+    82,
+    63
+  ],
+  "tfg:grass_path/alfisol": [
+    86,
+    51,
+    29
+  ],
+  "tfg:grass_path/mollisol": [
+    52,
+    46,
+    36
+  ],
+  "tfg:grass_path/oxisol": [
+    128,
+    53,
+    30
+  ],
+  "tfg:grass_path/podzol": [
+    121,
+    65,
+    45
+  ],
+  "tfg:halite": [
+    217,
+    216,
+    220
+  ],
+  "tfg:hardened_clay": [
+    158,
+    98,
+    65
+  ],
+  "tfg:mud/alfisol": [
+    82,
+    52,
+    29
+  ],
+  "tfg:mud/mollisol": [
+    38,
+    37,
+    38
+  ],
+  "tfg:mud/oxisol": [
+    134,
+    62,
+    35
+  ],
+  "tfg:mud/podzol": [
+    104,
+    59,
+    44
+  ],
+  "tfg:muddy_roots/alfisol": [
+    76,
+    56,
+    35
+  ],
+  "tfg:muddy_roots/mollisol": [
+    63,
+    52,
+    38
+  ],
+  "tfg:muddy_roots/oxisol": [
+    93,
+    60,
+    37
+  ],
+  "tfg:muddy_roots/podzol": [
+    84,
+    59,
+    40
+  ],
+  "tfg:pile/volcanic_ash": [
+    111,
+    111,
+    111
+  ],
+  "tfg:rooted_dirt/alfisol": [
+    119,
+    80,
+    54
+  ],
+  "tfg:rooted_dirt/mollisol": [
+    83,
+    65,
+    57
+  ],
+  "tfg:rooted_dirt/oxisol": [
+    147,
+    84,
+    57
+  ],
+  "tfg:rooted_dirt/podzol": [
+    144,
+    95,
+    68
+  ],
+  "tfg:tuff_gravel": [
+    107,
+    109,
+    104
+  ]
+}

@@ -153,16 +153,14 @@ impl MapTools {
                 response.dragged(),
             )
         });
-        if started {
-            if let Some(pos) = pointer.filter(|p| rect.contains(*p)) {
-                let origin = screen_to_world(pos, rect, center, blocks_per_point);
-                if modifiers.shift {
-                    self.drag = Some(DragTool::Ruler(origin));
-                    self.ruler = Some((origin, origin));
-                } else if modifiers.alt {
-                    self.drag = Some(DragTool::Area(origin));
-                    self.selection = Some(bounds_between(origin, origin));
-                }
+        if started && let Some(pos) = pointer.filter(|p| rect.contains(*p)) {
+            let origin = screen_to_world(pos, rect, center, blocks_per_point);
+            if modifiers.shift {
+                self.drag = Some(DragTool::Ruler(origin));
+                self.ruler = Some((origin, origin));
+            } else if modifiers.alt {
+                self.drag = Some(DragTool::Area(origin));
+                self.selection = Some(bounds_between(origin, origin));
             }
         }
 

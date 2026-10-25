@@ -66,6 +66,7 @@ impl View {
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 #[serde(default)]
+#[derive(Default)]
 pub(super) struct Bookmark {
     pub id: String,
     pub name: String,
@@ -76,33 +77,12 @@ pub(super) struct Bookmark {
     pub collection: String,
 }
 
-impl Default for Bookmark {
-    fn default() -> Self {
-        Self {
-            id: String::new(),
-            name: String::new(),
-            note: String::new(),
-            view: View::default(),
-            color: None,
-            collection: String::new(),
-        }
-    }
-}
-
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 #[serde(default)]
+#[derive(Default)]
 pub(super) struct Collection {
     pub id: String,
     pub name: String,
-}
-
-impl Default for Collection {
-    fn default() -> Self {
-        Self {
-            id: String::new(),
-            name: String::new(),
-        }
-    }
 }
 
 /// Persist this with the app's existing eframe preferences. UI-only state is
@@ -636,8 +616,7 @@ impl Navigation {
                             .desired_width(190.0),
                     );
                     response.request_focus();
-                    let enter =
-                        response.lost_focus() && ui.input(|input| input.key_pressed(Key::Enter));
+                    let enter = coordinate_jump_enter(&response, ui);
                     if ui
                         .button("Go")
                         .on_hover_text("Go to coordinates (Ctrl+G)")
@@ -686,6 +665,11 @@ fn is_meaningful_visit(a: &View, b: &View) -> bool {
     }
     let span = a.bpp.max(b.bpp) * 8.0;
     a.center.distance(b.center) >= span.max(128.0) || (a.bpp / b.bpp).max(b.bpp / a.bpp) >= 1.75
+}
+
+fn coordinate_jump_enter(response: &egui::Response, ui: &egui::Ui) -> bool {
+    let enter_pressed = ui.input(|input| input.key_pressed(Key::Enter));
+    (response.has_focus() || response.lost_focus()) && enter_pressed
 }
 
 pub(super) fn parse_coordinates(input: &str) -> Option<Point> {
@@ -779,6 +763,52 @@ mod tests {
         assert!(parse_coordinates("not coordinates").is_none());
         assert!(parse_coordinates("1 2 3 4").is_none());
     }
+
+    #[test]
+    fn coordinate_jump_submits_real_enter_event_and_keeps_invalid_input_open() {
+        let ctx = egui::Context::default();
+        let current = View::default();
+        let mut nav = Navigation::default();
+        nav.open_jump(&current);
+        nav.coordinate_input = "1231, -204".into();
+        for _ in 0..2 {
+            let _ = ctx.run(egui::RawInput::default(), |ctx| {
+                assert!(nav.show_coordinate_jump(ctx, &current).is_none());
+            });
+        }
+        let enter = || egui::RawInput {
+            events: vec![egui::Event::Key {
+                key: Key::Enter,
+                physical_key: Some(Key::Enter),
+                pressed: true,
+                repeat: false,
+                modifiers: Modifiers::NONE,
+            }],
+            ..Default::default()
+        };
+        let mut destination = None;
+        let _ = ctx.run(enter(), |ctx| {
+            destination = nav.show_coordinate_jump(ctx, &current)
+        });
+        let Some(Action::Navigate(view)) = destination else {
+            panic!("Enter must submit focused coordinate field");
+        };
+        assert_eq!(view.center, Point { x: 1231., z: -204. });
+        assert!(!nav.jump_open);
+
+        nav.open_jump(&current);
+        nav.coordinate_input = "invalid".into();
+        for _ in 0..2 {
+            let _ = ctx.run(egui::RawInput::default(), |ctx| {
+                nav.show_coordinate_jump(ctx, &current);
+            });
+        }
+        let _ = ctx.run(enter(), |ctx| {
+            assert!(nav.show_coordinate_jump(ctx, &current).is_none())
+        });
+        assert!(nav.jump_open && nav.coordinate_error.is_some());
+    }
+
     #[test]
     fn navigation_keeps_world_context_and_branches_after_back() {
         let mut nav = Navigation::default();

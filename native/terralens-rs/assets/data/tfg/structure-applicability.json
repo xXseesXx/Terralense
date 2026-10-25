@@ -3,7 +3,7 @@
   "provenance": {
     "instance": "Prism TerraFirmaGreg-Modern installed pack; Minecraft 1.20.1; TFG Core Modern 0.9.25; GTCEu 7.5.3",
     "reference": "Existing supplied level.dat WorldGenSettings plus installed mod jars and current KubeJS data/scripts; read-only audit; no Minecraft launch and no save writes.",
-    "resource_merge": "Structure/structure-set definitions use current KubeJS datapack entries over installed jar resources by identifier. Biome tags merge installed jar tag JSON and KubeJS datapack JSON, then replay statically readable KubeJS biome-tag event.add/remove/removeAll operations in sorted script-file and source order. Literal arrays and global.*_BIOMES.forEach loops are expanded; arbitrary JavaScript is not executed. The installed runtime snapshot independently cross-checks its 27 sets and 63 referenced structures against this broader resource inventory.",
+    "resource_merge": "Structure/structure-set definitions and Lithostitched modifiers use current KubeJS datapack entries over installed jar resources by resource identifier. Biome tags merge installed jar tag JSON and KubeJS datapack JSON, then replay statically readable KubeJS biome-tag event.add/remove/removeAll operations in sorted script-file and source order. Literal arrays and global.*_BIOMES.forEach loops are expanded; arbitrary JavaScript is not executed. Lithostitched set_structure_spawn_condition defaults append=true (confirmed from the installed 1.4.11 class bytecode), composing successive conditions with AND; append=false replaces. The runtime snapshot independently cross-checks its 27 sets and 63 referenced structures against this broader resource inventory.",
     "overworld_pool": "The saved world uses the custom tfc:overworld biome source. Source eligibility uses the 109 TFG Earth biome IDs registered by current TFG Core 0.9.25 TFGBiomes; the separate 139-ID TFG Earth plus legacy TFC registry-resource superset is retained for audit only. All IDs are raw registry identifiers; vanilla biome names are never aliased to TFC names.",
     "eligibility": "A biome intersection means source-level biome gating can succeed; it does not guarantee placement or terrain viability. `scanner_eligible_dimensions` additionally requires a placement type implemented by the current scanner. Scanner callers should also enforce per-type distance limits (the request is 100 km), frequency, height/terrain checks, and a concrete supported structure ID.",
     "source_version_note": "The older assets/data/tfg/structures.json is from TFG Core 0.9.21 and was not used; current structures and sets were reread from installed TFG Core 0.9.25 KubeJS data and all installed 1.20.1 mod resources.",
@@ -75,6 +75,26 @@
       {
         "file": "data/tfc_ruins/worldgen/structure_set/ruins.json",
         "sha256": "e1ae33b01831abaee29420227e84ba917830ce94066efb3d28ca6335587fe163"
+      },
+      {
+        "file": "data/tfg/lithostitched/worldgen_modifier/avoid_biomes_malay.json",
+        "sha256": "6693a3cf96227cddcc9fd1530b5a6c9361cef190e9268c55e93ac405ef22f7d6"
+      },
+      {
+        "file": "data/tfg/lithostitched/worldgen_modifier/avoid_mountains.json",
+        "sha256": "ea3c79532f7d75a489e22ff57c17ce1c84816eacc960897b729da65892e62533"
+      },
+      {
+        "file": "data/tfg/lithostitched/worldgen_modifier/avoid_water_large.json",
+        "sha256": "bc539859dcfcb5579e49eafe8019e860972479acd2ecd64e4098eab1cca8cfe8"
+      },
+      {
+        "file": "data/tfg/lithostitched/worldgen_modifier/avoid_water_small.json",
+        "sha256": "752c1e889e5c29c5056dcf2c4d3c0f9d63dd7616bad32ade599d7504e26f5763"
+      },
+      {
+        "file": "data/tfg/lithostitched/worldgen_modifier/ocean_moai.json",
+        "sha256": "b4e13bdeb38abde5b8cd8b39f22fc427d93c20ee61a807ca07dee42e69c7afa2"
       },
       {
         "file": "data/tfg/worldgen/structure/aqueduct/aqueduct.json",
@@ -223,6 +243,10 @@
       {
         "file": "gtceu-1.20.1-7.5.3.jar",
         "sha256": "d6560d8b695828a763389d3f45e0210ef70c1892c7b1633ac458544905df1a0d"
+      },
+      {
+        "file": "lithostitched-forge-1.20.1-1.4.11.jar",
+        "sha256": "c19a5a36c0e6cb3782cf7ca5b9648fb1bce5fc41fd737bed423a1f4971bccf75"
       },
       {
         "file": "minecraft-1.20.1-client.jar",
@@ -2171,6 +2195,144 @@
       "kubejs_removals": [],
       "kubejs_remove_all": []
     },
+    "minecraft:is_badlands": {
+      "direct_values": [
+        "minecraft:badlands",
+        "minecraft:eroded_badlands",
+        "minecraft:wooded_badlands"
+      ],
+      "resolved_biomes": [
+        "minecraft:badlands",
+        "minecraft:eroded_badlands",
+        "minecraft:wooded_badlands"
+      ],
+      "resource_sources": [
+        "minecraft-1.20.1-client.jar!/data/minecraft/tags/worldgen/biome/is_badlands.json"
+      ],
+      "kubejs_additions": [],
+      "kubejs_removals": [],
+      "kubejs_remove_all": []
+    },
+    "minecraft:is_beach": {
+      "direct_values": [
+        "minecraft:beach",
+        "minecraft:snowy_beach"
+      ],
+      "resolved_biomes": [
+        "minecraft:beach",
+        "minecraft:snowy_beach"
+      ],
+      "resource_sources": [
+        "minecraft-1.20.1-client.jar!/data/minecraft/tags/worldgen/biome/is_beach.json"
+      ],
+      "kubejs_additions": [],
+      "kubejs_removals": [],
+      "kubejs_remove_all": []
+    },
+    "minecraft:is_deep_ocean": {
+      "direct_values": [
+        "minecraft:deep_frozen_ocean",
+        "minecraft:deep_cold_ocean",
+        "minecraft:deep_ocean",
+        "minecraft:deep_lukewarm_ocean"
+      ],
+      "resolved_biomes": [
+        "minecraft:deep_cold_ocean",
+        "minecraft:deep_frozen_ocean",
+        "minecraft:deep_lukewarm_ocean",
+        "minecraft:deep_ocean"
+      ],
+      "resource_sources": [
+        "minecraft-1.20.1-client.jar!/data/minecraft/tags/worldgen/biome/is_deep_ocean.json"
+      ],
+      "kubejs_additions": [],
+      "kubejs_removals": [],
+      "kubejs_remove_all": []
+    },
+    "minecraft:is_forest": {
+      "direct_values": [
+        "minecraft:forest",
+        "minecraft:flower_forest",
+        "minecraft:birch_forest",
+        "minecraft:old_growth_birch_forest",
+        "minecraft:dark_forest",
+        "minecraft:grove"
+      ],
+      "resolved_biomes": [
+        "minecraft:birch_forest",
+        "minecraft:dark_forest",
+        "minecraft:flower_forest",
+        "minecraft:forest",
+        "minecraft:grove",
+        "minecraft:old_growth_birch_forest"
+      ],
+      "resource_sources": [
+        "minecraft-1.20.1-client.jar!/data/minecraft/tags/worldgen/biome/is_forest.json"
+      ],
+      "kubejs_additions": [],
+      "kubejs_removals": [],
+      "kubejs_remove_all": []
+    },
+    "minecraft:is_hill": {
+      "direct_values": [
+        "minecraft:windswept_hills",
+        "minecraft:windswept_forest",
+        "minecraft:windswept_gravelly_hills"
+      ],
+      "resolved_biomes": [
+        "minecraft:windswept_forest",
+        "minecraft:windswept_gravelly_hills",
+        "minecraft:windswept_hills"
+      ],
+      "resource_sources": [
+        "minecraft-1.20.1-client.jar!/data/minecraft/tags/worldgen/biome/is_hill.json"
+      ],
+      "kubejs_additions": [],
+      "kubejs_removals": [],
+      "kubejs_remove_all": []
+    },
+    "minecraft:is_jungle": {
+      "direct_values": [
+        "minecraft:bamboo_jungle",
+        "minecraft:jungle",
+        "minecraft:sparse_jungle"
+      ],
+      "resolved_biomes": [
+        "minecraft:bamboo_jungle",
+        "minecraft:jungle",
+        "minecraft:sparse_jungle"
+      ],
+      "resource_sources": [
+        "minecraft-1.20.1-client.jar!/data/minecraft/tags/worldgen/biome/is_jungle.json"
+      ],
+      "kubejs_additions": [],
+      "kubejs_removals": [],
+      "kubejs_remove_all": []
+    },
+    "minecraft:is_mountain": {
+      "direct_values": [
+        "minecraft:meadow",
+        "minecraft:frozen_peaks",
+        "minecraft:jagged_peaks",
+        "minecraft:stony_peaks",
+        "minecraft:snowy_slopes",
+        "minecraft:cherry_grove"
+      ],
+      "resolved_biomes": [
+        "minecraft:cherry_grove",
+        "minecraft:frozen_peaks",
+        "minecraft:jagged_peaks",
+        "minecraft:meadow",
+        "minecraft:snowy_slopes",
+        "minecraft:stony_peaks"
+      ],
+      "resource_sources": [
+        "minecraft-1.20.1-client.jar!/data/minecraft/tags/worldgen/biome/is_mountain.json"
+      ],
+      "kubejs_additions": [],
+      "kubejs_removals": [],
+      "kubejs_remove_all": []
+    },
     "minecraft:is_nether": {
       "direct_values": [
         "minecraft:nether_wastes",
@@ -2188,6 +2350,33 @@
       ],
       "resource_sources": [
         "minecraft-1.20.1-client.jar!/data/minecraft/tags/worldgen/biome/is_nether.json"
+      ],
+      "kubejs_additions": [],
+      "kubejs_removals": [],
+      "kubejs_remove_all": []
+    },
+    "minecraft:is_ocean": {
+      "direct_values": [
+        "#minecraft:is_deep_ocean",
+        "minecraft:frozen_ocean",
+        "minecraft:ocean",
+        "minecraft:cold_ocean",
+        "minecraft:lukewarm_ocean",
+        "minecraft:warm_ocean"
+      ],
+      "resolved_biomes": [
+        "minecraft:cold_ocean",
+        "minecraft:deep_cold_ocean",
+        "minecraft:deep_frozen_ocean",
+        "minecraft:deep_lukewarm_ocean",
+        "minecraft:deep_ocean",
+        "minecraft:frozen_ocean",
+        "minecraft:lukewarm_ocean",
+        "minecraft:ocean",
+        "minecraft:warm_ocean"
+      ],
+      "resource_sources": [
+        "minecraft-1.20.1-client.jar!/data/minecraft/tags/worldgen/biome/is_ocean.json"
       ],
       "kubejs_additions": [],
       "kubejs_removals": [],
@@ -2311,6 +2500,42 @@
       "kubejs_removals": [],
       "kubejs_remove_all": []
     },
+    "minecraft:is_river": {
+      "direct_values": [
+        "minecraft:river",
+        "minecraft:frozen_river"
+      ],
+      "resolved_biomes": [
+        "minecraft:frozen_river",
+        "minecraft:river"
+      ],
+      "resource_sources": [
+        "minecraft-1.20.1-client.jar!/data/minecraft/tags/worldgen/biome/is_river.json"
+      ],
+      "kubejs_additions": [],
+      "kubejs_removals": [],
+      "kubejs_remove_all": []
+    },
+    "minecraft:is_taiga": {
+      "direct_values": [
+        "minecraft:taiga",
+        "minecraft:snowy_taiga",
+        "minecraft:old_growth_pine_taiga",
+        "minecraft:old_growth_spruce_taiga"
+      ],
+      "resolved_biomes": [
+        "minecraft:old_growth_pine_taiga",
+        "minecraft:old_growth_spruce_taiga",
+        "minecraft:snowy_taiga",
+        "minecraft:taiga"
+      ],
+      "resource_sources": [
+        "minecraft-1.20.1-client.jar!/data/minecraft/tags/worldgen/biome/is_taiga.json"
+      ],
+      "kubejs_additions": [],
+      "kubejs_removals": [],
+      "kubejs_remove_all": []
+    },
     "species:libra_has_structure": {
       "direct_values": [
         "minecraft:taiga",
@@ -2362,6 +2587,66 @@
       ],
       "resource_sources": [
         "species-3.5.jar!/data/species/tags/worldgen/biome/wraptor_coop_has_structure.json"
+      ],
+      "kubejs_additions": [],
+      "kubejs_removals": [],
+      "kubejs_remove_all": []
+    },
+    "tfc:is_lake": {
+      "direct_values": [
+        "tfc:lake",
+        "tfc:mountain_lake",
+        "tfc:volcanic_mountain_lake",
+        "tfc:old_mountain_lake",
+        "tfc:oceanic_mountain_lake",
+        "tfc:volcanic_oceanic_mountain_lake",
+        "tfc:plateau_lake"
+      ],
+      "resolved_biomes": [
+        "tfc:lake",
+        "tfc:mountain_lake",
+        "tfc:oceanic_mountain_lake",
+        "tfc:old_mountain_lake",
+        "tfc:plateau_lake",
+        "tfc:volcanic_mountain_lake",
+        "tfc:volcanic_oceanic_mountain_lake"
+      ],
+      "resource_sources": [
+        "TerraFirmaGreg-Core-Modern-0.9.25.jar!/data/tfc/tags/worldgen/biome/is_lake.json"
+      ],
+      "kubejs_additions": [],
+      "kubejs_removals": [],
+      "kubejs_remove_all": []
+    },
+    "tfc:is_ocean": {
+      "direct_values": [
+        "tfc:ocean",
+        "tfc:ocean_reef",
+        "tfc:deep_ocean",
+        "tfc:deep_ocean_trench"
+      ],
+      "resolved_biomes": [
+        "tfc:deep_ocean",
+        "tfc:deep_ocean_trench",
+        "tfc:ocean",
+        "tfc:ocean_reef"
+      ],
+      "resource_sources": [
+        "TerraFirmaGreg-Core-Modern-0.9.25.jar!/data/tfc/tags/worldgen/biome/is_ocean.json"
+      ],
+      "kubejs_additions": [],
+      "kubejs_removals": [],
+      "kubejs_remove_all": []
+    },
+    "tfc:is_river": {
+      "direct_values": [
+        "tfc:river"
+      ],
+      "resolved_biomes": [
+        "tfc:river"
+      ],
+      "resource_sources": [
+        "TerraFirmaGreg-Core-Modern-0.9.25.jar!/data/tfc/tags/worldgen/biome/is_river.json"
       ],
       "kubejs_additions": [],
       "kubejs_removals": [],
@@ -2490,6 +2775,65 @@
         {
           "value": "#tfc_ruined_world:has_structure/large_structure",
           "source": "KubeJS/server_scripts/tfg/overworld/tags.overworld.js:395"
+        }
+      ],
+      "kubejs_removals": [],
+      "kubejs_remove_all": []
+    },
+    "tfc_ruined_world:has_structure/large_structure": {
+      "direct_values": [
+        "tfg:earth/hills",
+        "tfg:earth/plateau",
+        "tfg:earth/plateau_wide",
+        "tfg:earth/plains",
+        "tfg:earth/patterned_ground",
+        "tfg:earth/inverted_patterned_ground",
+        "tfg:earth/mud_flats",
+        "tfg:earth/salt_flats"
+      ],
+      "resolved_biomes": [
+        "tfg:earth/hills",
+        "tfg:earth/inverted_patterned_ground",
+        "tfg:earth/mud_flats",
+        "tfg:earth/patterned_ground",
+        "tfg:earth/plains",
+        "tfg:earth/plateau",
+        "tfg:earth/plateau_wide",
+        "tfg:earth/salt_flats"
+      ],
+      "resource_sources": [],
+      "kubejs_additions": [
+        {
+          "value": "tfg:earth/hills",
+          "source": "KubeJS/server_scripts/tfg/overworld/tags.overworld.js:380"
+        },
+        {
+          "value": "tfg:earth/plateau",
+          "source": "KubeJS/server_scripts/tfg/overworld/tags.overworld.js:381"
+        },
+        {
+          "value": "tfg:earth/plateau_wide",
+          "source": "KubeJS/server_scripts/tfg/overworld/tags.overworld.js:382"
+        },
+        {
+          "value": "tfg:earth/plains",
+          "source": "KubeJS/server_scripts/tfg/overworld/tags.overworld.js:383"
+        },
+        {
+          "value": "tfg:earth/patterned_ground",
+          "source": "KubeJS/server_scripts/tfg/overworld/tags.overworld.js:384"
+        },
+        {
+          "value": "tfg:earth/inverted_patterned_ground",
+          "source": "KubeJS/server_scripts/tfg/overworld/tags.overworld.js:385"
+        },
+        {
+          "value": "tfg:earth/mud_flats",
+          "source": "KubeJS/server_scripts/tfg/overworld/tags.overworld.js:386"
+        },
+        {
+          "value": "tfg:earth/salt_flats",
+          "source": "KubeJS/server_scripts/tfg/overworld/tags.overworld.js:387"
         }
       ],
       "kubejs_removals": [],
@@ -2650,6 +2994,74 @@
         {
           "value": "#tfc_ruined_world:has_structure/large_structure",
           "source": "KubeJS/server_scripts/tfg/overworld/tags.overworld.js:400"
+        }
+      ],
+      "kubejs_removals": [],
+      "kubejs_remove_all": []
+    },
+    "tfc_ruined_world:has_structure/small_structure": {
+      "direct_values": [
+        "#tfc_ruined_world:has_structure/large_structure",
+        "#tfc_ruins:has_structure/ruin_small"
+      ],
+      "resolved_biomes": [
+        "tfc:badlands",
+        "tfc:burren_badlands",
+        "tfc:burren_plains",
+        "tfc:burren_plateau",
+        "tfc:cenote_hills",
+        "tfc:cenote_plains",
+        "tfc:cenote_plateau",
+        "tfc:cenote_rolling_hills",
+        "tfc:doline_hills",
+        "tfc:doline_plains",
+        "tfc:doline_plateau",
+        "tfc:doline_rolling_hills",
+        "tfc:hills",
+        "tfc:hoodoos",
+        "tfc:inverted_patterned_ground",
+        "tfc:knob_and_kettle",
+        "tfc:low_canyons",
+        "tfc:lowlands",
+        "tfc:mesas",
+        "tfc:patterned_ground",
+        "tfc:plains",
+        "tfc:plateau",
+        "tfc:plateau_wide",
+        "tfc:rocky_plateau",
+        "tfc:rocky_shores",
+        "tfc:rolling_hills",
+        "tfc:setback_cliffs",
+        "tfg:earth/badlands",
+        "tfg:earth/burren_badlands",
+        "tfg:earth/burren_plains",
+        "tfg:earth/burren_plateau",
+        "tfg:earth/drumlins",
+        "tfg:earth/hills",
+        "tfg:earth/hoodoos",
+        "tfg:earth/inverted_patterned_ground",
+        "tfg:earth/knob_and_kettle",
+        "tfg:earth/low_canyons",
+        "tfg:earth/lowlands",
+        "tfg:earth/mud_flats",
+        "tfg:earth/patterned_ground",
+        "tfg:earth/plains",
+        "tfg:earth/plateau",
+        "tfg:earth/plateau_wide",
+        "tfg:earth/rocky_plateau",
+        "tfg:earth/rolling_hills",
+        "tfg:earth/salt_flats",
+        "tfg:earth/stone_circles"
+      ],
+      "resource_sources": [],
+      "kubejs_additions": [
+        {
+          "value": "#tfc_ruined_world:has_structure/large_structure",
+          "source": "KubeJS/server_scripts/tfg/overworld/tags.overworld.js:389"
+        },
+        {
+          "value": "#tfc_ruins:has_structure/ruin_small",
+          "source": "KubeJS/server_scripts/tfg/overworld/tags.overworld.js:390"
         }
       ],
       "kubejs_removals": [],
@@ -3413,6 +3825,422 @@
           "source": "KubeJS/server_scripts/tfg/overworld/tags.overworld.js:378"
         }
       ],
+      "kubejs_removals": [],
+      "kubejs_remove_all": []
+    },
+    "tfg:earth/is_dry": {
+      "direct_values": [
+        "tfg:earth/mud_flats",
+        "tfg:earth/salt_flats",
+        "tfg:earth/dune_sea",
+        "tfg:earth/grassy_dunes"
+      ],
+      "resolved_biomes": [
+        "tfg:earth/dune_sea",
+        "tfg:earth/grassy_dunes",
+        "tfg:earth/mud_flats",
+        "tfg:earth/salt_flats"
+      ],
+      "resource_sources": [
+        "TerraFirmaGreg-Core-Modern-0.9.25.jar!/data/tfg/tags/worldgen/biome/earth/is_dry.json"
+      ],
+      "kubejs_additions": [],
+      "kubejs_removals": [],
+      "kubejs_remove_all": []
+    },
+    "tfg:earth/is_hill": {
+      "direct_values": [
+        "tfg:earth/hills",
+        "tfg:earth/rolling_hills",
+        "tfg:earth/highlands",
+        "tfg:earth/tower_karst_hills",
+        "tfg:earth/tower_karst_highlands",
+        "tfg:earth/shilin_hills",
+        "tfg:earth/shilin_highlands",
+        "tfg:earth/doline_hills",
+        "tfg:earth/doline_rolling_hills",
+        "tfg:earth/doline_highlands",
+        "tfg:earth/cenote_hills",
+        "tfg:earth/cenote_rolling_hills",
+        "tfg:earth/cenote_highlands"
+      ],
+      "resolved_biomes": [
+        "tfg:earth/cenote_highlands",
+        "tfg:earth/cenote_hills",
+        "tfg:earth/cenote_rolling_hills",
+        "tfg:earth/doline_highlands",
+        "tfg:earth/doline_hills",
+        "tfg:earth/doline_rolling_hills",
+        "tfg:earth/highlands",
+        "tfg:earth/hills",
+        "tfg:earth/rolling_hills",
+        "tfg:earth/shilin_highlands",
+        "tfg:earth/shilin_hills",
+        "tfg:earth/tower_karst_highlands",
+        "tfg:earth/tower_karst_hills"
+      ],
+      "resource_sources": [
+        "TerraFirmaGreg-Core-Modern-0.9.25.jar!/data/tfg/tags/worldgen/biome/earth/is_hill.json"
+      ],
+      "kubejs_additions": [],
+      "kubejs_removals": [],
+      "kubejs_remove_all": []
+    },
+    "tfg:earth/is_karst": {
+      "direct_values": [
+        "tfg:earth/tower_karst_plains",
+        "tfg:earth/tower_karst_canyons",
+        "tfg:earth/tower_karst_hills",
+        "tfg:earth/tower_karst_highlands",
+        "tfg:earth/tower_karst_lake",
+        "tfg:earth/tower_karst_bay",
+        "tfg:earth/burren_plateau",
+        "tfg:earth/burren_badlands",
+        "tfg:earth/burren_badlands_tall",
+        "tfg:earth/burren_plains",
+        "tfg:earth/burren_roche_moutonee",
+        "tfg:earth/shilin_plains",
+        "tfg:earth/shilin_canyons",
+        "tfg:earth/shilin_hills",
+        "tfg:earth/shilin_highlands",
+        "tfg:earth/shilin_plateau",
+        "tfg:earth/doline_plains",
+        "tfg:earth/doline_hills",
+        "tfg:earth/doline_rolling_hills",
+        "tfg:earth/doline_highlands",
+        "tfg:earth/doline_plateau",
+        "tfg:earth/doline_canyons",
+        "tfg:earth/cenote_plains",
+        "tfg:earth/cenote_hills",
+        "tfg:earth/cenote_rolling_hills",
+        "tfg:earth/cenote_canyons",
+        "tfg:earth/cenote_highlands",
+        "tfg:earth/cenote_plateau",
+        "tfg:earth/extreme_doline_plateau",
+        "tfg:earth/extreme_doline_mountains"
+      ],
+      "resolved_biomes": [
+        "tfg:earth/burren_badlands",
+        "tfg:earth/burren_badlands_tall",
+        "tfg:earth/burren_plains",
+        "tfg:earth/burren_plateau",
+        "tfg:earth/burren_roche_moutonee",
+        "tfg:earth/cenote_canyons",
+        "tfg:earth/cenote_highlands",
+        "tfg:earth/cenote_hills",
+        "tfg:earth/cenote_plains",
+        "tfg:earth/cenote_plateau",
+        "tfg:earth/cenote_rolling_hills",
+        "tfg:earth/doline_canyons",
+        "tfg:earth/doline_highlands",
+        "tfg:earth/doline_hills",
+        "tfg:earth/doline_plains",
+        "tfg:earth/doline_plateau",
+        "tfg:earth/doline_rolling_hills",
+        "tfg:earth/extreme_doline_mountains",
+        "tfg:earth/extreme_doline_plateau",
+        "tfg:earth/shilin_canyons",
+        "tfg:earth/shilin_highlands",
+        "tfg:earth/shilin_hills",
+        "tfg:earth/shilin_plains",
+        "tfg:earth/shilin_plateau",
+        "tfg:earth/tower_karst_bay",
+        "tfg:earth/tower_karst_canyons",
+        "tfg:earth/tower_karst_highlands",
+        "tfg:earth/tower_karst_hills",
+        "tfg:earth/tower_karst_lake",
+        "tfg:earth/tower_karst_plains"
+      ],
+      "resource_sources": [
+        "TerraFirmaGreg-Core-Modern-0.9.25.jar!/data/tfg/tags/worldgen/biome/earth/is_karst.json"
+      ],
+      "kubejs_additions": [],
+      "kubejs_removals": [],
+      "kubejs_remove_all": []
+    },
+    "tfg:earth/is_lake": {
+      "direct_values": [
+        "tfg:earth/lake",
+        "tfg:earth/tower_karst_lake",
+        "tfg:earth/mountain_lake",
+        "tfg:earth/volcanic_mountain_lake",
+        "tfg:earth/old_mountain_lake",
+        "tfg:earth/oceanic_mountain_lake",
+        "tfg:earth/volcanic_oceanic_mountain_lake",
+        "tfg:earth/plateau_lake",
+        "tfg:earth/subglacial_lake",
+        "tfg:earth/meltwater_lake"
+      ],
+      "resolved_biomes": [
+        "tfg:earth/lake",
+        "tfg:earth/meltwater_lake",
+        "tfg:earth/mountain_lake",
+        "tfg:earth/oceanic_mountain_lake",
+        "tfg:earth/old_mountain_lake",
+        "tfg:earth/plateau_lake",
+        "tfg:earth/subglacial_lake",
+        "tfg:earth/tower_karst_lake",
+        "tfg:earth/volcanic_mountain_lake",
+        "tfg:earth/volcanic_oceanic_mountain_lake"
+      ],
+      "resource_sources": [
+        "TerraFirmaGreg-Core-Modern-0.9.25.jar!/data/tfg/tags/worldgen/biome/earth/is_lake.json"
+      ],
+      "kubejs_additions": [],
+      "kubejs_removals": [],
+      "kubejs_remove_all": []
+    },
+    "tfg:earth/is_mountain": {
+      "direct_values": [
+        "tfg:earth/mountains",
+        "tfg:earth/old_mountains",
+        "tfg:earth/oceanic_mountains",
+        "tfg:earth/volcanic_mountains",
+        "tfg:earth/volcanic_oceanic_mountains",
+        "tfg:earth/mountain_lake",
+        "tfg:earth/old_mountain_lake",
+        "tfg:earth/volcanic_mountain_lake",
+        "tfg:earth/oceanic_mountain_lake",
+        "tfg:earth/volcanic_oceanic_mountain_lake",
+        "tfg:earth/extreme_doline_mountains",
+        "tfg:earth/ice_sheet_mountains",
+        "tfg:earth/ice_sheet_oceanic_mountains",
+        "tfg:earth/ice_sheet_mountains_edge",
+        "tfg:earth/ice_sheet_oceanic_mountains_edge",
+        "tfg:earth/glaciated_mountains",
+        "tfg:earth/glaciated_oceanic_mountains",
+        "tfg:earth/glacially_carved_mountains",
+        "tfg:earth/glacially_carved_oceanic_mountains"
+      ],
+      "resolved_biomes": [
+        "tfg:earth/extreme_doline_mountains",
+        "tfg:earth/glacially_carved_mountains",
+        "tfg:earth/glacially_carved_oceanic_mountains",
+        "tfg:earth/glaciated_mountains",
+        "tfg:earth/glaciated_oceanic_mountains",
+        "tfg:earth/ice_sheet_mountains",
+        "tfg:earth/ice_sheet_mountains_edge",
+        "tfg:earth/ice_sheet_oceanic_mountains",
+        "tfg:earth/ice_sheet_oceanic_mountains_edge",
+        "tfg:earth/mountain_lake",
+        "tfg:earth/mountains",
+        "tfg:earth/oceanic_mountain_lake",
+        "tfg:earth/oceanic_mountains",
+        "tfg:earth/old_mountain_lake",
+        "tfg:earth/old_mountains",
+        "tfg:earth/volcanic_mountain_lake",
+        "tfg:earth/volcanic_mountains",
+        "tfg:earth/volcanic_oceanic_mountain_lake",
+        "tfg:earth/volcanic_oceanic_mountains"
+      ],
+      "resource_sources": [
+        "TerraFirmaGreg-Core-Modern-0.9.25.jar!/data/tfg/tags/worldgen/biome/earth/is_mountain.json"
+      ],
+      "kubejs_additions": [],
+      "kubejs_removals": [],
+      "kubejs_remove_all": []
+    },
+    "tfg:earth/is_ocean": {
+      "direct_values": [
+        "tfg:earth/ocean",
+        "tfg:earth/ocean_reef",
+        "tfg:earth/deep_ocean",
+        "tfg:earth/deep_ocean_trench",
+        "tfg:earth/shore",
+        "tfg:earth/tidal_flats",
+        "tfg:earth/sea_stacks",
+        "tfg:earth/terrace_upper",
+        "tfg:earth/terrace_lower",
+        "tfg:earth/setback_cliffs",
+        "tfg:earth/coastal_dunes",
+        "tfg:earth/rocky_shores",
+        "tfg:earth/embayments",
+        "tfg:earth/shield_volcano_shore",
+        "tfg:earth/old_shield_volcano_shore",
+        "tfg:earth/ice_sheet_oceanic",
+        "tfg:earth/ice_sheet_shore",
+        "tfg:earth/guano_island",
+        "tfg:earth/tower_karst_bay"
+      ],
+      "resolved_biomes": [
+        "tfg:earth/coastal_dunes",
+        "tfg:earth/deep_ocean",
+        "tfg:earth/deep_ocean_trench",
+        "tfg:earth/embayments",
+        "tfg:earth/guano_island",
+        "tfg:earth/ice_sheet_oceanic",
+        "tfg:earth/ice_sheet_shore",
+        "tfg:earth/ocean",
+        "tfg:earth/ocean_reef",
+        "tfg:earth/old_shield_volcano_shore",
+        "tfg:earth/rocky_shores",
+        "tfg:earth/sea_stacks",
+        "tfg:earth/setback_cliffs",
+        "tfg:earth/shield_volcano_shore",
+        "tfg:earth/shore",
+        "tfg:earth/terrace_lower",
+        "tfg:earth/terrace_upper",
+        "tfg:earth/tidal_flats",
+        "tfg:earth/tower_karst_bay"
+      ],
+      "resource_sources": [
+        "TerraFirmaGreg-Core-Modern-0.9.25.jar!/data/tfg/tags/worldgen/biome/earth/is_ocean.json"
+      ],
+      "kubejs_additions": [],
+      "kubejs_removals": [],
+      "kubejs_remove_all": []
+    },
+    "tfg:earth/is_river": {
+      "direct_values": [
+        "tfg:earth/river"
+      ],
+      "resolved_biomes": [
+        "tfg:earth/river"
+      ],
+      "resource_sources": [
+        "TerraFirmaGreg-Core-Modern-0.9.25.jar!/data/tfg/tags/worldgen/biome/earth/is_river.json"
+      ],
+      "kubejs_additions": [],
+      "kubejs_removals": [],
+      "kubejs_remove_all": []
+    },
+    "tfg:earth/is_sandstone": {
+      "direct_values": [
+        "tfg:earth/badlands",
+        "tfg:earth/canyons",
+        "tfg:earth/low_canyons",
+        "tfg:earth/whorled_canyons",
+        "tfg:earth/stair_step_canyons",
+        "tfg:earth/mesas",
+        "tfg:earth/buttes",
+        "tfg:earth/hoodoos",
+        "tfg:earth/burren_badlands",
+        "tfg:earth/burren_badlands_tall",
+        "tfg:earth/shilin_canyons",
+        "tfg:earth/doline_canyons",
+        "tfg:earth/cenote_canyons"
+      ],
+      "resolved_biomes": [
+        "tfg:earth/badlands",
+        "tfg:earth/burren_badlands",
+        "tfg:earth/burren_badlands_tall",
+        "tfg:earth/buttes",
+        "tfg:earth/canyons",
+        "tfg:earth/cenote_canyons",
+        "tfg:earth/doline_canyons",
+        "tfg:earth/hoodoos",
+        "tfg:earth/low_canyons",
+        "tfg:earth/mesas",
+        "tfg:earth/shilin_canyons",
+        "tfg:earth/stair_step_canyons",
+        "tfg:earth/whorled_canyons"
+      ],
+      "resource_sources": [
+        "TerraFirmaGreg-Core-Modern-0.9.25.jar!/data/tfg/tags/worldgen/biome/earth/is_sandstone.json"
+      ],
+      "kubejs_additions": [],
+      "kubejs_removals": [],
+      "kubejs_remove_all": []
+    },
+    "tfg:earth/is_shore_island": {
+      "direct_values": [
+        "tfg:earth/guano_island",
+        "tfg:earth/shore",
+        "tfg:earth/tidal_flats",
+        "tfg:earth/sea_stacks",
+        "tfg:earth/terrace_upper",
+        "tfg:earth/terrace_lower",
+        "tfg:earth/setback_cliffs",
+        "tfg:earth/coastal_dunes",
+        "tfg:earth/rocky_shores",
+        "tfg:earth/embayments",
+        "tfg:earth/shield_volcano_shore",
+        "tfg:earth/old_shield_volcano_shore",
+        "tfg:earth/ice_sheet_shore"
+      ],
+      "resolved_biomes": [
+        "tfg:earth/coastal_dunes",
+        "tfg:earth/embayments",
+        "tfg:earth/guano_island",
+        "tfg:earth/ice_sheet_shore",
+        "tfg:earth/old_shield_volcano_shore",
+        "tfg:earth/rocky_shores",
+        "tfg:earth/sea_stacks",
+        "tfg:earth/setback_cliffs",
+        "tfg:earth/shield_volcano_shore",
+        "tfg:earth/shore",
+        "tfg:earth/terrace_lower",
+        "tfg:earth/terrace_upper",
+        "tfg:earth/tidal_flats"
+      ],
+      "resource_sources": [
+        "TerraFirmaGreg-Core-Modern-0.9.25.jar!/data/tfg/tags/worldgen/biome/earth/is_shore_island.json"
+      ],
+      "kubejs_additions": [],
+      "kubejs_removals": [],
+      "kubejs_remove_all": []
+    },
+    "tfg:earth/is_true_ocean": {
+      "direct_values": [
+        "tfg:earth/ocean",
+        "tfg:earth/ocean_reef",
+        "tfg:earth/deep_ocean",
+        "tfg:earth/deep_ocean_trench",
+        "tfg:earth/sunken_shield_volcano"
+      ],
+      "resolved_biomes": [
+        "tfg:earth/deep_ocean",
+        "tfg:earth/deep_ocean_trench",
+        "tfg:earth/ocean",
+        "tfg:earth/ocean_reef",
+        "tfg:earth/sunken_shield_volcano"
+      ],
+      "resource_sources": [
+        "TerraFirmaGreg-Core-Modern-0.9.25.jar!/data/tfg/tags/worldgen/biome/earth/is_true_ocean.json"
+      ],
+      "kubejs_additions": [],
+      "kubejs_removals": [],
+      "kubejs_remove_all": []
+    },
+    "tfg:earth/is_volcanic": {
+      "direct_values": [
+        "tfg:earth/canyons",
+        "tfg:earth/volcanic_mountains",
+        "tfg:earth/volcanic_oceanic_mountains",
+        "tfg:earth/active_shield_volcano",
+        "tfg:earth/dormant_shield_volcano",
+        "tfg:earth/extinct_shield_volcano",
+        "tfg:earth/ancient_shield_volcano",
+        "tfg:earth/sunken_shield_volcano",
+        "tfg:earth/shield_volcano_shore",
+        "tfg:earth/old_shield_volcano_shore",
+        "tfg:earth/ice_sheet_shield_volcano",
+        "tfg:earth/ice_sheet_tuyas",
+        "tfg:earth/ice_sheet_tuyas_edge",
+        "tfg:earth/glaciated_shield_volcano",
+        "tfg:earth/tuyas"
+      ],
+      "resolved_biomes": [
+        "tfg:earth/active_shield_volcano",
+        "tfg:earth/ancient_shield_volcano",
+        "tfg:earth/canyons",
+        "tfg:earth/dormant_shield_volcano",
+        "tfg:earth/extinct_shield_volcano",
+        "tfg:earth/glaciated_shield_volcano",
+        "tfg:earth/ice_sheet_shield_volcano",
+        "tfg:earth/ice_sheet_tuyas",
+        "tfg:earth/ice_sheet_tuyas_edge",
+        "tfg:earth/old_shield_volcano_shore",
+        "tfg:earth/shield_volcano_shore",
+        "tfg:earth/sunken_shield_volcano",
+        "tfg:earth/tuyas",
+        "tfg:earth/volcanic_mountains",
+        "tfg:earth/volcanic_oceanic_mountains"
+      ],
+      "resource_sources": [
+        "TerraFirmaGreg-Core-Modern-0.9.25.jar!/data/tfg/tags/worldgen/biome/earth/is_volcanic.json"
+      ],
+      "kubejs_additions": [],
       "kubejs_removals": [],
       "kubejs_remove_all": []
     },
@@ -4821,6 +5649,368 @@
       "kubejs_removals": [],
       "kubejs_remove_all": []
     },
+    "tfg:nether_biomes": {
+      "direct_values": [
+        "tfg:nether/decaying_caverns",
+        "tfg:nether/salt_caves",
+        "tfg:nether/muggy_bog",
+        "tfg:nether/webbed_lair",
+        "tfg:nether/lush_hollow",
+        "tfg:nether/geothermal_springs",
+        "tfg:nether/tar_pools",
+        "tfg:nether/thorny_brambles",
+        "tfg:nether/basalt_deltas",
+        "tfg:nether/ash_forest",
+        "tfg:nether/lava_floes"
+      ],
+      "resolved_biomes": [
+        "tfg:nether/ash_forest",
+        "tfg:nether/basalt_deltas",
+        "tfg:nether/decaying_caverns",
+        "tfg:nether/geothermal_springs",
+        "tfg:nether/lava_floes",
+        "tfg:nether/lush_hollow",
+        "tfg:nether/muggy_bog",
+        "tfg:nether/salt_caves",
+        "tfg:nether/tar_pools",
+        "tfg:nether/thorny_brambles",
+        "tfg:nether/webbed_lair"
+      ],
+      "resource_sources": [],
+      "kubejs_additions": [
+        {
+          "value": "tfg:nether/decaying_caverns",
+          "source": "KubeJS/server_scripts/tfg/beneath/tags.beneath.js:230"
+        },
+        {
+          "value": "tfg:nether/salt_caves",
+          "source": "KubeJS/server_scripts/tfg/beneath/tags.beneath.js:231"
+        },
+        {
+          "value": "tfg:nether/muggy_bog",
+          "source": "KubeJS/server_scripts/tfg/beneath/tags.beneath.js:232"
+        },
+        {
+          "value": "tfg:nether/webbed_lair",
+          "source": "KubeJS/server_scripts/tfg/beneath/tags.beneath.js:233"
+        },
+        {
+          "value": "tfg:nether/lush_hollow",
+          "source": "KubeJS/server_scripts/tfg/beneath/tags.beneath.js:234"
+        },
+        {
+          "value": "tfg:nether/geothermal_springs",
+          "source": "KubeJS/server_scripts/tfg/beneath/tags.beneath.js:235"
+        },
+        {
+          "value": "tfg:nether/tar_pools",
+          "source": "KubeJS/server_scripts/tfg/beneath/tags.beneath.js:236"
+        },
+        {
+          "value": "tfg:nether/thorny_brambles",
+          "source": "KubeJS/server_scripts/tfg/beneath/tags.beneath.js:237"
+        },
+        {
+          "value": "tfg:nether/basalt_deltas",
+          "source": "KubeJS/server_scripts/tfg/beneath/tags.beneath.js:238"
+        },
+        {
+          "value": "tfg:nether/ash_forest",
+          "source": "KubeJS/server_scripts/tfg/beneath/tags.beneath.js:239"
+        },
+        {
+          "value": "tfg:nether/lava_floes",
+          "source": "KubeJS/server_scripts/tfg/beneath/tags.beneath.js:240"
+        }
+      ],
+      "kubejs_removals": [],
+      "kubejs_remove_all": []
+    },
+    "tfg:never_has_structure/malay_illage": {
+      "direct_values": [
+        "#tfg:has_structure/illages",
+        "#tfg:earth/is_true_ocean",
+        "#tfg:earth/is_shore_island",
+        "#tfg:earth/is_dry",
+        "#tfg:earth/is_hill",
+        "#tfg:earth/is_karst",
+        "#tfg:earth/is_mountain",
+        "#tfg:earth/is_sandstone",
+        "#tfg:earth/is_volcanic",
+        "tfc:ocean",
+        "tfc:ocean_reef",
+        "tfc:deep_ocean",
+        "tfc:deep_ocean_trench",
+        "tfc:shore",
+        "tfc:hills",
+        "tfc:canyons"
+      ],
+      "resolved_biomes": [
+        "tfc:badlands",
+        "tfc:canyons",
+        "tfc:deep_ocean",
+        "tfc:deep_ocean_trench",
+        "tfc:hills",
+        "tfc:ocean",
+        "tfc:ocean_reef",
+        "tfc:old_mountains",
+        "tfc:plains",
+        "tfc:plateau",
+        "tfc:rolling_hills",
+        "tfc:shore",
+        "tfg:earth/active_shield_volcano",
+        "tfg:earth/ancient_shield_volcano",
+        "tfg:earth/badlands",
+        "tfg:earth/burren_badlands",
+        "tfg:earth/burren_badlands_tall",
+        "tfg:earth/burren_plains",
+        "tfg:earth/burren_plateau",
+        "tfg:earth/burren_roche_moutonee",
+        "tfg:earth/buttes",
+        "tfg:earth/canyons",
+        "tfg:earth/cenote_canyons",
+        "tfg:earth/cenote_highlands",
+        "tfg:earth/cenote_hills",
+        "tfg:earth/cenote_plains",
+        "tfg:earth/cenote_plateau",
+        "tfg:earth/cenote_rolling_hills",
+        "tfg:earth/coastal_dunes",
+        "tfg:earth/deep_ocean",
+        "tfg:earth/deep_ocean_trench",
+        "tfg:earth/doline_canyons",
+        "tfg:earth/doline_highlands",
+        "tfg:earth/doline_hills",
+        "tfg:earth/doline_plains",
+        "tfg:earth/doline_plateau",
+        "tfg:earth/doline_rolling_hills",
+        "tfg:earth/dormant_shield_volcano",
+        "tfg:earth/drumlins",
+        "tfg:earth/dune_sea",
+        "tfg:earth/embayments",
+        "tfg:earth/extinct_shield_volcano",
+        "tfg:earth/extreme_doline_mountains",
+        "tfg:earth/extreme_doline_plateau",
+        "tfg:earth/glacially_carved_mountains",
+        "tfg:earth/glacially_carved_oceanic_mountains",
+        "tfg:earth/glaciated_mountains",
+        "tfg:earth/glaciated_oceanic_mountains",
+        "tfg:earth/glaciated_shield_volcano",
+        "tfg:earth/grassy_dunes",
+        "tfg:earth/guano_island",
+        "tfg:earth/highlands",
+        "tfg:earth/hills",
+        "tfg:earth/hoodoos",
+        "tfg:earth/ice_sheet_mountains",
+        "tfg:earth/ice_sheet_mountains_edge",
+        "tfg:earth/ice_sheet_oceanic_mountains",
+        "tfg:earth/ice_sheet_oceanic_mountains_edge",
+        "tfg:earth/ice_sheet_shield_volcano",
+        "tfg:earth/ice_sheet_shore",
+        "tfg:earth/ice_sheet_tuyas",
+        "tfg:earth/ice_sheet_tuyas_edge",
+        "tfg:earth/inverted_patterned_ground",
+        "tfg:earth/knob_and_kettle",
+        "tfg:earth/low_canyons",
+        "tfg:earth/mesas",
+        "tfg:earth/mountain_lake",
+        "tfg:earth/mountains",
+        "tfg:earth/mud_flats",
+        "tfg:earth/ocean",
+        "tfg:earth/ocean_reef",
+        "tfg:earth/oceanic_mountain_lake",
+        "tfg:earth/oceanic_mountains",
+        "tfg:earth/old_mountain_lake",
+        "tfg:earth/old_mountains",
+        "tfg:earth/old_shield_volcano_shore",
+        "tfg:earth/patterned_ground",
+        "tfg:earth/plains",
+        "tfg:earth/plateau",
+        "tfg:earth/plateau_wide",
+        "tfg:earth/rocky_plateau",
+        "tfg:earth/rocky_shores",
+        "tfg:earth/rolling_hills",
+        "tfg:earth/salt_flats",
+        "tfg:earth/sea_stacks",
+        "tfg:earth/setback_cliffs",
+        "tfg:earth/shield_volcano_shore",
+        "tfg:earth/shilin_canyons",
+        "tfg:earth/shilin_highlands",
+        "tfg:earth/shilin_hills",
+        "tfg:earth/shilin_plains",
+        "tfg:earth/shilin_plateau",
+        "tfg:earth/shore",
+        "tfg:earth/stair_step_canyons",
+        "tfg:earth/stone_circles",
+        "tfg:earth/sunken_shield_volcano",
+        "tfg:earth/terrace_lower",
+        "tfg:earth/terrace_upper",
+        "tfg:earth/tidal_flats",
+        "tfg:earth/tower_karst_bay",
+        "tfg:earth/tower_karst_canyons",
+        "tfg:earth/tower_karst_highlands",
+        "tfg:earth/tower_karst_hills",
+        "tfg:earth/tower_karst_lake",
+        "tfg:earth/tower_karst_plains",
+        "tfg:earth/tuyas",
+        "tfg:earth/volcanic_mountain_lake",
+        "tfg:earth/volcanic_mountains",
+        "tfg:earth/volcanic_oceanic_mountain_lake",
+        "tfg:earth/volcanic_oceanic_mountains",
+        "tfg:earth/whorled_canyons"
+      ],
+      "resource_sources": [],
+      "kubejs_additions": [
+        {
+          "value": "#tfg:has_structure/illages",
+          "source": "KubeJS/server_scripts/tfg/overworld/tags.overworld.js:255"
+        },
+        {
+          "value": "#tfg:earth/is_true_ocean",
+          "source": "KubeJS/server_scripts/tfg/overworld/tags.overworld.js:256"
+        },
+        {
+          "value": "#tfg:earth/is_shore_island",
+          "source": "KubeJS/server_scripts/tfg/overworld/tags.overworld.js:257"
+        },
+        {
+          "value": "#tfg:earth/is_dry",
+          "source": "KubeJS/server_scripts/tfg/overworld/tags.overworld.js:258"
+        },
+        {
+          "value": "#tfg:earth/is_hill",
+          "source": "KubeJS/server_scripts/tfg/overworld/tags.overworld.js:259"
+        },
+        {
+          "value": "#tfg:earth/is_karst",
+          "source": "KubeJS/server_scripts/tfg/overworld/tags.overworld.js:260"
+        },
+        {
+          "value": "#tfg:earth/is_mountain",
+          "source": "KubeJS/server_scripts/tfg/overworld/tags.overworld.js:261"
+        },
+        {
+          "value": "#tfg:earth/is_sandstone",
+          "source": "KubeJS/server_scripts/tfg/overworld/tags.overworld.js:262"
+        },
+        {
+          "value": "#tfg:earth/is_volcanic",
+          "source": "KubeJS/server_scripts/tfg/overworld/tags.overworld.js:263"
+        },
+        {
+          "value": "tfc:ocean",
+          "source": "KubeJS/server_scripts/tfg/overworld/tags.overworld.js:264"
+        },
+        {
+          "value": "tfc:ocean_reef",
+          "source": "KubeJS/server_scripts/tfg/overworld/tags.overworld.js:265"
+        },
+        {
+          "value": "tfc:deep_ocean",
+          "source": "KubeJS/server_scripts/tfg/overworld/tags.overworld.js:266"
+        },
+        {
+          "value": "tfc:deep_ocean_trench",
+          "source": "KubeJS/server_scripts/tfg/overworld/tags.overworld.js:267"
+        },
+        {
+          "value": "tfc:shore",
+          "source": "KubeJS/server_scripts/tfg/overworld/tags.overworld.js:268"
+        },
+        {
+          "value": "tfc:hills",
+          "source": "KubeJS/server_scripts/tfg/overworld/tags.overworld.js:269"
+        },
+        {
+          "value": "tfc:canyons",
+          "source": "KubeJS/server_scripts/tfg/overworld/tags.overworld.js:270"
+        }
+      ],
+      "kubejs_removals": [],
+      "kubejs_remove_all": []
+    },
+    "tfg:never_has_structure/water": {
+      "direct_values": [
+        "#tfc:is_lake",
+        "#tfc:is_ocean",
+        "#tfc:is_river",
+        "#tfg:earth/is_lake",
+        "#tfg:earth/is_ocean",
+        "#tfg:earth/is_river"
+      ],
+      "resolved_biomes": [
+        "tfc:deep_ocean",
+        "tfc:deep_ocean_trench",
+        "tfc:lake",
+        "tfc:mountain_lake",
+        "tfc:ocean",
+        "tfc:ocean_reef",
+        "tfc:oceanic_mountain_lake",
+        "tfc:old_mountain_lake",
+        "tfc:plateau_lake",
+        "tfc:river",
+        "tfc:volcanic_mountain_lake",
+        "tfc:volcanic_oceanic_mountain_lake",
+        "tfg:earth/coastal_dunes",
+        "tfg:earth/deep_ocean",
+        "tfg:earth/deep_ocean_trench",
+        "tfg:earth/embayments",
+        "tfg:earth/guano_island",
+        "tfg:earth/ice_sheet_oceanic",
+        "tfg:earth/ice_sheet_shore",
+        "tfg:earth/lake",
+        "tfg:earth/meltwater_lake",
+        "tfg:earth/mountain_lake",
+        "tfg:earth/ocean",
+        "tfg:earth/ocean_reef",
+        "tfg:earth/oceanic_mountain_lake",
+        "tfg:earth/old_mountain_lake",
+        "tfg:earth/old_shield_volcano_shore",
+        "tfg:earth/plateau_lake",
+        "tfg:earth/river",
+        "tfg:earth/rocky_shores",
+        "tfg:earth/sea_stacks",
+        "tfg:earth/setback_cliffs",
+        "tfg:earth/shield_volcano_shore",
+        "tfg:earth/shore",
+        "tfg:earth/subglacial_lake",
+        "tfg:earth/terrace_lower",
+        "tfg:earth/terrace_upper",
+        "tfg:earth/tidal_flats",
+        "tfg:earth/tower_karst_bay",
+        "tfg:earth/tower_karst_lake",
+        "tfg:earth/volcanic_mountain_lake",
+        "tfg:earth/volcanic_oceanic_mountain_lake"
+      ],
+      "resource_sources": [],
+      "kubejs_additions": [
+        {
+          "value": "#tfc:is_lake",
+          "source": "KubeJS/server_scripts/tfg/overworld/tags.overworld.js:343"
+        },
+        {
+          "value": "#tfc:is_ocean",
+          "source": "KubeJS/server_scripts/tfg/overworld/tags.overworld.js:344"
+        },
+        {
+          "value": "#tfc:is_river",
+          "source": "KubeJS/server_scripts/tfg/overworld/tags.overworld.js:345"
+        },
+        {
+          "value": "#tfg:earth/is_lake",
+          "source": "KubeJS/server_scripts/tfg/overworld/tags.overworld.js:346"
+        },
+        {
+          "value": "#tfg:earth/is_ocean",
+          "source": "KubeJS/server_scripts/tfg/overworld/tags.overworld.js:347"
+        },
+        {
+          "value": "#tfg:earth/is_river",
+          "source": "KubeJS/server_scripts/tfg/overworld/tags.overworld.js:348"
+        }
+      ],
+      "kubejs_removals": [],
+      "kubejs_remove_all": []
+    },
     "wan_ancient_beasts:has_structure/abandoned_village": {
       "direct_values": [],
       "resolved_biomes": [],
@@ -5038,6 +6228,301 @@
       ]
     }
   },
+  "structure_condition_sources": [
+    {
+      "id": "tfg:avoid_biomes_malay",
+      "source": "KubeJS/data/tfg/lithostitched/worldgen_modifier/avoid_biomes_malay.json",
+      "append": true,
+      "structures": [
+        "tfg:illagers/malay_village_living"
+      ],
+      "condition": {
+        "type": "avoid_biomes",
+        "biomes": [
+          "tfc:badlands",
+          "tfc:canyons",
+          "tfc:deep_ocean",
+          "tfc:deep_ocean_trench",
+          "tfc:hills",
+          "tfc:ocean",
+          "tfc:ocean_reef",
+          "tfc:old_mountains",
+          "tfc:plains",
+          "tfc:plateau",
+          "tfc:rolling_hills",
+          "tfc:shore",
+          "tfg:earth/active_shield_volcano",
+          "tfg:earth/ancient_shield_volcano",
+          "tfg:earth/badlands",
+          "tfg:earth/burren_badlands",
+          "tfg:earth/burren_badlands_tall",
+          "tfg:earth/burren_plains",
+          "tfg:earth/burren_plateau",
+          "tfg:earth/burren_roche_moutonee",
+          "tfg:earth/buttes",
+          "tfg:earth/canyons",
+          "tfg:earth/cenote_canyons",
+          "tfg:earth/cenote_highlands",
+          "tfg:earth/cenote_hills",
+          "tfg:earth/cenote_plains",
+          "tfg:earth/cenote_plateau",
+          "tfg:earth/cenote_rolling_hills",
+          "tfg:earth/coastal_dunes",
+          "tfg:earth/deep_ocean",
+          "tfg:earth/deep_ocean_trench",
+          "tfg:earth/doline_canyons",
+          "tfg:earth/doline_highlands",
+          "tfg:earth/doline_hills",
+          "tfg:earth/doline_plains",
+          "tfg:earth/doline_plateau",
+          "tfg:earth/doline_rolling_hills",
+          "tfg:earth/dormant_shield_volcano",
+          "tfg:earth/drumlins",
+          "tfg:earth/dune_sea",
+          "tfg:earth/embayments",
+          "tfg:earth/extinct_shield_volcano",
+          "tfg:earth/extreme_doline_mountains",
+          "tfg:earth/extreme_doline_plateau",
+          "tfg:earth/glacially_carved_mountains",
+          "tfg:earth/glacially_carved_oceanic_mountains",
+          "tfg:earth/glaciated_mountains",
+          "tfg:earth/glaciated_oceanic_mountains",
+          "tfg:earth/glaciated_shield_volcano",
+          "tfg:earth/grassy_dunes",
+          "tfg:earth/guano_island",
+          "tfg:earth/highlands",
+          "tfg:earth/hills",
+          "tfg:earth/hoodoos",
+          "tfg:earth/ice_sheet_mountains",
+          "tfg:earth/ice_sheet_mountains_edge",
+          "tfg:earth/ice_sheet_oceanic_mountains",
+          "tfg:earth/ice_sheet_oceanic_mountains_edge",
+          "tfg:earth/ice_sheet_shield_volcano",
+          "tfg:earth/ice_sheet_shore",
+          "tfg:earth/ice_sheet_tuyas",
+          "tfg:earth/ice_sheet_tuyas_edge",
+          "tfg:earth/inverted_patterned_ground",
+          "tfg:earth/knob_and_kettle",
+          "tfg:earth/low_canyons",
+          "tfg:earth/mesas",
+          "tfg:earth/mountain_lake",
+          "tfg:earth/mountains",
+          "tfg:earth/mud_flats",
+          "tfg:earth/ocean",
+          "tfg:earth/ocean_reef",
+          "tfg:earth/oceanic_mountain_lake",
+          "tfg:earth/oceanic_mountains",
+          "tfg:earth/old_mountain_lake",
+          "tfg:earth/old_mountains",
+          "tfg:earth/old_shield_volcano_shore",
+          "tfg:earth/patterned_ground",
+          "tfg:earth/plains",
+          "tfg:earth/plateau",
+          "tfg:earth/plateau_wide",
+          "tfg:earth/rocky_plateau",
+          "tfg:earth/rocky_shores",
+          "tfg:earth/rolling_hills",
+          "tfg:earth/salt_flats",
+          "tfg:earth/sea_stacks",
+          "tfg:earth/setback_cliffs",
+          "tfg:earth/shield_volcano_shore",
+          "tfg:earth/shilin_canyons",
+          "tfg:earth/shilin_highlands",
+          "tfg:earth/shilin_hills",
+          "tfg:earth/shilin_plains",
+          "tfg:earth/shilin_plateau",
+          "tfg:earth/shore",
+          "tfg:earth/stair_step_canyons",
+          "tfg:earth/stone_circles",
+          "tfg:earth/sunken_shield_volcano",
+          "tfg:earth/terrace_lower",
+          "tfg:earth/terrace_upper",
+          "tfg:earth/tidal_flats",
+          "tfg:earth/tower_karst_bay",
+          "tfg:earth/tower_karst_canyons",
+          "tfg:earth/tower_karst_highlands",
+          "tfg:earth/tower_karst_hills",
+          "tfg:earth/tower_karst_lake",
+          "tfg:earth/tower_karst_plains",
+          "tfg:earth/tuyas",
+          "tfg:earth/volcanic_mountain_lake",
+          "tfg:earth/volcanic_mountains",
+          "tfg:earth/volcanic_oceanic_mountain_lake",
+          "tfg:earth/volcanic_oceanic_mountains",
+          "tfg:earth/whorled_canyons"
+        ],
+        "radius": 80,
+        "step": 8,
+        "allowedCount": 0,
+        "source": "KubeJS/data/tfg/lithostitched/worldgen_modifier/avoid_biomes_malay.json",
+        "modifier": "tfg:avoid_biomes_malay",
+        "raw_tag": "#tfg:never_has_structure/malay_illage"
+      }
+    },
+    {
+      "id": "tfg:avoid_mountains",
+      "source": "KubeJS/data/tfg/lithostitched/worldgen_modifier/avoid_mountains.json",
+      "append": true,
+      "structures": [
+        "tfg:mineshaft/mineshaft"
+      ],
+      "condition": {
+        "type": "height",
+        "heightmap": "WORLD_SURFACE_WG",
+        "min": 63,
+        "max": 140,
+        "range_type": "absolute",
+        "source": "KubeJS/data/tfg/lithostitched/worldgen_modifier/avoid_mountains.json",
+        "modifier": "tfg:avoid_mountains"
+      }
+    },
+    {
+      "id": "tfg:avoid_water_large",
+      "source": "KubeJS/data/tfg/lithostitched/worldgen_modifier/avoid_water_large.json",
+      "append": true,
+      "structures": [
+        "tfg:illagers/arabic_village_living",
+        "tfg:illagers/norse_village_living",
+        "tfg:illagers/norse_village_ruined",
+        "tfg:illagers/yurts_village_living",
+        "tfg:mineshaft/mineshaft"
+      ],
+      "condition": {
+        "type": "avoid_biomes",
+        "biomes": [
+          "tfc:deep_ocean",
+          "tfc:deep_ocean_trench",
+          "tfc:lake",
+          "tfc:mountain_lake",
+          "tfc:ocean",
+          "tfc:ocean_reef",
+          "tfc:oceanic_mountain_lake",
+          "tfc:old_mountain_lake",
+          "tfc:plateau_lake",
+          "tfc:river",
+          "tfc:volcanic_mountain_lake",
+          "tfc:volcanic_oceanic_mountain_lake",
+          "tfg:earth/coastal_dunes",
+          "tfg:earth/deep_ocean",
+          "tfg:earth/deep_ocean_trench",
+          "tfg:earth/embayments",
+          "tfg:earth/guano_island",
+          "tfg:earth/ice_sheet_oceanic",
+          "tfg:earth/ice_sheet_shore",
+          "tfg:earth/lake",
+          "tfg:earth/meltwater_lake",
+          "tfg:earth/mountain_lake",
+          "tfg:earth/ocean",
+          "tfg:earth/ocean_reef",
+          "tfg:earth/oceanic_mountain_lake",
+          "tfg:earth/old_mountain_lake",
+          "tfg:earth/old_shield_volcano_shore",
+          "tfg:earth/plateau_lake",
+          "tfg:earth/river",
+          "tfg:earth/rocky_shores",
+          "tfg:earth/sea_stacks",
+          "tfg:earth/setback_cliffs",
+          "tfg:earth/shield_volcano_shore",
+          "tfg:earth/shore",
+          "tfg:earth/subglacial_lake",
+          "tfg:earth/terrace_lower",
+          "tfg:earth/terrace_upper",
+          "tfg:earth/tidal_flats",
+          "tfg:earth/tower_karst_bay",
+          "tfg:earth/tower_karst_lake",
+          "tfg:earth/volcanic_mountain_lake",
+          "tfg:earth/volcanic_oceanic_mountain_lake"
+        ],
+        "radius": 105,
+        "step": 8,
+        "allowedCount": 0,
+        "source": "KubeJS/data/tfg/lithostitched/worldgen_modifier/avoid_water_large.json",
+        "modifier": "tfg:avoid_water_large",
+        "raw_tag": "#tfg:never_has_structure/water"
+      }
+    },
+    {
+      "id": "tfg:avoid_water_small",
+      "source": "KubeJS/data/tfg/lithostitched/worldgen_modifier/avoid_water_small.json",
+      "append": true,
+      "structures": [
+        "tfg:illagers/camps",
+        "tfg:illagers/forest_roaming",
+        "tfg:temperate/plains_temperate_house_0"
+      ],
+      "condition": {
+        "type": "avoid_biomes",
+        "biomes": [
+          "tfc:deep_ocean",
+          "tfc:deep_ocean_trench",
+          "tfc:lake",
+          "tfc:mountain_lake",
+          "tfc:ocean",
+          "tfc:ocean_reef",
+          "tfc:oceanic_mountain_lake",
+          "tfc:old_mountain_lake",
+          "tfc:plateau_lake",
+          "tfc:river",
+          "tfc:volcanic_mountain_lake",
+          "tfc:volcanic_oceanic_mountain_lake",
+          "tfg:earth/coastal_dunes",
+          "tfg:earth/deep_ocean",
+          "tfg:earth/deep_ocean_trench",
+          "tfg:earth/embayments",
+          "tfg:earth/guano_island",
+          "tfg:earth/ice_sheet_oceanic",
+          "tfg:earth/ice_sheet_shore",
+          "tfg:earth/lake",
+          "tfg:earth/meltwater_lake",
+          "tfg:earth/mountain_lake",
+          "tfg:earth/ocean",
+          "tfg:earth/ocean_reef",
+          "tfg:earth/oceanic_mountain_lake",
+          "tfg:earth/old_mountain_lake",
+          "tfg:earth/old_shield_volcano_shore",
+          "tfg:earth/plateau_lake",
+          "tfg:earth/river",
+          "tfg:earth/rocky_shores",
+          "tfg:earth/sea_stacks",
+          "tfg:earth/setback_cliffs",
+          "tfg:earth/shield_volcano_shore",
+          "tfg:earth/shore",
+          "tfg:earth/subglacial_lake",
+          "tfg:earth/terrace_lower",
+          "tfg:earth/terrace_upper",
+          "tfg:earth/tidal_flats",
+          "tfg:earth/tower_karst_bay",
+          "tfg:earth/tower_karst_lake",
+          "tfg:earth/volcanic_mountain_lake",
+          "tfg:earth/volcanic_oceanic_mountain_lake"
+        ],
+        "radius": 50,
+        "step": 8,
+        "allowedCount": 0,
+        "source": "KubeJS/data/tfg/lithostitched/worldgen_modifier/avoid_water_small.json",
+        "modifier": "tfg:avoid_water_small",
+        "raw_tag": "#tfg:never_has_structure/water"
+      }
+    },
+    {
+      "id": "tfg:ocean_moai",
+      "source": "KubeJS/data/tfg/lithostitched/worldgen_modifier/ocean_moai.json",
+      "append": true,
+      "structures": [
+        "tfg:ocean/ocean_moai_0"
+      ],
+      "condition": {
+        "type": "height",
+        "heightmap": "OCEAN_FLOOR_WG",
+        "min": 65,
+        "max": 256,
+        "range_type": "absolute",
+        "source": "KubeJS/data/tfg/lithostitched/worldgen_modifier/ocean_moai.json",
+        "modifier": "tfg:ocean_moai"
+      }
+    }
+  ],
+  "structure_condition_unknowns": [],
   "sets": [
     {
       "id": "ad_astra:lunar_tower",
@@ -12565,7 +14050,8 @@
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": false,
         "adapt_noise": true,
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -12623,7 +14109,8 @@
         },
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": false,
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -12683,7 +14170,8 @@
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": false,
         "adapt_noise": true,
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -12741,7 +14229,8 @@
         },
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": false,
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -12798,7 +14287,8 @@
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": false,
         "adapt_noise": false,
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -12857,7 +14347,8 @@
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": false,
         "adapt_noise": true,
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -12916,7 +14407,8 @@
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": false,
         "adapt_noise": true,
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -12975,7 +14467,8 @@
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": false,
         "adapt_noise": true,
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -13076,7 +14569,8 @@
         "type": "minecraft:ae2mtrt",
         "biomes": "#ae2:has_meteorites",
         "spawn_overrides": {},
-        "step": "top_layer_modification"
+        "step": "top_layer_modification",
+        "conditions": []
       }
     },
     {
@@ -13137,7 +14631,8 @@
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": false,
         "terrain_adaptation": "beard_thin",
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -13198,7 +14693,8 @@
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": false,
         "terrain_adaptation": "beard_thin",
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -13259,7 +14755,8 @@
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": false,
         "terrain_adaptation": "beard_thin",
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -13320,7 +14817,8 @@
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": false,
         "terrain_adaptation": "beard_thin",
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -13381,7 +14879,8 @@
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": false,
         "terrain_adaptation": "beard_thin",
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -13440,7 +14939,8 @@
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": false,
         "terrain_adaptation": "beard_thin",
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -13499,7 +14999,8 @@
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": false,
         "terrain_adaptation": "beard_thin",
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -13558,7 +15059,8 @@
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": false,
         "terrain_adaptation": "beard_thin",
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -13617,7 +15119,8 @@
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": false,
         "terrain_adaptation": "beard_thin",
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -13676,7 +15179,8 @@
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": false,
         "terrain_adaptation": "beard_thin",
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -13742,7 +15246,8 @@
           }
         },
         "step": "surface_structures",
-        "project_start_to_heightmap": "WORLD_SURFACE_WG"
+        "project_start_to_heightmap": "WORLD_SURFACE_WG",
+        "conditions": []
       }
     },
     {
@@ -13833,7 +15338,8 @@
         "start_pool": "minecraft:ancient_city/city_center",
         "step": "underground_decoration",
         "terrain_adaptation": "beard_box",
-        "use_expansion_hack": false
+        "use_expansion_hack": false,
+        "conditions": []
       }
     },
     {
@@ -13915,7 +15421,8 @@
         },
         "start_pool": "minecraft:bastion/starts",
         "step": "surface_structures",
-        "use_expansion_hack": false
+        "use_expansion_hack": false,
+        "conditions": []
       }
     },
     {
@@ -13965,7 +15472,8 @@
         "type": "minecraft:buried_treasure",
         "biomes": "#minecraft:has_structure/buried_treasure",
         "spawn_overrides": {},
-        "step": "underground_structures"
+        "step": "underground_structures",
+        "conditions": []
       }
     },
     {
@@ -14014,7 +15522,8 @@
         "type": "minecraft:desert_pyramid",
         "biomes": "#minecraft:has_structure/desert_pyramid",
         "spawn_overrides": {},
-        "step": "surface_structures"
+        "step": "surface_structures",
+        "conditions": []
       }
     },
     {
@@ -14064,7 +15573,8 @@
         "type": "minecraft:end_city",
         "biomes": "#minecraft:has_structure/end_city",
         "spawn_overrides": {},
-        "step": "surface_structures"
+        "step": "surface_structures",
+        "conditions": []
       }
     },
     {
@@ -14153,7 +15663,8 @@
             ]
           }
         },
-        "step": "underground_decoration"
+        "step": "underground_decoration",
+        "conditions": []
       }
     },
     {
@@ -14204,7 +15715,8 @@
         "type": "minecraft:igloo",
         "biomes": "#minecraft:has_structure/igloo",
         "spawn_overrides": {},
-        "step": "surface_structures"
+        "step": "surface_structures",
+        "conditions": []
       }
     },
     {
@@ -14254,7 +15766,8 @@
         "type": "minecraft:jungle_temple",
         "biomes": "#minecraft:has_structure/jungle_temple",
         "spawn_overrides": {},
-        "step": "surface_structures"
+        "step": "surface_structures",
+        "conditions": []
       }
     },
     {
@@ -14303,7 +15816,8 @@
         "type": "minecraft:woodland_mansion",
         "biomes": "#minecraft:has_structure/woodland_mansion",
         "spawn_overrides": {},
-        "step": "surface_structures"
+        "step": "surface_structures",
+        "conditions": []
       }
     },
     {
@@ -14401,7 +15915,8 @@
         "biomes": "#minecraft:has_structure/mineshaft",
         "mineshaft_type": "normal",
         "spawn_overrides": {},
-        "step": "underground_structures"
+        "step": "underground_structures",
+        "conditions": []
       }
     },
     {
@@ -14453,7 +15968,8 @@
         "biomes": "#minecraft:has_structure/mineshaft_mesa",
         "mineshaft_type": "mesa",
         "spawn_overrides": {},
-        "step": "underground_structures"
+        "step": "underground_structures",
+        "conditions": []
       }
     },
     {
@@ -14525,7 +16041,8 @@
             "spawns": []
           }
         },
-        "step": "surface_structures"
+        "step": "surface_structures",
+        "conditions": []
       }
     },
     {
@@ -14607,7 +16124,8 @@
         },
         "spawn_overrides": {},
         "step": "underground_decoration",
-        "terrain_adaptation": "beard_thin"
+        "terrain_adaptation": "beard_thin",
+        "conditions": []
       }
     },
     {
@@ -14664,7 +16182,8 @@
         "cluster_probability": 0.9,
         "large_probability": 0.3,
         "spawn_overrides": {},
-        "step": "surface_structures"
+        "step": "surface_structures",
+        "conditions": []
       }
     },
     {
@@ -14718,7 +16237,8 @@
         "cluster_probability": 0.9,
         "large_probability": 0.3,
         "spawn_overrides": {},
-        "step": "surface_structures"
+        "step": "surface_structures",
+        "conditions": []
       }
     },
     {
@@ -14799,7 +16319,8 @@
         "start_pool": "minecraft:pillager_outpost/base_plates",
         "step": "surface_structures",
         "terrain_adaptation": "beard_thin",
-        "use_expansion_hack": true
+        "use_expansion_hack": true,
+        "conditions": []
       }
     },
     {
@@ -14891,7 +16412,8 @@
           }
         ],
         "spawn_overrides": {},
-        "step": "surface_structures"
+        "step": "surface_structures",
+        "conditions": []
       }
     },
     {
@@ -14952,7 +16474,8 @@
           }
         ],
         "spawn_overrides": {},
-        "step": "surface_structures"
+        "step": "surface_structures",
+        "conditions": []
       }
     },
     {
@@ -15015,7 +16538,8 @@
           }
         ],
         "spawn_overrides": {},
-        "step": "surface_structures"
+        "step": "surface_structures",
+        "conditions": []
       }
     },
     {
@@ -15100,7 +16624,8 @@
           }
         ],
         "spawn_overrides": {},
-        "step": "surface_structures"
+        "step": "surface_structures",
+        "conditions": []
       }
     },
     {
@@ -15165,7 +16690,8 @@
           }
         ],
         "spawn_overrides": {},
-        "step": "surface_structures"
+        "step": "surface_structures",
+        "conditions": []
       }
     },
     {
@@ -15234,7 +16760,8 @@
           }
         ],
         "spawn_overrides": {},
-        "step": "surface_structures"
+        "step": "surface_structures",
+        "conditions": []
       }
     },
     {
@@ -15296,7 +16823,8 @@
           }
         ],
         "spawn_overrides": {},
-        "step": "surface_structures"
+        "step": "surface_structures",
+        "conditions": []
       }
     },
     {
@@ -15354,7 +16882,8 @@
         "biomes": "#minecraft:has_structure/shipwreck",
         "is_beached": false,
         "spawn_overrides": {},
-        "step": "surface_structures"
+        "step": "surface_structures",
+        "conditions": []
       }
     },
     {
@@ -15405,7 +16934,8 @@
         "biomes": "#minecraft:has_structure/shipwreck_beached",
         "is_beached": true,
         "spawn_overrides": {},
-        "step": "surface_structures"
+        "step": "surface_structures",
+        "conditions": []
       }
     },
     {
@@ -15507,7 +17037,8 @@
         "biomes": "#minecraft:has_structure/stronghold",
         "spawn_overrides": {},
         "step": "surface_structures",
-        "terrain_adaptation": "bury"
+        "terrain_adaptation": "bury",
+        "conditions": []
       }
     },
     {
@@ -15579,7 +17110,8 @@
             ]
           }
         },
-        "step": "surface_structures"
+        "step": "surface_structures",
+        "conditions": []
       }
     },
     {
@@ -15642,7 +17174,8 @@
         "start_pool": "minecraft:trail_ruins/tower",
         "step": "underground_structures",
         "terrain_adaptation": "bury",
-        "use_expansion_hack": false
+        "use_expansion_hack": false,
+        "conditions": []
       }
     },
     {
@@ -15700,7 +17233,8 @@
         "start_pool": "minecraft:village/desert/town_centers",
         "step": "surface_structures",
         "terrain_adaptation": "beard_thin",
-        "use_expansion_hack": true
+        "use_expansion_hack": true,
+        "conditions": []
       }
     },
     {
@@ -15759,7 +17293,8 @@
         "start_pool": "minecraft:village/plains/town_centers",
         "step": "surface_structures",
         "terrain_adaptation": "beard_thin",
-        "use_expansion_hack": true
+        "use_expansion_hack": true,
+        "conditions": []
       }
     },
     {
@@ -15817,7 +17352,8 @@
         "start_pool": "minecraft:village/savanna/town_centers",
         "step": "surface_structures",
         "terrain_adaptation": "beard_thin",
-        "use_expansion_hack": true
+        "use_expansion_hack": true,
+        "conditions": []
       }
     },
     {
@@ -15875,7 +17411,8 @@
         "start_pool": "minecraft:village/snowy/town_centers",
         "step": "surface_structures",
         "terrain_adaptation": "beard_thin",
-        "use_expansion_hack": true
+        "use_expansion_hack": true,
+        "conditions": []
       }
     },
     {
@@ -15933,7 +17470,8 @@
         "start_pool": "minecraft:village/taiga/town_centers",
         "step": "surface_structures",
         "terrain_adaptation": "beard_thin",
-        "use_expansion_hack": true
+        "use_expansion_hack": true,
+        "conditions": []
       }
     },
     {
@@ -15990,7 +17528,8 @@
         "biomes": "#species:libra_has_structure",
         "spawn_overrides": {},
         "step": "surface_structures",
-        "terrain_adaptation": "beard_box"
+        "terrain_adaptation": "beard_box",
+        "conditions": []
       }
     },
     {
@@ -16042,7 +17581,8 @@
         "biomes": "#minecraft:has_structure/mineshaft_mesa",
         "spawn_overrides": {},
         "step": "surface_structures",
-        "terrain_adaptation": "beard_box"
+        "terrain_adaptation": "beard_box",
+        "conditions": []
       }
     },
     {
@@ -16097,7 +17637,8 @@
         "biomes": "#species:spectralibur_chamber_has_structure",
         "spawn_overrides": {},
         "step": "surface_structures",
-        "terrain_adaptation": "beard_box"
+        "terrain_adaptation": "beard_box",
+        "conditions": []
       }
     },
     {
@@ -16147,7 +17688,8 @@
         "biomes": "#species:wraptor_coop_has_structure",
         "spawn_overrides": {},
         "step": "surface_structures",
-        "terrain_adaptation": "beard_box"
+        "terrain_adaptation": "beard_box",
+        "conditions": []
       }
     },
     {
@@ -16223,7 +17765,8 @@
         },
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": false,
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -16299,7 +17842,8 @@
         },
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": false,
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -16375,7 +17919,8 @@
         },
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": false,
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -16451,7 +17996,8 @@
         },
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": false,
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -16527,7 +18073,8 @@
         },
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": false,
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -16603,7 +18150,8 @@
         },
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": false,
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -16679,7 +18227,8 @@
         },
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": false,
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -16755,7 +18304,8 @@
         },
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": false,
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -16831,7 +18381,8 @@
         },
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": false,
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -16956,7 +18507,8 @@
         },
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": false,
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -17081,7 +18633,8 @@
         },
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": false,
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -17206,7 +18759,8 @@
         },
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": false,
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -17331,7 +18885,8 @@
         },
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": false,
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -17456,7 +19011,8 @@
         },
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": false,
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -17580,7 +19136,8 @@
         },
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": false,
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -17704,7 +19261,8 @@
         },
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": false,
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -17779,7 +19337,8 @@
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "max_distance_from_center": 100,
         "use_expansion_hack": true,
-        "liquid_settings": "ignore_waterlogging"
+        "liquid_settings": "ignore_waterlogging",
+        "conditions": []
       }
     },
     {
@@ -17850,7 +19409,8 @@
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "max_distance_from_center": 100,
         "use_expansion_hack": true,
-        "liquid_settings": "ignore_waterlogging"
+        "liquid_settings": "ignore_waterlogging",
+        "conditions": []
       }
     },
     {
@@ -17972,7 +19532,8 @@
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "max_distance_from_center": 100,
         "use_expansion_hack": true,
-        "liquid_settings": "ignore_waterlogging"
+        "liquid_settings": "ignore_waterlogging",
+        "conditions": []
       }
     },
     {
@@ -18092,7 +19653,8 @@
         },
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": false,
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -18147,7 +19709,8 @@
           "absolute": 93
         },
         "use_expansion_hack": false,
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -18226,7 +19789,8 @@
           "absolute": 93
         },
         "use_expansion_hack": false,
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -18324,7 +19888,62 @@
             "bounding_box": "full",
             "spawns": []
           }
-        }
+        },
+        "conditions": [
+          {
+            "type": "avoid_biomes",
+            "biomes": [
+              "tfc:deep_ocean",
+              "tfc:deep_ocean_trench",
+              "tfc:lake",
+              "tfc:mountain_lake",
+              "tfc:ocean",
+              "tfc:ocean_reef",
+              "tfc:oceanic_mountain_lake",
+              "tfc:old_mountain_lake",
+              "tfc:plateau_lake",
+              "tfc:river",
+              "tfc:volcanic_mountain_lake",
+              "tfc:volcanic_oceanic_mountain_lake",
+              "tfg:earth/coastal_dunes",
+              "tfg:earth/deep_ocean",
+              "tfg:earth/deep_ocean_trench",
+              "tfg:earth/embayments",
+              "tfg:earth/guano_island",
+              "tfg:earth/ice_sheet_oceanic",
+              "tfg:earth/ice_sheet_shore",
+              "tfg:earth/lake",
+              "tfg:earth/meltwater_lake",
+              "tfg:earth/mountain_lake",
+              "tfg:earth/ocean",
+              "tfg:earth/ocean_reef",
+              "tfg:earth/oceanic_mountain_lake",
+              "tfg:earth/old_mountain_lake",
+              "tfg:earth/old_shield_volcano_shore",
+              "tfg:earth/plateau_lake",
+              "tfg:earth/river",
+              "tfg:earth/rocky_shores",
+              "tfg:earth/sea_stacks",
+              "tfg:earth/setback_cliffs",
+              "tfg:earth/shield_volcano_shore",
+              "tfg:earth/shore",
+              "tfg:earth/subglacial_lake",
+              "tfg:earth/terrace_lower",
+              "tfg:earth/terrace_upper",
+              "tfg:earth/tidal_flats",
+              "tfg:earth/tower_karst_bay",
+              "tfg:earth/tower_karst_lake",
+              "tfg:earth/volcanic_mountain_lake",
+              "tfg:earth/volcanic_oceanic_mountain_lake"
+            ],
+            "radius": 105,
+            "step": 8,
+            "allowedCount": 0,
+            "source": "KubeJS/data/tfg/lithostitched/worldgen_modifier/avoid_water_large.json",
+            "modifier": "tfg:avoid_water_large",
+            "raw_tag": "#tfg:never_has_structure/water"
+          }
+        ]
       }
     },
     {
@@ -18509,7 +20128,62 @@
             "bounding_box": "full",
             "spawns": []
           }
-        }
+        },
+        "conditions": [
+          {
+            "type": "avoid_biomes",
+            "biomes": [
+              "tfc:deep_ocean",
+              "tfc:deep_ocean_trench",
+              "tfc:lake",
+              "tfc:mountain_lake",
+              "tfc:ocean",
+              "tfc:ocean_reef",
+              "tfc:oceanic_mountain_lake",
+              "tfc:old_mountain_lake",
+              "tfc:plateau_lake",
+              "tfc:river",
+              "tfc:volcanic_mountain_lake",
+              "tfc:volcanic_oceanic_mountain_lake",
+              "tfg:earth/coastal_dunes",
+              "tfg:earth/deep_ocean",
+              "tfg:earth/deep_ocean_trench",
+              "tfg:earth/embayments",
+              "tfg:earth/guano_island",
+              "tfg:earth/ice_sheet_oceanic",
+              "tfg:earth/ice_sheet_shore",
+              "tfg:earth/lake",
+              "tfg:earth/meltwater_lake",
+              "tfg:earth/mountain_lake",
+              "tfg:earth/ocean",
+              "tfg:earth/ocean_reef",
+              "tfg:earth/oceanic_mountain_lake",
+              "tfg:earth/old_mountain_lake",
+              "tfg:earth/old_shield_volcano_shore",
+              "tfg:earth/plateau_lake",
+              "tfg:earth/river",
+              "tfg:earth/rocky_shores",
+              "tfg:earth/sea_stacks",
+              "tfg:earth/setback_cliffs",
+              "tfg:earth/shield_volcano_shore",
+              "tfg:earth/shore",
+              "tfg:earth/subglacial_lake",
+              "tfg:earth/terrace_lower",
+              "tfg:earth/terrace_upper",
+              "tfg:earth/tidal_flats",
+              "tfg:earth/tower_karst_bay",
+              "tfg:earth/tower_karst_lake",
+              "tfg:earth/volcanic_mountain_lake",
+              "tfg:earth/volcanic_oceanic_mountain_lake"
+            ],
+            "radius": 50,
+            "step": 8,
+            "allowedCount": 0,
+            "source": "KubeJS/data/tfg/lithostitched/worldgen_modifier/avoid_water_small.json",
+            "modifier": "tfg:avoid_water_small",
+            "raw_tag": "#tfg:never_has_structure/water"
+          }
+        ]
       }
     },
     {
@@ -18694,7 +20368,62 @@
             "bounding_box": "full",
             "spawns": []
           }
-        }
+        },
+        "conditions": [
+          {
+            "type": "avoid_biomes",
+            "biomes": [
+              "tfc:deep_ocean",
+              "tfc:deep_ocean_trench",
+              "tfc:lake",
+              "tfc:mountain_lake",
+              "tfc:ocean",
+              "tfc:ocean_reef",
+              "tfc:oceanic_mountain_lake",
+              "tfc:old_mountain_lake",
+              "tfc:plateau_lake",
+              "tfc:river",
+              "tfc:volcanic_mountain_lake",
+              "tfc:volcanic_oceanic_mountain_lake",
+              "tfg:earth/coastal_dunes",
+              "tfg:earth/deep_ocean",
+              "tfg:earth/deep_ocean_trench",
+              "tfg:earth/embayments",
+              "tfg:earth/guano_island",
+              "tfg:earth/ice_sheet_oceanic",
+              "tfg:earth/ice_sheet_shore",
+              "tfg:earth/lake",
+              "tfg:earth/meltwater_lake",
+              "tfg:earth/mountain_lake",
+              "tfg:earth/ocean",
+              "tfg:earth/ocean_reef",
+              "tfg:earth/oceanic_mountain_lake",
+              "tfg:earth/old_mountain_lake",
+              "tfg:earth/old_shield_volcano_shore",
+              "tfg:earth/plateau_lake",
+              "tfg:earth/river",
+              "tfg:earth/rocky_shores",
+              "tfg:earth/sea_stacks",
+              "tfg:earth/setback_cliffs",
+              "tfg:earth/shield_volcano_shore",
+              "tfg:earth/shore",
+              "tfg:earth/subglacial_lake",
+              "tfg:earth/terrace_lower",
+              "tfg:earth/terrace_upper",
+              "tfg:earth/tidal_flats",
+              "tfg:earth/tower_karst_bay",
+              "tfg:earth/tower_karst_lake",
+              "tfg:earth/volcanic_mountain_lake",
+              "tfg:earth/volcanic_oceanic_mountain_lake"
+            ],
+            "radius": 50,
+            "step": 8,
+            "allowedCount": 0,
+            "source": "KubeJS/data/tfg/lithostitched/worldgen_modifier/avoid_water_small.json",
+            "modifier": "tfg:avoid_water_small",
+            "raw_tag": "#tfg:never_has_structure/water"
+          }
+        ]
       }
     },
     {
@@ -18766,7 +20495,131 @@
             "bounding_box": "full",
             "spawns": []
           }
-        }
+        },
+        "conditions": [
+          {
+            "type": "avoid_biomes",
+            "biomes": [
+              "tfc:badlands",
+              "tfc:canyons",
+              "tfc:deep_ocean",
+              "tfc:deep_ocean_trench",
+              "tfc:hills",
+              "tfc:ocean",
+              "tfc:ocean_reef",
+              "tfc:old_mountains",
+              "tfc:plains",
+              "tfc:plateau",
+              "tfc:rolling_hills",
+              "tfc:shore",
+              "tfg:earth/active_shield_volcano",
+              "tfg:earth/ancient_shield_volcano",
+              "tfg:earth/badlands",
+              "tfg:earth/burren_badlands",
+              "tfg:earth/burren_badlands_tall",
+              "tfg:earth/burren_plains",
+              "tfg:earth/burren_plateau",
+              "tfg:earth/burren_roche_moutonee",
+              "tfg:earth/buttes",
+              "tfg:earth/canyons",
+              "tfg:earth/cenote_canyons",
+              "tfg:earth/cenote_highlands",
+              "tfg:earth/cenote_hills",
+              "tfg:earth/cenote_plains",
+              "tfg:earth/cenote_plateau",
+              "tfg:earth/cenote_rolling_hills",
+              "tfg:earth/coastal_dunes",
+              "tfg:earth/deep_ocean",
+              "tfg:earth/deep_ocean_trench",
+              "tfg:earth/doline_canyons",
+              "tfg:earth/doline_highlands",
+              "tfg:earth/doline_hills",
+              "tfg:earth/doline_plains",
+              "tfg:earth/doline_plateau",
+              "tfg:earth/doline_rolling_hills",
+              "tfg:earth/dormant_shield_volcano",
+              "tfg:earth/drumlins",
+              "tfg:earth/dune_sea",
+              "tfg:earth/embayments",
+              "tfg:earth/extinct_shield_volcano",
+              "tfg:earth/extreme_doline_mountains",
+              "tfg:earth/extreme_doline_plateau",
+              "tfg:earth/glacially_carved_mountains",
+              "tfg:earth/glacially_carved_oceanic_mountains",
+              "tfg:earth/glaciated_mountains",
+              "tfg:earth/glaciated_oceanic_mountains",
+              "tfg:earth/glaciated_shield_volcano",
+              "tfg:earth/grassy_dunes",
+              "tfg:earth/guano_island",
+              "tfg:earth/highlands",
+              "tfg:earth/hills",
+              "tfg:earth/hoodoos",
+              "tfg:earth/ice_sheet_mountains",
+              "tfg:earth/ice_sheet_mountains_edge",
+              "tfg:earth/ice_sheet_oceanic_mountains",
+              "tfg:earth/ice_sheet_oceanic_mountains_edge",
+              "tfg:earth/ice_sheet_shield_volcano",
+              "tfg:earth/ice_sheet_shore",
+              "tfg:earth/ice_sheet_tuyas",
+              "tfg:earth/ice_sheet_tuyas_edge",
+              "tfg:earth/inverted_patterned_ground",
+              "tfg:earth/knob_and_kettle",
+              "tfg:earth/low_canyons",
+              "tfg:earth/mesas",
+              "tfg:earth/mountain_lake",
+              "tfg:earth/mountains",
+              "tfg:earth/mud_flats",
+              "tfg:earth/ocean",
+              "tfg:earth/ocean_reef",
+              "tfg:earth/oceanic_mountain_lake",
+              "tfg:earth/oceanic_mountains",
+              "tfg:earth/old_mountain_lake",
+              "tfg:earth/old_mountains",
+              "tfg:earth/old_shield_volcano_shore",
+              "tfg:earth/patterned_ground",
+              "tfg:earth/plains",
+              "tfg:earth/plateau",
+              "tfg:earth/plateau_wide",
+              "tfg:earth/rocky_plateau",
+              "tfg:earth/rocky_shores",
+              "tfg:earth/rolling_hills",
+              "tfg:earth/salt_flats",
+              "tfg:earth/sea_stacks",
+              "tfg:earth/setback_cliffs",
+              "tfg:earth/shield_volcano_shore",
+              "tfg:earth/shilin_canyons",
+              "tfg:earth/shilin_highlands",
+              "tfg:earth/shilin_hills",
+              "tfg:earth/shilin_plains",
+              "tfg:earth/shilin_plateau",
+              "tfg:earth/shore",
+              "tfg:earth/stair_step_canyons",
+              "tfg:earth/stone_circles",
+              "tfg:earth/sunken_shield_volcano",
+              "tfg:earth/terrace_lower",
+              "tfg:earth/terrace_upper",
+              "tfg:earth/tidal_flats",
+              "tfg:earth/tower_karst_bay",
+              "tfg:earth/tower_karst_canyons",
+              "tfg:earth/tower_karst_highlands",
+              "tfg:earth/tower_karst_hills",
+              "tfg:earth/tower_karst_lake",
+              "tfg:earth/tower_karst_plains",
+              "tfg:earth/tuyas",
+              "tfg:earth/volcanic_mountain_lake",
+              "tfg:earth/volcanic_mountains",
+              "tfg:earth/volcanic_oceanic_mountain_lake",
+              "tfg:earth/volcanic_oceanic_mountains",
+              "tfg:earth/whorled_canyons"
+            ],
+            "radius": 80,
+            "step": 8,
+            "allowedCount": 0,
+            "source": "KubeJS/data/tfg/lithostitched/worldgen_modifier/avoid_biomes_malay.json",
+            "modifier": "tfg:avoid_biomes_malay",
+            "raw_tag": "#tfg:never_has_structure/malay_illage"
+          }
+        ]
       }
     },
     {
@@ -18864,7 +20717,62 @@
             "bounding_box": "full",
             "spawns": []
           }
-        }
+        },
+        "conditions": [
+          {
+            "type": "avoid_biomes",
+            "biomes": [
+              "tfc:deep_ocean",
+              "tfc:deep_ocean_trench",
+              "tfc:lake",
+              "tfc:mountain_lake",
+              "tfc:ocean",
+              "tfc:ocean_reef",
+              "tfc:oceanic_mountain_lake",
+              "tfc:old_mountain_lake",
+              "tfc:plateau_lake",
+              "tfc:river",
+              "tfc:volcanic_mountain_lake",
+              "tfc:volcanic_oceanic_mountain_lake",
+              "tfg:earth/coastal_dunes",
+              "tfg:earth/deep_ocean",
+              "tfg:earth/deep_ocean_trench",
+              "tfg:earth/embayments",
+              "tfg:earth/guano_island",
+              "tfg:earth/ice_sheet_oceanic",
+              "tfg:earth/ice_sheet_shore",
+              "tfg:earth/lake",
+              "tfg:earth/meltwater_lake",
+              "tfg:earth/mountain_lake",
+              "tfg:earth/ocean",
+              "tfg:earth/ocean_reef",
+              "tfg:earth/oceanic_mountain_lake",
+              "tfg:earth/old_mountain_lake",
+              "tfg:earth/old_shield_volcano_shore",
+              "tfg:earth/plateau_lake",
+              "tfg:earth/river",
+              "tfg:earth/rocky_shores",
+              "tfg:earth/sea_stacks",
+              "tfg:earth/setback_cliffs",
+              "tfg:earth/shield_volcano_shore",
+              "tfg:earth/shore",
+              "tfg:earth/subglacial_lake",
+              "tfg:earth/terrace_lower",
+              "tfg:earth/terrace_upper",
+              "tfg:earth/tidal_flats",
+              "tfg:earth/tower_karst_bay",
+              "tfg:earth/tower_karst_lake",
+              "tfg:earth/volcanic_mountain_lake",
+              "tfg:earth/volcanic_oceanic_mountain_lake"
+            ],
+            "radius": 105,
+            "step": 8,
+            "allowedCount": 0,
+            "source": "KubeJS/data/tfg/lithostitched/worldgen_modifier/avoid_water_large.json",
+            "modifier": "tfg:avoid_water_large",
+            "raw_tag": "#tfg:never_has_structure/water"
+          }
+        ]
       }
     },
     {
@@ -18953,7 +20861,62 @@
         "project_start_to_heightmap": "MOTION_BLOCKING",
         "use_expansion_hack": false,
         "adapt_noise": true,
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": [
+          {
+            "type": "avoid_biomes",
+            "biomes": [
+              "tfc:deep_ocean",
+              "tfc:deep_ocean_trench",
+              "tfc:lake",
+              "tfc:mountain_lake",
+              "tfc:ocean",
+              "tfc:ocean_reef",
+              "tfc:oceanic_mountain_lake",
+              "tfc:old_mountain_lake",
+              "tfc:plateau_lake",
+              "tfc:river",
+              "tfc:volcanic_mountain_lake",
+              "tfc:volcanic_oceanic_mountain_lake",
+              "tfg:earth/coastal_dunes",
+              "tfg:earth/deep_ocean",
+              "tfg:earth/deep_ocean_trench",
+              "tfg:earth/embayments",
+              "tfg:earth/guano_island",
+              "tfg:earth/ice_sheet_oceanic",
+              "tfg:earth/ice_sheet_shore",
+              "tfg:earth/lake",
+              "tfg:earth/meltwater_lake",
+              "tfg:earth/mountain_lake",
+              "tfg:earth/ocean",
+              "tfg:earth/ocean_reef",
+              "tfg:earth/oceanic_mountain_lake",
+              "tfg:earth/old_mountain_lake",
+              "tfg:earth/old_shield_volcano_shore",
+              "tfg:earth/plateau_lake",
+              "tfg:earth/river",
+              "tfg:earth/rocky_shores",
+              "tfg:earth/sea_stacks",
+              "tfg:earth/setback_cliffs",
+              "tfg:earth/shield_volcano_shore",
+              "tfg:earth/shore",
+              "tfg:earth/subglacial_lake",
+              "tfg:earth/terrace_lower",
+              "tfg:earth/terrace_upper",
+              "tfg:earth/tidal_flats",
+              "tfg:earth/tower_karst_bay",
+              "tfg:earth/tower_karst_lake",
+              "tfg:earth/volcanic_mountain_lake",
+              "tfg:earth/volcanic_oceanic_mountain_lake"
+            ],
+            "radius": 105,
+            "step": 8,
+            "allowedCount": 0,
+            "source": "KubeJS/data/tfg/lithostitched/worldgen_modifier/avoid_water_large.json",
+            "modifier": "tfg:avoid_water_large",
+            "raw_tag": "#tfg:never_has_structure/water"
+          }
+        ]
       }
     },
     {
@@ -19051,7 +21014,62 @@
             "bounding_box": "full",
             "spawns": []
           }
-        }
+        },
+        "conditions": [
+          {
+            "type": "avoid_biomes",
+            "biomes": [
+              "tfc:deep_ocean",
+              "tfc:deep_ocean_trench",
+              "tfc:lake",
+              "tfc:mountain_lake",
+              "tfc:ocean",
+              "tfc:ocean_reef",
+              "tfc:oceanic_mountain_lake",
+              "tfc:old_mountain_lake",
+              "tfc:plateau_lake",
+              "tfc:river",
+              "tfc:volcanic_mountain_lake",
+              "tfc:volcanic_oceanic_mountain_lake",
+              "tfg:earth/coastal_dunes",
+              "tfg:earth/deep_ocean",
+              "tfg:earth/deep_ocean_trench",
+              "tfg:earth/embayments",
+              "tfg:earth/guano_island",
+              "tfg:earth/ice_sheet_oceanic",
+              "tfg:earth/ice_sheet_shore",
+              "tfg:earth/lake",
+              "tfg:earth/meltwater_lake",
+              "tfg:earth/mountain_lake",
+              "tfg:earth/ocean",
+              "tfg:earth/ocean_reef",
+              "tfg:earth/oceanic_mountain_lake",
+              "tfg:earth/old_mountain_lake",
+              "tfg:earth/old_shield_volcano_shore",
+              "tfg:earth/plateau_lake",
+              "tfg:earth/river",
+              "tfg:earth/rocky_shores",
+              "tfg:earth/sea_stacks",
+              "tfg:earth/setback_cliffs",
+              "tfg:earth/shield_volcano_shore",
+              "tfg:earth/shore",
+              "tfg:earth/subglacial_lake",
+              "tfg:earth/terrace_lower",
+              "tfg:earth/terrace_upper",
+              "tfg:earth/tidal_flats",
+              "tfg:earth/tower_karst_bay",
+              "tfg:earth/tower_karst_lake",
+              "tfg:earth/volcanic_mountain_lake",
+              "tfg:earth/volcanic_oceanic_mountain_lake"
+            ],
+            "radius": 105,
+            "step": 8,
+            "allowedCount": 0,
+            "source": "KubeJS/data/tfg/lithostitched/worldgen_modifier/avoid_water_large.json",
+            "modifier": "tfg:avoid_water_large",
+            "raw_tag": "#tfg:never_has_structure/water"
+          }
+        ]
       }
     },
     {
@@ -19269,7 +21287,71 @@
               }
             ]
           }
-        }
+        },
+        "conditions": [
+          {
+            "type": "height",
+            "heightmap": "WORLD_SURFACE_WG",
+            "min": 63,
+            "max": 140,
+            "range_type": "absolute",
+            "source": "KubeJS/data/tfg/lithostitched/worldgen_modifier/avoid_mountains.json",
+            "modifier": "tfg:avoid_mountains"
+          },
+          {
+            "type": "avoid_biomes",
+            "biomes": [
+              "tfc:deep_ocean",
+              "tfc:deep_ocean_trench",
+              "tfc:lake",
+              "tfc:mountain_lake",
+              "tfc:ocean",
+              "tfc:ocean_reef",
+              "tfc:oceanic_mountain_lake",
+              "tfc:old_mountain_lake",
+              "tfc:plateau_lake",
+              "tfc:river",
+              "tfc:volcanic_mountain_lake",
+              "tfc:volcanic_oceanic_mountain_lake",
+              "tfg:earth/coastal_dunes",
+              "tfg:earth/deep_ocean",
+              "tfg:earth/deep_ocean_trench",
+              "tfg:earth/embayments",
+              "tfg:earth/guano_island",
+              "tfg:earth/ice_sheet_oceanic",
+              "tfg:earth/ice_sheet_shore",
+              "tfg:earth/lake",
+              "tfg:earth/meltwater_lake",
+              "tfg:earth/mountain_lake",
+              "tfg:earth/ocean",
+              "tfg:earth/ocean_reef",
+              "tfg:earth/oceanic_mountain_lake",
+              "tfg:earth/old_mountain_lake",
+              "tfg:earth/old_shield_volcano_shore",
+              "tfg:earth/plateau_lake",
+              "tfg:earth/river",
+              "tfg:earth/rocky_shores",
+              "tfg:earth/sea_stacks",
+              "tfg:earth/setback_cliffs",
+              "tfg:earth/shield_volcano_shore",
+              "tfg:earth/shore",
+              "tfg:earth/subglacial_lake",
+              "tfg:earth/terrace_lower",
+              "tfg:earth/terrace_upper",
+              "tfg:earth/tidal_flats",
+              "tfg:earth/tower_karst_bay",
+              "tfg:earth/tower_karst_lake",
+              "tfg:earth/volcanic_mountain_lake",
+              "tfg:earth/volcanic_oceanic_mountain_lake"
+            ],
+            "radius": 105,
+            "step": 8,
+            "allowedCount": 0,
+            "source": "KubeJS/data/tfg/lithostitched/worldgen_modifier/avoid_water_large.json",
+            "modifier": "tfg:avoid_water_large",
+            "raw_tag": "#tfg:never_has_structure/water"
+          }
+        ]
       }
     },
     {
@@ -19354,7 +21436,8 @@
         "project_start_to_heightmap": "MOTION_BLOCKING_WG",
         "use_expansion_hack": false,
         "adapt_noise": true,
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -19432,7 +21515,8 @@
         },
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": false,
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -19510,7 +21594,8 @@
         "start_pool": "tfg:moon/moon_rabbit_houses",
         "step": "surface_structures",
         "terrain_adaptation": "none",
-        "use_expansion_hack": false
+        "use_expansion_hack": false,
+        "conditions": []
       }
     },
     {
@@ -19588,7 +21673,8 @@
         "start_pool": "tfg:moon/moonbase_entrances",
         "step": "surface_structures",
         "terrain_adaptation": "none",
-        "use_expansion_hack": false
+        "use_expansion_hack": false,
+        "conditions": []
       }
     },
     {
@@ -19658,7 +21744,18 @@
         },
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": false,
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": [
+          {
+            "type": "height",
+            "heightmap": "OCEAN_FLOOR_WG",
+            "min": 65,
+            "max": 256,
+            "range_type": "absolute",
+            "source": "KubeJS/data/tfg/lithostitched/worldgen_modifier/ocean_moai.json",
+            "modifier": "tfg:ocean_moai"
+          }
+        ]
       }
     },
     {
@@ -19745,7 +21842,62 @@
         },
         "project_start_to_heightmap": "MOTION_BLOCKING",
         "use_expansion_hack": false,
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": [
+          {
+            "type": "avoid_biomes",
+            "biomes": [
+              "tfc:deep_ocean",
+              "tfc:deep_ocean_trench",
+              "tfc:lake",
+              "tfc:mountain_lake",
+              "tfc:ocean",
+              "tfc:ocean_reef",
+              "tfc:oceanic_mountain_lake",
+              "tfc:old_mountain_lake",
+              "tfc:plateau_lake",
+              "tfc:river",
+              "tfc:volcanic_mountain_lake",
+              "tfc:volcanic_oceanic_mountain_lake",
+              "tfg:earth/coastal_dunes",
+              "tfg:earth/deep_ocean",
+              "tfg:earth/deep_ocean_trench",
+              "tfg:earth/embayments",
+              "tfg:earth/guano_island",
+              "tfg:earth/ice_sheet_oceanic",
+              "tfg:earth/ice_sheet_shore",
+              "tfg:earth/lake",
+              "tfg:earth/meltwater_lake",
+              "tfg:earth/mountain_lake",
+              "tfg:earth/ocean",
+              "tfg:earth/ocean_reef",
+              "tfg:earth/oceanic_mountain_lake",
+              "tfg:earth/old_mountain_lake",
+              "tfg:earth/old_shield_volcano_shore",
+              "tfg:earth/plateau_lake",
+              "tfg:earth/river",
+              "tfg:earth/rocky_shores",
+              "tfg:earth/sea_stacks",
+              "tfg:earth/setback_cliffs",
+              "tfg:earth/shield_volcano_shore",
+              "tfg:earth/shore",
+              "tfg:earth/subglacial_lake",
+              "tfg:earth/terrace_lower",
+              "tfg:earth/terrace_upper",
+              "tfg:earth/tidal_flats",
+              "tfg:earth/tower_karst_bay",
+              "tfg:earth/tower_karst_lake",
+              "tfg:earth/volcanic_mountain_lake",
+              "tfg:earth/volcanic_oceanic_mountain_lake"
+            ],
+            "radius": 50,
+            "step": 8,
+            "allowedCount": 0,
+            "source": "KubeJS/data/tfg/lithostitched/worldgen_modifier/avoid_water_small.json",
+            "modifier": "tfg:avoid_water_small",
+            "raw_tag": "#tfg:never_has_structure/water"
+          }
+        ]
       }
     },
     {
@@ -19801,7 +21953,8 @@
         },
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": false,
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -19857,7 +22010,8 @@
         },
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": false,
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -19913,7 +22067,8 @@
         },
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": false,
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -19969,7 +22124,8 @@
         },
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": false,
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -20025,7 +22181,8 @@
         },
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": false,
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -20092,7 +22249,8 @@
               }
             ]
           }
-        }
+        },
+        "conditions": []
       }
     },
     {
@@ -20147,7 +22305,8 @@
         },
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": false,
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -20202,7 +22361,8 @@
         },
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": false,
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -20257,7 +22417,8 @@
         },
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": false,
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -20312,7 +22473,8 @@
         },
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": false,
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -20367,7 +22529,8 @@
         },
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": false,
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -20422,7 +22585,8 @@
         },
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": false,
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -20477,7 +22641,8 @@
         },
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": false,
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -20532,7 +22697,8 @@
         },
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": false,
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -20587,7 +22753,8 @@
         },
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": false,
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -20642,7 +22809,8 @@
         },
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": false,
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -20697,7 +22865,8 @@
         },
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": false,
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -20752,7 +22921,8 @@
         },
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": false,
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -20807,7 +22977,8 @@
         },
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": false,
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -20862,7 +23033,8 @@
         },
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": false,
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -20917,7 +23089,8 @@
         },
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": false,
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -20972,7 +23145,8 @@
         },
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": false,
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -21027,7 +23201,8 @@
         },
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": false,
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -21082,7 +23257,8 @@
         },
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": false,
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -21137,7 +23313,8 @@
         },
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": false,
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -21192,7 +23369,8 @@
         },
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": false,
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -21247,7 +23425,8 @@
         },
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": false,
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -21302,7 +23481,8 @@
         },
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": false,
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -21357,7 +23537,8 @@
         },
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": false,
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -21412,7 +23593,8 @@
         },
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": false,
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -21467,7 +23649,8 @@
         },
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": false,
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -21522,7 +23705,8 @@
         },
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": false,
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -21578,7 +23762,8 @@
         },
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": false,
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -21634,7 +23819,8 @@
         },
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": true,
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -21690,7 +23876,8 @@
         },
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": true,
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -21746,7 +23933,8 @@
         },
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": false,
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -21802,7 +23990,8 @@
         },
         "project_start_to_heightmap": "WORLD_SURFACE_WG",
         "use_expansion_hack": false,
-        "spawn_overrides": {}
+        "spawn_overrides": {},
+        "conditions": []
       }
     },
     {
@@ -21870,7 +24059,8 @@
               }
             ]
           }
-        }
+        },
+        "conditions": []
       }
     }
   ],

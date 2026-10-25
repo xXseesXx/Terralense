@@ -1,0 +1,9 @@
+{
+  "source_commit": "f4929e738e83dbc8d46680276faa67520dffa172",
+  "jar_sha256": "fdf9a3521a08870eae8f43a5aea1c5ea2f8e07884f516445837c0fdc2a648ec1",
+  "source_sha256": {
+    "su/terrafirmagreg/core/world/new_ow_wg/biome/TFGBiomes.java": "bc60d93102d71e700138b070f5ba4b8d84959d28451127b128adb892640eb6e8",
+    "net/dries007/tfc/world/noise/FastNoiseLite.java": "0b431746ab7a5177c1d96fdb00a881ad20504e79ffdabf592533051a4a5ea642"
+  },
+  "extractor": "tools/reference/extract_cave_profiles.py"
+}

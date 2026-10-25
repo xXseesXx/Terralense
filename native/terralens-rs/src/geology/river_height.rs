@@ -249,3 +249,76 @@ fn make_sampler(kind: &str, seed: &mut Xoroshiro) -> Option<Sample> {
     };
     Some(out)
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn volcanic_river_profiles_match_pinned_core_biome_wrappers() {
+        let samplers = RiverHeightSamplers::new(0);
+        for (biome, expected) in [
+            ("dormant_shield_volcano", "CAVE"),
+            ("extinct_shield_volcano", "CAVE"),
+            ("ancient_shield_volcano", "CAVE"),
+            ("sunken_shield_volcano", "CAVE"),
+            ("old_shield_volcano_shore", "TALL_CANYON"),
+            ("ice_sheet_tuyas", "CAVE"),
+            ("ice_sheet_tuyas_edge", "TALL_CANYON"),
+            ("tuyas", "CANYON"),
+        ] {
+            assert_eq!(
+                samplers.type_for(biome),
+                data().order.iter().position(|ty| ty == expected).unwrap(),
+                "TFGBiomes river wrapper for {biome}"
+            );
+        }
+    }
+
+    #[test]
+    fn seed_zero_reported_bank_uses_the_floodplain_shelf_beside_a_lower_riverbed() {
+        let region = crate::region::Generator::new(0, crate::model::Settings::default());
+        let samplers = RiverHeightSamplers::new(0);
+        let profile = samplers.type_for("plains");
+        let sample = |x, z| {
+            let edges = region.river_edges_at(x, z);
+            let info = crate::rivers::sample_river_edge(&edges, x as f64, z as f64)
+                .expect("observed bank has a nearby river");
+            samplers.sample(profile, &info, x as f64, z as f64, 80., 0., 1.)
+        };
+        assert_eq!(
+            sample(8833, 11107),
+            61.5,
+            "the river shapes its surrounding bank even outside the river biome"
+        );
+        assert!(
+            sample(8827, 11107) < 61.,
+            "the adjacent wet riverbed must remain lower than its dry shelf"
+        );
+    }
+}
+
+/// Sequential noise seeds consumed by the final CAVE profile, from the same
+/// builder path as all preceding river profiles.
+pub(crate) fn cave_noise_seeds(world_seed: i64) -> (i64, i64) {
+    let mut r = Xoroshiro::new(world_seed);
+    for kind in &data().order {
+        if kind == "CAVE" {
+            return (r.next_long(), r.next_long());
+        }
+        let _ = make_sampler(kind, &mut r);
+    }
+    unreachable!("installed profile includes CAVE")
+}
+
+pub(crate) fn tall_canyon_noise_seeds(world_seed: i64) -> (i64, i64) {
+    let mut r = Xoroshiro::new(world_seed);
+    for kind in &data().order {
+        if kind == "TALL_CANYON" {
+            r.next_long();
+            return (r.next_long(), r.next_long());
+        }
+        let _ = make_sampler(kind, &mut r);
+    }
+    unreachable!("installed profile includes TALL_CANYON")
+}

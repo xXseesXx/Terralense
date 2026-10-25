@@ -1,0 +1,95 @@
+{
+  "schema": 1,
+  "provenance": {
+    "kind": "read_only_saved_chunk_and_lootr_saveddata_observation",
+    "world_alias": "world0",
+    "seed": 0
+  },
+  "observations": [
+    {
+      "dimension": "minecraft:overworld",
+      "structure_id": "tfg:illagers/arabic_village_living",
+      "start_chunk": [
+        1542,
+        702
+      ],
+      "raw_marker": [
+        24680,
+        11240
+      ],
+      "bounds_inclusive": [
+        24596,
+        82,
+        11159,
+        24718,
+        109,
+        11295
+      ],
+      "piece_count": 90,
+      "container": {
+        "position": [
+          24698,
+          85,
+          11203
+        ],
+        "block_entity_id": "lootr:lootr_chest",
+        "lootr_id": "9dc3fb3f-255f-426e-b6ae-1046c8a2977d",
+        "uuid_field": "tileId",
+        "loot_table": "tfg:chests/arabic_illager_basic",
+        "loot_table_seed": -7130617783765362357,
+        "saved_stack_count": 21,
+        "inventory_totals": {
+          "tfc:powder/salt": 6,
+          "tfc:candle/light_gray": 6,
+          "tfc:candle": 4,
+          "minecraft:flint": 9,
+          "minecraft:charcoal": 3
+        }
+      }
+    },
+    {
+      "dimension": "ad_astra:moon",
+      "structure_id": "tfg:moon/moonbase",
+      "start_chunk": [
+        826,
+        862
+      ],
+      "raw_marker": [
+        13224,
+        13800
+      ],
+      "bounds_inclusive": [
+        13202,
+        86,
+        13772,
+        13245,
+        108,
+        13832
+      ],
+      "piece_count": 24,
+      "container": {
+        "position": [
+          13240,
+          104,
+          13814
+        ],
+        "block_entity_id": "lootr:lootr_chest",
+        "lootr_id": "a3ed064d-a551-41b2-86b1-e3be90291b68",
+        "uuid_field": "tileId",
+        "loot_table": "tfg:chests/moonbase",
+        "loot_table_seed": 3122146373761591,
+        "saved_stack_count": 18,
+        "inventory_totals": {
+          "gtceu:long_stainless_steel_rod": 1,
+          "gtceu:steel_ingot": 5,
+          "gtceu:ruby_gem": 9,
+          "gtceu:good_integrated_circuit": 2,
+          "ad_astra:gas_tank": 1,
+          "gtceu:steel_rod": 1,
+          "ae2:engineering_processor": 1,
+          "gtceu:aluminium_tiny_fluid_pipe": 3
+        }
+      }
+    }
+  ]
+}

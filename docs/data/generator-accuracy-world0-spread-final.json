@@ -1,0 +1,4298 @@
+{
+  "chunks": 48,
+  "columns": 12288,
+  "fixture": "world0-spread-48.json.gz",
+  "limitations": [
+    "The sample ranks already allocated save chunks, so it measures observed generated terrain only and inherits where the player explored.",
+    "Biome is scored at the saved highest-block quart sample; season-dependent climate tint is not part of this climate metric.",
+    "Ground requires exact block IDs for solids and exact class for fluids; overlapping player edits are not distinguished from generation.",
+    "Leaf coverage includes foliage written by every mod and is not the exact placed-tree set.",
+    "Scores are diagnostics by system and denominator; they must not be pooled into one world-wide error rate."
+  ],
+  "per_chunk": [
+    {
+      "chunk": [
+        -9447,
+        673
+      ],
+      "fluid_class": {
+        "accuracy": 1.0,
+        "columns": 256,
+        "confusion": [
+          {
+            "actual": "solid",
+            "columns": 2,
+            "predicted": "solid"
+          },
+          {
+            "actual": "water",
+            "columns": 254,
+            "predicted": "water"
+          }
+        ],
+        "matches": 256
+      },
+      "ground_material_or_fluid": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      },
+      "height": {
+        "compared": 256,
+        "compared_integer_accuracy": 1.0,
+        "integer_accuracy": 1.0,
+        "integer_exact": 256,
+        "mae_blocks": 0.0,
+        "max_abs_error": 0.0,
+        "mismatches": [],
+        "missing_predictions": 0,
+        "samples": 256
+      },
+      "material_mismatches": [],
+      "surface_biome_quart": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      },
+      "tfc_climate_tolerance": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      }
+    },
+    {
+      "chunk": [
+        994,
+        1020
+      ],
+      "fluid_class": {
+        "accuracy": 1.0,
+        "columns": 256,
+        "confusion": [
+          {
+            "actual": "water",
+            "columns": 256,
+            "predicted": "water"
+          }
+        ],
+        "matches": 256
+      },
+      "ground_material_or_fluid": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      },
+      "height": {
+        "compared": 256,
+        "compared_integer_accuracy": 1.0,
+        "integer_accuracy": 1.0,
+        "integer_exact": 256,
+        "mae_blocks": 0.0,
+        "max_abs_error": 0.0,
+        "mismatches": [],
+        "missing_predictions": 0,
+        "samples": 256
+      },
+      "material_mismatches": [],
+      "surface_biome_quart": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      },
+      "tfc_climate_tolerance": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      }
+    },
+    {
+      "chunk": [
+        -16171,
+        523
+      ],
+      "fluid_class": {
+        "accuracy": 1.0,
+        "columns": 256,
+        "confusion": [
+          {
+            "actual": "solid",
+            "columns": 256,
+            "predicted": "solid"
+          }
+        ],
+        "matches": 256
+      },
+      "ground_material_or_fluid": {
+        "accuracy": 0.9765625,
+        "matches": 250,
+        "samples": 256
+      },
+      "height": {
+        "compared": 256,
+        "compared_integer_accuracy": 1.0,
+        "integer_accuracy": 1.0,
+        "integer_exact": 256,
+        "mae_blocks": 0.0,
+        "max_abs_error": 0.0,
+        "mismatches": [],
+        "missing_predictions": 0,
+        "samples": 256
+      },
+      "material_mismatches": [
+        {
+          "actual_to_predicted": "tfc:rock/raw/shale -> tfg:duff/loam",
+          "columns": 6
+        }
+      ],
+      "surface_biome_quart": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      },
+      "tfc_climate_tolerance": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      }
+    },
+    {
+      "chunk": [
+        -6364,
+        -896
+      ],
+      "fluid_class": {
+        "accuracy": 0.9296875,
+        "columns": 256,
+        "confusion": [
+          {
+            "actual": "solid",
+            "columns": 238,
+            "predicted": "solid"
+          },
+          {
+            "actual": "water",
+            "columns": 18,
+            "predicted": "solid"
+          }
+        ],
+        "matches": 238
+      },
+      "ground_material_or_fluid": {
+        "accuracy": 0.90625,
+        "matches": 232,
+        "samples": 256
+      },
+      "height": {
+        "compared": 256,
+        "compared_integer_accuracy": 1.0,
+        "integer_accuracy": 1.0,
+        "integer_exact": 256,
+        "mae_blocks": 0.0,
+        "max_abs_error": 0.0,
+        "mismatches": [],
+        "missing_predictions": 0,
+        "samples": 256
+      },
+      "material_mismatches": [
+        {
+          "actual_to_predicted": "tfc:fluid/salt_water -> tfc:sand/brown",
+          "columns": 18
+        },
+        {
+          "actual_to_predicted": "tfg:grass/podzol -> tfg:duff/podzol",
+          "columns": 5
+        },
+        {
+          "actual_to_predicted": "tfc:rock/hardened/gabbro -> tfc:sand/brown",
+          "columns": 1
+        }
+      ],
+      "surface_biome_quart": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      },
+      "tfc_climate_tolerance": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      }
+    },
+    {
+      "chunk": [
+        -16161,
+        512
+      ],
+      "fluid_class": {
+        "accuracy": 1.0,
+        "columns": 256,
+        "confusion": [
+          {
+            "actual": "solid",
+            "columns": 256,
+            "predicted": "solid"
+          }
+        ],
+        "matches": 256
+      },
+      "ground_material_or_fluid": {
+        "accuracy": 0.82421875,
+        "matches": 211,
+        "samples": 256
+      },
+      "height": {
+        "compared": 256,
+        "compared_integer_accuracy": 1.0,
+        "integer_accuracy": 1.0,
+        "integer_exact": 256,
+        "mae_blocks": 0.0,
+        "max_abs_error": 0.0,
+        "mismatches": [],
+        "missing_predictions": 0,
+        "samples": 256
+      },
+      "material_mismatches": [
+        {
+          "actual_to_predicted": "tfc:rock/raw/shale -> tfc:grass/loam",
+          "columns": 16
+        },
+        {
+          "actual_to_predicted": "tfc:rock/raw/shale -> tfg:duff/loam",
+          "columns": 11
+        },
+        {
+          "actual_to_predicted": "tfc:rock/cobble/shale -> tfc:rock/raw/shale",
+          "columns": 10
+        },
+        {
+          "actual_to_predicted": "tfc:rock/mossy_cobble/shale -> tfc:rock/cobble/shale",
+          "columns": 8
+        }
+      ],
+      "surface_biome_quart": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      },
+      "tfc_climate_tolerance": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      }
+    },
+    {
+      "chunk": [
+        -6041,
+        -1384
+      ],
+      "fluid_class": {
+        "accuracy": 1.0,
+        "columns": 256,
+        "confusion": [
+          {
+            "actual": "water",
+            "columns": 256,
+            "predicted": "water"
+          }
+        ],
+        "matches": 256
+      },
+      "ground_material_or_fluid": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      },
+      "height": {
+        "compared": 256,
+        "compared_integer_accuracy": 1.0,
+        "integer_accuracy": 1.0,
+        "integer_exact": 256,
+        "mae_blocks": 0.0,
+        "max_abs_error": 0.0,
+        "mismatches": [],
+        "missing_predictions": 0,
+        "samples": 256
+      },
+      "material_mismatches": [],
+      "surface_biome_quart": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      },
+      "tfc_climate_tolerance": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      }
+    },
+    {
+      "chunk": [
+        -8064,
+        -1266
+      ],
+      "fluid_class": {
+        "accuracy": 1.0,
+        "columns": 256,
+        "confusion": [
+          {
+            "actual": "solid",
+            "columns": 256,
+            "predicted": "solid"
+          }
+        ],
+        "matches": 256
+      },
+      "ground_material_or_fluid": {
+        "accuracy": 0.96875,
+        "matches": 248,
+        "samples": 256
+      },
+      "height": {
+        "compared": 256,
+        "compared_integer_accuracy": 1.0,
+        "integer_accuracy": 1.0,
+        "integer_exact": 256,
+        "mae_blocks": 0.0,
+        "max_abs_error": 0.0,
+        "mismatches": [],
+        "missing_predictions": 0,
+        "samples": 256
+      },
+      "material_mismatches": [
+        {
+          "actual_to_predicted": "tfc:rock/cobble/conglomerate -> tfc:rock/raw/conglomerate",
+          "columns": 8
+        }
+      ],
+      "surface_biome_quart": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      },
+      "tfc_climate_tolerance": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      }
+    },
+    {
+      "chunk": [
+        -16100,
+        567
+      ],
+      "fluid_class": {
+        "accuracy": 1.0,
+        "columns": 256,
+        "confusion": [
+          {
+            "actual": "solid",
+            "columns": 247,
+            "predicted": "solid"
+          },
+          {
+            "actual": "water",
+            "columns": 9,
+            "predicted": "water"
+          }
+        ],
+        "matches": 256
+      },
+      "ground_material_or_fluid": {
+        "accuracy": 0.99609375,
+        "matches": 255,
+        "samples": 256
+      },
+      "height": {
+        "compared": 256,
+        "compared_integer_accuracy": 1.0,
+        "integer_accuracy": 1.0,
+        "integer_exact": 256,
+        "mae_blocks": 0.0,
+        "max_abs_error": 0.0,
+        "mismatches": [],
+        "missing_predictions": 0,
+        "samples": 256
+      },
+      "material_mismatches": [
+        {
+          "actual_to_predicted": "tfc:grass/sandy_loam -> tfc:rock/mossy_cobble/andesite",
+          "columns": 1
+        }
+      ],
+      "surface_biome_quart": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      },
+      "tfc_climate_tolerance": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      }
+    },
+    {
+      "chunk": [
+        -6444,
+        -904
+      ],
+      "fluid_class": {
+        "accuracy": 0.98046875,
+        "columns": 256,
+        "confusion": [
+          {
+            "actual": "solid",
+            "columns": 5,
+            "predicted": "water"
+          },
+          {
+            "actual": "water",
+            "columns": 251,
+            "predicted": "water"
+          }
+        ],
+        "matches": 251
+      },
+      "ground_material_or_fluid": {
+        "accuracy": 0.98046875,
+        "matches": 251,
+        "samples": 256
+      },
+      "height": {
+        "compared": 256,
+        "compared_integer_accuracy": 1.0,
+        "integer_accuracy": 1.0,
+        "integer_exact": 256,
+        "mae_blocks": 0.0,
+        "max_abs_error": 0.0,
+        "mismatches": [],
+        "missing_predictions": 0,
+        "samples": 256
+      },
+      "material_mismatches": [
+        {
+          "actual_to_predicted": "tfc:sea_ice -> water",
+          "columns": 5
+        }
+      ],
+      "surface_biome_quart": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      },
+      "tfc_climate_tolerance": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      }
+    },
+    {
+      "chunk": [
+        -9419,
+        650
+      ],
+      "fluid_class": {
+        "accuracy": 1.0,
+        "columns": 256,
+        "confusion": [
+          {
+            "actual": "solid",
+            "columns": 256,
+            "predicted": "solid"
+          }
+        ],
+        "matches": 256
+      },
+      "ground_material_or_fluid": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      },
+      "height": {
+        "compared": 256,
+        "compared_integer_accuracy": 1.0,
+        "integer_accuracy": 1.0,
+        "integer_exact": 256,
+        "mae_blocks": 0.0,
+        "max_abs_error": 0.0,
+        "mismatches": [],
+        "missing_predictions": 0,
+        "samples": 256
+      },
+      "material_mismatches": [],
+      "surface_biome_quart": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      },
+      "tfc_climate_tolerance": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      }
+    },
+    {
+      "chunk": [
+        -12463,
+        -1093
+      ],
+      "fluid_class": {
+        "accuracy": 1.0,
+        "columns": 256,
+        "confusion": [
+          {
+            "actual": "solid",
+            "columns": 256,
+            "predicted": "solid"
+          }
+        ],
+        "matches": 256
+      },
+      "ground_material_or_fluid": {
+        "accuracy": 0.98828125,
+        "matches": 253,
+        "samples": 256
+      },
+      "height": {
+        "compared": 256,
+        "compared_integer_accuracy": 1.0,
+        "integer_accuracy": 1.0,
+        "integer_exact": 256,
+        "mae_blocks": 0.0,
+        "max_abs_error": 0.0,
+        "mismatches": [],
+        "missing_predictions": 0,
+        "samples": 256
+      },
+      "material_mismatches": [
+        {
+          "actual_to_predicted": "tfc:rock/cobble/chert -> tfc:rock/raw/chert",
+          "columns": 3
+        }
+      ],
+      "surface_biome_quart": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      },
+      "tfc_climate_tolerance": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      }
+    },
+    {
+      "chunk": [
+        963,
+        2143
+      ],
+      "fluid_class": {
+        "accuracy": 1.0,
+        "columns": 256,
+        "confusion": [
+          {
+            "actual": "water",
+            "columns": 256,
+            "predicted": "water"
+          }
+        ],
+        "matches": 256
+      },
+      "ground_material_or_fluid": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      },
+      "height": {
+        "compared": 256,
+        "compared_integer_accuracy": 1.0,
+        "integer_accuracy": 1.0,
+        "integer_exact": 256,
+        "mae_blocks": 0.0,
+        "max_abs_error": 0.0,
+        "mismatches": [],
+        "missing_predictions": 0,
+        "samples": 256
+      },
+      "material_mismatches": [],
+      "surface_biome_quart": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      },
+      "tfc_climate_tolerance": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      }
+    },
+    {
+      "chunk": [
+        -6469,
+        -884
+      ],
+      "fluid_class": {
+        "accuracy": 1.0,
+        "columns": 256,
+        "confusion": [
+          {
+            "actual": "solid",
+            "columns": 256,
+            "predicted": "solid"
+          }
+        ],
+        "matches": 256
+      },
+      "ground_material_or_fluid": {
+        "accuracy": 0.50390625,
+        "matches": 129,
+        "samples": 256
+      },
+      "height": {
+        "compared": 256,
+        "compared_integer_accuracy": 1.0,
+        "integer_accuracy": 1.0,
+        "integer_exact": 256,
+        "mae_blocks": 0.0,
+        "max_abs_error": 0.0,
+        "mismatches": [],
+        "missing_predictions": 0,
+        "samples": 256
+      },
+      "material_mismatches": [
+        {
+          "actual_to_predicted": "tfg:grass/podzol -> tfg:duff/podzol",
+          "columns": 90
+        },
+        {
+          "actual_to_predicted": "tfg:duff/podzol -> tfc:rock/mossy_cobble/claystone",
+          "columns": 21
+        },
+        {
+          "actual_to_predicted": "tfg:duff/podzol -> tfc:rock/cobble/claystone",
+          "columns": 10
+        },
+        {
+          "actual_to_predicted": "tfg:grass/podzol -> tfc:rock/cobble/claystone",
+          "columns": 4
+        },
+        {
+          "actual_to_predicted": "tfg:grass/podzol -> tfc:rock/mossy_cobble/claystone",
+          "columns": 2
+        }
+      ],
+      "surface_biome_quart": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      },
+      "tfc_climate_tolerance": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      }
+    },
+    {
+      "chunk": [
+        -17635,
+        3032
+      ],
+      "fluid_class": {
+        "accuracy": 1.0,
+        "columns": 256,
+        "confusion": [
+          {
+            "actual": "solid",
+            "columns": 256,
+            "predicted": "solid"
+          }
+        ],
+        "matches": 256
+      },
+      "ground_material_or_fluid": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      },
+      "height": {
+        "compared": 256,
+        "compared_integer_accuracy": 1.0,
+        "integer_accuracy": 1.0,
+        "integer_exact": 256,
+        "mae_blocks": 0.0,
+        "max_abs_error": 0.0,
+        "mismatches": [],
+        "missing_predictions": 0,
+        "samples": 256
+      },
+      "material_mismatches": [],
+      "surface_biome_quart": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      },
+      "tfc_climate_tolerance": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      }
+    },
+    {
+      "chunk": [
+        -12526,
+        -1187
+      ],
+      "fluid_class": {
+        "accuracy": 1.0,
+        "columns": 256,
+        "confusion": [
+          {
+            "actual": "solid",
+            "columns": 256,
+            "predicted": "solid"
+          }
+        ],
+        "matches": 256
+      },
+      "ground_material_or_fluid": {
+        "accuracy": 0.4609375,
+        "matches": 118,
+        "samples": 256
+      },
+      "height": {
+        "compared": 256,
+        "compared_integer_accuracy": 1.0,
+        "integer_accuracy": 1.0,
+        "integer_exact": 256,
+        "mae_blocks": 0.0,
+        "max_abs_error": 0.0,
+        "mismatches": [],
+        "missing_predictions": 0,
+        "samples": 256
+      },
+      "material_mismatches": [
+        {
+          "actual_to_predicted": "tfg:grass/alfisol -> tfg:duff/alfisol",
+          "columns": 75
+        },
+        {
+          "actual_to_predicted": "tfg:grass/podzol -> tfg:duff/alfisol",
+          "columns": 26
+        },
+        {
+          "actual_to_predicted": "tfg:duff/podzol -> tfg:duff/alfisol",
+          "columns": 15
+        },
+        {
+          "actual_to_predicted": "tfg:grass/podzol -> tfg:grass/alfisol",
+          "columns": 12
+        },
+        {
+          "actual_to_predicted": "tfg:grass/podzol -> tfg:duff/podzol",
+          "columns": 10
+        }
+      ],
+      "surface_biome_quart": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      },
+      "tfc_climate_tolerance": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      }
+    },
+    {
+      "chunk": [
+        -9434,
+        658
+      ],
+      "fluid_class": {
+        "accuracy": 1.0,
+        "columns": 256,
+        "confusion": [
+          {
+            "actual": "solid",
+            "columns": 256,
+            "predicted": "solid"
+          }
+        ],
+        "matches": 256
+      },
+      "ground_material_or_fluid": {
+        "accuracy": 0.9296875,
+        "matches": 238,
+        "samples": 256
+      },
+      "height": {
+        "compared": 256,
+        "compared_integer_accuracy": 1.0,
+        "integer_accuracy": 1.0,
+        "integer_exact": 256,
+        "mae_blocks": 0.0,
+        "max_abs_error": 0.0,
+        "mismatches": [],
+        "missing_predictions": 0,
+        "samples": 256
+      },
+      "material_mismatches": [
+        {
+          "actual_to_predicted": "tfg:clay_grass/oxisol -> tfg:grass/oxisol",
+          "columns": 18
+        }
+      ],
+      "surface_biome_quart": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      },
+      "tfc_climate_tolerance": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      }
+    },
+    {
+      "chunk": [
+        -12128,
+        -1513
+      ],
+      "fluid_class": {
+        "accuracy": 1.0,
+        "columns": 256,
+        "confusion": [
+          {
+            "actual": "water",
+            "columns": 256,
+            "predicted": "water"
+          }
+        ],
+        "matches": 256
+      },
+      "ground_material_or_fluid": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      },
+      "height": {
+        "compared": 256,
+        "compared_integer_accuracy": 1.0,
+        "integer_accuracy": 1.0,
+        "integer_exact": 256,
+        "mae_blocks": 0.0,
+        "max_abs_error": 0.0,
+        "mismatches": [],
+        "missing_predictions": 0,
+        "samples": 256
+      },
+      "material_mismatches": [],
+      "surface_biome_quart": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      },
+      "tfc_climate_tolerance": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      }
+    },
+    {
+      "chunk": [
+        2992,
+        1355
+      ],
+      "fluid_class": {
+        "accuracy": 1.0,
+        "columns": 256,
+        "confusion": [
+          {
+            "actual": "solid",
+            "columns": 256,
+            "predicted": "solid"
+          }
+        ],
+        "matches": 256
+      },
+      "ground_material_or_fluid": {
+        "accuracy": 0.99609375,
+        "matches": 255,
+        "samples": 256
+      },
+      "height": {
+        "compared": 256,
+        "compared_integer_accuracy": 1.0,
+        "integer_accuracy": 1.0,
+        "integer_exact": 256,
+        "mae_blocks": 0.0,
+        "max_abs_error": 0.0,
+        "mismatches": [],
+        "missing_predictions": 0,
+        "samples": 256
+      },
+      "material_mismatches": [
+        {
+          "actual_to_predicted": "tfc:rock/mossy_cobble/basalt -> tfg:duff/silt",
+          "columns": 1
+        }
+      ],
+      "surface_biome_quart": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      },
+      "tfc_climate_tolerance": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      }
+    },
+    {
+      "chunk": [
+        -12273,
+        -1119
+      ],
+      "fluid_class": {
+        "accuracy": 1.0,
+        "columns": 256,
+        "confusion": [
+          {
+            "actual": "solid",
+            "columns": 256,
+            "predicted": "solid"
+          }
+        ],
+        "matches": 256
+      },
+      "ground_material_or_fluid": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      },
+      "height": {
+        "compared": 256,
+        "compared_integer_accuracy": 1.0,
+        "integer_accuracy": 1.0,
+        "integer_exact": 256,
+        "mae_blocks": 0.0,
+        "max_abs_error": 0.0,
+        "mismatches": [],
+        "missing_predictions": 0,
+        "samples": 256
+      },
+      "material_mismatches": [],
+      "surface_biome_quart": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      },
+      "tfc_climate_tolerance": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      }
+    },
+    {
+      "chunk": [
+        -12114,
+        -1423
+      ],
+      "fluid_class": {
+        "accuracy": 1.0,
+        "columns": 256,
+        "confusion": [
+          {
+            "actual": "solid",
+            "columns": 256,
+            "predicted": "solid"
+          }
+        ],
+        "matches": 256
+      },
+      "ground_material_or_fluid": {
+        "accuracy": 0.94140625,
+        "matches": 241,
+        "samples": 256
+      },
+      "height": {
+        "compared": 256,
+        "compared_integer_accuracy": 1.0,
+        "integer_accuracy": 1.0,
+        "integer_exact": 256,
+        "mae_blocks": 0.0,
+        "max_abs_error": 0.0,
+        "mismatches": [],
+        "missing_predictions": 0,
+        "samples": 256
+      },
+      "material_mismatches": [
+        {
+          "actual_to_predicted": "tfc:rock/gravel/chalk -> tfg:duff/silt",
+          "columns": 5
+        },
+        {
+          "actual_to_predicted": "tfc:rock/gravel/chalk -> tfc:grass/silt",
+          "columns": 3
+        },
+        {
+          "actual_to_predicted": "tfc:rock/raw/chalk -> tfc:grass/silt",
+          "columns": 3
+        },
+        {
+          "actual_to_predicted": "tfc:rock/hardened/chalk -> tfc:grass/silt",
+          "columns": 2
+        },
+        {
+          "actual_to_predicted": "tfc:rock/raw/chalk -> tfg:duff/silt",
+          "columns": 2
+        }
+      ],
+      "surface_biome_quart": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      },
+      "tfc_climate_tolerance": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      }
+    },
+    {
+      "chunk": [
+        945,
+        924
+      ],
+      "fluid_class": {
+        "accuracy": 1.0,
+        "columns": 256,
+        "confusion": [
+          {
+            "actual": "solid",
+            "columns": 229,
+            "predicted": "solid"
+          },
+          {
+            "actual": "water",
+            "columns": 27,
+            "predicted": "water"
+          }
+        ],
+        "matches": 256
+      },
+      "ground_material_or_fluid": {
+        "accuracy": 0.921875,
+        "matches": 236,
+        "samples": 256
+      },
+      "height": {
+        "compared": 256,
+        "compared_integer_accuracy": 1.0,
+        "integer_accuracy": 1.0,
+        "integer_exact": 256,
+        "mae_blocks": 0.0,
+        "max_abs_error": 0.0,
+        "mismatches": [],
+        "missing_predictions": 0,
+        "samples": 256
+      },
+      "material_mismatches": [
+        {
+          "actual_to_predicted": "tfc:rock/gravel/rhyolite -> tfc:grass/silty_loam",
+          "columns": 20
+        }
+      ],
+      "surface_biome_quart": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      },
+      "tfc_climate_tolerance": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      }
+    },
+    {
+      "chunk": [
+        1297,
+        974
+      ],
+      "fluid_class": {
+        "accuracy": 1.0,
+        "columns": 256,
+        "confusion": [
+          {
+            "actual": "solid",
+            "columns": 256,
+            "predicted": "solid"
+          }
+        ],
+        "matches": 256
+      },
+      "ground_material_or_fluid": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      },
+      "height": {
+        "compared": 256,
+        "compared_integer_accuracy": 1.0,
+        "integer_accuracy": 1.0,
+        "integer_exact": 256,
+        "mae_blocks": 0.0,
+        "max_abs_error": 0.0,
+        "mismatches": [],
+        "missing_predictions": 0,
+        "samples": 256
+      },
+      "material_mismatches": [],
+      "surface_biome_quart": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      },
+      "tfc_climate_tolerance": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      }
+    },
+    {
+      "chunk": [
+        -8119,
+        -1325
+      ],
+      "fluid_class": {
+        "accuracy": 1.0,
+        "columns": 256,
+        "confusion": [
+          {
+            "actual": "solid",
+            "columns": 69,
+            "predicted": "solid"
+          },
+          {
+            "actual": "water",
+            "columns": 187,
+            "predicted": "water"
+          }
+        ],
+        "matches": 256
+      },
+      "ground_material_or_fluid": {
+        "accuracy": 0.99609375,
+        "matches": 255,
+        "samples": 256
+      },
+      "height": {
+        "compared": 256,
+        "compared_integer_accuracy": 1.0,
+        "integer_accuracy": 1.0,
+        "integer_exact": 256,
+        "mae_blocks": 0.0,
+        "max_abs_error": 0.0,
+        "mismatches": [],
+        "missing_predictions": 0,
+        "samples": 256
+      },
+      "material_mismatches": [
+        {
+          "actual_to_predicted": "tfg:coarse_dirt/sandy_loam -> tfc:rock/gravel/shale",
+          "columns": 1
+        }
+      ],
+      "surface_biome_quart": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      },
+      "tfc_climate_tolerance": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      }
+    },
+    {
+      "chunk": [
+        553,
+        1609
+      ],
+      "fluid_class": {
+        "accuracy": 0.62890625,
+        "columns": 256,
+        "confusion": [
+          {
+            "actual": "solid",
+            "columns": 61,
+            "predicted": "solid"
+          },
+          {
+            "actual": "solid",
+            "columns": 95,
+            "predicted": "water"
+          },
+          {
+            "actual": "water",
+            "columns": 100,
+            "predicted": "water"
+          }
+        ],
+        "matches": 161
+      },
+      "ground_material_or_fluid": {
+        "accuracy": 0.62890625,
+        "matches": 161,
+        "samples": 256
+      },
+      "height": {
+        "compared": 256,
+        "compared_integer_accuracy": 1.0,
+        "integer_accuracy": 1.0,
+        "integer_exact": 256,
+        "mae_blocks": 0.0,
+        "max_abs_error": 0.0,
+        "mismatches": [],
+        "missing_predictions": 0,
+        "samples": 256
+      },
+      "material_mismatches": [
+        {
+          "actual_to_predicted": "tfc:rock/cobble/chalk -> water",
+          "columns": 37
+        },
+        {
+          "actual_to_predicted": "minecraft:ice -> water",
+          "columns": 26
+        },
+        {
+          "actual_to_predicted": "tfc:rock/mossy_cobble/chalk -> water",
+          "columns": 14
+        },
+        {
+          "actual_to_predicted": "tfc:rock/gravel/chalk -> water",
+          "columns": 10
+        },
+        {
+          "actual_to_predicted": "tfc:grass/loam -> water",
+          "columns": 7
+        },
+        {
+          "actual_to_predicted": "tfc:dirt/loam -> water",
+          "columns": 1
+        }
+      ],
+      "surface_biome_quart": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      },
+      "tfc_climate_tolerance": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      }
+    },
+    {
+      "chunk": [
+        1324,
+        1077
+      ],
+      "fluid_class": {
+        "accuracy": 1.0,
+        "columns": 256,
+        "confusion": [
+          {
+            "actual": "solid",
+            "columns": 256,
+            "predicted": "solid"
+          }
+        ],
+        "matches": 256
+      },
+      "ground_material_or_fluid": {
+        "accuracy": 0.9140625,
+        "matches": 234,
+        "samples": 256
+      },
+      "height": {
+        "compared": 256,
+        "compared_integer_accuracy": 1.0,
+        "integer_accuracy": 1.0,
+        "integer_exact": 256,
+        "mae_blocks": 0.0,
+        "max_abs_error": 0.0,
+        "mismatches": [],
+        "missing_predictions": 0,
+        "samples": 256
+      },
+      "material_mismatches": [
+        {
+          "actual_to_predicted": "tfg:grass/alfisol -> tfg:duff/alfisol",
+          "columns": 22
+        }
+      ],
+      "surface_biome_quart": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      },
+      "tfc_climate_tolerance": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      }
+    },
+    {
+      "chunk": [
+        2151,
+        458
+      ],
+      "fluid_class": {
+        "accuracy": 1.0,
+        "columns": 256,
+        "confusion": [
+          {
+            "actual": "solid",
+            "columns": 256,
+            "predicted": "solid"
+          }
+        ],
+        "matches": 256
+      },
+      "ground_material_or_fluid": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      },
+      "height": {
+        "compared": 256,
+        "compared_integer_accuracy": 1.0,
+        "integer_accuracy": 1.0,
+        "integer_exact": 256,
+        "mae_blocks": 0.0,
+        "max_abs_error": 0.0,
+        "mismatches": [],
+        "missing_predictions": 0,
+        "samples": 256
+      },
+      "material_mismatches": [],
+      "surface_biome_quart": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      },
+      "tfc_climate_tolerance": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      }
+    },
+    {
+      "chunk": [
+        2967,
+        1028
+      ],
+      "fluid_class": {
+        "accuracy": 1.0,
+        "columns": 256,
+        "confusion": [
+          {
+            "actual": "solid",
+            "columns": 80,
+            "predicted": "solid"
+          },
+          {
+            "actual": "water",
+            "columns": 176,
+            "predicted": "water"
+          }
+        ],
+        "matches": 256
+      },
+      "ground_material_or_fluid": {
+        "accuracy": 0.96875,
+        "matches": 248,
+        "samples": 256
+      },
+      "height": {
+        "compared": 256,
+        "compared_integer_accuracy": 1.0,
+        "integer_accuracy": 1.0,
+        "integer_exact": 256,
+        "mae_blocks": 0.0,
+        "max_abs_error": 0.0,
+        "mismatches": [],
+        "missing_predictions": 0,
+        "samples": 256
+      },
+      "material_mismatches": [
+        {
+          "actual_to_predicted": "tfc:mud/silty_loam -> tfg:duff/silt",
+          "columns": 8
+        }
+      ],
+      "surface_biome_quart": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      },
+      "tfc_climate_tolerance": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      }
+    },
+    {
+      "chunk": [
+        873,
+        1098
+      ],
+      "fluid_class": {
+        "accuracy": 1.0,
+        "columns": 256,
+        "confusion": [
+          {
+            "actual": "solid",
+            "columns": 256,
+            "predicted": "solid"
+          }
+        ],
+        "matches": 256
+      },
+      "ground_material_or_fluid": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      },
+      "height": {
+        "compared": 256,
+        "compared_integer_accuracy": 1.0,
+        "integer_accuracy": 1.0,
+        "integer_exact": 256,
+        "mae_blocks": 0.0,
+        "max_abs_error": 0.0,
+        "mismatches": [],
+        "missing_predictions": 0,
+        "samples": 256
+      },
+      "material_mismatches": [],
+      "surface_biome_quart": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      },
+      "tfc_climate_tolerance": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      }
+    },
+    {
+      "chunk": [
+        -6218,
+        -1349
+      ],
+      "fluid_class": {
+        "accuracy": 1.0,
+        "columns": 256,
+        "confusion": [
+          {
+            "actual": "solid",
+            "columns": 256,
+            "predicted": "solid"
+          }
+        ],
+        "matches": 256
+      },
+      "ground_material_or_fluid": {
+        "accuracy": 0.8671875,
+        "matches": 222,
+        "samples": 256
+      },
+      "height": {
+        "compared": 256,
+        "compared_integer_accuracy": 1.0,
+        "integer_accuracy": 1.0,
+        "integer_exact": 256,
+        "mae_blocks": 0.0,
+        "max_abs_error": 0.0,
+        "mismatches": [],
+        "missing_predictions": 0,
+        "samples": 256
+      },
+      "material_mismatches": [
+        {
+          "actual_to_predicted": "tfc:rock/raw/basalt -> tfg:grass/alfisol",
+          "columns": 22
+        },
+        {
+          "actual_to_predicted": "tfc:rock/raw/basalt -> tfg:duff/alfisol",
+          "columns": 5
+        },
+        {
+          "actual_to_predicted": "tfc:rock/raw/basalt -> tfc:grass/loam",
+          "columns": 4
+        },
+        {
+          "actual_to_predicted": "tfc:rock/cobble/basalt -> tfg:grass/alfisol",
+          "columns": 2
+        },
+        {
+          "actual_to_predicted": "tfc:sand/black -> tfc:rock/gravel/andesite",
+          "columns": 1
+        }
+      ],
+      "surface_biome_quart": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      },
+      "tfc_climate_tolerance": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      }
+    },
+    {
+      "chunk": [
+        -8059,
+        -1184
+      ],
+      "fluid_class": {
+        "accuracy": 1.0,
+        "columns": 256,
+        "confusion": [
+          {
+            "actual": "solid",
+            "columns": 256,
+            "predicted": "solid"
+          }
+        ],
+        "matches": 256
+      },
+      "ground_material_or_fluid": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      },
+      "height": {
+        "compared": 256,
+        "compared_integer_accuracy": 1.0,
+        "integer_accuracy": 1.0,
+        "integer_exact": 256,
+        "mae_blocks": 0.0,
+        "max_abs_error": 0.0,
+        "mismatches": [],
+        "missing_predictions": 0,
+        "samples": 256
+      },
+      "material_mismatches": [],
+      "surface_biome_quart": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      },
+      "tfc_climate_tolerance": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      }
+    },
+    {
+      "chunk": [
+        -7032,
+        -972
+      ],
+      "fluid_class": {
+        "accuracy": 1.0,
+        "columns": 256,
+        "confusion": [
+          {
+            "actual": "solid",
+            "columns": 256,
+            "predicted": "solid"
+          }
+        ],
+        "matches": 256
+      },
+      "ground_material_or_fluid": {
+        "accuracy": 0.8671875,
+        "matches": 222,
+        "samples": 256
+      },
+      "height": {
+        "compared": 256,
+        "compared_integer_accuracy": 1.0,
+        "integer_accuracy": 1.0,
+        "integer_exact": 256,
+        "mae_blocks": 0.0,
+        "max_abs_error": 0.0,
+        "mismatches": [],
+        "missing_predictions": 0,
+        "samples": 256
+      },
+      "material_mismatches": [
+        {
+          "actual_to_predicted": "tfc:clay_grass/sandy_loam -> tfg:duff/sandy_loam",
+          "columns": 15
+        },
+        {
+          "actual_to_predicted": "tfc:rock/raw/diorite -> tfc:rock/gravel/chert",
+          "columns": 8
+        },
+        {
+          "actual_to_predicted": "tfc:rock/raw/chert -> tfc:rock/gravel/chert",
+          "columns": 5
+        },
+        {
+          "actual_to_predicted": "tfc:rock/raw/chert -> tfg:coarse_dirt/sandy_loam",
+          "columns": 4
+        },
+        {
+          "actual_to_predicted": "tfc:clay/sandy_loam -> tfg:coarse_dirt/sandy_loam",
+          "columns": 2
+        }
+      ],
+      "surface_biome_quart": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      },
+      "tfc_climate_tolerance": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      }
+    },
+    {
+      "chunk": [
+        -8150,
+        -1447
+      ],
+      "fluid_class": {
+        "accuracy": 1.0,
+        "columns": 256,
+        "confusion": [
+          {
+            "actual": "solid",
+            "columns": 256,
+            "predicted": "solid"
+          }
+        ],
+        "matches": 256
+      },
+      "ground_material_or_fluid": {
+        "accuracy": 0.31640625,
+        "matches": 81,
+        "samples": 256
+      },
+      "height": {
+        "compared": 256,
+        "compared_integer_accuracy": 1.0,
+        "integer_accuracy": 1.0,
+        "integer_exact": 256,
+        "mae_blocks": 0.0,
+        "max_abs_error": 0.0,
+        "mismatches": [],
+        "missing_predictions": 0,
+        "samples": 256
+      },
+      "material_mismatches": [
+        {
+          "actual_to_predicted": "tfc:raw_sandstone/brown -> tfc:sand/black",
+          "columns": 77
+        },
+        {
+          "actual_to_predicted": "tfc:raw_sandstone/red -> tfc:sand/black",
+          "columns": 72
+        },
+        {
+          "actual_to_predicted": "tfc:raw_sandstone/yellow -> tfc:sand/black",
+          "columns": 18
+        },
+        {
+          "actual_to_predicted": "tfc:raw_sandstone/white -> tfc:sand/black",
+          "columns": 8
+        }
+      ],
+      "surface_biome_quart": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      },
+      "tfc_climate_tolerance": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      }
+    },
+    {
+      "chunk": [
+        1241,
+        -139
+      ],
+      "fluid_class": {
+        "accuracy": 1.0,
+        "columns": 256,
+        "confusion": [
+          {
+            "actual": "solid",
+            "columns": 77,
+            "predicted": "solid"
+          },
+          {
+            "actual": "water",
+            "columns": 179,
+            "predicted": "water"
+          }
+        ],
+        "matches": 256
+      },
+      "ground_material_or_fluid": {
+        "accuracy": 0.984375,
+        "matches": 252,
+        "samples": 256
+      },
+      "height": {
+        "compared": 256,
+        "compared_integer_accuracy": 1.0,
+        "integer_accuracy": 1.0,
+        "integer_exact": 256,
+        "mae_blocks": 0.0,
+        "max_abs_error": 0.0,
+        "mismatches": [],
+        "missing_predictions": 0,
+        "samples": 256
+      },
+      "material_mismatches": [
+        {
+          "actual_to_predicted": "tfc:mud/loam -> tfc:grass/loam",
+          "columns": 4
+        }
+      ],
+      "surface_biome_quart": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      },
+      "tfc_climate_tolerance": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      }
+    },
+    {
+      "chunk": [
+        982,
+        2080
+      ],
+      "fluid_class": {
+        "accuracy": 0.91796875,
+        "columns": 256,
+        "confusion": [
+          {
+            "actual": "solid",
+            "columns": 228,
+            "predicted": "solid"
+          },
+          {
+            "actual": "water",
+            "columns": 21,
+            "predicted": "solid"
+          },
+          {
+            "actual": "water",
+            "columns": 7,
+            "predicted": "water"
+          }
+        ],
+        "matches": 235
+      },
+      "ground_material_or_fluid": {
+        "accuracy": 0.91796875,
+        "matches": 235,
+        "samples": 256
+      },
+      "height": {
+        "compared": 256,
+        "compared_integer_accuracy": 1.0,
+        "integer_accuracy": 1.0,
+        "integer_exact": 256,
+        "mae_blocks": 0.0,
+        "max_abs_error": 0.0,
+        "mismatches": [],
+        "missing_predictions": 0,
+        "samples": 256
+      },
+      "material_mismatches": [
+        {
+          "actual_to_predicted": "tfc:fluid/salt_water -> tfc:sand/yellow",
+          "columns": 21
+        }
+      ],
+      "surface_biome_quart": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      },
+      "tfc_climate_tolerance": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      }
+    },
+    {
+      "chunk": [
+        1088,
+        1000
+      ],
+      "fluid_class": {
+        "accuracy": 1.0,
+        "columns": 256,
+        "confusion": [
+          {
+            "actual": "solid",
+            "columns": 20,
+            "predicted": "solid"
+          },
+          {
+            "actual": "water",
+            "columns": 236,
+            "predicted": "water"
+          }
+        ],
+        "matches": 256
+      },
+      "ground_material_or_fluid": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      },
+      "height": {
+        "compared": 256,
+        "compared_integer_accuracy": 1.0,
+        "integer_accuracy": 1.0,
+        "integer_exact": 256,
+        "mae_blocks": 0.0,
+        "max_abs_error": 0.0,
+        "mismatches": [],
+        "missing_predictions": 0,
+        "samples": 256
+      },
+      "material_mismatches": [],
+      "surface_biome_quart": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      },
+      "tfc_climate_tolerance": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      }
+    },
+    {
+      "chunk": [
+        -7720,
+        191
+      ],
+      "fluid_class": {
+        "accuracy": 0.80859375,
+        "columns": 256,
+        "confusion": [
+          {
+            "actual": "solid",
+            "columns": 103,
+            "predicted": "solid"
+          },
+          {
+            "actual": "water",
+            "columns": 49,
+            "predicted": "solid"
+          },
+          {
+            "actual": "water",
+            "columns": 104,
+            "predicted": "water"
+          }
+        ],
+        "matches": 207
+      },
+      "ground_material_or_fluid": {
+        "accuracy": 0.4375,
+        "matches": 112,
+        "samples": 256
+      },
+      "height": {
+        "compared": 256,
+        "compared_integer_accuracy": 1.0,
+        "integer_accuracy": 1.0,
+        "integer_exact": 256,
+        "mae_blocks": 0.0,
+        "max_abs_error": 0.0,
+        "mismatches": [],
+        "missing_predictions": 0,
+        "samples": 256
+      },
+      "material_mismatches": [
+        {
+          "actual_to_predicted": "tfc:raw_sandstone/red -> tfg:coarse_dirt/sandy_loam",
+          "columns": 26
+        },
+        {
+          "actual_to_predicted": "minecraft:water -> tfg:coarse_dirt/sandy_loam",
+          "columns": 22
+        },
+        {
+          "actual_to_predicted": "tfc:raw_sandstone/red -> tfg:duff/sandy_loam",
+          "columns": 18
+        },
+        {
+          "actual_to_predicted": "minecraft:water -> tfc:grass/sandy_loam",
+          "columns": 13
+        },
+        {
+          "actual_to_predicted": "minecraft:water -> tfg:duff/sandy_loam",
+          "columns": 13
+        },
+        {
+          "actual_to_predicted": "tfc:raw_sandstone/white -> tfg:coarse_dirt/sandy_loam",
+          "columns": 11
+        },
+        {
+          "actual_to_predicted": "tfc:raw_sandstone/white -> tfg:duff/sandy_loam",
+          "columns": 11
+        },
+        {
+          "actual_to_predicted": "tfc:raw_sandstone/yellow -> tfg:coarse_dirt/sandy_loam",
+          "columns": 9
+        },
+        {
+          "actual_to_predicted": "tfc:raw_sandstone/red -> tfc:grass/sandy_loam",
+          "columns": 8
+        },
+        {
+          "actual_to_predicted": "tfc:raw_sandstone/yellow -> tfg:duff/sandy_loam",
+          "columns": 8
+        },
+        {
+          "actual_to_predicted": "tfc:rock/raw/chalk -> tfg:coarse_dirt/sandy_loam",
+          "columns": 2
+        },
+        {
+          "actual_to_predicted": "tfc:rock/raw/chalk -> tfg:duff/sandy_loam",
+          "columns": 2
+        }
+      ],
+      "surface_biome_quart": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      },
+      "tfc_climate_tolerance": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      }
+    },
+    {
+      "chunk": [
+        -8144,
+        916
+      ],
+      "fluid_class": {
+        "accuracy": 1.0,
+        "columns": 256,
+        "confusion": [
+          {
+            "actual": "solid",
+            "columns": 256,
+            "predicted": "solid"
+          }
+        ],
+        "matches": 256
+      },
+      "ground_material_or_fluid": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      },
+      "height": {
+        "compared": 256,
+        "compared_integer_accuracy": 1.0,
+        "integer_accuracy": 1.0,
+        "integer_exact": 256,
+        "mae_blocks": 0.0,
+        "max_abs_error": 0.0,
+        "mismatches": [],
+        "missing_predictions": 0,
+        "samples": 256
+      },
+      "material_mismatches": [],
+      "surface_biome_quart": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      },
+      "tfc_climate_tolerance": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      }
+    },
+    {
+      "chunk": [
+        -8182,
+        957
+      ],
+      "fluid_class": {
+        "accuracy": 1.0,
+        "columns": 256,
+        "confusion": [
+          {
+            "actual": "solid",
+            "columns": 192,
+            "predicted": "solid"
+          },
+          {
+            "actual": "water",
+            "columns": 64,
+            "predicted": "water"
+          }
+        ],
+        "matches": 256
+      },
+      "ground_material_or_fluid": {
+        "accuracy": 0.9921875,
+        "matches": 254,
+        "samples": 256
+      },
+      "height": {
+        "compared": 256,
+        "compared_integer_accuracy": 1.0,
+        "integer_accuracy": 1.0,
+        "integer_exact": 256,
+        "mae_blocks": 0.0,
+        "max_abs_error": 0.0,
+        "mismatches": [],
+        "missing_predictions": 0,
+        "samples": 256
+      },
+      "material_mismatches": [
+        {
+          "actual_to_predicted": "tfg:pile/volcanic_ash -> tfc:rock/raw/basalt",
+          "columns": 2
+        }
+      ],
+      "surface_biome_quart": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      },
+      "tfc_climate_tolerance": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      }
+    },
+    {
+      "chunk": [
+        -9670,
+        589
+      ],
+      "fluid_class": {
+        "accuracy": 1.0,
+        "columns": 256,
+        "confusion": [
+          {
+            "actual": "solid",
+            "columns": 256,
+            "predicted": "solid"
+          }
+        ],
+        "matches": 256
+      },
+      "ground_material_or_fluid": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      },
+      "height": {
+        "compared": 256,
+        "compared_integer_accuracy": 1.0,
+        "integer_accuracy": 1.0,
+        "integer_exact": 256,
+        "mae_blocks": 0.0,
+        "max_abs_error": 0.0,
+        "mismatches": [],
+        "missing_predictions": 0,
+        "samples": 256
+      },
+      "material_mismatches": [],
+      "surface_biome_quart": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      },
+      "tfc_climate_tolerance": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      }
+    },
+    {
+      "chunk": [
+        927,
+        904
+      ],
+      "fluid_class": {
+        "accuracy": 1.0,
+        "columns": 256,
+        "confusion": [
+          {
+            "actual": "solid",
+            "columns": 256,
+            "predicted": "solid"
+          }
+        ],
+        "matches": 256
+      },
+      "ground_material_or_fluid": {
+        "accuracy": 0.9375,
+        "matches": 240,
+        "samples": 256
+      },
+      "height": {
+        "compared": 256,
+        "compared_integer_accuracy": 1.0,
+        "integer_accuracy": 1.0,
+        "integer_exact": 256,
+        "mae_blocks": 0.0,
+        "max_abs_error": 0.0,
+        "mismatches": [],
+        "missing_predictions": 0,
+        "samples": 256
+      },
+      "material_mismatches": [
+        {
+          "actual_to_predicted": "tfg:dirt/mollisol -> tfg:grass/mollisol",
+          "columns": 11
+        },
+        {
+          "actual_to_predicted": "tfg:dirt/mollisol -> tfg:duff/mollisol",
+          "columns": 5
+        }
+      ],
+      "surface_biome_quart": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      },
+      "tfc_climate_tolerance": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      }
+    },
+    {
+      "chunk": [
+        -6331,
+        -969
+      ],
+      "fluid_class": {
+        "accuracy": 1.0,
+        "columns": 256,
+        "confusion": [
+          {
+            "actual": "solid",
+            "columns": 256,
+            "predicted": "solid"
+          }
+        ],
+        "matches": 256
+      },
+      "ground_material_or_fluid": {
+        "accuracy": 0.7265625,
+        "matches": 186,
+        "samples": 256
+      },
+      "height": {
+        "compared": 256,
+        "compared_integer_accuracy": 1.0,
+        "integer_accuracy": 1.0,
+        "integer_exact": 256,
+        "mae_blocks": 0.0,
+        "max_abs_error": 0.0,
+        "mismatches": [],
+        "missing_predictions": 0,
+        "samples": 256
+      },
+      "material_mismatches": [
+        {
+          "actual_to_predicted": "tfg:grass/podzol -> tfg:duff/podzol",
+          "columns": 70
+        }
+      ],
+      "surface_biome_quart": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      },
+      "tfc_climate_tolerance": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      }
+    },
+    {
+      "chunk": [
+        -17569,
+        3145
+      ],
+      "fluid_class": {
+        "accuracy": 1.0,
+        "columns": 256,
+        "confusion": [
+          {
+            "actual": "solid",
+            "columns": 221,
+            "predicted": "solid"
+          },
+          {
+            "actual": "water",
+            "columns": 35,
+            "predicted": "water"
+          }
+        ],
+        "matches": 256
+      },
+      "ground_material_or_fluid": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      },
+      "height": {
+        "compared": 256,
+        "compared_integer_accuracy": 1.0,
+        "integer_accuracy": 1.0,
+        "integer_exact": 256,
+        "mae_blocks": 0.0,
+        "max_abs_error": 0.0,
+        "mismatches": [],
+        "missing_predictions": 0,
+        "samples": 256
+      },
+      "material_mismatches": [],
+      "surface_biome_quart": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      },
+      "tfc_climate_tolerance": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      }
+    },
+    {
+      "chunk": [
+        -113,
+        327
+      ],
+      "fluid_class": {
+        "accuracy": 1.0,
+        "columns": 256,
+        "confusion": [
+          {
+            "actual": "solid",
+            "columns": 256,
+            "predicted": "solid"
+          }
+        ],
+        "matches": 256
+      },
+      "ground_material_or_fluid": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      },
+      "height": {
+        "compared": 256,
+        "compared_integer_accuracy": 1.0,
+        "integer_accuracy": 1.0,
+        "integer_exact": 256,
+        "mae_blocks": 0.0,
+        "max_abs_error": 0.0,
+        "mismatches": [],
+        "missing_predictions": 0,
+        "samples": 256
+      },
+      "material_mismatches": [],
+      "surface_biome_quart": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      },
+      "tfc_climate_tolerance": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      }
+    },
+    {
+      "chunk": [
+        -12483,
+        -1163
+      ],
+      "fluid_class": {
+        "accuracy": 1.0,
+        "columns": 256,
+        "confusion": [
+          {
+            "actual": "solid",
+            "columns": 256,
+            "predicted": "solid"
+          }
+        ],
+        "matches": 256
+      },
+      "ground_material_or_fluid": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      },
+      "height": {
+        "compared": 256,
+        "compared_integer_accuracy": 1.0,
+        "integer_accuracy": 1.0,
+        "integer_exact": 256,
+        "mae_blocks": 0.0,
+        "max_abs_error": 0.0,
+        "mismatches": [],
+        "missing_predictions": 0,
+        "samples": 256
+      },
+      "material_mismatches": [],
+      "surface_biome_quart": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      },
+      "tfc_climate_tolerance": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      }
+    },
+    {
+      "chunk": [
+        1335,
+        856
+      ],
+      "fluid_class": {
+        "accuracy": 1.0,
+        "columns": 256,
+        "confusion": [
+          {
+            "actual": "solid",
+            "columns": 256,
+            "predicted": "solid"
+          }
+        ],
+        "matches": 256
+      },
+      "ground_material_or_fluid": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      },
+      "height": {
+        "compared": 256,
+        "compared_integer_accuracy": 1.0,
+        "integer_accuracy": 1.0,
+        "integer_exact": 256,
+        "mae_blocks": 0.0,
+        "max_abs_error": 0.0,
+        "mismatches": [],
+        "missing_predictions": 0,
+        "samples": 256
+      },
+      "material_mismatches": [],
+      "surface_biome_quart": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      },
+      "tfc_climate_tolerance": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      }
+    },
+    {
+      "chunk": [
+        -8127,
+        -1378
+      ],
+      "fluid_class": {
+        "accuracy": 1.0,
+        "columns": 256,
+        "confusion": [
+          {
+            "actual": "solid",
+            "columns": 45,
+            "predicted": "solid"
+          },
+          {
+            "actual": "water",
+            "columns": 211,
+            "predicted": "water"
+          }
+        ],
+        "matches": 256
+      },
+      "ground_material_or_fluid": {
+        "accuracy": 0.875,
+        "matches": 224,
+        "samples": 256
+      },
+      "height": {
+        "compared": 256,
+        "compared_integer_accuracy": 1.0,
+        "integer_accuracy": 1.0,
+        "integer_exact": 256,
+        "mae_blocks": 0.0,
+        "max_abs_error": 0.0,
+        "mismatches": [],
+        "missing_predictions": 0,
+        "samples": 256
+      },
+      "material_mismatches": [
+        {
+          "actual_to_predicted": "tfc:rock/gravel/basalt -> tfc:sand/red",
+          "columns": 32
+        }
+      ],
+      "surface_biome_quart": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      },
+      "tfc_climate_tolerance": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      }
+    },
+    {
+      "chunk": [
+        -8089,
+        -1373
+      ],
+      "fluid_class": {
+        "accuracy": 1.0,
+        "columns": 256,
+        "confusion": [
+          {
+            "actual": "solid",
+            "columns": 256,
+            "predicted": "solid"
+          }
+        ],
+        "matches": 256
+      },
+      "ground_material_or_fluid": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      },
+      "height": {
+        "compared": 256,
+        "compared_integer_accuracy": 1.0,
+        "integer_accuracy": 1.0,
+        "integer_exact": 256,
+        "mae_blocks": 0.0,
+        "max_abs_error": 0.0,
+        "mismatches": [],
+        "missing_predictions": 0,
+        "samples": 256
+      },
+      "material_mismatches": [],
+      "surface_biome_quart": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      },
+      "tfc_climate_tolerance": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      }
+    },
+    {
+      "chunk": [
+        110,
+        61
+      ],
+      "fluid_class": {
+        "accuracy": 1.0,
+        "columns": 256,
+        "confusion": [
+          {
+            "actual": "solid",
+            "columns": 256,
+            "predicted": "solid"
+          }
+        ],
+        "matches": 256
+      },
+      "ground_material_or_fluid": {
+        "accuracy": 0.91796875,
+        "matches": 235,
+        "samples": 256
+      },
+      "height": {
+        "compared": 256,
+        "compared_integer_accuracy": 1.0,
+        "integer_accuracy": 1.0,
+        "integer_exact": 256,
+        "mae_blocks": 0.0,
+        "max_abs_error": 0.0,
+        "mismatches": [],
+        "missing_predictions": 0,
+        "samples": 256
+      },
+      "material_mismatches": [
+        {
+          "actual_to_predicted": "tfg:grass/alfisol -> tfg:duff/alfisol",
+          "columns": 19
+        },
+        {
+          "actual_to_predicted": "tfg:dirt/alfisol -> tfg:grass/alfisol",
+          "columns": 2
+        }
+      ],
+      "surface_biome_quart": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      },
+      "tfc_climate_tolerance": {
+        "accuracy": 1.0,
+        "matches": 256,
+        "samples": 256
+      }
+    }
+  ],
+  "read_only_reference_regions": {
+    "r.-189.-44.mca": "ee25f81c4a8a860a258d54acd85bcbac26039ed5a871f0217c462874d754cc16",
+    "r.-195.-43.mca": "6215c2b7c02c22cf9dd0f3dbf3b1955c434a6a1dc7aa50fcdcf9ae59de4321e5",
+    "r.-198.-31.mca": "74f6cb5a60a195fd91bd739394f2a5944e6a60b211f77a36d65c023c2235a73a",
+    "r.-199.-28.mca": "7e8a01b3257e87982f5c9d6d75e2d7053d1af8b7ff24795c61a3aac74e118406",
+    "r.-202.-29.mca": "6570f86eb20fbdb5a903087369569daafcc9e4361030bb819ca0c7cc8d2cadfe",
+    "r.-203.-28.mca": "500b0ec3b8ca7e7cd04e62f1ea5112645d46b9e1751562f078d835207b409a5b",
+    "r.-220.-31.mca": "a1c165b3ebdb7557c61125c31045f04505edd36a4b6b6157485786742c541120",
+    "r.-242.5.mca": "8af97b2099310332d1ca738c3cdadde24d66697b2437e363958520f3f2a2dad0",
+    "r.-252.-37.mca": "506180c9eb9063b2398abf5c39b3d3e6f807956556e80ab4c35161cb6582389f",
+    "r.-252.-40.mca": "a9e916e517a3b1320c693e3705c0e36cf16583fc5c02feb11439c00694c87db6",
+    "r.-253.-43.mca": "2f62372b634d14321279dec6c9ee868c1602cf0cf8f730451bd5335f00137f2e",
+    "r.-254.-42.mca": "f5329109290b4e63d5fa30eb4fb6e7ec913971f9b99abd402e839a3b5de6c4e6",
+    "r.-254.-44.mca": "7e6d691504ea2580abe1903de6402e0aeb35f4f3872c621ba237b2dc2a7d58c7",
+    "r.-255.-46.mca": "6110bf6addfef330a8574d050bdc7fecda59cc9d4d8a8e216a4f54d9bf1d6ce0",
+    "r.-255.28.mca": "28427f91994d46f8122fbbf576ae001f15a4271ab52ee494c3b9c205342deb7e",
+    "r.-256.29.mca": "c8509ab980148bea81f32208c2aa349bdea57206a2febf1d9548ce4a42af0395",
+    "r.-295.20.mca": "358f6ecc018a25adf62ba8874acbbdfbcebfdf499309bb5f51e982c7a7e24266",
+    "r.-296.21.mca": "45160cf2fc5c440082e7f2d0976e7e250676ba293816ea507ead6c67763aeaae",
+    "r.-303.18.mca": "688d7e4a7b53bbb86649687be13466f5b078a3fee592cc1ec80bd44d77345516",
+    "r.-379.-45.mca": "d3e4fd53847c84aa22b8f1e64669e48d225143564eb6eec1ca07cd649fd6b650",
+    "r.-379.-48.mca": "1e49987a4203fb3e434d11fdbf8f5ed492a5abcdbf4e083943a373b004e16391",
+    "r.-384.-35.mca": "e921ad79ffa33fa41405c369cb71677e010f9a451ac32de3e5eade0b66465287",
+    "r.-390.-35.mca": "8520358305aa676002b8bace14d5fc3eb56ad7d19045375c7f0d743a5444b370",
+    "r.-391.-37.mca": "c6ab8397a71328532b4a5a7db6dcc3da89a78766e5a856a979867b551471771d",
+    "r.-392.-38.mca": "1304d04c85f62e76ef247ea53ea021713fbec39450139f19a98009f491df52f9",
+    "r.-4.10.mca": "b1a2c48bdff8b4d02701a6f7b206577b765c43749b0ca3cf0d9a38a26ed81806",
+    "r.-504.17.mca": "ba966992025ca0eed3b887026cb4c673d1497722d5dc72b8dcb10cfdbc889272",
+    "r.-506.16.mca": "10699c0e24136d5324ec021e874277dd660aa85b7c36fd8392821c7dc99585e2",
+    "r.-550.98.mca": "18f865108f235a6d0c9dbb8dabca21e595d9b4e341127dddb859708010db78ad",
+    "r.-552.94.mca": "c001cdd99423be786e6b3ab1971c0952032d9adc91b4789fde789277fc8b9ed2",
+    "r.17.50.mca": "7a670374d554e7dffbf8b1722dfb7b8db00633284c351d1732c8b6bcc003ddfb",
+    "r.27.34.mca": "ed0707a6ba0bb8ca8388f612f20806b468562dd6d729707a8f9665bad114a31e",
+    "r.28.28.mca": "a6cc04961aa5256dcc50433fb0efb032bce89e075e08be5ba95cf894b31eb45b",
+    "r.29.28.mca": "47137393bc5bce522828eb123d79bc859d6b3397769f9adea17db95feb98c9a7",
+    "r.3.1.mca": "ffcd0c595ffe3a8bf954303f33cb00a80de988e47335f5c57bfd222515b013b0",
+    "r.30.65.mca": "22c30672f8ff4eb2aa95091e90266275b22fd6ca239c515acc3995fd2d72cfa8",
+    "r.30.66.mca": "33487b3fab16a2e35aa4df6f948649c8b99fe8e0770262d90f394f54fc2a5ecf",
+    "r.31.31.mca": "caaf41e01fd372117235cc82c3f36d2ef383e108b5ef478dfbfd991b765dfb5d",
+    "r.34.31.mca": "12401cc26bb31af959968a51e77f922b1efaf769a5ffb8aae0e1d6c8753b9f87",
+    "r.38.-5.mca": "6478aaf7336ca74625b464e13e5b790448c45ab243727ff7e6e3b5f1ce41f410",
+    "r.40.30.mca": "8426d525cf89475a6361e0d793a00a70a6d764e9647f342e7a77989785799e22",
+    "r.41.26.mca": "5775d2a5d361c3525f3746250ce5be35a46f5b836bd560870c5c78add48e41e3",
+    "r.41.33.mca": "c146af8165558387a4ba71673a091efa82c1ff6e29d595e2286c3ddeb6c44393",
+    "r.67.14.mca": "6937b41335a2b56d01e8602a17bf9008d4c3454f9fc6e5346f253c216fd2aefb",
+    "r.92.32.mca": "ea41c497d6cf3e3d3a4b7ecb83eebe256b0a97116c2fa38578ea3e4c20c7351d",
+    "r.93.42.mca": "5f86ef42487f7cd8db474d30c057edeba799584f0f1576a0a105d3de77c639df"
+  },
+  "reference_provenance": {
+    "candidate_allocated_slots": 1253774,
+    "candidates_visited_until_sample_complete": 140,
+    "dimension": "minecraft:overworld",
+    "method": "allocated region slots ranked by SHA-256(VERSION:chunkX:chunkZ), retaining first N FULL TFC chunks",
+    "minecraft_launched": false,
+    "notes": [
+      "This is a deterministic spread sample of already allocated/generated save chunks, not a sample of unexplored coordinates.",
+      "Raw quart surface biome, TFC chunk climate corners, TFC surfaceHeight, highest saved block, substrate, and leaf presence are kept as distinct observations.",
+      "Feature chunks include local player exploration bias; results are not a universal world-wide generation guarantee."
+    ],
+    "ranking_version": "terralens-world0-generated-chunk-rank-v1",
+    "read_only": true,
+    "region_sha256": {
+      "r.-189.-44.mca": "ee25f81c4a8a860a258d54acd85bcbac26039ed5a871f0217c462874d754cc16",
+      "r.-195.-43.mca": "6215c2b7c02c22cf9dd0f3dbf3b1955c434a6a1dc7aa50fcdcf9ae59de4321e5",
+      "r.-198.-31.mca": "74f6cb5a60a195fd91bd739394f2a5944e6a60b211f77a36d65c023c2235a73a",
+      "r.-199.-28.mca": "7e8a01b3257e87982f5c9d6d75e2d7053d1af8b7ff24795c61a3aac74e118406",
+      "r.-202.-29.mca": "6570f86eb20fbdb5a903087369569daafcc9e4361030bb819ca0c7cc8d2cadfe",
+      "r.-203.-28.mca": "500b0ec3b8ca7e7cd04e62f1ea5112645d46b9e1751562f078d835207b409a5b",
+      "r.-220.-31.mca": "a1c165b3ebdb7557c61125c31045f04505edd36a4b6b6157485786742c541120",
+      "r.-242.5.mca": "8af97b2099310332d1ca738c3cdadde24d66697b2437e363958520f3f2a2dad0",
+      "r.-252.-37.mca": "506180c9eb9063b2398abf5c39b3d3e6f807956556e80ab4c35161cb6582389f",
+      "r.-252.-40.mca": "a9e916e517a3b1320c693e3705c0e36cf16583fc5c02feb11439c00694c87db6",
+      "r.-253.-43.mca": "2f62372b634d14321279dec6c9ee868c1602cf0cf8f730451bd5335f00137f2e",
+      "r.-254.-42.mca": "f5329109290b4e63d5fa30eb4fb6e7ec913971f9b99abd402e839a3b5de6c4e6",
+      "r.-254.-44.mca": "7e6d691504ea2580abe1903de6402e0aeb35f4f3872c621ba237b2dc2a7d58c7",
+      "r.-255.-46.mca": "6110bf6addfef330a8574d050bdc7fecda59cc9d4d8a8e216a4f54d9bf1d6ce0",
+      "r.-255.28.mca": "28427f91994d46f8122fbbf576ae001f15a4271ab52ee494c3b9c205342deb7e",
+      "r.-256.29.mca": "c8509ab980148bea81f32208c2aa349bdea57206a2febf1d9548ce4a42af0395",
+      "r.-295.20.mca": "358f6ecc018a25adf62ba8874acbbdfbcebfdf499309bb5f51e982c7a7e24266",
+      "r.-296.21.mca": "45160cf2fc5c440082e7f2d0976e7e250676ba293816ea507ead6c67763aeaae",
+      "r.-303.18.mca": "688d7e4a7b53bbb86649687be13466f5b078a3fee592cc1ec80bd44d77345516",
+      "r.-379.-45.mca": "d3e4fd53847c84aa22b8f1e64669e48d225143564eb6eec1ca07cd649fd6b650",
+      "r.-379.-48.mca": "1e49987a4203fb3e434d11fdbf8f5ed492a5abcdbf4e083943a373b004e16391",
+      "r.-384.-35.mca": "e921ad79ffa33fa41405c369cb71677e010f9a451ac32de3e5eade0b66465287",
+      "r.-390.-35.mca": "8520358305aa676002b8bace14d5fc3eb56ad7d19045375c7f0d743a5444b370",
+      "r.-391.-37.mca": "c6ab8397a71328532b4a5a7db6dcc3da89a78766e5a856a979867b551471771d",
+      "r.-392.-38.mca": "1304d04c85f62e76ef247ea53ea021713fbec39450139f19a98009f491df52f9",
+      "r.-4.10.mca": "b1a2c48bdff8b4d02701a6f7b206577b765c43749b0ca3cf0d9a38a26ed81806",
+      "r.-504.17.mca": "ba966992025ca0eed3b887026cb4c673d1497722d5dc72b8dcb10cfdbc889272",
+      "r.-506.16.mca": "10699c0e24136d5324ec021e874277dd660aa85b7c36fd8392821c7dc99585e2",
+      "r.-550.98.mca": "18f865108f235a6d0c9dbb8dabca21e595d9b4e341127dddb859708010db78ad",
+      "r.-552.94.mca": "c001cdd99423be786e6b3ab1971c0952032d9adc91b4789fde789277fc8b9ed2",
+      "r.17.50.mca": "7a670374d554e7dffbf8b1722dfb7b8db00633284c351d1732c8b6bcc003ddfb",
+      "r.27.34.mca": "ed0707a6ba0bb8ca8388f612f20806b468562dd6d729707a8f9665bad114a31e",
+      "r.28.28.mca": "a6cc04961aa5256dcc50433fb0efb032bce89e075e08be5ba95cf894b31eb45b",
+      "r.29.28.mca": "47137393bc5bce522828eb123d79bc859d6b3397769f9adea17db95feb98c9a7",
+      "r.3.1.mca": "ffcd0c595ffe3a8bf954303f33cb00a80de988e47335f5c57bfd222515b013b0",
+      "r.30.65.mca": "22c30672f8ff4eb2aa95091e90266275b22fd6ca239c515acc3995fd2d72cfa8",
+      "r.30.66.mca": "33487b3fab16a2e35aa4df6f948649c8b99fe8e0770262d90f394f54fc2a5ecf",
+      "r.31.31.mca": "caaf41e01fd372117235cc82c3f36d2ef383e108b5ef478dfbfd991b765dfb5d",
+      "r.34.31.mca": "12401cc26bb31af959968a51e77f922b1efaf769a5ffb8aae0e1d6c8753b9f87",
+      "r.38.-5.mca": "6478aaf7336ca74625b464e13e5b790448c45ab243727ff7e6e3b5f1ce41f410",
+      "r.40.30.mca": "8426d525cf89475a6361e0d793a00a70a6d764e9647f342e7a77989785799e22",
+      "r.41.26.mca": "5775d2a5d361c3525f3746250ce5be35a46f5b836bd560870c5c78add48e41e3",
+      "r.41.33.mca": "c146af8165558387a4ba71673a091efa82c1ff6e29d595e2286c3ddeb6c44393",
+      "r.67.14.mca": "6937b41335a2b56d01e8602a17bf9008d4c3454f9fc6e5346f253c216fd2aefb",
+      "r.92.32.mca": "ea41c497d6cf3e3d3a4b7ecb83eebe256b0a97116c2fa38578ea3e4c20c7351d",
+      "r.93.42.mca": "5f86ef42487f7cd8db474d30c057edeba799584f0f1576a0a105d3de77c639df"
+    },
+    "requested_full_chunks": 48,
+    "saved_level_seed": 0,
+    "seed": 0,
+    "world_alias": "0",
+    "world_source_sha256": {
+      "data/tfg_worldgen_versions.dat": "17607624dcf8763cb97f4b160fd44f07e13db8dc5507247b209a9b0d0e175de3",
+      "installed_mod/TerraFirmaGreg-Core-Modern-0.9.25.jar": "fdf9a3521a08870eae8f43a5aea1c5ea2f8e07884f516445837c0fdc2a648ec1"
+    }
+  },
+  "seed": 0,
+  "systems": {
+    "forest_type_chunk": {
+      "accuracy": 1.0,
+      "matches": 48,
+      "samples": 48
+    },
+    "leaf_canopy_columns": {
+      "f1": 0.579528240640554,
+      "feature_index": 25,
+      "fn": 713,
+      "fp": 1230,
+      "metric": "2D leaf-column coverage; not per-tree origins/species/height",
+      "precision": 0.5212144803425457,
+      "predicted_leaf_columns": 2569,
+      "recall": 0.6525341130604289,
+      "saved_leaf_columns": 2052,
+      "source_chunks_evaluated": 1200,
+      "tp": 1339
+    },
+    "surface_biome_quart": {
+      "accuracy": 1.0,
+      "matches": 12288,
+      "samples": 12288
+    },
+    "surface_fluid_class": {
+      "mismatch_examples": [
+        {
+          "actual_block": "tfc:fluid/salt_water",
+          "actual_class": "water",
+          "actual_ground_y": 62,
+          "predicted_class": "solid",
+          "predicted_surface_y": null,
+          "surface_biome": "tfg:earth/shore",
+          "x": -101823,
+          "z": -14325
+        },
+        {
+          "actual_block": "tfc:fluid/salt_water",
+          "actual_class": "water",
+          "actual_ground_y": 62,
+          "predicted_class": "solid",
+          "predicted_surface_y": null,
+          "surface_biome": "tfg:earth/shore",
+          "x": -101822,
+          "z": -14325
+        },
+        {
+          "actual_block": "tfc:fluid/salt_water",
+          "actual_class": "water",
+          "actual_ground_y": 62,
+          "predicted_class": "solid",
+          "predicted_surface_y": null,
+          "surface_biome": "tfg:earth/shore",
+          "x": -101821,
+          "z": -14325
+        },
+        {
+          "actual_block": "tfc:fluid/salt_water",
+          "actual_class": "water",
+          "actual_ground_y": 62,
+          "predicted_class": "solid",
+          "predicted_surface_y": null,
+          "surface_biome": "tfg:earth/shore",
+          "x": -101820,
+          "z": -14325
+        },
+        {
+          "actual_block": "tfc:fluid/salt_water",
+          "actual_class": "water",
+          "actual_ground_y": 62,
+          "predicted_class": "solid",
+          "predicted_surface_y": null,
+          "surface_biome": "tfg:earth/shore",
+          "x": -101819,
+          "z": -14325
+        },
+        {
+          "actual_block": "tfc:fluid/salt_water",
+          "actual_class": "water",
+          "actual_ground_y": 62,
+          "predicted_class": "solid",
+          "predicted_surface_y": null,
+          "surface_biome": "tfg:earth/shore",
+          "x": -101818,
+          "z": -14325
+        },
+        {
+          "actual_block": "tfc:fluid/salt_water",
+          "actual_class": "water",
+          "actual_ground_y": 62,
+          "predicted_class": "solid",
+          "predicted_surface_y": null,
+          "surface_biome": "tfg:earth/shore",
+          "x": -101817,
+          "z": -14325
+        },
+        {
+          "actual_block": "tfc:fluid/salt_water",
+          "actual_class": "water",
+          "actual_ground_y": 62,
+          "predicted_class": "solid",
+          "predicted_surface_y": null,
+          "surface_biome": "tfg:earth/shore",
+          "x": -101816,
+          "z": -14325
+        },
+        {
+          "actual_block": "tfc:fluid/salt_water",
+          "actual_class": "water",
+          "actual_ground_y": 62,
+          "predicted_class": "solid",
+          "predicted_surface_y": null,
+          "surface_biome": "tfg:earth/shore",
+          "x": -101815,
+          "z": -14325
+        },
+        {
+          "actual_block": "tfc:fluid/salt_water",
+          "actual_class": "water",
+          "actual_ground_y": 62,
+          "predicted_class": "solid",
+          "predicted_surface_y": null,
+          "surface_biome": "tfg:earth/shore",
+          "x": -101814,
+          "z": -14325
+        },
+        {
+          "actual_block": "tfc:fluid/salt_water",
+          "actual_class": "water",
+          "actual_ground_y": 62,
+          "predicted_class": "solid",
+          "predicted_surface_y": null,
+          "surface_biome": "tfg:earth/shore",
+          "x": -101813,
+          "z": -14325
+        },
+        {
+          "actual_block": "tfc:fluid/salt_water",
+          "actual_class": "water",
+          "actual_ground_y": 62,
+          "predicted_class": "solid",
+          "predicted_surface_y": null,
+          "surface_biome": "tfg:earth/shore",
+          "x": -101824,
+          "z": -14324
+        },
+        {
+          "actual_block": "tfc:fluid/salt_water",
+          "actual_class": "water",
+          "actual_ground_y": 62,
+          "predicted_class": "solid",
+          "predicted_surface_y": null,
+          "surface_biome": "tfg:earth/shore",
+          "x": -101823,
+          "z": -14324
+        },
+        {
+          "actual_block": "tfc:fluid/salt_water",
+          "actual_class": "water",
+          "actual_ground_y": 62,
+          "predicted_class": "solid",
+          "predicted_surface_y": null,
+          "surface_biome": "tfg:earth/shore",
+          "x": -101822,
+          "z": -14324
+        },
+        {
+          "actual_block": "tfc:fluid/salt_water",
+          "actual_class": "water",
+          "actual_ground_y": 62,
+          "predicted_class": "solid",
+          "predicted_surface_y": null,
+          "surface_biome": "tfg:earth/shore",
+          "x": -101821,
+          "z": -14324
+        },
+        {
+          "actual_block": "tfc:fluid/salt_water",
+          "actual_class": "water",
+          "actual_ground_y": 62,
+          "predicted_class": "solid",
+          "predicted_surface_y": null,
+          "surface_biome": "tfg:earth/shore",
+          "x": -101820,
+          "z": -14324
+        },
+        {
+          "actual_block": "tfc:fluid/salt_water",
+          "actual_class": "water",
+          "actual_ground_y": 62,
+          "predicted_class": "solid",
+          "predicted_surface_y": null,
+          "surface_biome": "tfg:earth/shore",
+          "x": -101819,
+          "z": -14324
+        },
+        {
+          "actual_block": "tfc:fluid/salt_water",
+          "actual_class": "water",
+          "actual_ground_y": 62,
+          "predicted_class": "solid",
+          "predicted_surface_y": null,
+          "surface_biome": "tfg:earth/shore",
+          "x": -101824,
+          "z": -14323
+        },
+        {
+          "actual_block": "tfc:sea_ice",
+          "actual_class": "solid",
+          "actual_ground_y": 62,
+          "predicted_class": "water",
+          "predicted_surface_y": 62,
+          "surface_biome": "tfg:earth/ocean",
+          "x": -103090,
+          "z": -14464
+        },
+        {
+          "actual_block": "tfc:sea_ice",
+          "actual_class": "solid",
+          "actual_ground_y": 62,
+          "predicted_class": "water",
+          "predicted_surface_y": 62,
+          "surface_biome": "tfg:earth/ocean",
+          "x": -103089,
+          "z": -14464
+        },
+        {
+          "actual_block": "tfc:sea_ice",
+          "actual_class": "solid",
+          "actual_ground_y": 62,
+          "predicted_class": "water",
+          "predicted_surface_y": 62,
+          "surface_biome": "tfg:earth/ocean",
+          "x": -103090,
+          "z": -14463
+        },
+        {
+          "actual_block": "tfc:sea_ice",
+          "actual_class": "solid",
+          "actual_ground_y": 62,
+          "predicted_class": "water",
+          "predicted_surface_y": 62,
+          "surface_biome": "tfg:earth/ocean",
+          "x": -103089,
+          "z": -14463
+        },
+        {
+          "actual_block": "tfc:sea_ice",
+          "actual_class": "solid",
+          "actual_ground_y": 62,
+          "predicted_class": "water",
+          "predicted_surface_y": 62,
+          "surface_biome": "tfg:earth/ocean",
+          "x": -103089,
+          "z": -14462
+        },
+        {
+          "actual_block": "minecraft:ice",
+          "actual_class": "solid",
+          "actual_ground_y": 62,
+          "predicted_class": "water",
+          "predicted_surface_y": 62,
+          "surface_biome": "tfg:earth/inverted_patterned_ground",
+          "x": 8850,
+          "z": 25744
+        },
+        {
+          "actual_block": "minecraft:ice",
+          "actual_class": "solid",
+          "actual_ground_y": 62,
+          "predicted_class": "water",
+          "predicted_surface_y": 62,
+          "surface_biome": "tfg:earth/inverted_patterned_ground",
+          "x": 8851,
+          "z": 25744
+        },
+        {
+          "actual_block": "tfc:dirt/loam",
+          "actual_class": "solid",
+          "actual_ground_y": 61,
+          "predicted_class": "water",
+          "predicted_surface_y": 62,
+          "surface_biome": "tfg:earth/inverted_patterned_ground",
+          "x": 8861,
+          "z": 25744
+        },
+        {
+          "actual_block": "minecraft:ice",
+          "actual_class": "solid",
+          "actual_ground_y": 62,
+          "predicted_class": "water",
+          "predicted_surface_y": 62,
+          "surface_biome": "tfg:earth/inverted_patterned_ground",
+          "x": 8862,
+          "z": 25744
+        },
+        {
+          "actual_block": "tfc:rock/gravel/chalk",
+          "actual_class": "solid",
+          "actual_ground_y": 61,
+          "predicted_class": "water",
+          "predicted_surface_y": 62,
+          "surface_biome": "tfg:earth/inverted_patterned_ground",
+          "x": 8860,
+          "z": 25745
+        },
+        {
+          "actual_block": "tfc:rock/gravel/chalk",
+          "actual_class": "solid",
+          "actual_ground_y": 61,
+          "predicted_class": "water",
+          "predicted_surface_y": 62,
+          "surface_biome": "tfg:earth/inverted_patterned_ground",
+          "x": 8862,
+          "z": 25745
+        },
+        {
+          "actual_block": "minecraft:ice",
+          "actual_class": "solid",
+          "actual_ground_y": 62,
+          "predicted_class": "water",
+          "predicted_surface_y": 62,
+          "surface_biome": "tfg:earth/inverted_patterned_ground",
+          "x": 8860,
+          "z": 25746
+        },
+        {
+          "actual_block": "tfc:rock/gravel/chalk",
+          "actual_class": "solid",
+          "actual_ground_y": 61,
+          "predicted_class": "water",
+          "predicted_surface_y": 62,
+          "surface_biome": "tfg:earth/inverted_patterned_ground",
+          "x": 8862,
+          "z": 25746
+        },
+        {
+          "actual_block": "tfc:rock/gravel/chalk",
+          "actual_class": "solid",
+          "actual_ground_y": 61,
+          "predicted_class": "water",
+          "predicted_surface_y": 62,
+          "surface_biome": "tfg:earth/inverted_patterned_ground",
+          "x": 8860,
+          "z": 25747
+        },
+        {
+          "actual_block": "minecraft:ice",
+          "actual_class": "solid",
+          "actual_ground_y": 62,
+          "predicted_class": "water",
+          "predicted_surface_y": 62,
+          "surface_biome": "tfg:earth/inverted_patterned_ground",
+          "x": 8862,
+          "z": 25747
+        },
+        {
+          "actual_block": "minecraft:ice",
+          "actual_class": "solid",
+          "actual_ground_y": 62,
+          "predicted_class": "water",
+          "predicted_surface_y": 62,
+          "surface_biome": "tfg:earth/inverted_patterned_ground",
+          "x": 8863,
+          "z": 25747
+        },
+        {
+          "actual_block": "tfc:rock/gravel/chalk",
+          "actual_class": "solid",
+          "actual_ground_y": 61,
+          "predicted_class": "water",
+          "predicted_surface_y": 62,
+          "surface_biome": "tfg:earth/inverted_patterned_ground",
+          "x": 8860,
+          "z": 25748
+        },
+        {
+          "actual_block": "minecraft:ice",
+          "actual_class": "solid",
+          "actual_ground_y": 62,
+          "predicted_class": "water",
+          "predicted_surface_y": 62,
+          "surface_biome": "tfg:earth/inverted_patterned_ground",
+          "x": 8861,
+          "z": 25748
+        },
+        {
+          "actual_block": "tfc:rock/gravel/chalk",
+          "actual_class": "solid",
+          "actual_ground_y": 61,
+          "predicted_class": "water",
+          "predicted_surface_y": 62,
+          "surface_biome": "tfg:earth/inverted_patterned_ground",
+          "x": 8862,
+          "z": 25748
+        },
+        {
+          "actual_block": "tfc:rock/cobble/chalk",
+          "actual_class": "solid",
+          "actual_ground_y": 63,
+          "predicted_class": "water",
+          "predicted_surface_y": 62,
+          "surface_biome": "tfg:earth/inverted_patterned_ground",
+          "x": 8856,
+          "z": 25749
+        },
+        {
+          "actual_block": "tfc:rock/cobble/chalk",
+          "actual_class": "solid",
+          "actual_ground_y": 63,
+          "predicted_class": "water",
+          "predicted_surface_y": 62,
+          "surface_biome": "tfg:earth/inverted_patterned_ground",
+          "x": 8857,
+          "z": 25749
+        },
+        {
+          "actual_block": "tfc:rock/cobble/chalk",
+          "actual_class": "solid",
+          "actual_ground_y": 63,
+          "predicted_class": "water",
+          "predicted_surface_y": 62,
+          "surface_biome": "tfg:earth/inverted_patterned_ground",
+          "x": 8858,
+          "z": 25749
+        },
+        {
+          "actual_block": "tfc:rock/cobble/chalk",
+          "actual_class": "solid",
+          "actual_ground_y": 63,
+          "predicted_class": "water",
+          "predicted_surface_y": 62,
+          "surface_biome": "tfg:earth/inverted_patterned_ground",
+          "x": 8859,
+          "z": 25749
+        },
+        {
+          "actual_block": "tfc:rock/cobble/chalk",
+          "actual_class": "solid",
+          "actual_ground_y": 62,
+          "predicted_class": "water",
+          "predicted_surface_y": 62,
+          "surface_biome": "tfg:earth/inverted_patterned_ground",
+          "x": 8860,
+          "z": 25749
+        },
+        {
+          "actual_block": "minecraft:ice",
+          "actual_class": "solid",
+          "actual_ground_y": 62,
+          "predicted_class": "water",
+          "predicted_surface_y": 62,
+          "surface_biome": "tfg:earth/inverted_patterned_ground",
+          "x": 8861,
+          "z": 25749
+        },
+        {
+          "actual_block": "tfc:rock/gravel/chalk",
+          "actual_class": "solid",
+          "actual_ground_y": 61,
+          "predicted_class": "water",
+          "predicted_surface_y": 62,
+          "surface_biome": "tfg:earth/inverted_patterned_ground",
+          "x": 8862,
+          "z": 25749
+        },
+        {
+          "actual_block": "minecraft:ice",
+          "actual_class": "solid",
+          "actual_ground_y": 62,
+          "predicted_class": "water",
+          "predicted_surface_y": 62,
+          "surface_biome": "tfg:earth/inverted_patterned_ground",
+          "x": 8863,
+          "z": 25749
+        },
+        {
+          "actual_block": "minecraft:ice",
+          "actual_class": "solid",
+          "actual_ground_y": 62,
+          "predicted_class": "water",
+          "predicted_surface_y": 62,
+          "surface_biome": "tfg:earth/inverted_patterned_ground",
+          "x": 8849,
+          "z": 25750
+        },
+        {
+          "actual_block": "tfc:rock/cobble/chalk",
+          "actual_class": "solid",
+          "actual_ground_y": 62,
+          "predicted_class": "water",
+          "predicted_surface_y": 62,
+          "surface_biome": "tfg:earth/inverted_patterned_ground",
+          "x": 8854,
+          "z": 25750
+        },
+        {
+          "actual_block": "minecraft:ice",
+          "actual_class": "solid",
+          "actual_ground_y": 62,
+          "predicted_class": "water",
+          "predicted_surface_y": 62,
+          "surface_biome": "tfg:earth/inverted_patterned_ground",
+          "x": 8850,
+          "z": 25751
+        }
+      ],
+      "summary": {
+        "accuracy": 0.9847005208333334,
+        "columns": 12288,
+        "confusion": [
+          {
+            "actual": "solid",
+            "columns": 9236,
+            "predicted": "solid"
+          },
+          {
+            "actual": "solid",
+            "columns": 100,
+            "predicted": "water"
+          },
+          {
+            "actual": "water",
+            "columns": 88,
+            "predicted": "solid"
+          },
+          {
+            "actual": "water",
+            "columns": 2864,
+            "predicted": "water"
+          }
+        ],
+        "matches": 12100
+      }
+    },
+    "surface_material_exact_or_fluid_class": {
+      "accuracy": 0.9112955729166666,
+      "columns": 12288,
+      "common_pair_examples": [
+        {
+          "examples": [
+            {
+              "actual_ground_y": 71,
+              "estimated_raw_height": 71.0,
+              "surface_biome": "tfg:earth/shore",
+              "x": -101810,
+              "z": -14333
+            },
+            {
+              "actual_ground_y": 71,
+              "estimated_raw_height": 71.0,
+              "surface_biome": "tfg:earth/shore",
+              "x": -101809,
+              "z": -14333
+            },
+            {
+              "actual_ground_y": 71,
+              "estimated_raw_height": 71.0,
+              "surface_biome": "tfg:earth/shore",
+              "x": -101810,
+              "z": -14332
+            },
+            {
+              "actual_ground_y": 71,
+              "estimated_raw_height": 71.0,
+              "surface_biome": "tfg:earth/shore",
+              "x": -101809,
+              "z": -14332
+            }
+          ],
+          "pair": "tfg:grass/podzol -> tfg:duff/podzol"
+        },
+        {
+          "examples": [
+            {
+              "actual_ground_y": 65,
+              "estimated_raw_height": 65.0,
+              "surface_biome": "tfg:earth/hills",
+              "x": -200411,
+              "z": -18992
+            },
+            {
+              "actual_ground_y": 65,
+              "estimated_raw_height": 65.0,
+              "surface_biome": "tfg:earth/hills",
+              "x": -200410,
+              "z": -18992
+            },
+            {
+              "actual_ground_y": 65,
+              "estimated_raw_height": 65.0,
+              "surface_biome": "tfg:earth/hills",
+              "x": -200409,
+              "z": -18992
+            },
+            {
+              "actual_ground_y": 65,
+              "estimated_raw_height": 65.0,
+              "surface_biome": "tfg:earth/hills",
+              "x": -200408,
+              "z": -18992
+            }
+          ],
+          "pair": "tfg:grass/alfisol -> tfg:duff/alfisol"
+        },
+        {
+          "examples": [
+            {
+              "actual_ground_y": 83,
+              "estimated_raw_height": 83.0,
+              "surface_biome": "tfg:earth/hoodoos",
+              "x": -130400,
+              "z": -23152
+            },
+            {
+              "actual_ground_y": 81,
+              "estimated_raw_height": 81.0,
+              "surface_biome": "tfg:earth/hoodoos",
+              "x": -130399,
+              "z": -23152
+            },
+            {
+              "actual_ground_y": 69,
+              "estimated_raw_height": 69.0,
+              "surface_biome": "tfg:earth/hoodoos",
+              "x": -130397,
+              "z": -23152
+            },
+            {
+              "actual_ground_y": 69,
+              "estimated_raw_height": 69.0,
+              "surface_biome": "tfg:earth/hoodoos",
+              "x": -130396,
+              "z": -23152
+            }
+          ],
+          "pair": "tfc:raw_sandstone/brown -> tfc:sand/black"
+        },
+        {
+          "examples": [
+            {
+              "actual_ground_y": 70,
+              "estimated_raw_height": 70.0,
+              "surface_biome": "tfg:earth/hoodoos",
+              "x": -130398,
+              "z": -23152
+            },
+            {
+              "actual_ground_y": 70,
+              "estimated_raw_height": 70.0,
+              "surface_biome": "tfg:earth/hoodoos",
+              "x": -130391,
+              "z": -23152
+            },
+            {
+              "actual_ground_y": 71,
+              "estimated_raw_height": 71.0,
+              "surface_biome": "tfg:earth/hoodoos",
+              "x": -130390,
+              "z": -23152
+            },
+            {
+              "actual_ground_y": 71,
+              "estimated_raw_height": 71.0,
+              "surface_biome": "tfg:earth/hoodoos",
+              "x": -130389,
+              "z": -23152
+            }
+          ],
+          "pair": "tfc:raw_sandstone/red -> tfc:sand/black"
+        },
+        {
+          "examples": [
+            {
+              "actual_ground_y": 63,
+              "estimated_raw_height": 60.0,
+              "surface_biome": "tfg:earth/inverted_patterned_ground",
+              "x": 8856,
+              "z": 25749
+            },
+            {
+              "actual_ground_y": 63,
+              "estimated_raw_height": 60.0,
+              "surface_biome": "tfg:earth/inverted_patterned_ground",
+              "x": 8857,
+              "z": 25749
+            },
+            {
+              "actual_ground_y": 63,
+              "estimated_raw_height": 60.0,
+              "surface_biome": "tfg:earth/inverted_patterned_ground",
+              "x": 8858,
+              "z": 25749
+            },
+            {
+              "actual_ground_y": 63,
+              "estimated_raw_height": 60.0,
+              "surface_biome": "tfg:earth/inverted_patterned_ground",
+              "x": 8859,
+              "z": 25749
+            }
+          ],
+          "pair": "tfc:rock/cobble/chalk -> water"
+        },
+        {
+          "examples": [
+            {
+              "actual_ground_y": 63,
+              "estimated_raw_height": 63.0,
+              "surface_biome": "tfg:earth/river",
+              "x": -130031,
+              "z": -22048
+            },
+            {
+              "actual_ground_y": 63,
+              "estimated_raw_height": 63.0,
+              "surface_biome": "tfg:earth/river",
+              "x": -130030,
+              "z": -22048
+            },
+            {
+              "actual_ground_y": 63,
+              "estimated_raw_height": 63.0,
+              "surface_biome": "tfg:earth/river",
+              "x": -130029,
+              "z": -22048
+            },
+            {
+              "actual_ground_y": 63,
+              "estimated_raw_height": 62.0,
+              "surface_biome": "tfg:earth/river",
+              "x": -130028,
+              "z": -22048
+            }
+          ],
+          "pair": "tfc:rock/gravel/basalt -> tfc:sand/red"
+        },
+        {
+          "examples": [
+            {
+              "actual_ground_y": 62,
+              "estimated_raw_height": 60.0,
+              "surface_biome": "tfg:earth/inverted_patterned_ground",
+              "x": 8850,
+              "z": 25744
+            },
+            {
+              "actual_ground_y": 62,
+              "estimated_raw_height": 60.0,
+              "surface_biome": "tfg:earth/inverted_patterned_ground",
+              "x": 8851,
+              "z": 25744
+            },
+            {
+              "actual_ground_y": 62,
+              "estimated_raw_height": 60.0,
+              "surface_biome": "tfg:earth/inverted_patterned_ground",
+              "x": 8862,
+              "z": 25744
+            },
+            {
+              "actual_ground_y": 62,
+              "estimated_raw_height": 60.0,
+              "surface_biome": "tfg:earth/inverted_patterned_ground",
+              "x": 8860,
+              "z": 25746
+            }
+          ],
+          "pair": "minecraft:ice -> water"
+        },
+        {
+          "examples": [
+            {
+              "actual_ground_y": 78,
+              "estimated_raw_height": 78.0,
+              "surface_biome": "tfg:earth/whorled_canyons",
+              "x": -123520,
+              "z": 3056
+            },
+            {
+              "actual_ground_y": 79,
+              "estimated_raw_height": 79.0,
+              "surface_biome": "tfg:earth/whorled_canyons",
+              "x": -123518,
+              "z": 3056
+            },
+            {
+              "actual_ground_y": 80,
+              "estimated_raw_height": 80.0,
+              "surface_biome": "tfg:earth/whorled_canyons",
+              "x": -123517,
+              "z": 3056
+            },
+            {
+              "actual_ground_y": 80,
+              "estimated_raw_height": 80.0,
+              "surface_biome": "tfg:earth/whorled_canyons",
+              "x": -123516,
+              "z": 3056
+            }
+          ],
+          "pair": "tfc:raw_sandstone/red -> tfg:coarse_dirt/sandy_loam"
+        },
+        {
+          "examples": [
+            {
+              "actual_ground_y": 65,
+              "estimated_raw_height": 65.0,
+              "surface_biome": "tfg:earth/hills",
+              "x": -200407,
+              "z": -18992
+            },
+            {
+              "actual_ground_y": 65,
+              "estimated_raw_height": 65.0,
+              "surface_biome": "tfg:earth/hills",
+              "x": -200406,
+              "z": -18992
+            },
+            {
+              "actual_ground_y": 65,
+              "estimated_raw_height": 65.0,
+              "surface_biome": "tfg:earth/hills",
+              "x": -200405,
+              "z": -18992
+            },
+            {
+              "actual_ground_y": 65,
+              "estimated_raw_height": 65.0,
+              "surface_biome": "tfg:earth/hills",
+              "x": -200404,
+              "z": -18992
+            }
+          ],
+          "pair": "tfg:grass/podzol -> tfg:duff/alfisol"
+        },
+        {
+          "examples": [
+            {
+              "actual_ground_y": 62,
+              "estimated_raw_height": 82.0,
+              "surface_biome": "tfg:earth/whorled_canyons",
+              "x": -123507,
+              "z": 3060
+            },
+            {
+              "actual_ground_y": 62,
+              "estimated_raw_height": 82.0,
+              "surface_biome": "tfg:earth/whorled_canyons",
+              "x": -123505,
+              "z": 3060
+            },
+            {
+              "actual_ground_y": 62,
+              "estimated_raw_height": 81.0,
+              "surface_biome": "tfg:earth/whorled_canyons",
+              "x": -123508,
+              "z": 3061
+            },
+            {
+              "actual_ground_y": 62,
+              "estimated_raw_height": 81.0,
+              "surface_biome": "tfg:earth/whorled_canyons",
+              "x": -123506,
+              "z": 3061
+            }
+          ],
+          "pair": "minecraft:water -> tfg:coarse_dirt/sandy_loam"
+        },
+        {
+          "examples": [
+            {
+              "actual_ground_y": 68,
+              "estimated_raw_height": 68.0,
+              "surface_biome": "tfg:earth/old_shield_volcano_shore",
+              "x": -99478,
+              "z": -21584
+            },
+            {
+              "actual_ground_y": 68,
+              "estimated_raw_height": 68.0,
+              "surface_biome": "tfg:earth/old_shield_volcano_shore",
+              "x": -99477,
+              "z": -21584
+            },
+            {
+              "actual_ground_y": 68,
+              "estimated_raw_height": 68.0,
+              "surface_biome": "tfg:earth/old_shield_volcano_shore",
+              "x": -99476,
+              "z": -21584
+            },
+            {
+              "actual_ground_y": 68,
+              "estimated_raw_height": 68.0,
+              "surface_biome": "tfg:earth/old_shield_volcano_shore",
+              "x": -99475,
+              "z": -21584
+            }
+          ],
+          "pair": "tfc:rock/raw/basalt -> tfg:grass/alfisol"
+        },
+        {
+          "examples": [
+            {
+              "actual_ground_y": 62,
+              "estimated_raw_height": 61.0,
+              "surface_biome": "tfg:earth/shore",
+              "x": 15726,
+              "z": 33290
+            },
+            {
+              "actual_ground_y": 62,
+              "estimated_raw_height": 61.0,
+              "surface_biome": "tfg:earth/shore",
+              "x": 15727,
+              "z": 33290
+            },
+            {
+              "actual_ground_y": 62,
+              "estimated_raw_height": 61.0,
+              "surface_biome": "tfg:earth/shore",
+              "x": 15725,
+              "z": 33291
+            },
+            {
+              "actual_ground_y": 62,
+              "estimated_raw_height": 61.0,
+              "surface_biome": "tfg:earth/shore",
+              "x": 15726,
+              "z": 33291
+            }
+          ],
+          "pair": "tfc:fluid/salt_water -> tfc:sand/yellow"
+        }
+      ],
+      "matches": 11198,
+      "mismatch_examples": [
+        {
+          "actual_block": "tfc:rock/raw/shale",
+          "actual_ground_y": 69,
+          "estimated_raw_height": 68.0,
+          "predicted_block": "tfg:duff/loam",
+          "surface_biome": "tfg:earth/rolling_hills",
+          "x": -258735,
+          "z": 8368
+        },
+        {
+          "actual_block": "tfc:rock/raw/shale",
+          "actual_ground_y": 70,
+          "estimated_raw_height": 68.0,
+          "predicted_block": "tfg:duff/loam",
+          "surface_biome": "tfg:earth/rolling_hills",
+          "x": -258734,
+          "z": 8368
+        },
+        {
+          "actual_block": "tfc:rock/raw/shale",
+          "actual_ground_y": 70,
+          "estimated_raw_height": 68.0,
+          "predicted_block": "tfg:duff/loam",
+          "surface_biome": "tfg:earth/rolling_hills",
+          "x": -258733,
+          "z": 8368
+        },
+        {
+          "actual_block": "tfc:rock/raw/shale",
+          "actual_ground_y": 69,
+          "estimated_raw_height": 68.0,
+          "predicted_block": "tfg:duff/loam",
+          "surface_biome": "tfg:earth/rolling_hills",
+          "x": -258732,
+          "z": 8368
+        },
+        {
+          "actual_block": "tfc:rock/raw/shale",
+          "actual_ground_y": 69,
+          "estimated_raw_height": 68.0,
+          "predicted_block": "tfg:duff/loam",
+          "surface_biome": "tfg:earth/rolling_hills",
+          "x": -258734,
+          "z": 8369
+        },
+        {
+          "actual_block": "tfc:rock/raw/shale",
+          "actual_ground_y": 69,
+          "estimated_raw_height": 68.0,
+          "predicted_block": "tfg:duff/loam",
+          "surface_biome": "tfg:earth/rolling_hills",
+          "x": -258733,
+          "z": 8369
+        },
+        {
+          "actual_block": "tfg:grass/podzol",
+          "actual_ground_y": 71,
+          "estimated_raw_height": 71.0,
+          "predicted_block": "tfg:duff/podzol",
+          "surface_biome": "tfg:earth/shore",
+          "x": -101810,
+          "z": -14333
+        },
+        {
+          "actual_block": "tfg:grass/podzol",
+          "actual_ground_y": 71,
+          "estimated_raw_height": 71.0,
+          "predicted_block": "tfg:duff/podzol",
+          "surface_biome": "tfg:earth/shore",
+          "x": -101809,
+          "z": -14333
+        },
+        {
+          "actual_block": "tfg:grass/podzol",
+          "actual_ground_y": 71,
+          "estimated_raw_height": 71.0,
+          "predicted_block": "tfg:duff/podzol",
+          "surface_biome": "tfg:earth/shore",
+          "x": -101810,
+          "z": -14332
+        },
+        {
+          "actual_block": "tfg:grass/podzol",
+          "actual_ground_y": 71,
+          "estimated_raw_height": 71.0,
+          "predicted_block": "tfg:duff/podzol",
+          "surface_biome": "tfg:earth/shore",
+          "x": -101809,
+          "z": -14332
+        },
+        {
+          "actual_block": "tfg:grass/podzol",
+          "actual_ground_y": 71,
+          "estimated_raw_height": 71.0,
+          "predicted_block": "tfg:duff/podzol",
+          "surface_biome": "tfg:earth/shore",
+          "x": -101809,
+          "z": -14331
+        },
+        {
+          "actual_block": "tfc:rock/hardened/gabbro",
+          "actual_ground_y": 69,
+          "estimated_raw_height": 69.0,
+          "predicted_block": "tfc:sand/brown",
+          "surface_biome": "tfg:earth/shore",
+          "x": -101812,
+          "z": -14326
+        },
+        {
+          "actual_block": "tfc:fluid/salt_water",
+          "actual_ground_y": 62,
+          "estimated_raw_height": 67.0,
+          "predicted_block": "tfc:sand/brown",
+          "surface_biome": "tfg:earth/shore",
+          "x": -101823,
+          "z": -14325
+        },
+        {
+          "actual_block": "tfc:fluid/salt_water",
+          "actual_ground_y": 62,
+          "estimated_raw_height": 67.0,
+          "predicted_block": "tfc:sand/brown",
+          "surface_biome": "tfg:earth/shore",
+          "x": -101822,
+          "z": -14325
+        },
+        {
+          "actual_block": "tfc:fluid/salt_water",
+          "actual_ground_y": 62,
+          "estimated_raw_height": 67.0,
+          "predicted_block": "tfc:sand/brown",
+          "surface_biome": "tfg:earth/shore",
+          "x": -101821,
+          "z": -14325
+        },
+        {
+          "actual_block": "tfc:fluid/salt_water",
+          "actual_ground_y": 62,
+          "estimated_raw_height": 67.0,
+          "predicted_block": "tfc:sand/brown",
+          "surface_biome": "tfg:earth/shore",
+          "x": -101820,
+          "z": -14325
+        },
+        {
+          "actual_block": "tfc:fluid/salt_water",
+          "actual_ground_y": 62,
+          "estimated_raw_height": 67.0,
+          "predicted_block": "tfc:sand/brown",
+          "surface_biome": "tfg:earth/shore",
+          "x": -101819,
+          "z": -14325
+        },
+        {
+          "actual_block": "tfc:fluid/salt_water",
+          "actual_ground_y": 62,
+          "estimated_raw_height": 68.0,
+          "predicted_block": "tfc:sand/brown",
+          "surface_biome": "tfg:earth/shore",
+          "x": -101818,
+          "z": -14325
+        },
+        {
+          "actual_block": "tfc:fluid/salt_water",
+          "actual_ground_y": 62,
+          "estimated_raw_height": 68.0,
+          "predicted_block": "tfc:sand/brown",
+          "surface_biome": "tfg:earth/shore",
+          "x": -101817,
+          "z": -14325
+        },
+        {
+          "actual_block": "tfc:fluid/salt_water",
+          "actual_ground_y": 62,
+          "estimated_raw_height": 68.0,
+          "predicted_block": "tfc:sand/brown",
+          "surface_biome": "tfg:earth/shore",
+          "x": -101816,
+          "z": -14325
+        },
+        {
+          "actual_block": "tfc:fluid/salt_water",
+          "actual_ground_y": 62,
+          "estimated_raw_height": 68.0,
+          "predicted_block": "tfc:sand/brown",
+          "surface_biome": "tfg:earth/shore",
+          "x": -101815,
+          "z": -14325
+        },
+        {
+          "actual_block": "tfc:fluid/salt_water",
+          "actual_ground_y": 62,
+          "estimated_raw_height": 68.0,
+          "predicted_block": "tfc:sand/brown",
+          "surface_biome": "tfg:earth/shore",
+          "x": -101814,
+          "z": -14325
+        },
+        {
+          "actual_block": "tfc:fluid/salt_water",
+          "actual_ground_y": 62,
+          "estimated_raw_height": 68.0,
+          "predicted_block": "tfc:sand/brown",
+          "surface_biome": "tfg:earth/shore",
+          "x": -101813,
+          "z": -14325
+        },
+        {
+          "actual_block": "tfc:fluid/salt_water",
+          "actual_ground_y": 62,
+          "estimated_raw_height": 66.0,
+          "predicted_block": "tfc:sand/brown",
+          "surface_biome": "tfg:earth/shore",
+          "x": -101824,
+          "z": -14324
+        },
+        {
+          "actual_block": "tfc:fluid/salt_water",
+          "actual_ground_y": 62,
+          "estimated_raw_height": 67.0,
+          "predicted_block": "tfc:sand/brown",
+          "surface_biome": "tfg:earth/shore",
+          "x": -101823,
+          "z": -14324
+        },
+        {
+          "actual_block": "tfc:fluid/salt_water",
+          "actual_ground_y": 62,
+          "estimated_raw_height": 67.0,
+          "predicted_block": "tfc:sand/brown",
+          "surface_biome": "tfg:earth/shore",
+          "x": -101822,
+          "z": -14324
+        },
+        {
+          "actual_block": "tfc:fluid/salt_water",
+          "actual_ground_y": 62,
+          "estimated_raw_height": 67.0,
+          "predicted_block": "tfc:sand/brown",
+          "surface_biome": "tfg:earth/shore",
+          "x": -101821,
+          "z": -14324
+        },
+        {
+          "actual_block": "tfc:fluid/salt_water",
+          "actual_ground_y": 62,
+          "estimated_raw_height": 67.0,
+          "predicted_block": "tfc:sand/brown",
+          "surface_biome": "tfg:earth/shore",
+          "x": -101820,
+          "z": -14324
+        },
+        {
+          "actual_block": "tfc:fluid/salt_water",
+          "actual_ground_y": 62,
+          "estimated_raw_height": 67.0,
+          "predicted_block": "tfc:sand/brown",
+          "surface_biome": "tfg:earth/shore",
+          "x": -101819,
+          "z": -14324
+        },
+        {
+          "actual_block": "tfc:fluid/salt_water",
+          "actual_ground_y": 62,
+          "estimated_raw_height": 66.0,
+          "predicted_block": "tfc:sand/brown",
+          "surface_biome": "tfg:earth/shore",
+          "x": -101824,
+          "z": -14323
+        },
+        {
+          "actual_block": "tfc:rock/mossy_cobble/shale",
+          "actual_ground_y": 69,
+          "estimated_raw_height": 68.0,
+          "predicted_block": "tfc:rock/cobble/shale",
+          "surface_biome": "tfg:earth/rolling_hills",
+          "x": -258575,
+          "z": 8192
+        },
+        {
+          "actual_block": "tfc:rock/cobble/shale",
+          "actual_ground_y": 70,
+          "estimated_raw_height": 68.0,
+          "predicted_block": "tfc:rock/raw/shale",
+          "surface_biome": "tfg:earth/rolling_hills",
+          "x": -258574,
+          "z": 8192
+        },
+        {
+          "actual_block": "tfc:rock/mossy_cobble/shale",
+          "actual_ground_y": 71,
+          "estimated_raw_height": 68.0,
+          "predicted_block": "tfc:rock/cobble/shale",
+          "surface_biome": "tfg:earth/rolling_hills",
+          "x": -258573,
+          "z": 8192
+        },
+        {
+          "actual_block": "tfc:rock/cobble/shale",
+          "actual_ground_y": 71,
+          "estimated_raw_height": 68.0,
+          "predicted_block": "tfc:rock/raw/shale",
+          "surface_biome": "tfg:earth/rolling_hills",
+          "x": -258572,
+          "z": 8192
+        },
+        {
+          "actual_block": "tfc:rock/mossy_cobble/shale",
+          "actual_ground_y": 71,
+          "estimated_raw_height": 68.0,
+          "predicted_block": "tfc:rock/cobble/shale",
+          "surface_biome": "tfg:earth/rolling_hills",
+          "x": -258571,
+          "z": 8192
+        },
+        {
+          "actual_block": "tfc:rock/cobble/shale",
+          "actual_ground_y": 71,
+          "estimated_raw_height": 68.0,
+          "predicted_block": "tfc:rock/raw/shale",
+          "surface_biome": "tfg:earth/rolling_hills",
+          "x": -258570,
+          "z": 8192
+        },
+        {
+          "actual_block": "tfc:rock/cobble/shale",
+          "actual_ground_y": 71,
+          "estimated_raw_height": 68.0,
+          "predicted_block": "tfc:rock/raw/shale",
+          "surface_biome": "tfg:earth/rolling_hills",
+          "x": -258569,
+          "z": 8192
+        },
+        {
+          "actual_block": "tfc:rock/mossy_cobble/shale",
+          "actual_ground_y": 69,
+          "estimated_raw_height": 68.0,
+          "predicted_block": "tfc:rock/cobble/shale",
+          "surface_biome": "tfg:earth/rolling_hills",
+          "x": -258568,
+          "z": 8192
+        },
+        {
+          "actual_block": "tfc:rock/mossy_cobble/shale",
+          "actual_ground_y": 69,
+          "estimated_raw_height": 69.0,
+          "predicted_block": "tfc:rock/cobble/shale",
+          "surface_biome": "tfg:earth/rolling_hills",
+          "x": -258574,
+          "z": 8193
+        },
+        {
+          "actual_block": "tfc:rock/cobble/shale",
+          "actual_ground_y": 70,
+          "estimated_raw_height": 68.0,
+          "predicted_block": "tfc:rock/raw/shale",
+          "surface_biome": "tfg:earth/rolling_hills",
+          "x": -258573,
+          "z": 8193
+        },
+        {
+          "actual_block": "tfc:rock/mossy_cobble/shale",
+          "actual_ground_y": 71,
+          "estimated_raw_height": 68.0,
+          "predicted_block": "tfc:rock/cobble/shale",
+          "surface_biome": "tfg:earth/rolling_hills",
+          "x": -258572,
+          "z": 8193
+        },
+        {
+          "actual_block": "tfc:rock/cobble/shale",
+          "actual_ground_y": 71,
+          "estimated_raw_height": 68.0,
+          "predicted_block": "tfc:rock/raw/shale",
+          "surface_biome": "tfg:earth/rolling_hills",
+          "x": -258571,
+          "z": 8193
+        },
+        {
+          "actual_block": "tfc:rock/cobble/shale",
+          "actual_ground_y": 70,
+          "estimated_raw_height": 68.0,
+          "predicted_block": "tfc:rock/raw/shale",
+          "surface_biome": "tfg:earth/rolling_hills",
+          "x": -258570,
+          "z": 8193
+        },
+        {
+          "actual_block": "tfc:rock/cobble/shale",
+          "actual_ground_y": 70,
+          "estimated_raw_height": 68.0,
+          "predicted_block": "tfc:rock/raw/shale",
+          "surface_biome": "tfg:earth/rolling_hills",
+          "x": -258569,
+          "z": 8193
+        },
+        {
+          "actual_block": "tfc:rock/mossy_cobble/shale",
+          "actual_ground_y": 69,
+          "estimated_raw_height": 69.0,
+          "predicted_block": "tfc:rock/cobble/shale",
+          "surface_biome": "tfg:earth/rolling_hills",
+          "x": -258573,
+          "z": 8194
+        },
+        {
+          "actual_block": "tfc:rock/mossy_cobble/shale",
+          "actual_ground_y": 69,
+          "estimated_raw_height": 69.0,
+          "predicted_block": "tfc:rock/cobble/shale",
+          "surface_biome": "tfg:earth/rolling_hills",
+          "x": -258572,
+          "z": 8194
+        },
+        {
+          "actual_block": "tfc:rock/cobble/shale",
+          "actual_ground_y": 69,
+          "estimated_raw_height": 69.0,
+          "predicted_block": "tfc:rock/raw/shale",
+          "surface_biome": "tfg:earth/rolling_hills",
+          "x": -258571,
+          "z": 8194
+        },
+        {
+          "actual_block": "tfc:rock/cobble/shale",
+          "actual_ground_y": 69,
+          "estimated_raw_height": 69.0,
+          "predicted_block": "tfc:rock/raw/shale",
+          "surface_biome": "tfg:earth/rolling_hills",
+          "x": -258570,
+          "z": 8194
+        },
+        {
+          "actual_block": "tfc:rock/raw/shale",
+          "actual_ground_y": 71,
+          "estimated_raw_height": 70.0,
+          "predicted_block": "tfc:grass/loam",
+          "surface_biome": "tfg:earth/rolling_hills",
+          "x": -258576,
+          "z": 8201
+        },
+        {
+          "actual_block": "tfc:rock/raw/shale",
+          "actual_ground_y": 71,
+          "estimated_raw_height": 70.0,
+          "predicted_block": "tfg:duff/loam",
+          "surface_biome": "tfg:earth/rolling_hills",
+          "x": -258575,
+          "z": 8201
+        },
+        {
+          "actual_block": "tfc:rock/raw/shale",
+          "actual_ground_y": 71,
+          "estimated_raw_height": 69.0,
+          "predicted_block": "tfg:duff/loam",
+          "surface_biome": "tfg:earth/rolling_hills",
+          "x": -258574,
+          "z": 8201
+        },
+        {
+          "actual_block": "tfc:rock/raw/shale",
+          "actual_ground_y": 71,
+          "estimated_raw_height": 69.0,
+          "predicted_block": "tfg:duff/loam",
+          "surface_biome": "tfg:earth/rolling_hills",
+          "x": -258573,
+          "z": 8201
+        },
+        {
+          "actual_block": "tfc:rock/raw/shale",
+          "actual_ground_y": 72,
+          "estimated_raw_height": 70.0,
+          "predicted_block": "tfc:grass/loam",
+          "surface_biome": "tfg:earth/rolling_hills",
+          "x": -258576,
+          "z": 8202
+        },
+        {
+          "actual_block": "tfc:rock/raw/shale",
+          "actual_ground_y": 72,
+          "estimated_raw_height": 70.0,
+          "predicted_block": "tfg:duff/loam",
+          "surface_biome": "tfg:earth/rolling_hills",
+          "x": -258575,
+          "z": 8202
+        },
+        {
+          "actual_block": "tfc:rock/raw/shale",
+          "actual_ground_y": 72,
+          "estimated_raw_height": 70.0,
+          "predicted_block": "tfg:duff/loam",
+          "surface_biome": "tfg:earth/rolling_hills",
+          "x": -258574,
+          "z": 8202
+        },
+        {
+          "actual_block": "tfc:rock/raw/shale",
+          "actual_ground_y": 72,
+          "estimated_raw_height": 70.0,
+          "predicted_block": "tfg:duff/loam",
+          "surface_biome": "tfg:earth/rolling_hills",
+          "x": -258573,
+          "z": 8202
+        },
+        {
+          "actual_block": "tfc:rock/raw/shale",
+          "actual_ground_y": 70,
+          "estimated_raw_height": 69.0,
+          "predicted_block": "tfg:duff/loam",
+          "surface_biome": "tfg:earth/rolling_hills",
+          "x": -258572,
+          "z": 8202
+        },
+        {
+          "actual_block": "tfc:rock/raw/shale",
+          "actual_ground_y": 72,
+          "estimated_raw_height": 70.0,
+          "predicted_block": "tfc:grass/loam",
+          "surface_biome": "tfg:earth/rolling_hills",
+          "x": -258576,
+          "z": 8203
+        },
+        {
+          "actual_block": "tfc:rock/raw/shale",
+          "actual_ground_y": 72,
+          "estimated_raw_height": 70.0,
+          "predicted_block": "tfc:grass/loam",
+          "surface_biome": "tfg:earth/rolling_hills",
+          "x": -258575,
+          "z": 8203
+        },
+        {
+          "actual_block": "tfc:rock/raw/shale",
+          "actual_ground_y": 72,
+          "estimated_raw_height": 70.0,
+          "predicted_block": "tfg:duff/loam",
+          "surface_biome": "tfg:earth/rolling_hills",
+          "x": -258574,
+          "z": 8203
+        },
+        {
+          "actual_block": "tfc:rock/raw/shale",
+          "actual_ground_y": 72,
+          "estimated_raw_height": 70.0,
+          "predicted_block": "tfg:duff/loam",
+          "surface_biome": "tfg:earth/rolling_hills",
+          "x": -258573,
+          "z": 8203
+        },
+        {
+          "actual_block": "tfc:rock/raw/shale",
+          "actual_ground_y": 71,
+          "estimated_raw_height": 70.0,
+          "predicted_block": "tfg:duff/loam",
+          "surface_biome": "tfg:earth/rolling_hills",
+          "x": -258572,
+          "z": 8203
+        },
+        {
+          "actual_block": "tfc:rock/raw/shale",
+          "actual_ground_y": 72,
+          "estimated_raw_height": 70.0,
+          "predicted_block": "tfc:grass/loam",
+          "surface_biome": "tfg:earth/rolling_hills",
+          "x": -258576,
+          "z": 8204
+        },
+        {
+          "actual_block": "tfc:rock/raw/shale",
+          "actual_ground_y": 72,
+          "estimated_raw_height": 70.0,
+          "predicted_block": "tfc:grass/loam",
+          "surface_biome": "tfg:earth/rolling_hills",
+          "x": -258575,
+          "z": 8204
+        }
+      ],
+      "most_common_mismatches": [
+        {
+          "actual_to_predicted": "tfg:grass/podzol -> tfg:duff/podzol",
+          "columns": 175
+        },
+        {
+          "actual_to_predicted": "tfg:grass/alfisol -> tfg:duff/alfisol",
+          "columns": 116
+        },
+        {
+          "actual_to_predicted": "tfc:raw_sandstone/brown -> tfc:sand/black",
+          "columns": 77
+        },
+        {
+          "actual_to_predicted": "tfc:raw_sandstone/red -> tfc:sand/black",
+          "columns": 72
+        },
+        {
+          "actual_to_predicted": "tfc:rock/cobble/chalk -> water",
+          "columns": 37
+        },
+        {
+          "actual_to_predicted": "tfc:rock/gravel/basalt -> tfc:sand/red",
+          "columns": 32
+        },
+        {
+          "actual_to_predicted": "minecraft:ice -> water",
+          "columns": 26
+        },
+        {
+          "actual_to_predicted": "tfc:raw_sandstone/red -> tfg:coarse_dirt/sandy_loam",
+          "columns": 26
+        },
+        {
+          "actual_to_predicted": "tfg:grass/podzol -> tfg:duff/alfisol",
+          "columns": 26
+        },
+        {
+          "actual_to_predicted": "minecraft:water -> tfg:coarse_dirt/sandy_loam",
+          "columns": 22
+        },
+        {
+          "actual_to_predicted": "tfc:rock/raw/basalt -> tfg:grass/alfisol",
+          "columns": 22
+        },
+        {
+          "actual_to_predicted": "tfc:fluid/salt_water -> tfc:sand/yellow",
+          "columns": 21
+        }
+      ]
+    },
+    "tfc_climate": {
+      "columns": 12288,
+      "rainfall_mae_mm": 0.0,
+      "rainfall_p95_abs_error_mm": 0.0,
+      "temperature_mae_c": 0.0,
+      "temperature_p95_abs_error_c": 0.0,
+      "within_0_01_c_and_0_1_mm": {
+        "accuracy": 1.0,
+        "matches": 12288,
+        "samples": 12288
+      }
+    },
+    "tfc_surface_height_noise": {
+      "columns": 12288,
+      "compared": 12288,
+      "compared_integer_accuracy": 1.0,
+      "integer_accuracy": 1.0,
+      "integer_exact": 12288,
+      "mae_blocks": 0.0,
+      "max_absolute_error": 0.0,
+      "median_absolute_error": 0.0,
+      "missing_predictions": 0,
+      "p95_absolute_error": 0.0
+    }
+  }
+}

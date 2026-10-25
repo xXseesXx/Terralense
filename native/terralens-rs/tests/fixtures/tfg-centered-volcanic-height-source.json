@@ -1,0 +1,29 @@
+{
+  "source": {
+    "project": "TerraFirmaGreg-Team/Core-Modern",
+    "tag": "0.9.25",
+    "commit": "f4929e738e83dbc8d46680276faa67520dffa172",
+    "class": "su.terrafirmagreg.core.world.new_ow_wg.noise.CenteredFeatureNoise",
+    "expressions": [
+      "cinder.calculateShape(double)",
+      "tuffRing.calculateShape(double)",
+      "tuffRing.getGapVerticalEasing(TFGCell)",
+      "tuya.calculateShape(double)",
+      "tuya.calculateIcyShape(double)"
+    ]
+  },
+  "formula_samples": [
+    { "formula": "cinder", "input": 0.0, "expected": 0.8365808635013863 },
+    { "formula": "tuff", "input": 0.02, "expected": 0.0 },
+    { "formula": "tuff", "input": 0.05, "expected": 0.14 },
+    { "formula": "tuff", "input": 0.15, "expected": 1.000005 },
+    { "formula": "tuya", "input": 0.0, "expected": 0.800000011920929 },
+    { "formula": "tuya_icy", "input": 0.17, "expected": 0.16666666666666666 }
+  ],
+  "biome_controls": {
+    "cinder": ["canyons", "doline_canyons", "volcanic_mountains", "volcanic_mountain_lake", "volcanic_oceanic_mountains", "volcanic_oceanic_mountain_lake", "active_shield_volcano"],
+    "tuff": ["dormant_shield_volcano", "extinct_shield_volcano", "ancient_shield_volcano", "sunken_shield_volcano", "old_shield_volcano_shore"],
+    "tuya": ["tuyas", "ice_sheet_tuyas", "ice_sheet_tuyas_edge"],
+    "no_centered_height_feature": ["plains", "shield_volcano_shore"]
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "scope": "Cold release engine Biomes tile per viewport; same two-worker environment. Fast trades exact physical water and fuzzy block boundaries for biome classification. No GPU FPS or OS-liveness claim.",
+  "cases": [
+    {
+      "case": "local-volcano",
+      "before_seconds": 0.798751,
+      "fast_seconds": 0.174389,
+      "speedup": 4.580283160061701
+    },
+    {
+      "case": "medium-region",
+      "before_seconds": 3.183013,
+      "fast_seconds": 0.38423,
+      "speedup": 8.284134502771776
+    },
+    {
+      "case": "continent-overview",
+      "before_seconds": 1.682338,
+      "fast_seconds": 1.215246,
+      "speedup": 1.3843600390373634
+    }
+  ],
+  "full_terrain_without_litter_matches_previous_payloads": true,
+  "full_controls": 6,
+  "previous_binary_sha256": "e81ea21f9fc58b1273bd6dc3e13072a5619cc1ce2a970355cd8b44b485fd2f72",
+  "installed_binary_sha256": "a1b989c0b8c018a0af1f9fc73e91002809c07bc18325752472ae18d4f899c5a1"
+}

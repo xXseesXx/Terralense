@@ -1,0 +1,1745 @@
+{
+  "format": 1,
+  "structures": {
+    "ad_astra:lunar_tower": {
+      "container_blocks": [
+        "minecraft:barrel",
+        "minecraft:chest"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "ad_astra:chests/village/moon/blacksmith",
+        "ad_astra:chests/village/moon/house"
+      ],
+      "status": "loot",
+      "template_count": 1,
+      "unknowns": []
+    },
+    "ad_astra:lunarian_village": {
+      "container_blocks": [
+        "minecraft:barrel",
+        "minecraft:chest"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "ad_astra:chests/village/moon/blacksmith",
+        "ad_astra:chests/village/moon/house"
+      ],
+      "status": "loot",
+      "template_count": 16,
+      "unknowns": []
+    },
+    "ad_astra:mars_temple": {
+      "container_blocks": [
+        "minecraft:chest"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "ad_astra:chests/temple/mars/temple"
+      ],
+      "status": "loot",
+      "template_count": 1,
+      "unknowns": []
+    },
+    "ad_astra:moon_dungeon": {
+      "container_blocks": [
+        "minecraft:barrel",
+        "minecraft:chest"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "ad_astra:chests/dungeon/moon/dungeon_chest",
+        "ad_astra:chests/dungeon/moon/large_dungeon_chest"
+      ],
+      "status": "loot",
+      "template_count": 20,
+      "unknowns": [
+        "missing template: ad_astra:dungeon/moon/library"
+      ]
+    },
+    "ad_astra:oil_well": {
+      "container_blocks": [],
+      "has_containers": false,
+      "loot_tables": [],
+      "status": "no_loot",
+      "template_count": 1,
+      "unknowns": []
+    },
+    "ad_astra:pygro_tower": {
+      "container_blocks": [
+        "minecraft:chest"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "minecraft:loot"
+      ],
+      "status": "loot",
+      "template_count": 1,
+      "unknowns": []
+    },
+    "ad_astra:pygro_village": {
+      "container_blocks": [
+        "minecraft:barrel",
+        "minecraft:chest"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "minecraft:loot"
+      ],
+      "status": "loot",
+      "template_count": 9,
+      "unknowns": []
+    },
+    "ad_astra:venus_bullet": {
+      "container_blocks": [],
+      "has_containers": false,
+      "loot_tables": [],
+      "status": "unknown",
+      "template_count": 1,
+      "unknowns": [
+        "missing template: ad_astra:venus_bullet"
+      ]
+    },
+    "ae2:meteorite": {
+      "container_blocks": [],
+      "has_containers": false,
+      "loot_tables": [],
+      "status": "unknown",
+      "template_count": 0,
+      "unknowns": [
+        "structure has no data-defined start_pool; loot behavior may be hardcoded"
+      ]
+    },
+    "alekiships:unfinished_rowboat_birch": {
+      "container_blocks": [
+        "minecraft:barrel"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "alekiships:structures/rowboat/birch"
+      ],
+      "status": "loot",
+      "template_count": 1,
+      "unknowns": []
+    },
+    "alekiships:unfinished_rowboat_cherry": {
+      "container_blocks": [
+        "minecraft:barrel"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "alekiships:structures/rowboat/cherry"
+      ],
+      "status": "loot",
+      "template_count": 1,
+      "unknowns": []
+    },
+    "alekiships:unfinished_rowboat_dark_oak": {
+      "container_blocks": [
+        "minecraft:barrel"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "alekiships:structures/rowboat/dark_oak"
+      ],
+      "status": "loot",
+      "template_count": 1,
+      "unknowns": []
+    },
+    "alekiships:unfinished_rowboat_oak": {
+      "container_blocks": [
+        "minecraft:barrel"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "alekiships:structures/rowboat/oak"
+      ],
+      "status": "loot",
+      "template_count": 1,
+      "unknowns": []
+    },
+    "alekiships:unfinished_rowboat_spruce": {
+      "container_blocks": [
+        "minecraft:barrel"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "alekiships:structures/rowboat/spruce"
+      ],
+      "status": "loot",
+      "template_count": 1,
+      "unknowns": []
+    },
+    "alekiships:unfinished_sloop_birch": {
+      "container_blocks": [
+        "minecraft:barrel",
+        "minecraft:chest"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "alekiships:structures/sloop/birch",
+        "alekiships:structures/sloop_hut/birch"
+      ],
+      "status": "loot",
+      "template_count": 3,
+      "unknowns": []
+    },
+    "alekiships:unfinished_sloop_cherry": {
+      "container_blocks": [
+        "minecraft:barrel",
+        "minecraft:chest"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "alekiships:structures/sloop/cherry",
+        "alekiships:structures/sloop_hut/cherry"
+      ],
+      "status": "loot",
+      "template_count": 3,
+      "unknowns": []
+    },
+    "alekiships:unfinished_sloop_dark_oak": {
+      "container_blocks": [
+        "minecraft:barrel",
+        "minecraft:chest"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "alekiships:structures/sloop/dark_oak",
+        "alekiships:structures/sloop_hut/dark_oak"
+      ],
+      "status": "loot",
+      "template_count": 3,
+      "unknowns": []
+    },
+    "alekiships:unfinished_sloop_oak": {
+      "container_blocks": [
+        "minecraft:barrel",
+        "minecraft:chest"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "alekiships:structures/sloop/oak",
+        "alekiships:structures/sloop_hut/oak"
+      ],
+      "status": "loot",
+      "template_count": 3,
+      "unknowns": []
+    },
+    "alekiships:unfinished_sloop_spruce": {
+      "container_blocks": [
+        "minecraft:barrel",
+        "minecraft:chest"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "alekiships:structures/sloop/spruce",
+        "alekiships:structures/sloop_hut/spruce"
+      ],
+      "status": "loot",
+      "template_count": 3,
+      "unknowns": []
+    },
+    "arthropocolypse:desert_nest": {
+      "container_blocks": [],
+      "has_containers": false,
+      "loot_tables": [],
+      "status": "unknown",
+      "template_count": 0,
+      "unknowns": [
+        "structure has no data-defined start_pool; loot behavior may be hardcoded"
+      ]
+    },
+    "minecraft:ancient_city": {
+      "container_blocks": [
+        "minecraft:chest"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "minecraft:chests/ancient_city",
+        "minecraft:chests/ancient_city_ice_box"
+      ],
+      "status": "loot",
+      "template_count": 58,
+      "unknowns": [
+        "missing template: minecraft:ancient_city/walls/intact_horizontal_wall_stairs_5",
+        "minecraft:ancient_city/sculk: feature_pool_element: minecraft:sculk_patch_ancient_city"
+      ]
+    },
+    "minecraft:bastion_remnant": {
+      "container_blocks": [
+        "lootr:lootr_chest"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "minecraft:chests/bastion_bridge",
+        "minecraft:chests/bastion_hoglin_stable",
+        "minecraft:chests/bastion_other",
+        "minecraft:chests/bastion_treasure"
+      ],
+      "status": "loot",
+      "template_count": 167,
+      "unknowns": []
+    },
+    "minecraft:buried_treasure": {
+      "container_blocks": [],
+      "has_containers": false,
+      "loot_tables": [],
+      "status": "unknown",
+      "template_count": 0,
+      "unknowns": [
+        "structure has no data-defined start_pool; loot behavior may be hardcoded"
+      ]
+    },
+    "minecraft:desert_pyramid": {
+      "container_blocks": [],
+      "has_containers": false,
+      "loot_tables": [],
+      "status": "unknown",
+      "template_count": 0,
+      "unknowns": [
+        "structure has no data-defined start_pool; loot behavior may be hardcoded"
+      ]
+    },
+    "minecraft:end_city": {
+      "container_blocks": [],
+      "has_containers": false,
+      "loot_tables": [],
+      "status": "unknown",
+      "template_count": 0,
+      "unknowns": [
+        "structure has no data-defined start_pool; loot behavior may be hardcoded"
+      ]
+    },
+    "minecraft:fortress": {
+      "container_blocks": [],
+      "has_containers": false,
+      "loot_tables": [],
+      "status": "unknown",
+      "template_count": 0,
+      "unknowns": [
+        "structure has no data-defined start_pool; loot behavior may be hardcoded"
+      ]
+    },
+    "minecraft:igloo": {
+      "container_blocks": [],
+      "has_containers": false,
+      "loot_tables": [],
+      "status": "unknown",
+      "template_count": 0,
+      "unknowns": [
+        "structure has no data-defined start_pool; loot behavior may be hardcoded"
+      ]
+    },
+    "minecraft:jungle_pyramid": {
+      "container_blocks": [],
+      "has_containers": false,
+      "loot_tables": [],
+      "status": "unknown",
+      "template_count": 0,
+      "unknowns": [
+        "structure has no data-defined start_pool; loot behavior may be hardcoded"
+      ]
+    },
+    "minecraft:mansion": {
+      "container_blocks": [],
+      "has_containers": false,
+      "loot_tables": [],
+      "status": "unknown",
+      "template_count": 0,
+      "unknowns": [
+        "structure has no data-defined start_pool; loot behavior may be hardcoded"
+      ]
+    },
+    "minecraft:mineshaft": {
+      "container_blocks": [],
+      "has_containers": false,
+      "loot_tables": [],
+      "status": "unknown",
+      "template_count": 0,
+      "unknowns": [
+        "structure has no data-defined start_pool; loot behavior may be hardcoded"
+      ]
+    },
+    "minecraft:mineshaft_mesa": {
+      "container_blocks": [],
+      "has_containers": false,
+      "loot_tables": [],
+      "status": "unknown",
+      "template_count": 0,
+      "unknowns": [
+        "structure has no data-defined start_pool; loot behavior may be hardcoded"
+      ]
+    },
+    "minecraft:monument": {
+      "container_blocks": [],
+      "has_containers": false,
+      "loot_tables": [],
+      "status": "unknown",
+      "template_count": 0,
+      "unknowns": [
+        "structure has no data-defined start_pool; loot behavior may be hardcoded"
+      ]
+    },
+    "minecraft:nether_fossil": {
+      "container_blocks": [],
+      "has_containers": false,
+      "loot_tables": [],
+      "status": "unknown",
+      "template_count": 0,
+      "unknowns": [
+        "structure has no data-defined start_pool; loot behavior may be hardcoded"
+      ]
+    },
+    "minecraft:ocean_ruin_cold": {
+      "container_blocks": [],
+      "has_containers": false,
+      "loot_tables": [],
+      "status": "unknown",
+      "template_count": 0,
+      "unknowns": [
+        "structure has no data-defined start_pool; loot behavior may be hardcoded"
+      ]
+    },
+    "minecraft:ocean_ruin_warm": {
+      "container_blocks": [],
+      "has_containers": false,
+      "loot_tables": [],
+      "status": "unknown",
+      "template_count": 0,
+      "unknowns": [
+        "structure has no data-defined start_pool; loot behavior may be hardcoded"
+      ]
+    },
+    "minecraft:pillager_outpost": {
+      "container_blocks": [
+        "minecraft:chest"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "minecraft:chests/pillager_outpost"
+      ],
+      "status": "loot",
+      "template_count": 11,
+      "unknowns": []
+    },
+    "minecraft:ruined_portal": {
+      "container_blocks": [],
+      "has_containers": false,
+      "loot_tables": [],
+      "status": "unknown",
+      "template_count": 0,
+      "unknowns": [
+        "structure has no data-defined start_pool; loot behavior may be hardcoded"
+      ]
+    },
+    "minecraft:ruined_portal_desert": {
+      "container_blocks": [],
+      "has_containers": false,
+      "loot_tables": [],
+      "status": "unknown",
+      "template_count": 0,
+      "unknowns": [
+        "structure has no data-defined start_pool; loot behavior may be hardcoded"
+      ]
+    },
+    "minecraft:ruined_portal_jungle": {
+      "container_blocks": [],
+      "has_containers": false,
+      "loot_tables": [],
+      "status": "unknown",
+      "template_count": 0,
+      "unknowns": [
+        "structure has no data-defined start_pool; loot behavior may be hardcoded"
+      ]
+    },
+    "minecraft:ruined_portal_mountain": {
+      "container_blocks": [],
+      "has_containers": false,
+      "loot_tables": [],
+      "status": "unknown",
+      "template_count": 0,
+      "unknowns": [
+        "structure has no data-defined start_pool; loot behavior may be hardcoded"
+      ]
+    },
+    "minecraft:ruined_portal_nether": {
+      "container_blocks": [],
+      "has_containers": false,
+      "loot_tables": [],
+      "status": "unknown",
+      "template_count": 0,
+      "unknowns": [
+        "structure has no data-defined start_pool; loot behavior may be hardcoded"
+      ]
+    },
+    "minecraft:ruined_portal_ocean": {
+      "container_blocks": [],
+      "has_containers": false,
+      "loot_tables": [],
+      "status": "unknown",
+      "template_count": 0,
+      "unknowns": [
+        "structure has no data-defined start_pool; loot behavior may be hardcoded"
+      ]
+    },
+    "minecraft:ruined_portal_swamp": {
+      "container_blocks": [],
+      "has_containers": false,
+      "loot_tables": [],
+      "status": "unknown",
+      "template_count": 0,
+      "unknowns": [
+        "structure has no data-defined start_pool; loot behavior may be hardcoded"
+      ]
+    },
+    "minecraft:shipwreck": {
+      "container_blocks": [],
+      "has_containers": false,
+      "loot_tables": [],
+      "status": "unknown",
+      "template_count": 0,
+      "unknowns": [
+        "structure has no data-defined start_pool; loot behavior may be hardcoded"
+      ]
+    },
+    "minecraft:shipwreck_beached": {
+      "container_blocks": [],
+      "has_containers": false,
+      "loot_tables": [],
+      "status": "unknown",
+      "template_count": 0,
+      "unknowns": [
+        "structure has no data-defined start_pool; loot behavior may be hardcoded"
+      ]
+    },
+    "minecraft:stronghold": {
+      "container_blocks": [],
+      "has_containers": false,
+      "loot_tables": [],
+      "status": "unknown",
+      "template_count": 0,
+      "unknowns": [
+        "structure has no data-defined start_pool; loot behavior may be hardcoded"
+      ]
+    },
+    "minecraft:swamp_hut": {
+      "container_blocks": [],
+      "has_containers": false,
+      "loot_tables": [],
+      "status": "unknown",
+      "template_count": 0,
+      "unknowns": [
+        "structure has no data-defined start_pool; loot behavior may be hardcoded"
+      ]
+    },
+    "minecraft:trail_ruins": {
+      "container_blocks": [
+        "minecraft:suspicious_gravel"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "minecraft:archaeology/trail_ruins_common",
+        "minecraft:archaeology/trail_ruins_rare"
+      ],
+      "status": "loot",
+      "template_count": 84,
+      "unknowns": []
+    },
+    "minecraft:village_desert": {
+      "container_blocks": [
+        "minecraft:barrel",
+        "minecraft:chest"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "minecraft:chests/village/village_desert_house",
+        "minecraft:chests/village/village_temple",
+        "minecraft:chests/village/village_toolsmith",
+        "minecraft:chests/village/village_weaponsmith"
+      ],
+      "status": "loot",
+      "template_count": 96,
+      "unknowns": [
+        "minecraft:village/desert/decor: feature_pool_element: minecraft:patch_cactus",
+        "minecraft:village/desert/decor: feature_pool_element: minecraft:pile_hay",
+        "minecraft:village/desert/zombie/decor: feature_pool_element: minecraft:patch_cactus",
+        "minecraft:village/desert/zombie/decor: feature_pool_element: minecraft:pile_hay"
+      ]
+    },
+    "minecraft:village_plains": {
+      "container_blocks": [
+        "minecraft:barrel",
+        "minecraft:chest"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "minecraft:chests/village/village_cartographer",
+        "minecraft:chests/village/village_fisher",
+        "minecraft:chests/village/village_plains_house",
+        "minecraft:chests/village/village_tannery",
+        "minecraft:chests/village/village_weaponsmith"
+      ],
+      "status": "loot",
+      "template_count": 125,
+      "unknowns": [
+        "minecraft:village/plains/decor: feature_pool_element: minecraft:oak",
+        "minecraft:village/plains/decor: feature_pool_element: minecraft:flower_plain",
+        "minecraft:village/plains/decor: feature_pool_element: minecraft:pile_hay",
+        "minecraft:village/plains/zombie/decor: feature_pool_element: minecraft:oak",
+        "minecraft:village/plains/zombie/decor: feature_pool_element: minecraft:flower_plain",
+        "minecraft:village/plains/zombie/decor: feature_pool_element: minecraft:pile_hay",
+        "minecraft:village/plains/trees: feature_pool_element: minecraft:oak"
+      ]
+    },
+    "minecraft:village_savanna": {
+      "container_blocks": [
+        "minecraft:barrel",
+        "minecraft:chest"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "minecraft:chests/village/village_butcher",
+        "minecraft:chests/village/village_cartographer",
+        "minecraft:chests/village/village_mason",
+        "minecraft:chests/village/village_savanna_house",
+        "minecraft:chests/village/village_tannery",
+        "minecraft:chests/village/village_weaponsmith"
+      ],
+      "status": "loot",
+      "template_count": 122,
+      "unknowns": [
+        "minecraft:village/savanna/decor: feature_pool_element: minecraft:acacia",
+        "minecraft:village/savanna/decor: feature_pool_element: minecraft:pile_hay",
+        "minecraft:village/savanna/decor: feature_pool_element: minecraft:pile_melon",
+        "minecraft:village/savanna/zombie/decor: feature_pool_element: minecraft:acacia",
+        "minecraft:village/savanna/zombie/decor: feature_pool_element: minecraft:pile_hay",
+        "minecraft:village/savanna/zombie/decor: feature_pool_element: minecraft:pile_melon",
+        "minecraft:village/savanna/trees: feature_pool_element: minecraft:acacia"
+      ]
+    },
+    "minecraft:village_snowy": {
+      "container_blocks": [
+        "minecraft:barrel",
+        "minecraft:chest"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "minecraft:chests/village/village_armorer",
+        "minecraft:chests/village/village_cartographer",
+        "minecraft:chests/village/village_shepherd",
+        "minecraft:chests/village/village_snowy_house",
+        "minecraft:chests/village/village_tannery",
+        "minecraft:chests/village/village_weaponsmith"
+      ],
+      "status": "loot",
+      "template_count": 111,
+      "unknowns": [
+        "minecraft:village/snowy/decor: feature_pool_element: minecraft:spruce",
+        "minecraft:village/snowy/decor: feature_pool_element: minecraft:pile_snow",
+        "minecraft:village/snowy/decor: feature_pool_element: minecraft:pile_ice",
+        "minecraft:village/snowy/zombie/decor: feature_pool_element: minecraft:spruce",
+        "minecraft:village/snowy/zombie/decor: feature_pool_element: minecraft:pile_snow",
+        "minecraft:village/snowy/zombie/decor: feature_pool_element: minecraft:pile_ice"
+      ]
+    },
+    "minecraft:village_taiga": {
+      "container_blocks": [
+        "minecraft:barrel",
+        "minecraft:chest"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "minecraft:chests/village/village_cartographer",
+        "minecraft:chests/village/village_fletcher",
+        "minecraft:chests/village/village_taiga_house",
+        "minecraft:chests/village/village_tannery",
+        "minecraft:chests/village/village_toolsmith",
+        "minecraft:chests/village/village_weaponsmith"
+      ],
+      "status": "loot",
+      "template_count": 116,
+      "unknowns": [
+        "minecraft:village/taiga/decor: feature_pool_element: minecraft:spruce",
+        "minecraft:village/taiga/decor: feature_pool_element: minecraft:pine",
+        "minecraft:village/taiga/decor: feature_pool_element: minecraft:pile_pumpkin",
+        "minecraft:village/taiga/decor: feature_pool_element: minecraft:patch_taiga_grass",
+        "minecraft:village/taiga/decor: feature_pool_element: minecraft:patch_berry_bush",
+        "minecraft:village/taiga/zombie/decor: feature_pool_element: minecraft:spruce",
+        "minecraft:village/taiga/zombie/decor: feature_pool_element: minecraft:pine",
+        "minecraft:village/taiga/zombie/decor: feature_pool_element: minecraft:pile_pumpkin",
+        "minecraft:village/taiga/zombie/decor: feature_pool_element: minecraft:patch_taiga_grass",
+        "minecraft:village/taiga/zombie/decor: feature_pool_element: minecraft:patch_berry_bush"
+      ]
+    },
+    "species:libra": {
+      "container_blocks": [],
+      "has_containers": false,
+      "loot_tables": [],
+      "status": "unknown",
+      "template_count": 0,
+      "unknowns": [
+        "structure has no data-defined start_pool; loot behavior may be hardcoded"
+      ]
+    },
+    "species:paleontology_dig_site": {
+      "container_blocks": [],
+      "has_containers": false,
+      "loot_tables": [],
+      "status": "unknown",
+      "template_count": 0,
+      "unknowns": [
+        "structure has no data-defined start_pool; loot behavior may be hardcoded"
+      ]
+    },
+    "species:spectralibur_chamber": {
+      "container_blocks": [],
+      "has_containers": false,
+      "loot_tables": [],
+      "status": "unknown",
+      "template_count": 0,
+      "unknowns": [
+        "structure has no data-defined start_pool; loot behavior may be hardcoded"
+      ]
+    },
+    "species:wraptor_coop": {
+      "container_blocks": [],
+      "has_containers": false,
+      "loot_tables": [],
+      "status": "unknown",
+      "template_count": 0,
+      "unknowns": [
+        "structure has no data-defined start_pool; loot behavior may be hardcoded"
+      ]
+    },
+    "tfc_ruined_world:ancient_monument_1": {
+      "container_blocks": [],
+      "has_containers": false,
+      "loot_tables": [],
+      "status": "no_loot",
+      "template_count": 1,
+      "unknowns": []
+    },
+    "tfc_ruined_world:ancient_monument_2": {
+      "container_blocks": [],
+      "has_containers": false,
+      "loot_tables": [],
+      "status": "no_loot",
+      "template_count": 1,
+      "unknowns": []
+    },
+    "tfc_ruined_world:castle_1": {
+      "container_blocks": [],
+      "has_containers": false,
+      "loot_tables": [],
+      "status": "no_loot",
+      "template_count": 1,
+      "unknowns": []
+    },
+    "tfc_ruined_world:castle_2": {
+      "container_blocks": [],
+      "has_containers": false,
+      "loot_tables": [],
+      "status": "no_loot",
+      "template_count": 1,
+      "unknowns": []
+    },
+    "tfc_ruined_world:limestone_church": {
+      "container_blocks": [],
+      "has_containers": false,
+      "loot_tables": [],
+      "status": "no_loot",
+      "template_count": 1,
+      "unknowns": []
+    },
+    "tfc_ruined_world:medium_gneiss_church": {
+      "container_blocks": [],
+      "has_containers": false,
+      "loot_tables": [],
+      "status": "no_loot",
+      "template_count": 1,
+      "unknowns": []
+    },
+    "tfc_ruined_world:small_gneiss_church": {
+      "container_blocks": [],
+      "has_containers": false,
+      "loot_tables": [],
+      "status": "no_loot",
+      "template_count": 1,
+      "unknowns": []
+    },
+    "tfc_ruined_world:small_limestone_church": {
+      "container_blocks": [],
+      "has_containers": false,
+      "loot_tables": [],
+      "status": "no_loot",
+      "template_count": 1,
+      "unknowns": []
+    },
+    "tfc_ruined_world:small_limestone_church_2": {
+      "container_blocks": [],
+      "has_containers": false,
+      "loot_tables": [],
+      "status": "no_loot",
+      "template_count": 1,
+      "unknowns": []
+    },
+    "tfc_ruined_world:tower_1": {
+      "container_blocks": [],
+      "has_containers": false,
+      "loot_tables": [],
+      "status": "no_loot",
+      "template_count": 1,
+      "unknowns": []
+    },
+    "tfc_ruined_world:tower_2": {
+      "container_blocks": [],
+      "has_containers": false,
+      "loot_tables": [],
+      "status": "no_loot",
+      "template_count": 1,
+      "unknowns": []
+    },
+    "tfc_ruined_world:tower_3": {
+      "container_blocks": [],
+      "has_containers": false,
+      "loot_tables": [],
+      "status": "no_loot",
+      "template_count": 1,
+      "unknowns": []
+    },
+    "tfc_ruined_world:tower_4": {
+      "container_blocks": [],
+      "has_containers": false,
+      "loot_tables": [],
+      "status": "no_loot",
+      "template_count": 1,
+      "unknowns": []
+    },
+    "tfc_ruined_world:tower_5": {
+      "container_blocks": [],
+      "has_containers": false,
+      "loot_tables": [],
+      "status": "no_loot",
+      "template_count": 1,
+      "unknowns": []
+    },
+    "tfc_ruined_world:towerhouse_1": {
+      "container_blocks": [],
+      "has_containers": false,
+      "loot_tables": [],
+      "status": "no_loot",
+      "template_count": 1,
+      "unknowns": []
+    },
+    "tfc_ruined_world:towerhouse_2": {
+      "container_blocks": [],
+      "has_containers": false,
+      "loot_tables": [],
+      "status": "no_loot",
+      "template_count": 1,
+      "unknowns": []
+    },
+    "tfc_ruins:ruin_beach": {
+      "container_blocks": [
+        "tfc:ceramic/large_vessel",
+        "tfc:placed_item"
+      ],
+      "has_containers": true,
+      "loot_tables": [],
+      "status": "loot",
+      "template_count": 3,
+      "unknowns": []
+    },
+    "tfc_ruins:ruin_rich": {
+      "container_blocks": [
+        "tfc:ceramic/large_vessel",
+        "tfc:placed_item"
+      ],
+      "has_containers": true,
+      "loot_tables": [],
+      "status": "loot",
+      "template_count": 3,
+      "unknowns": []
+    },
+    "tfc_ruins:ruin_small": {
+      "container_blocks": [
+        "tfc:ceramic/large_vessel",
+        "tfc:placed_item"
+      ],
+      "has_containers": true,
+      "loot_tables": [],
+      "status": "loot",
+      "template_count": 20,
+      "unknowns": []
+    },
+    "tfg:aqueduct/aqueduct": {
+      "container_blocks": [],
+      "has_containers": false,
+      "loot_tables": [],
+      "status": "no_loot",
+      "template_count": 13,
+      "unknowns": []
+    },
+    "tfg:beneath/outpost": {
+      "container_blocks": [
+        "lootr:lootr_chest"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "tfg:chests/beneath_outpost"
+      ],
+      "status": "loot",
+      "template_count": 5,
+      "unknowns": []
+    },
+    "tfg:beneath/tower": {
+      "container_blocks": [
+        "firmalife:wood/big_barrel/mangrove",
+        "firmalife:wood/stomping_barrel/mangrove",
+        "lootr:lootr_chest",
+        "tfc:ceramic/large_vessel/black",
+        "tfc:ceramic/large_vessel/orange",
+        "tfc:ceramic/large_vessel/yellow",
+        "tfc:wood/barrel/mangrove"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "tfg:chests/beneath_tower_bottom",
+        "tfg:chests/beneath_tower_top"
+      ],
+      "status": "loot",
+      "template_count": 31,
+      "unknowns": [
+        "missing template pool: tfg:beneath/tower/gilded_3",
+        "missing template pool: tfg:beneath/tower/basalt_3",
+        "unreviewed processor type: lithostitched:reference"
+      ]
+    },
+    "tfg:illagers/arabic_village_living": {
+      "container_blocks": [
+        "afc:wood/barrel/baobab",
+        "afc:wood/barrel/ironwood",
+        "firmalife:wood/big_barrel/blackwood",
+        "firmalife:wood/stomping_barrel/blackwood",
+        "firmalife:wood/stomping_barrel/palm",
+        "lootr:lootr_chest",
+        "tfc:ceramic/large_vessel/black",
+        "tfc:ceramic/large_vessel/brown",
+        "tfc:ceramic/large_vessel/gray",
+        "tfc:ceramic/large_vessel/light_gray",
+        "tfc:wood/barrel/acacia",
+        "tfc:wood/barrel/blackwood",
+        "tfc:wood/barrel/palm",
+        "tfg:decorative_vase/generated/lime",
+        "tfg:decorative_vase/generated/orange",
+        "tfg:decorative_vase/generated/red",
+        "tfg:decorative_vase/generated/white",
+        "tfg:decorative_vase/generated/yellow"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "tfg:chests/arabic_illager_basic",
+        "tfg:chests/arabic_illager_smithy"
+      ],
+      "status": "loot",
+      "template_count": 32,
+      "unknowns": [
+        "unreviewed processor type: lithostitched:condition"
+      ]
+    },
+    "tfg:illagers/camps": {
+      "container_blocks": [
+        "lootr:lootr_chest",
+        "tfg:decorative_vase/generated/blue",
+        "tfg:decorative_vase/generated/brown",
+        "tfg:decorative_vase/generated/cyan",
+        "tfg:decorative_vase/generated/light_gray",
+        "tfg:decorative_vase/generated/yellow"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "tfg:chests/illager_camps"
+      ],
+      "status": "loot",
+      "template_count": 15,
+      "unknowns": []
+    },
+    "tfg:illagers/forest_roaming": {
+      "container_blocks": [],
+      "has_containers": false,
+      "loot_tables": [],
+      "status": "no_loot",
+      "template_count": 5,
+      "unknowns": []
+    },
+    "tfg:illagers/malay_village_living": {
+      "container_blocks": [
+        "afc:wood/big_barrel/mahogany",
+        "firmalife:wood/big_barrel/kapok",
+        "firmalife:wood/big_barrel/mangrove",
+        "lootr:lootr_chest",
+        "tfg:decorative_vase/blue",
+        "tfg:decorative_vase/generated/blue",
+        "tfg:decorative_vase/generated/lime",
+        "tfg:decorative_vase/lime"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "tfg:chests/malay_illager_basic",
+        "tfg:chests/malay_illager_smithy"
+      ],
+      "status": "loot",
+      "template_count": 26,
+      "unknowns": [
+        "tfg:illagers/malay_village_living_buildings: unsupported element_type: lithostitched:guaranteed",
+        "unreviewed processor type: lithostitched:condition"
+      ]
+    },
+    "tfg:illagers/norse_village_living": {
+      "container_blocks": [
+        "afc:wood/barrel/cypress",
+        "afc:wood/big_barrel/cypress",
+        "firmalife:wood/stomping_barrel/hickory",
+        "firmalife:wood/stomping_barrel/willow",
+        "lootr:lootr_chest",
+        "tfc:barrel_rack",
+        "tfc:ceramic/large_vessel",
+        "tfc:ceramic/large_vessel/brown",
+        "tfc:ceramic/large_vessel/gray",
+        "tfc:ceramic/large_vessel/light_gray",
+        "tfc:wood/barrel/hickory",
+        "tfc:wood/barrel/willow",
+        "tfc:wood/jar_shelf/willow",
+        "tfg:decorative_vase/generated/black",
+        "tfg:decorative_vase/generated/cyan",
+        "tfg:decorative_vase/generated/gray",
+        "tfg:decorative_vase/generated/green",
+        "tfg:decorative_vase/generated/light_blue",
+        "tfg:decorative_vase/generated/light_gray",
+        "tfg:decorative_vase/generated/purple",
+        "tfg:decorative_vase/generated/white"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "tfg:chests/nordic_illager_basic",
+        "tfg:chests/nordic_illager_smithy"
+      ],
+      "status": "loot",
+      "template_count": 27,
+      "unknowns": [
+        "unreviewed processor type: lithostitched:condition"
+      ]
+    },
+    "tfg:illagers/norse_village_ruined": {
+      "container_blocks": [
+        "afc:wood/barrel/cypress",
+        "lootr:lootr_chest",
+        "tfc:barrel_rack",
+        "tfc:ceramic/large_vessel",
+        "tfg:decorative_vase/generated/cyan",
+        "tfg:decorative_vase/generated/gray",
+        "tfg:decorative_vase/generated/green",
+        "tfg:decorative_vase/generated/light_blue",
+        "tfg:decorative_vase/generated/light_gray",
+        "tfg:decorative_vase/generated/purple"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "tfg:chests/nordic_illager_basic",
+        "tfg:chests/nordic_illager_smithy"
+      ],
+      "status": "loot",
+      "template_count": 19,
+      "unknowns": [
+        "unreviewed processor type: lithostitched:condition"
+      ]
+    },
+    "tfg:illagers/yurts_village_living": {
+      "container_blocks": [
+        "firmalife:wood/stomping_barrel/ash",
+        "firmalife:wood/stomping_barrel/white_cedar",
+        "lootr:lootr_chest",
+        "tfc:ceramic/large_vessel/black",
+        "tfc:ceramic/large_vessel/brown",
+        "tfc:ceramic/large_vessel/gray",
+        "tfc:ceramic/large_vessel/light_gray",
+        "tfc:ceramic/large_vessel/white",
+        "tfc:wood/barrel/ash",
+        "tfc:wood/barrel/chestnut",
+        "tfc:wood/barrel/hickory",
+        "tfc:wood/barrel/white_cedar",
+        "tfg:decorative_vase/generated/black",
+        "tfg:decorative_vase/generated/blue",
+        "tfg:decorative_vase/generated/gray",
+        "tfg:decorative_vase/generated/light_blue",
+        "tfg:decorative_vase/generated/purple"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "tfg:chests/yurts_illager_archery",
+        "tfg:chests/yurts_illager_basic",
+        "tfg:chests/yurts_illager_smithy",
+        "tfg:chests/yurts_illager_stable"
+      ],
+      "status": "loot",
+      "template_count": 32,
+      "unknowns": [
+        "unreviewed processor type: lithostitched:condition"
+      ]
+    },
+    "tfg:mineshaft/mineshaft": {
+      "container_blocks": [
+        "lootr:lootr_chest",
+        "tfc:ceramic/large_vessel/brown",
+        "tfc:ceramic/large_vessel/cyan",
+        "tfc:ceramic/large_vessel/gray",
+        "tfc:ceramic/large_vessel/green",
+        "tfc:ceramic/large_vessel/light_blue",
+        "tfc:ceramic/large_vessel/pink",
+        "tfc:ceramic/large_vessel/red",
+        "tfc:ceramic/large_vessel/white",
+        "tfc:ceramic/large_vessel/yellow",
+        "tfg:decorative_vase/generated/cyan",
+        "tfg:decorative_vase/generated/green",
+        "tfg:decorative_vase/generated/pink",
+        "tfg:decorative_vase/generated/white",
+        "tfg:decorative_vase/generated/yellow"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "tfg:chests/mineshaft/generic",
+        "tfg:chests/mineshaft/spider",
+        "tfg:chests/mineshaft/start"
+      ],
+      "status": "loot",
+      "template_count": 84,
+      "unknowns": [
+        "missing template: tfg:mineshaft/hallway/end_2_pb",
+        "tfg:mineshaft/ores_small: feature_pool_element: tfg:earth/mineshaft_ores_small",
+        "tfg:mineshaft/rubble: feature_pool_element: tfg:earth/cobble_rubble",
+        "tfg:mineshaft/fallback/ores_small_fallback: feature_pool_element: tfg:earth/mineshaft_ores_small",
+        "tfg:mineshaft/fallback/rubble_fallback: feature_pool_element: tfg:earth/cobble_rubble",
+        "tfg:mineshaft/ores: feature_pool_element: tfg:earth/mineshaft_ores",
+        "tfg:mineshaft/fallback/ores_fallback: feature_pool_element: tfg:earth/mineshaft_ores",
+        "unreviewed processor type: tfg:mine_spider_processor",
+        "unreviewed processor type: tfg:mine_support_processor",
+        "unreviewed processor type: tfg:mine_surface_processor"
+      ]
+    },
+    "tfg:moon/cheese_ores": {
+      "container_blocks": [],
+      "has_containers": false,
+      "loot_tables": [],
+      "status": "no_loot",
+      "template_count": 1,
+      "unknowns": []
+    },
+    "tfg:moon/meteors": {
+      "container_blocks": [],
+      "has_containers": false,
+      "loot_tables": [],
+      "status": "no_loot",
+      "template_count": 6,
+      "unknowns": []
+    },
+    "tfg:moon/moon_rabbit_houses": {
+      "container_blocks": [],
+      "has_containers": false,
+      "loot_tables": [],
+      "status": "no_loot",
+      "template_count": 4,
+      "unknowns": []
+    },
+    "tfg:moon/moonbase": {
+      "container_blocks": [
+        "gtceu:wood_crate",
+        "lootr:lootr_chest",
+        "tfc:wood/barrel/blackwood",
+        "tfc:wood/jar_shelf/blackwood"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "tfg:chests/moonbase"
+      ],
+      "status": "loot",
+      "template_count": 26,
+      "unknowns": []
+    },
+    "tfg:ocean/ocean_moai_0": {
+      "container_blocks": [],
+      "has_containers": false,
+      "loot_tables": [],
+      "status": "no_loot",
+      "template_count": 6,
+      "unknowns": []
+    },
+    "tfg:temperate/plains_temperate_house_0": {
+      "container_blocks": [
+        "tfg:decorative_vase/generated/brown",
+        "tfg:decorative_vase/generated/green",
+        "tfg:decorative_vase/generated/light_blue",
+        "tfg:decorative_vase/generated/orange",
+        "tfg:decorative_vase/generated/white"
+      ],
+      "has_containers": true,
+      "loot_tables": [],
+      "status": "loot",
+      "template_count": 5,
+      "unknowns": []
+    },
+    "wan_ancient_beasts:abandoned_village": {
+      "container_blocks": [
+        "minecraft:chest",
+        "minecraft:suspicious_gravel"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "wan_ancient_beasts:archaeology/abandoned_village",
+        "wan_ancient_beasts:chests/abandoned_village"
+      ],
+      "status": "loot",
+      "template_count": 3,
+      "unknowns": []
+    },
+    "wan_ancient_beasts:ancient_nest": {
+      "container_blocks": [
+        "minecraft:chest"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "wan_ancient_beasts:archaeology/ancient_nest",
+        "wan_ancient_beasts:chests/ancient_nest"
+      ],
+      "status": "loot",
+      "template_count": 2,
+      "unknowns": []
+    },
+    "wan_ancient_beasts:dead_coral": {
+      "container_blocks": [
+        "minecraft:chest",
+        "minecraft:suspicious_gravel"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "wan_ancient_beasts:archaeology/dead_coral",
+        "wan_ancient_beasts:chests/dead_coral"
+      ],
+      "status": "loot",
+      "template_count": 6,
+      "unknowns": []
+    },
+    "wan_ancient_beasts:desert_ruins": {
+      "container_blocks": [
+        "minecraft:chest",
+        "minecraft:suspicious_sand",
+        "minecraft:trapped_chest"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "wan_ancient_beasts:archaeology/desert_temple",
+        "wan_ancient_beasts:chests/desert_temple"
+      ],
+      "status": "loot",
+      "template_count": 2,
+      "unknowns": []
+    },
+    "wan_ancient_beasts:desert_ruins_small": {
+      "container_blocks": [
+        "minecraft:chest",
+        "minecraft:suspicious_sand",
+        "minecraft:trapped_chest"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "wan_ancient_beasts:archaeology/desert_temple",
+        "wan_ancient_beasts:chests/desert_temple"
+      ],
+      "status": "loot",
+      "template_count": 1,
+      "unknowns": []
+    },
+    "wan_ancient_beasts:digsite_badlands": {
+      "container_blocks": [
+        "minecraft:chest",
+        "minecraft:decorated_pot"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "wan_ancient_beasts:archaeology/digsite_badlands",
+        "wan_ancient_beasts:chests/digsite_badlands"
+      ],
+      "status": "loot",
+      "template_count": 1,
+      "unknowns": []
+    },
+    "wan_ancient_beasts:digsite_desert": {
+      "container_blocks": [
+        "minecraft:chest",
+        "minecraft:decorated_pot",
+        "minecraft:suspicious_sand"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "wan_ancient_beasts:archaeology/digsite_desert",
+        "wan_ancient_beasts:chests/digsite_desert"
+      ],
+      "status": "loot",
+      "template_count": 1,
+      "unknowns": []
+    },
+    "wan_ancient_beasts:digsite_icespikes": {
+      "container_blocks": [
+        "minecraft:chest",
+        "minecraft:decorated_pot"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "wan_ancient_beasts:archaeology/digsite_icespikes",
+        "wan_ancient_beasts:chests/digsite_icespikes"
+      ],
+      "status": "loot",
+      "template_count": 1,
+      "unknowns": []
+    },
+    "wan_ancient_beasts:digsite_jungle": {
+      "container_blocks": [
+        "minecraft:chest",
+        "minecraft:decorated_pot",
+        "minecraft:suspicious_gravel"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "wan_ancient_beasts:archaeology/digsite_jungle",
+        "wan_ancient_beasts:chests/digsite_jungle"
+      ],
+      "status": "loot",
+      "template_count": 1,
+      "unknowns": []
+    },
+    "wan_ancient_beasts:digsite_large_badlands": {
+      "container_blocks": [
+        "minecraft:chest",
+        "minecraft:decorated_pot"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "wan_ancient_beasts:archaeology/digsite_badlands",
+        "wan_ancient_beasts:chests/digsite_badlands"
+      ],
+      "status": "loot",
+      "template_count": 1,
+      "unknowns": []
+    },
+    "wan_ancient_beasts:digsite_large_desert": {
+      "container_blocks": [
+        "minecraft:chest",
+        "minecraft:decorated_pot",
+        "minecraft:suspicious_sand"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "wan_ancient_beasts:archaeology/digsite_desert",
+        "wan_ancient_beasts:chests/digsite_desert"
+      ],
+      "status": "loot",
+      "template_count": 1,
+      "unknowns": []
+    },
+    "wan_ancient_beasts:digsite_large_icespikes": {
+      "container_blocks": [
+        "minecraft:chest",
+        "minecraft:decorated_pot"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "wan_ancient_beasts:archaeology/digsite_icespikes",
+        "wan_ancient_beasts:chests/digsite_icespikes"
+      ],
+      "status": "loot",
+      "template_count": 1,
+      "unknowns": []
+    },
+    "wan_ancient_beasts:digsite_large_jungle": {
+      "container_blocks": [
+        "minecraft:chest",
+        "minecraft:decorated_pot",
+        "minecraft:suspicious_gravel"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "wan_ancient_beasts:archaeology/digsite_jungle",
+        "wan_ancient_beasts:chests/digsite_jungle"
+      ],
+      "status": "loot",
+      "template_count": 1,
+      "unknowns": []
+    },
+    "wan_ancient_beasts:digsite_large_oldgrowthtaiga": {
+      "container_blocks": [
+        "minecraft:chest",
+        "minecraft:decorated_pot",
+        "minecraft:suspicious_gravel"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "wan_ancient_beasts:archaeology/digsite_oldgrowthtaiga",
+        "wan_ancient_beasts:chests/digsite_oldgrowthtaiga"
+      ],
+      "status": "loot",
+      "template_count": 1,
+      "unknowns": []
+    },
+    "wan_ancient_beasts:digsite_large_peaks": {
+      "container_blocks": [
+        "minecraft:chest",
+        "minecraft:decorated_pot"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "wan_ancient_beasts:archaeology/digsite_peaks",
+        "wan_ancient_beasts:chests/digsite_peaks"
+      ],
+      "status": "loot",
+      "template_count": 1,
+      "unknowns": []
+    },
+    "wan_ancient_beasts:digsite_large_plains": {
+      "container_blocks": [
+        "minecraft:chest",
+        "minecraft:decorated_pot",
+        "minecraft:suspicious_gravel"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "wan_ancient_beasts:archaeology/digsite_plains",
+        "wan_ancient_beasts:chests/digsite_plains"
+      ],
+      "status": "loot",
+      "template_count": 1,
+      "unknowns": []
+    },
+    "wan_ancient_beasts:digsite_large_savanna": {
+      "container_blocks": [
+        "minecraft:chest",
+        "minecraft:decorated_pot",
+        "minecraft:suspicious_gravel"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "wan_ancient_beasts:archaeology/digsite_savanna",
+        "wan_ancient_beasts:chests/digsite_savanna"
+      ],
+      "status": "loot",
+      "template_count": 1,
+      "unknowns": []
+    },
+    "wan_ancient_beasts:digsite_large_taiga": {
+      "container_blocks": [
+        "minecraft:chest",
+        "minecraft:decorated_pot",
+        "minecraft:suspicious_gravel"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "wan_ancient_beasts:archaeology/digsite_taiga",
+        "wan_ancient_beasts:chests/digsite_taiga"
+      ],
+      "status": "loot",
+      "template_count": 1,
+      "unknowns": []
+    },
+    "wan_ancient_beasts:digsite_oldgrowthtaiga": {
+      "container_blocks": [
+        "minecraft:chest",
+        "minecraft:decorated_pot",
+        "minecraft:suspicious_gravel"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "wan_ancient_beasts:archaeology/digsite_oldgrowthtaiga",
+        "wan_ancient_beasts:chests/digsite_oldgrowthtaiga"
+      ],
+      "status": "loot",
+      "template_count": 1,
+      "unknowns": []
+    },
+    "wan_ancient_beasts:digsite_peaks": {
+      "container_blocks": [
+        "minecraft:chest",
+        "minecraft:decorated_pot"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "wan_ancient_beasts:archaeology/digsite_peaks",
+        "wan_ancient_beasts:chests/digsite_peaks"
+      ],
+      "status": "loot",
+      "template_count": 1,
+      "unknowns": []
+    },
+    "wan_ancient_beasts:digsite_plains": {
+      "container_blocks": [
+        "minecraft:chest",
+        "minecraft:decorated_pot",
+        "minecraft:suspicious_gravel"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "wan_ancient_beasts:archaeology/digsite_plains",
+        "wan_ancient_beasts:chests/digsite_plains"
+      ],
+      "status": "loot",
+      "template_count": 1,
+      "unknowns": []
+    },
+    "wan_ancient_beasts:digsite_savanna": {
+      "container_blocks": [
+        "minecraft:chest",
+        "minecraft:decorated_pot",
+        "minecraft:suspicious_gravel"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "wan_ancient_beasts:archaeology/digsite_savanna",
+        "wan_ancient_beasts:chests/digsite_savanna"
+      ],
+      "status": "loot",
+      "template_count": 1,
+      "unknowns": []
+    },
+    "wan_ancient_beasts:digsite_small_badlands": {
+      "container_blocks": [
+        "minecraft:chest",
+        "minecraft:decorated_pot"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "wan_ancient_beasts:archaeology/digsite_badlands",
+        "wan_ancient_beasts:chests/digsite_badlands"
+      ],
+      "status": "loot",
+      "template_count": 1,
+      "unknowns": []
+    },
+    "wan_ancient_beasts:digsite_small_desert": {
+      "container_blocks": [
+        "minecraft:chest",
+        "minecraft:decorated_pot",
+        "minecraft:suspicious_sand"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "wan_ancient_beasts:archaeology/digsite_desert",
+        "wan_ancient_beasts:chests/digsite_desert"
+      ],
+      "status": "loot",
+      "template_count": 1,
+      "unknowns": []
+    },
+    "wan_ancient_beasts:digsite_small_icespikes": {
+      "container_blocks": [
+        "minecraft:chest",
+        "minecraft:decorated_pot"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "wan_ancient_beasts:archaeology/digsite_icespikes",
+        "wan_ancient_beasts:chests/digsite_icespikes"
+      ],
+      "status": "loot",
+      "template_count": 1,
+      "unknowns": []
+    },
+    "wan_ancient_beasts:digsite_small_jungle": {
+      "container_blocks": [
+        "minecraft:chest",
+        "minecraft:decorated_pot",
+        "minecraft:suspicious_gravel"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "wan_ancient_beasts:archaeology/digsite_jungle",
+        "wan_ancient_beasts:chests/digsite_jungle"
+      ],
+      "status": "loot",
+      "template_count": 1,
+      "unknowns": []
+    },
+    "wan_ancient_beasts:digsite_small_oldgrowthtaiga": {
+      "container_blocks": [
+        "minecraft:chest",
+        "minecraft:decorated_pot",
+        "minecraft:suspicious_gravel"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "wan_ancient_beasts:archaeology/digsite_oldgrowthtaiga",
+        "wan_ancient_beasts:chests/digsite_oldgrowthtaiga"
+      ],
+      "status": "loot",
+      "template_count": 1,
+      "unknowns": []
+    },
+    "wan_ancient_beasts:digsite_small_peaks": {
+      "container_blocks": [
+        "minecraft:chest",
+        "minecraft:decorated_pot"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "wan_ancient_beasts:archaeology/digsite_peaks",
+        "wan_ancient_beasts:chests/digsite_peaks"
+      ],
+      "status": "loot",
+      "template_count": 1,
+      "unknowns": []
+    },
+    "wan_ancient_beasts:digsite_small_plains": {
+      "container_blocks": [
+        "minecraft:chest",
+        "minecraft:decorated_pot",
+        "minecraft:suspicious_gravel"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "wan_ancient_beasts:archaeology/digsite_plains",
+        "wan_ancient_beasts:chests/digsite_plains"
+      ],
+      "status": "loot",
+      "template_count": 1,
+      "unknowns": []
+    },
+    "wan_ancient_beasts:digsite_small_savanna": {
+      "container_blocks": [
+        "minecraft:chest",
+        "minecraft:decorated_pot",
+        "minecraft:suspicious_gravel"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "wan_ancient_beasts:archaeology/digsite_savanna",
+        "wan_ancient_beasts:chests/digsite_savanna"
+      ],
+      "status": "loot",
+      "template_count": 1,
+      "unknowns": []
+    },
+    "wan_ancient_beasts:digsite_small_taiga": {
+      "container_blocks": [
+        "minecraft:chest",
+        "minecraft:decorated_pot",
+        "minecraft:suspicious_gravel"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "wan_ancient_beasts:archaeology/digsite_taiga",
+        "wan_ancient_beasts:chests/digsite_taiga"
+      ],
+      "status": "loot",
+      "template_count": 1,
+      "unknowns": []
+    },
+    "wan_ancient_beasts:digsite_taiga": {
+      "container_blocks": [
+        "minecraft:chest",
+        "minecraft:decorated_pot",
+        "minecraft:suspicious_gravel"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "wan_ancient_beasts:archaeology/digsite_taiga",
+        "wan_ancient_beasts:chests/digsite_taiga"
+      ],
+      "status": "loot",
+      "template_count": 1,
+      "unknowns": []
+    },
+    "wan_ancient_beasts:ice_spike_castle": {
+      "container_blocks": [
+        "minecraft:chest"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "wan_ancient_beasts:archaeology/ice_castle",
+        "wan_ancient_beasts:chests/ice_castle"
+      ],
+      "status": "loot",
+      "template_count": 3,
+      "unknowns": []
+    },
+    "wan_ancient_beasts:mesa_temple": {
+      "container_blocks": [
+        "minecraft:chest",
+        "minecraft:decorated_pot",
+        "minecraft:trapped_chest"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "wan_ancient_beasts:archaeology/badlands_temple",
+        "wan_ancient_beasts:chests/badlands_temple"
+      ],
+      "status": "loot",
+      "template_count": 2,
+      "unknowns": []
+    },
+    "wan_ancient_beasts:mesa_temple_small": {
+      "container_blocks": [
+        "minecraft:chest",
+        "minecraft:decorated_pot",
+        "minecraft:trapped_chest"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "wan_ancient_beasts:archaeology/badlands_temple",
+        "wan_ancient_beasts:chests/badlands_temple"
+      ],
+      "status": "loot",
+      "template_count": 2,
+      "unknowns": []
+    },
+    "wan_ancient_beasts:primal_log": {
+      "container_blocks": [
+        "minecraft:suspicious_gravel"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "wan_ancient_beasts:archaeology/primal_log"
+      ],
+      "status": "loot",
+      "template_count": 3,
+      "unknowns": []
+    },
+    "wan_ancient_beasts:ruined_castle": {
+      "container_blocks": [
+        "minecraft:chest",
+        "minecraft:decorated_pot",
+        "minecraft:suspicious_gravel"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "wan_ancient_beasts:archaeology/ruined_castle",
+        "wan_ancient_beasts:chests/ruined_castle"
+      ],
+      "status": "loot",
+      "template_count": 1,
+      "unknowns": []
+    },
+    "wan_ancient_beasts:training_outpost": {
+      "container_blocks": [
+        "minecraft:chest",
+        "minecraft:decorated_pot",
+        "minecraft:suspicious_gravel",
+        "minecraft:trapped_chest"
+      ],
+      "has_containers": true,
+      "loot_tables": [
+        "wan_ancient_beasts:archaeology/training_outpost",
+        "wan_ancient_beasts:chests/training_outpost"
+      ],
+      "status": "loot",
+      "template_count": 1,
+      "unknowns": []
+    }
+  }
+}

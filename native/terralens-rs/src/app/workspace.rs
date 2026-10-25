@@ -23,12 +23,11 @@ impl TerraLensApp {
     }
     pub(super) fn apply_view(&mut self, view: navigation::View, ctx: &egui::Context) {
         let mut view = view;
-        if self.prefs.world_id == view.world_id {
-            if let Some(world) = self.selected.and_then(|index| self.worlds.get(index)) {
-                if !TerraLensApp::world_supports_dimension(world, view.dimension) {
-                    view.dimension = self.prefs.dimension;
-                }
-            }
+        if self.prefs.world_id == view.world_id
+            && let Some(world) = self.selected.and_then(|index| self.worlds.get(index))
+            && !TerraLensApp::world_supports_dimension(world, view.dimension)
+        {
+            view.dimension = self.prefs.dimension;
         }
         let context_changed = self.prefs.dimension != view.dimension
             || (view.dimension == Dimension::Beneath
@@ -118,6 +117,9 @@ impl TerraLensApp {
         if ctx.input_mut(|i| i.consume_key(egui::Modifiers::COMMAND, egui::Key::S)) {
             self.save_session_file();
         }
+        if ctx.input_mut(|i| i.consume_key(egui::Modifiers::COMMAND, egui::Key::R)) {
+            self.reload_world();
+        }
         if ctx.input_mut(|i| i.consume_key(egui::Modifiers::COMMAND, egui::Key::O)) {
             self.request_file(file_dialogs::Kind::OpenSession);
         }
@@ -147,6 +149,7 @@ impl TerraLensApp {
                 egui::Key::Num6,
                 egui::Key::Num7,
                 egui::Key::Num8,
+                egui::Key::Num9,
             ]
             .into_iter()
             .enumerate()
@@ -156,6 +159,13 @@ impl TerraLensApp {
                         TerraLensApp::layer_supported(self.prefs.dimension, *layer)
                     })
                 {
+                    let fallback = Layer::ALL
+                        .get(self.prefs.layer)
+                        .copied()
+                        .unwrap_or(Layer::Biomes);
+                    self.prefs
+                        .display
+                        .set_layer_enabled(Layer::ALL[index], true, fallback);
                     self.prefs.layer = index;
                 }
             }
@@ -341,98 +351,6 @@ impl TerraLensApp {
         }
     }
     pub(super) fn display_controls(&mut self, ui: &mut egui::Ui) {
-        if self.prefs.dimension == crate::dimension::Dimension::Beneath {
-            ui.horizontal(|ui| {
-                ui.selectable_value(
-                    &mut self.prefs.display.palette,
-                    crate::display::Palette::Natural,
-                    "Natural colors",
-                );
-                ui.selectable_value(
-                    &mut self.prefs.display.palette,
-                    crate::display::Palette::Colorblind,
-                    "Colorblind colors",
-                );
-            });
-            let catalog = feature_catalog_for(self.prefs.dimension);
-            ui.menu_button("Ore visibility", |ui| {
-                for (id, label) in &catalog.0 {
-                    let mut visible = !self.prefs.display.hidden_ore_ids.contains(id);
-                    if ui.checkbox(&mut visible, label).changed() {
-                        if visible {
-                            self.prefs
-                                .display
-                                .hidden_ore_ids
-                                .retain(|value| value != id);
-                        } else if !self.prefs.display.hidden_ore_ids.contains(id) {
-                            self.prefs.display.hidden_ore_ids.push(id.clone());
-                        }
-                    }
-                }
-            });
-            ui.menu_button("Structure visibility", |ui| {
-                for (id, label) in &catalog.1 {
-                    let mut visible = !self.prefs.display.hidden_structure_ids.contains(id);
-                    if ui.checkbox(&mut visible, label).changed() {
-                        if visible {
-                            self.prefs
-                                .display
-                                .hidden_structure_ids
-                                .retain(|value| value != id);
-                        } else if !self.prefs.display.hidden_structure_ids.contains(id) {
-                            self.prefs.display.hidden_structure_ids.push(id.clone());
-                        }
-                    }
-                }
-            });
-            return;
-        }
-        if self.prefs.dimension.is_planetary() {
-            ui.horizontal(|ui| {
-                ui.selectable_value(
-                    &mut self.prefs.display.palette,
-                    crate::display::Palette::Natural,
-                    "Natural colors",
-                );
-                ui.selectable_value(
-                    &mut self.prefs.display.palette,
-                    crate::display::Palette::Colorblind,
-                    "Colorblind colors",
-                );
-            });
-            let (ores, structures) = feature_catalog_for(self.prefs.dimension);
-            ui.menu_button("Ore visibility", |ui| {
-                for (id, label) in ores {
-                    let mut visible = !self.prefs.display.hidden_ore_ids.contains(id);
-                    if ui.checkbox(&mut visible, label).changed() {
-                        if visible {
-                            self.prefs
-                                .display
-                                .hidden_ore_ids
-                                .retain(|value| value != id);
-                        } else if !self.prefs.display.hidden_ore_ids.contains(id) {
-                            self.prefs.display.hidden_ore_ids.push(id.clone());
-                        }
-                    }
-                }
-            });
-            ui.menu_button("Structure visibility", |ui| {
-                for (id, label) in structures {
-                    let mut visible = !self.prefs.display.hidden_structure_ids.contains(id);
-                    if ui.checkbox(&mut visible, label).changed() {
-                        if visible {
-                            self.prefs
-                                .display
-                                .hidden_structure_ids
-                                .retain(|value| value != id);
-                        } else if !self.prefs.display.hidden_structure_ids.contains(id) {
-                            self.prefs.display.hidden_structure_ids.push(id.clone());
-                        }
-                    }
-                }
-            });
-            return;
-        }
         let biomes: Vec<_> = biome::ids::BIOME_IDS
             .iter()
             .enumerate()
@@ -487,9 +405,18 @@ impl TerraLensApp {
             &rocks,
             &ores,
             &structures,
+            self.prefs.dimension,
+            Layer::ALL
+                .get(self.prefs.layer)
+                .copied()
+                .unwrap_or(Layer::Biomes),
+            &mut self.prefs.allow_detail_rendering,
+            &mut self.prefs.surface_detail,
         );
         if let Some(layer) = changes.layer {
             self.prefs.layer = Layer::ALL.iter().position(|l| *l == layer).unwrap_or(0);
+        }
+        if changes.preset {
             match self.prefs.display.preset {
                 crate::display::Preset::Prospecting => {
                     self.prefs.show_ores = true;
@@ -514,6 +441,19 @@ impl TerraLensApp {
             .atlas
             .as_mut()
             .map(|atlas| atlas.legend_snapshot(layer).clone());
+        let selected_y = self.selected_marker.as_ref().map(|marker| {
+            let point = marker.map_point();
+            if let Some(atlas) = self.atlas.as_mut() {
+                atlas.request_destination_probe(point);
+            }
+            exports::waypoint_y(
+                point,
+                self.atlas.as_ref().and_then(|atlas| atlas.probe_at(point)),
+                self.prefs.dimension,
+                self.prefs.slice_y,
+                marker.y,
+            )
+        });
         self.exporter.show(
             ui,
             bounds,
@@ -523,6 +463,7 @@ impl TerraLensApp {
             self.selected_marker.as_ref(),
             snapshot.as_ref(),
             self.prefs.display.palette,
+            selected_y,
         );
         if let Some(picker) = self.exporter.take_picker() {
             self.request_file(match picker {
@@ -592,29 +533,27 @@ impl TerraLensApp {
                     self.qol_stage = 2;
                 }
             }
-            2 => {
-                if self
-                    .atlas
-                    .as_ref()
-                    .is_some_and(|a| !a.tasks_busy() && a.locations().is_some())
-                {
-                    if let Some(atlas) = &self.atlas {
-                        if let Some(point) = atlas.locations().and_then(|r| r.candidates.first()) {
-                            self.selected_marker = Some(point.marker());
-                        }
-                        if let Some(report) = atlas.analysis_report() {
-                            if let Ok(json) = serde_json::to_string_pretty(report) {
-                                eprintln!("QoL area report: {json}");
-                            }
-                        }
-                        eprintln!(
-                            "QoL locations: {}",
-                            atlas.locations().map_or(0, |r| r.candidates.len())
-                        );
+            2 if self
+                .atlas
+                .as_ref()
+                .is_some_and(|a| !a.tasks_busy() && a.locations().is_some()) =>
+            {
+                if let Some(atlas) = &self.atlas {
+                    if let Some(point) = atlas.locations().and_then(|r| r.candidates.first()) {
+                        self.selected_marker = Some(point.marker());
                     }
-                    self.tools_tab = 1;
-                    self.qol_stage = 3;
+                    if let Some(report) = atlas.analysis_report()
+                        && let Ok(json) = serde_json::to_string_pretty(report)
+                    {
+                        eprintln!("QoL area report: {json}");
+                    }
+                    eprintln!(
+                        "QoL locations: {}",
+                        atlas.locations().map_or(0, |r| r.candidates.len())
+                    );
                 }
+                self.tools_tab = 1;
+                self.qol_stage = 3;
             }
             _ => {}
         }
@@ -631,6 +570,9 @@ impl TerraLensApp {
             self.context_point = response
                 .interact_pointer_pos()
                 .map(|p| screen_to_world(rect, center, self.prefs.blocks_per_point, p));
+            if let (Some(point), Some(atlas)) = (self.context_point, self.atlas.as_mut()) {
+                atlas.request_destination_probe(point);
+            }
         }
         let point = self.context_point.unwrap_or(center);
         response.context_menu(|ui| {
@@ -644,11 +586,10 @@ impl TerraLensApp {
                 ui.close();
             }
             if ui.button("Copy teleport command").clicked() {
-                ui.ctx().copy_text(format!(
-                    "/tp @s {} ~ {}",
-                    point.x.floor() as i64,
-                    point.z.floor() as i64
-                ));
+                let view = self.current_view();
+                let probe = self.atlas.as_ref().and_then(|atlas| atlas.probe_at(point));
+                let y = exports::destination_y(point, probe, view.dimension, view.slice_y, None);
+                ui.ctx().copy_text(exports::teleport_command(point, y));
                 ui.close();
             }
             if ui.button("Copy chunk / region").clicked() {
@@ -681,8 +622,11 @@ impl TerraLensApp {
                 ui.close();
             }
             if ui.button("Copy Xaero waypoint").clicked() {
+                let view = self.current_view();
+                let probe = self.atlas.as_ref().and_then(|atlas| atlas.probe_at(point));
+                let y = exports::waypoint_y(point, probe, view.dimension, view.slice_y, None);
                 ui.ctx()
-                    .copy_text(exports::xaero_share("TerraLens", point, 64, 11));
+                    .copy_text(exports::xaero_share("TerraLens", point, y, 11));
                 ui.close();
             }
         });
@@ -831,6 +775,14 @@ pub(super) fn feature_catalog_for(
     })[&dimension]
 }
 
+pub(super) fn volcano_catalog_for(dimension: Dimension) -> &'static [(&'static str, &'static str)] {
+    if dimension == Dimension::Overworld {
+        crate::volcano::catalog()
+    } else {
+        &[]
+    }
+}
+
 fn decode_session(value: serde_json::Value) -> Result<Preferences, String> {
     if value["app"] == "TerraLens" && value["version"] == 1 {
         serde_json::from_value(value["preferences"].clone())
@@ -862,6 +814,10 @@ mod tests {
 
     #[test]
     fn feature_catalogs_do_not_leak_between_dimensions() {
+        assert!(!volcano_catalog_for(Dimension::Overworld).is_empty());
+        for dimension in [Dimension::Beneath, Dimension::Moon, Dimension::Mars] {
+            assert!(volcano_catalog_for(dimension).is_empty());
+        }
         let overworld = feature_catalog_for(Dimension::Overworld);
         assert!(
             overworld

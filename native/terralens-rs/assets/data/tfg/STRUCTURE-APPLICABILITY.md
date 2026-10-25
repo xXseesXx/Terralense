@@ -1,5 +1,14 @@
 # Structure applicability inventory
 
+The inventory also carries the current Lithostitched `set_structure_spawn_condition` modifiers
+under each structure definition's `conditions` field. Grid biome references are resolved to raw
+registry IDs; height filters retain their range and requested heightmap. Five installed modifiers
+are supported. Their source hashes and explicit unresolved-condition list are included. The
+default `append=true` composes successive rules with AND; `append=false` replaces earlier rules.
+Biome-category tags used by these grids include KubeJS `tfg:earth/is_*` updates. Definitions
+without these modifiers retain an empty condition list. The runtime samples conditions at the
+actual seed-selected jigsaw generation stub; TFG height conditions use raw terrain height.
+
 `structure-applicability.json` snapshots the installed TerraFirmaGreg Modern 0.9.25 / Minecraft 1.20.1 structure definitions and their raw biome gates in the existing seed-zero world's world-generation profiles. It was built from current Prism data, not the older `structures.json` snapshot (TFG Core 0.9.21).
 
 The artifact includes all 66 structure sets and their 131 distinct structure definitions. `structure_sets` preserves each raw set definition. `structures` is indexed by actual structure ID and includes the source definition, sets that reference it, its raw biome selector, and per-dimension `biome_intersection`, `source_eligible`, and `scanner_eligible` gates. `sets` contains each placement and child weight. `biome_gate_tags` records raw values, recursively resolved IDs, installed resource sources, and KubeJS additions, removals and `removeAll` resets replayed in script/source order. Input file names and SHA-256 hashes are included.

@@ -1,0 +1,1821 @@
+{
+  "features": {
+    "tfc:tree/acacia": {
+      "leaves": "tfc:acacia",
+      "wood": "tfc:acacia"
+    },
+    "tfc:tree/acacia_dead": {
+      "leaves": null,
+      "wood": "tfc:acacia"
+    },
+    "tfc:tree/acacia_koa": {
+      "leaves": "afc:acacia_koa",
+      "wood": "tfc:acacia"
+    },
+    "tfc:tree/acacia_koa_dead": {
+      "leaves": null,
+      "wood": "tfc:acacia"
+    },
+    "tfc:tree/acacia_large": {
+      "leaves": "tfc:acacia",
+      "wood": "tfc:acacia"
+    },
+    "tfc:tree/ash": {
+      "leaves": "tfc:ash",
+      "wood": "tfc:ash"
+    },
+    "tfc:tree/ash_dead": {
+      "leaves": null,
+      "wood": "tfc:ash"
+    },
+    "tfc:tree/ash_large": {
+      "leaves": "tfc:ash",
+      "wood": "tfc:ash"
+    },
+    "tfc:tree/aspen": {
+      "leaves": "tfc:aspen",
+      "wood": "tfc:aspen"
+    },
+    "tfc:tree/aspen_dead": {
+      "leaves": null,
+      "wood": "tfc:aspen"
+    },
+    "tfc:tree/aspen_krummholz": {
+      "leaves": null,
+      "wood": null
+    },
+    "tfc:tree/aspen_large": {
+      "leaves": "tfc:aspen",
+      "wood": "tfc:aspen"
+    },
+    "tfc:tree/atlas_cedar": {
+      "leaves": "afc:atlas_cedar",
+      "wood": "tfc:white_cedar"
+    },
+    "tfc:tree/atlas_cedar_dead": {
+      "leaves": null,
+      "wood": "tfc:white_cedar"
+    },
+    "tfc:tree/bald_cypress": {
+      "leaves": "afc:bald_cypress",
+      "wood": "afc:cypress"
+    },
+    "tfc:tree/bald_cypress_dead": {
+      "leaves": null,
+      "wood": "afc:cypress"
+    },
+    "tfc:tree/bald_cypress_large": {
+      "leaves": "afc:bald_cypress",
+      "wood": null
+    },
+    "tfc:tree/balsam_fir": {
+      "leaves": "afc:balsam_fir",
+      "wood": "tfc:douglas_fir"
+    },
+    "tfc:tree/balsam_fir_dead": {
+      "leaves": null,
+      "wood": "tfc:douglas_fir"
+    },
+    "tfc:tree/balsam_fir_large": {
+      "leaves": "afc:balsam_fir",
+      "wood": null
+    },
+    "tfc:tree/baobab": {
+      "leaves": "afc:baobab",
+      "wood": "afc:baobab"
+    },
+    "tfc:tree/baobab_dead": {
+      "leaves": null,
+      "wood": "afc:baobab"
+    },
+    "tfc:tree/baobab_large": {
+      "leaves": "afc:baobab",
+      "wood": null
+    },
+    "tfc:tree/bigleaf_maple": {
+      "leaves": "afc:bigleaf_maple",
+      "wood": "tfc:maple"
+    },
+    "tfc:tree/bigleaf_maple_dead": {
+      "leaves": null,
+      "wood": "tfc:maple"
+    },
+    "tfc:tree/birch": {
+      "leaves": "tfc:birch",
+      "wood": "tfc:birch"
+    },
+    "tfc:tree/birch_dead": {
+      "leaves": null,
+      "wood": "tfc:birch"
+    },
+    "tfc:tree/black_oak": {
+      "leaves": "afc:black_oak",
+      "wood": "afc:black_oak"
+    },
+    "tfc:tree/black_oak_dead": {
+      "leaves": null,
+      "wood": "afc:black_oak"
+    },
+    "tfc:tree/black_oak_large": {
+      "leaves": "afc:black_oak",
+      "wood": null
+    },
+    "tfc:tree/black_spruce": {
+      "leaves": "afc:black_spruce",
+      "wood": "tfc:spruce"
+    },
+    "tfc:tree/black_spruce_dead": {
+      "leaves": null,
+      "wood": "tfc:spruce"
+    },
+    "tfc:tree/black_spruce_large": {
+      "leaves": "afc:black_spruce",
+      "wood": null
+    },
+    "tfc:tree/blackwood": {
+      "leaves": "tfc:blackwood",
+      "wood": "tfc:blackwood"
+    },
+    "tfc:tree/blackwood_dead": {
+      "leaves": null,
+      "wood": "tfc:blackwood"
+    },
+    "tfc:tree/blackwood_large": {
+      "leaves": "tfc:blackwood",
+      "wood": "tfc:blackwood"
+    },
+    "tfc:tree/chestnut": {
+      "leaves": "tfc:chestnut",
+      "wood": "tfc:chestnut"
+    },
+    "tfc:tree/chestnut_dead": {
+      "leaves": null,
+      "wood": "tfc:chestnut"
+    },
+    "tfc:tree/chestnut_large": {
+      "leaves": "tfc:chestnut",
+      "wood": "tfc:chestnut"
+    },
+    "tfc:tree/coast_redwood": {
+      "leaves": "afc:coast_redwood",
+      "wood": "tfc:sequoia"
+    },
+    "tfc:tree/coast_redwood_dead": {
+      "leaves": null,
+      "wood": "tfc:sequoia"
+    },
+    "tfc:tree/coast_redwood_large": {
+      "leaves": "afc:coast_redwood",
+      "wood": null
+    },
+    "tfc:tree/coast_spruce": {
+      "leaves": "afc:coast_spruce",
+      "wood": "tfc:spruce"
+    },
+    "tfc:tree/coast_spruce_dead": {
+      "leaves": null,
+      "wood": "tfc:spruce"
+    },
+    "tfc:tree/cypress": {
+      "leaves": "afc:cypress",
+      "wood": "afc:cypress"
+    },
+    "tfc:tree/cypress_dead": {
+      "leaves": null,
+      "wood": "afc:cypress"
+    },
+    "tfc:tree/douglas_fir": {
+      "leaves": "tfc:douglas_fir",
+      "wood": "tfc:douglas_fir"
+    },
+    "tfc:tree/douglas_fir_dead": {
+      "leaves": null,
+      "wood": "tfc:douglas_fir"
+    },
+    "tfc:tree/douglas_fir_krummholz": {
+      "leaves": null,
+      "wood": null
+    },
+    "tfc:tree/douglas_fir_large": {
+      "leaves": "tfc:douglas_fir",
+      "wood": "tfc:douglas_fir"
+    },
+    "tfc:tree/eucalyptus": {
+      "leaves": "afc:eucalyptus",
+      "wood": "afc:eucalyptus"
+    },
+    "tfc:tree/eucalyptus_dead": {
+      "leaves": null,
+      "wood": "afc:eucalyptus"
+    },
+    "tfc:tree/fig": {
+      "leaves": "afc:fig",
+      "wood": "afc:fig"
+    },
+    "tfc:tree/fig_dead": {
+      "leaves": null,
+      "wood": "afc:fig"
+    },
+    "tfc:tree/flame_of_the_forest": {
+      "leaves": "afc:flame_of_the_forest",
+      "wood": "afc:teak"
+    },
+    "tfc:tree/flame_of_the_forest_dead": {
+      "leaves": null,
+      "wood": "afc:teak"
+    },
+    "tfc:tree/giant_rosewood": {
+      "leaves": "afc:giant_rosewood",
+      "wood": "tfc:rosewood"
+    },
+    "tfc:tree/giant_rosewood_dead": {
+      "leaves": null,
+      "wood": "tfc:rosewood"
+    },
+    "tfc:tree/gum_arabic": {
+      "leaves": "afc:gum_arabic",
+      "wood": "afc:gum_arabic"
+    },
+    "tfc:tree/gum_arabic_dead": {
+      "leaves": null,
+      "wood": "afc:gum_arabic"
+    },
+    "tfc:tree/hevea": {
+      "leaves": "afc:hevea",
+      "wood": "afc:hevea"
+    },
+    "tfc:tree/hevea_dead": {
+      "leaves": null,
+      "wood": "afc:hevea"
+    },
+    "tfc:tree/hickory": {
+      "leaves": "tfc:hickory",
+      "wood": "tfc:hickory"
+    },
+    "tfc:tree/hickory_dead": {
+      "leaves": null,
+      "wood": "tfc:hickory"
+    },
+    "tfc:tree/hickory_large": {
+      "leaves": "tfc:hickory",
+      "wood": "tfc:hickory"
+    },
+    "tfc:tree/horsetail_ironwood": {
+      "leaves": "afc:horsetail_ironwood",
+      "wood": "afc:ironwood"
+    },
+    "tfc:tree/horsetail_ironwood_dead": {
+      "leaves": null,
+      "wood": "afc:ironwood"
+    },
+    "tfc:tree/ipe": {
+      "leaves": "afc:ipe",
+      "wood": "afc:ipe"
+    },
+    "tfc:tree/ipe_dead": {
+      "leaves": null,
+      "wood": "afc:ipe"
+    },
+    "tfc:tree/ironwood": {
+      "leaves": "afc:ironwood",
+      "wood": "afc:ironwood"
+    },
+    "tfc:tree/ironwood_dead": {
+      "leaves": null,
+      "wood": "afc:ironwood"
+    },
+    "tfc:tree/jaggery_palm": {
+      "leaves": "afc:jaggery_palm",
+      "wood": "tfc:palm"
+    },
+    "tfc:tree/jaggery_palm_dead": {
+      "leaves": null,
+      "wood": "tfc:palm"
+    },
+    "tfc:tree/kapok": {
+      "leaves": "tfc:kapok",
+      "wood": "tfc:kapok"
+    },
+    "tfc:tree/kapok_dead": {
+      "leaves": null,
+      "wood": "tfc:kapok"
+    },
+    "tfc:tree/lebombo_ironwood": {
+      "leaves": "afc:lebombo_ironwood",
+      "wood": "afc:ironwood"
+    },
+    "tfc:tree/lebombo_ironwood_dead": {
+      "leaves": null,
+      "wood": "afc:ironwood"
+    },
+    "tfc:tree/live_oak": {
+      "leaves": "afc:live_oak",
+      "wood": "tfc:oak"
+    },
+    "tfc:tree/live_oak_dead": {
+      "leaves": null,
+      "wood": "tfc:oak"
+    },
+    "tfc:tree/live_oak_large": {
+      "leaves": "afc:live_oak",
+      "wood": null
+    },
+    "tfc:tree/mahogany": {
+      "leaves": "afc:mahogany",
+      "wood": "afc:mahogany"
+    },
+    "tfc:tree/mahogany_dead": {
+      "leaves": null,
+      "wood": "afc:mahogany"
+    },
+    "tfc:tree/maple": {
+      "leaves": "tfc:maple",
+      "wood": "tfc:maple"
+    },
+    "tfc:tree/maple_dead": {
+      "leaves": null,
+      "wood": "tfc:maple"
+    },
+    "tfc:tree/maple_large": {
+      "leaves": "tfc:maple",
+      "wood": "tfc:maple"
+    },
+    "tfc:tree/mountain_ash": {
+      "leaves": "afc:mountain_ash",
+      "wood": "afc:eucalyptus"
+    },
+    "tfc:tree/mountain_ash_dead": {
+      "leaves": null,
+      "wood": "afc:eucalyptus"
+    },
+    "tfc:tree/mountain_ash_large": {
+      "leaves": "afc:mountain_ash",
+      "wood": null
+    },
+    "tfc:tree/mountain_fir": {
+      "leaves": "afc:mountain_fir",
+      "wood": "tfc:douglas_fir"
+    },
+    "tfc:tree/mountain_fir_dead": {
+      "leaves": null,
+      "wood": "tfc:douglas_fir"
+    },
+    "tfc:tree/mountain_fir_large": {
+      "leaves": "afc:mountain_fir",
+      "wood": null
+    },
+    "tfc:tree/mpingo_blackwood": {
+      "leaves": "afc:mpingo_blackwood",
+      "wood": "tfc:blackwood"
+    },
+    "tfc:tree/mpingo_blackwood_dead": {
+      "leaves": null,
+      "wood": "tfc:blackwood"
+    },
+    "tfc:tree/oak": {
+      "leaves": "tfc:oak",
+      "wood": "tfc:oak"
+    },
+    "tfc:tree/oak_dead": {
+      "leaves": null,
+      "wood": "tfc:oak"
+    },
+    "tfc:tree/palm": {
+      "leaves": "tfc:palm",
+      "wood": "tfc:palm"
+    },
+    "tfc:tree/palm_dead": {
+      "leaves": null,
+      "wood": "tfc:palm"
+    },
+    "tfc:tree/pine": {
+      "leaves": "tfc:pine",
+      "wood": "tfc:pine"
+    },
+    "tfc:tree/pine_dead": {
+      "leaves": null,
+      "wood": "tfc:pine"
+    },
+    "tfc:tree/pine_krummholz": {
+      "leaves": null,
+      "wood": null
+    },
+    "tfc:tree/pine_large": {
+      "leaves": "tfc:pine",
+      "wood": "tfc:pine"
+    },
+    "tfc:tree/rainbow_eucalyptus": {
+      "leaves": "afc:rainbow_eucalyptus",
+      "wood": "afc:rainbow_eucalyptus"
+    },
+    "tfc:tree/rainbow_eucalyptus_dead": {
+      "leaves": null,
+      "wood": "afc:rainbow_eucalyptus"
+    },
+    "tfc:tree/red_pine": {
+      "leaves": "afc:red_pine",
+      "wood": "tfc:pine"
+    },
+    "tfc:tree/red_pine_dead": {
+      "leaves": null,
+      "wood": "tfc:pine"
+    },
+    "tfc:tree/red_silk_cotton": {
+      "leaves": "afc:red_silk_cotton",
+      "wood": "tfc:kapok"
+    },
+    "tfc:tree/red_silk_cotton_dead": {
+      "leaves": null,
+      "wood": "tfc:kapok"
+    },
+    "tfc:tree/red_silk_cotton_large": {
+      "leaves": "afc:red_silk_cotton",
+      "wood": null
+    },
+    "tfc:tree/redcedar": {
+      "leaves": "afc:redcedar",
+      "wood": "afc:redcedar"
+    },
+    "tfc:tree/redcedar_dead": {
+      "leaves": null,
+      "wood": "afc:redcedar"
+    },
+    "tfc:tree/rosewood": {
+      "leaves": "tfc:rosewood",
+      "wood": "tfc:rosewood"
+    },
+    "tfc:tree/rosewood_dead": {
+      "leaves": null,
+      "wood": "tfc:rosewood"
+    },
+    "tfc:tree/rosewood_large": {
+      "leaves": "tfc:rosewood",
+      "wood": "tfc:rosewood"
+    },
+    "tfc:tree/rubber_fig": {
+      "leaves": "afc:rubber_fig",
+      "wood": "afc:rubber_fig"
+    },
+    "tfc:tree/rubber_fig_dead": {
+      "leaves": null,
+      "wood": "afc:rubber_fig"
+    },
+    "tfc:tree/sapele_mahogany": {
+      "leaves": "afc:sapele_mahogany",
+      "wood": "afc:mahogany"
+    },
+    "tfc:tree/sapele_mahogany_dead": {
+      "leaves": null,
+      "wood": "afc:mahogany"
+    },
+    "tfc:tree/sapele_mahogany_large": {
+      "leaves": "afc:sapele_mahogany",
+      "wood": null
+    },
+    "tfc:tree/scrub_hickory": {
+      "leaves": "afc:scrub_hickory",
+      "wood": "tfc:hickory"
+    },
+    "tfc:tree/scrub_hickory_dead": {
+      "leaves": null,
+      "wood": "tfc:hickory"
+    },
+    "tfc:tree/scrub_hickory_large": {
+      "leaves": "afc:scrub_hickory",
+      "wood": null
+    },
+    "tfc:tree/sequoia": {
+      "leaves": "tfc:sequoia",
+      "wood": "tfc:sequoia"
+    },
+    "tfc:tree/sequoia_dead": {
+      "leaves": null,
+      "wood": "tfc:sequoia"
+    },
+    "tfc:tree/sequoia_large": {
+      "leaves": "tfc:sequoia",
+      "wood": "tfc:sequoia"
+    },
+    "tfc:tree/sitka_spruce": {
+      "leaves": "afc:sitka_spruce",
+      "wood": "tfc:spruce"
+    },
+    "tfc:tree/sitka_spruce_dead": {
+      "leaves": null,
+      "wood": "tfc:spruce"
+    },
+    "tfc:tree/sitka_spruce_large": {
+      "leaves": "afc:sitka_spruce",
+      "wood": null
+    },
+    "tfc:tree/small_leaf_mahogany": {
+      "leaves": "afc:small_leaf_mahogany",
+      "wood": "afc:mahogany"
+    },
+    "tfc:tree/small_leaf_mahogany_dead": {
+      "leaves": null,
+      "wood": "afc:mahogany"
+    },
+    "tfc:tree/spruce": {
+      "leaves": "tfc:spruce",
+      "wood": "tfc:spruce"
+    },
+    "tfc:tree/spruce_dead": {
+      "leaves": null,
+      "wood": "tfc:spruce"
+    },
+    "tfc:tree/spruce_krummholz": {
+      "leaves": null,
+      "wood": null
+    },
+    "tfc:tree/spruce_large": {
+      "leaves": "tfc:spruce",
+      "wood": "tfc:spruce"
+    },
+    "tfc:tree/stone_pine": {
+      "leaves": "afc:stone_pine",
+      "wood": "tfc:pine"
+    },
+    "tfc:tree/stone_pine_dead": {
+      "leaves": null,
+      "wood": "tfc:pine"
+    },
+    "tfc:tree/stone_pine_large": {
+      "leaves": "afc:stone_pine",
+      "wood": null
+    },
+    "tfc:tree/sycamore": {
+      "leaves": "tfc:sycamore",
+      "wood": "tfc:sycamore"
+    },
+    "tfc:tree/sycamore_dead": {
+      "leaves": null,
+      "wood": "tfc:sycamore"
+    },
+    "tfc:tree/sycamore_large": {
+      "leaves": "tfc:sycamore",
+      "wood": "tfc:sycamore"
+    },
+    "tfc:tree/teak": {
+      "leaves": "afc:teak",
+      "wood": "afc:teak"
+    },
+    "tfc:tree/teak_dead": {
+      "leaves": null,
+      "wood": "afc:teak"
+    },
+    "tfc:tree/tualang": {
+      "leaves": "afc:tualang",
+      "wood": "afc:tualang"
+    },
+    "tfc:tree/tualang_dead": {
+      "leaves": null,
+      "wood": "afc:tualang"
+    },
+    "tfc:tree/tualang_large": {
+      "leaves": "afc:tualang",
+      "wood": null
+    },
+    "tfc:tree/weeping_cypress": {
+      "leaves": "afc:weeping_cypress",
+      "wood": "afc:cypress"
+    },
+    "tfc:tree/weeping_cypress_dead": {
+      "leaves": null,
+      "wood": "afc:cypress"
+    },
+    "tfc:tree/weeping_maple": {
+      "leaves": "afc:weeping_maple",
+      "wood": "tfc:maple"
+    },
+    "tfc:tree/weeping_maple_dead": {
+      "leaves": null,
+      "wood": "tfc:maple"
+    },
+    "tfc:tree/weeping_maple_large": {
+      "leaves": "afc:weeping_maple",
+      "wood": null
+    },
+    "tfc:tree/weeping_willow": {
+      "leaves": "afc:weeping_willow",
+      "wood": "tfc:willow"
+    },
+    "tfc:tree/weeping_willow_dead": {
+      "leaves": null,
+      "wood": "tfc:willow"
+    },
+    "tfc:tree/white_cedar": {
+      "leaves": "tfc:white_cedar",
+      "wood": "tfc:white_cedar"
+    },
+    "tfc:tree/white_cedar_dead": {
+      "leaves": null,
+      "wood": "tfc:white_cedar"
+    },
+    "tfc:tree/white_cedar_krummholz": {
+      "leaves": null,
+      "wood": null
+    },
+    "tfc:tree/white_cedar_large": {
+      "leaves": "tfc:white_cedar",
+      "wood": "tfc:white_cedar"
+    },
+    "tfc:tree/willow": {
+      "leaves": "tfc:willow",
+      "wood": "tfc:willow"
+    },
+    "tfc:tree/willow_dead": {
+      "leaves": null,
+      "wood": "tfc:willow"
+    },
+    "tfc:tree/willow_large": {
+      "leaves": "tfc:willow",
+      "wood": "tfc:willow"
+    },
+    "tfg:palm_tree/acai_0": {
+      "leaves": "tfg:palm_tree/acai",
+      "wood": "tfc:palm"
+    },
+    "tfg:palm_tree/acai_1": {
+      "leaves": "tfg:palm_tree/acai",
+      "wood": "tfc:palm"
+    },
+    "tfg:palm_tree/acai_2": {
+      "leaves": "tfg:palm_tree/acai",
+      "wood": "tfc:palm"
+    },
+    "tfg:palm_tree/acai_3": {
+      "leaves": "tfg:palm_tree/acai",
+      "wood": "tfc:palm"
+    },
+    "tfg:palm_tree/coconut_0": {
+      "leaves": "tfg:palm_tree/coconut",
+      "wood": "tfc:palm"
+    },
+    "tfg:palm_tree/coconut_1": {
+      "leaves": "tfg:palm_tree/coconut",
+      "wood": "tfc:palm"
+    },
+    "tfg:palm_tree/coconut_2": {
+      "leaves": "tfg:palm_tree/coconut",
+      "wood": "tfc:palm"
+    },
+    "tfg:palm_tree/coconut_3": {
+      "leaves": "tfg:palm_tree/coconut",
+      "wood": "tfc:palm"
+    },
+    "tfg:palm_tree/date_0": {
+      "leaves": "tfg:palm_tree/date",
+      "wood": "tfc:palm"
+    },
+    "tfg:palm_tree/date_1": {
+      "leaves": "tfg:palm_tree/date",
+      "wood": "tfc:palm"
+    },
+    "tfg:palm_tree/date_2": {
+      "leaves": "tfg:palm_tree/date",
+      "wood": "tfc:palm"
+    },
+    "tfg:palm_tree/date_3": {
+      "leaves": "tfg:palm_tree/date",
+      "wood": "tfc:palm"
+    },
+    "tfg:palm_tree/oil_palm_0": {
+      "leaves": "tfg:palm_tree/oil_palm",
+      "wood": "tfc:palm"
+    },
+    "tfg:palm_tree/oil_palm_1": {
+      "leaves": "tfg:palm_tree/oil_palm",
+      "wood": "tfc:palm"
+    },
+    "tfg:palm_tree/oil_palm_2": {
+      "leaves": "tfg:palm_tree/oil_palm",
+      "wood": "tfc:palm"
+    }
+  },
+  "schema": 1,
+  "textures": {
+    "afc:acacia_koa": {
+      "leaves": [
+        118,
+        117,
+        117
+      ]
+    },
+    "afc:atlas_cedar": {
+      "leaves": [
+        144,
+        144,
+        144
+      ]
+    },
+    "afc:bald_cypress": {
+      "leaves": [
+        167,
+        167,
+        167
+      ]
+    },
+    "afc:balsam_fir": {
+      "leaves": [
+        88,
+        95,
+        95
+      ]
+    },
+    "afc:baobab": {
+      "leaves": [
+        158,
+        158,
+        158
+      ],
+      "log_end": [
+        168,
+        91,
+        50
+      ],
+      "stripped_log_end": [
+        169,
+        90,
+        51
+      ]
+    },
+    "afc:bigleaf_maple": {
+      "leaves": [
+        156,
+        156,
+        156
+      ]
+    },
+    "afc:black_oak": {
+      "leaves": [
+        154,
+        154,
+        154
+      ],
+      "log_end": [
+        144,
+        115,
+        69
+      ]
+    },
+    "afc:black_spruce": {
+      "leaves": [
+        78,
+        78,
+        78
+      ]
+    },
+    "afc:coast_redwood": {
+      "leaves": [
+        118,
+        118,
+        118
+      ]
+    },
+    "afc:coast_spruce": {
+      "leaves": [
+        96,
+        96,
+        96
+      ]
+    },
+    "afc:cypress": {
+      "leaves": [
+        96,
+        96,
+        96
+      ],
+      "log_end": [
+        109,
+        80,
+        46
+      ],
+      "stripped_log_end": [
+        115,
+        87,
+        50
+      ]
+    },
+    "afc:eucalyptus": {
+      "leaves": [
+        153,
+        153,
+        153
+      ],
+      "log_end": [
+        186,
+        174,
+        132
+      ],
+      "stripped_log_end": [
+        194,
+        176,
+        120
+      ]
+    },
+    "afc:fig": {
+      "leaves": [
+        155,
+        154,
+        147
+      ],
+      "log_end": [
+        186,
+        142,
+        138
+      ],
+      "stripped_log_end": [
+        222,
+        167,
+        160
+      ]
+    },
+    "afc:flame_of_the_forest": {
+      "leaves": [
+        145,
+        145,
+        145
+      ]
+    },
+    "afc:giant_rosewood": {
+      "leaves": [
+        149,
+        153,
+        144
+      ]
+    },
+    "afc:gum_arabic": {
+      "leaves": [
+        152,
+        152,
+        152
+      ],
+      "log_end": [
+        109,
+        55,
+        18
+      ]
+    },
+    "afc:hevea": {
+      "leaves": [
+        105,
+        105,
+        105
+      ],
+      "log_end": [
+        174,
+        179,
+        119
+      ],
+      "stripped_log_end": [
+        187,
+        196,
+        124
+      ]
+    },
+    "afc:horsetail_ironwood": {
+      "leaves": [
+        122,
+        122,
+        122
+      ]
+    },
+    "afc:ipe": {
+      "leaves": [
+        128,
+        128,
+        128
+      ],
+      "log_end": [
+        153,
+        135,
+        79
+      ],
+      "stripped_log_end": [
+        177,
+        148,
+        70
+      ]
+    },
+    "afc:iroko_teak": {
+      "leaves": [
+        127,
+        126,
+        126
+      ]
+    },
+    "afc:ironwood": {
+      "leaves": [
+        159,
+        159,
+        159
+      ],
+      "log_end": [
+        84,
+        84,
+        85
+      ],
+      "stripped_log_end": [
+        66,
+        66,
+        66
+      ]
+    },
+    "afc:jaggery_palm": {
+      "leaves": [
+        157,
+        157,
+        157
+      ]
+    },
+    "afc:kauri": {
+      "log_end": [
+        199,
+        192,
+        191
+      ]
+    },
+    "afc:lebombo_ironwood": {
+      "leaves": [
+        139,
+        139,
+        139
+      ]
+    },
+    "afc:live_oak": {
+      "leaves": [
+        148,
+        148,
+        148
+      ]
+    },
+    "afc:mahogany": {
+      "leaves": [
+        103,
+        103,
+        103
+      ],
+      "log_end": [
+        109,
+        56,
+        73
+      ],
+      "stripped_log_end": [
+        107,
+        40,
+        64
+      ]
+    },
+    "afc:mountain_ash": {
+      "leaves": [
+        120,
+        119,
+        119
+      ]
+    },
+    "afc:mountain_fir": {
+      "leaves": [
+        78,
+        78,
+        78
+      ]
+    },
+    "afc:mpingo_blackwood": {
+      "leaves": [
+        151,
+        151,
+        151
+      ]
+    },
+    "afc:poplar": {
+      "leaves": [
+        159,
+        159,
+        159
+      ],
+      "log_end": [
+        95,
+        94,
+        80
+      ]
+    },
+    "afc:rainbow_eucalyptus": {
+      "leaves": [
+        152,
+        152,
+        152
+      ],
+      "log_end": [
+        189,
+        176,
+        129
+      ]
+    },
+    "afc:red_pine": {
+      "leaves": [
+        149,
+        149,
+        149
+      ]
+    },
+    "afc:red_silk_cotton": {
+      "leaves": [
+        119,
+        119,
+        119
+      ]
+    },
+    "afc:redcedar": {
+      "leaves": [
+        118,
+        118,
+        118
+      ],
+      "log_end": [
+        136,
+        104,
+        70
+      ]
+    },
+    "afc:rubber_fig": {
+      "leaves": [
+        155,
+        154,
+        147
+      ],
+      "log_end": [
+        192,
+        149,
+        141
+      ]
+    },
+    "afc:sapele_mahogany": {
+      "leaves": [
+        128,
+        128,
+        128
+      ]
+    },
+    "afc:scrub_hickory": {
+      "leaves": [
+        105,
+        105,
+        105
+      ]
+    },
+    "afc:sitka_spruce": {
+      "leaves": [
+        105,
+        105,
+        105
+      ]
+    },
+    "afc:small_leaf_mahogany": {
+      "leaves": [
+        152,
+        152,
+        152
+      ]
+    },
+    "afc:stone_pine": {
+      "leaves": [
+        134,
+        134,
+        134
+      ]
+    },
+    "afc:tamarack": {
+      "leaves": [
+        132,
+        132,
+        132
+      ]
+    },
+    "afc:teak": {
+      "leaves": [
+        151,
+        151,
+        150
+      ],
+      "log_end": [
+        155,
+        116,
+        81
+      ],
+      "stripped_log_end": [
+        168,
+        123,
+        83
+      ]
+    },
+    "afc:tualang": {
+      "leaves": [
+        169,
+        169,
+        169
+      ],
+      "log_end": [
+        165,
+        166,
+        190
+      ],
+      "stripped_log_end": [
+        156,
+        156,
+        187
+      ]
+    },
+    "afc:weeping_cypress": {
+      "leaves": [
+        124,
+        124,
+        124
+      ]
+    },
+    "afc:weeping_maple": {
+      "leaves": [
+        96,
+        7,
+        29
+      ]
+    },
+    "afc:weeping_willow": {
+      "leaves": [
+        123,
+        122,
+        122
+      ]
+    },
+    "beneath:crimson": {
+      "leaves": [
+        126,
+        11,
+        20
+      ],
+      "log_end": [
+        112,
+        49,
+        70
+      ],
+      "stripped_log_end": [
+        122,
+        56,
+        83
+      ]
+    },
+    "beneath:warped": {
+      "leaves": [
+        20,
+        139,
+        125
+      ],
+      "log_end": [
+        53,
+        109,
+        109
+      ],
+      "stripped_log_end": [
+        53,
+        130,
+        125
+      ]
+    },
+    "tfc:acacia": {
+      "leaves": [
+        148,
+        148,
+        148
+      ],
+      "log_end": [
+        121,
+        64,
+        50
+      ],
+      "stripped_log_end": [
+        122,
+        51,
+        36
+      ]
+    },
+    "tfc:acacia_fluff": {
+      "leaves": [
+        143,
+        143,
+        143
+      ]
+    },
+    "tfc:ash": {
+      "leaves": [
+        128,
+        128,
+        128
+      ],
+      "log_end": [
+        145,
+        83,
+        66
+      ],
+      "stripped_log_end": [
+        144,
+        78,
+        63
+      ]
+    },
+    "tfc:ash_fluff": {
+      "leaves": [
+        133,
+        133,
+        133
+      ]
+    },
+    "tfc:aspen": {
+      "leaves": [
+        167,
+        167,
+        167
+      ],
+      "log_end": [
+        96,
+        94,
+        79
+      ],
+      "stripped_log_end": [
+        59,
+        59,
+        42
+      ]
+    },
+    "tfc:aspen_fluff": {
+      "leaves": [
+        96,
+        96,
+        96
+      ]
+    },
+    "tfc:aspen_frozen": {
+      "leaves": [
+        172,
+        202,
+        252
+      ]
+    },
+    "tfc:birch": {
+      "leaves": [
+        144,
+        144,
+        144
+      ],
+      "log_end": [
+        131,
+        120,
+        96
+      ],
+      "stripped_log_end": [
+        107,
+        94,
+        66
+      ]
+    },
+    "tfc:birch_fluff": {
+      "leaves": [
+        127,
+        127,
+        127
+      ]
+    },
+    "tfc:blackwood": {
+      "leaves": [
+        140,
+        140,
+        140
+      ],
+      "log_end": [
+        61,
+        55,
+        48
+      ],
+      "stripped_log_end": [
+        32,
+        30,
+        28
+      ]
+    },
+    "tfc:blackwood_fluff": {
+      "leaves": [
+        101,
+        104,
+        96
+      ]
+    },
+    "tfc:chestnut": {
+      "leaves": [
+        105,
+        105,
+        105
+      ],
+      "log_end": [
+        106,
+        70,
+        46
+      ],
+      "stripped_log_end": [
+        93,
+        58,
+        38
+      ]
+    },
+    "tfc:chestnut_fluff": {
+      "leaves": [
+        41,
+        41,
+        41
+      ]
+    },
+    "tfc:douglas_fir": {
+      "leaves": [
+        78,
+        78,
+        78
+      ],
+      "log_end": [
+        156,
+        128,
+        96
+      ],
+      "stripped_log_end": [
+        185,
+        153,
+        116
+      ]
+    },
+    "tfc:douglas_fir_fluff": {
+      "leaves": [
+        134,
+        134,
+        134
+      ]
+    },
+    "tfc:douglas_fir_frozen": {
+      "leaves": [
+        221,
+        233,
+        247
+      ]
+    },
+    "tfc:hickory": {
+      "leaves": [
+        106,
+        106,
+        106
+      ],
+      "log_end": [
+        74,
+        54,
+        34
+      ],
+      "stripped_log_end": [
+        63,
+        40,
+        19
+      ]
+    },
+    "tfc:hickory_fluff": {
+      "leaves": [
+        83,
+        83,
+        83
+      ]
+    },
+    "tfc:kapok": {
+      "leaves": [
+        151,
+        151,
+        150
+      ],
+      "log_end": [
+        141,
+        106,
+        115
+      ],
+      "stripped_log_end": [
+        154,
+        113,
+        139
+      ]
+    },
+    "tfc:kapok_fluff": {
+      "leaves": [
+        141,
+        140,
+        141
+      ]
+    },
+    "tfc:mangrove": {
+      "leaves": [
+        121,
+        119,
+        119
+      ],
+      "log_end": [
+        103,
+        49,
+        42
+      ],
+      "stripped_log_end": [
+        110,
+        44,
+        43
+      ]
+    },
+    "tfc:mangrove_fluff": {
+      "leaves": [
+        121,
+        119,
+        119
+      ]
+    },
+    "tfc:mangrove_top": {
+      "leaves": [
+        134,
+        132,
+        132
+      ]
+    },
+    "tfc:maple": {
+      "leaves": [
+        119,
+        119,
+        119
+      ],
+      "log_end": [
+        125,
+        89,
+        52
+      ],
+      "stripped_log_end": [
+        137,
+        93,
+        48
+      ]
+    },
+    "tfc:maple_fluff": {
+      "leaves": [
+        146,
+        146,
+        146
+      ]
+    },
+    "tfc:oak": {
+      "leaves": [
+        148,
+        148,
+        148
+      ],
+      "log_end": [
+        162,
+        131,
+        80
+      ],
+      "stripped_log_end": [
+        173,
+        140,
+        86
+      ]
+    },
+    "tfc:oak_fluff": {
+      "leaves": [
+        135,
+        134,
+        135
+      ]
+    },
+    "tfc:palm": {
+      "leaves": [
+        157,
+        157,
+        157
+      ],
+      "log_end": [
+        174,
+        114,
+        62
+      ],
+      "stripped_log_end": [
+        183,
+        111,
+        53
+      ]
+    },
+    "tfc:palm_top": {
+      "leaves": [
+        170,
+        170,
+        170
+      ]
+    },
+    "tfc:pine": {
+      "leaves": [
+        105,
+        105,
+        105
+      ],
+      "log_end": [
+        168,
+        153,
+        127
+      ],
+      "stripped_log_end": [
+        179,
+        158,
+        124
+      ]
+    },
+    "tfc:pine_fluff": {
+      "leaves": [
+        30,
+        30,
+        30
+      ]
+    },
+    "tfc:pine_frozen": {
+      "leaves": [
+        162,
+        187,
+        230
+      ]
+    },
+    "tfc:rosewood": {
+      "leaves": [
+        149,
+        153,
+        144
+      ],
+      "log_end": [
+        128,
+        55,
+        48
+      ],
+      "stripped_log_end": [
+        115,
+        30,
+        29
+      ]
+    },
+    "tfc:rosewood_fluff": {
+      "leaves": [
+        111,
+        111,
+        111
+      ]
+    },
+    "tfc:sequoia": {
+      "leaves": [
+        84,
+        84,
+        84
+      ],
+      "log_end": [
+        113,
+        64,
+        45
+      ],
+      "stripped_log_end": [
+        112,
+        65,
+        49
+      ]
+    },
+    "tfc:sequoia_fluff": {
+      "leaves": [
+        26,
+        26,
+        26
+      ]
+    },
+    "tfc:spruce": {
+      "leaves": [
+        78,
+        78,
+        78
+      ],
+      "log_end": [
+        141,
+        88,
+        73
+      ],
+      "stripped_log_end": [
+        165,
+        99,
+        81
+      ]
+    },
+    "tfc:spruce_fluff": {
+      "leaves": [
+        84,
+        84,
+        84
+      ]
+    },
+    "tfc:spruce_frozen": {
+      "leaves": [
+        128,
+        160,
+        219
+      ]
+    },
+    "tfc:sycamore": {
+      "leaves": [
+        117,
+        117,
+        117
+      ],
+      "log_end": [
+        168,
+        135,
+        80
+      ],
+      "stripped_log_end": [
+        167,
+        126,
+        65
+      ]
+    },
+    "tfc:sycamore_fluff": {
+      "leaves": [
+        80,
+        80,
+        80
+      ]
+    },
+    "tfc:white_cedar": {
+      "leaves": [
+        136,
+        136,
+        136
+      ],
+      "log_end": [
+        164,
+        153,
+        145
+      ],
+      "stripped_log_end": [
+        162,
+        151,
+        145
+      ]
+    },
+    "tfc:white_cedar_fluff": {
+      "leaves": [
+        145,
+        145,
+        145
+      ]
+    },
+    "tfc:white_cedar_frozen": {
+      "leaves": [
+        172,
+        197,
+        239
+      ]
+    },
+    "tfc:willow": {
+      "leaves": [
+        123,
+        122,
+        122
+      ],
+      "log_end": [
+        50,
+        54,
+        18
+      ],
+      "stripped_log_end": [
+        38,
+        47,
+        6
+      ]
+    },
+    "tfc:willow_fluff": {
+      "leaves": [
+        75,
+        75,
+        75
+      ]
+    },
+    "tfc:willow_top": {
+      "leaves": [
+        129,
+        128,
+        128
+      ]
+    },
+    "tfg:araucaria": {
+      "leaves": [
+        121,
+        126,
+        118
+      ],
+      "log_end": [
+        198,
+        189,
+        187
+      ],
+      "stripped_log_end": [
+        233,
+        223,
+        223
+      ]
+    },
+    "tfg:beech": {
+      "leaves": [
+        169,
+        79,
+        20
+      ],
+      "log_end": [
+        69,
+        115,
+        109
+      ],
+      "stripped_log_end": [
+        60,
+        121,
+        113
+      ]
+    },
+    "tfg:ginkgo": {
+      "leaves": [
+        231,
+        150,
+        31
+      ]
+    },
+    "tfg:mahoe": {
+      "leaves": [
+        167,
+        67,
+        77
+      ],
+      "log_end": [
+        33,
+        55,
+        88
+      ],
+      "stripped_log_end": [
+        19,
+        50,
+        95
+      ]
+    },
+    "tfg:palm_tree/acai": {
+      "leaves": [
+        134,
+        134,
+        134
+      ]
+    },
+    "tfg:palm_tree/coconut": {
+      "leaves": [
+        156,
+        156,
+        156
+      ]
+    },
+    "tfg:palm_tree/date": {
+      "leaves": [
+        149,
+        149,
+        149
+      ]
+    },
+    "tfg:palm_tree/oil_palm": {
+      "leaves": [
+        154,
+        154,
+        154
+      ]
+    },
+    "tfg:palm_tree/trunk_0": {
+      "log_end": [
+        139,
+        104,
+        67
+      ]
+    },
+    "tfg:palm_tree/trunk_1": {
+      "log_end": [
+        134,
+        106,
+        72
+      ]
+    },
+    "tfg:palm_tree/trunk_2": {
+      "log_end": [
+        130,
+        107,
+        77
+      ]
+    }
+  }
+}

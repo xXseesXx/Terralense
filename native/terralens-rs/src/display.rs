@@ -29,9 +29,193 @@ pub enum Preset {
     Forestry,
 }
 
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum LoadingFilter {
+    #[default]
+    Nearest,
+    Smooth,
+}
+
+impl LoadingFilter {
+    pub const ALL: [Self; 2] = [Self::Nearest, Self::Smooth];
+
+    pub fn label(self) -> &'static str {
+        match self {
+            Self::Nearest => "Nearest neighbor",
+            Self::Smooth => "Smooth",
+        }
+    }
+}
+
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum MapDetail {
+    #[default]
+    Block,
+    TwoBlocks,
+    FourBlocks,
+    EightBlocks,
+    Chunk,
+}
+
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum TerrainPreset {
+    #[default]
+    Fast,
+    Balanced,
+    Full,
+    Custom,
+}
+
+impl TerrainPreset {
+    pub const fn label(self) -> &'static str {
+        match self {
+            Self::Fast => "Fast",
+            Self::Balanced => "Balanced",
+            Self::Full => "Full",
+            Self::Custom => "Custom",
+        }
+    }
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[serde(default)]
+pub struct TerrainDetailOptions {
+    pub precise_biome_boundaries: bool,
+    pub physical_surface: bool,
+    pub caves: bool,
+    pub rivers_lakes: bool,
+    pub volcanoes: bool,
+    pub springs: bool,
+    pub exposed_dikes: bool,
+    pub large_rocks_special_soils: bool,
+    pub surface_litter: bool,
+}
+
+impl Default for TerrainDetailOptions {
+    fn default() -> Self {
+        Self::full()
+    }
+}
+
+impl TerrainDetailOptions {
+    pub const fn fast() -> Self {
+        Self {
+            precise_biome_boundaries: false,
+            physical_surface: false,
+            caves: false,
+            rivers_lakes: false,
+            volcanoes: false,
+            springs: false,
+            exposed_dikes: false,
+            large_rocks_special_soils: false,
+            surface_litter: false,
+        }
+    }
+
+    pub const fn balanced() -> Self {
+        Self {
+            precise_biome_boundaries: false,
+            physical_surface: true,
+            caves: false,
+            rivers_lakes: true,
+            volcanoes: true,
+            springs: false,
+            exposed_dikes: false,
+            large_rocks_special_soils: true,
+            surface_litter: false,
+        }
+    }
+
+    pub const fn full() -> Self {
+        Self {
+            precise_biome_boundaries: true,
+            physical_surface: true,
+            caves: true,
+            rivers_lakes: true,
+            volcanoes: true,
+            springs: true,
+            exposed_dikes: true,
+            large_rocks_special_soils: true,
+            surface_litter: true,
+        }
+    }
+
+    pub const fn preset(self) -> TerrainPreset {
+        if self.equals(Self::fast()) {
+            TerrainPreset::Fast
+        } else if self.equals(Self::balanced()) {
+            TerrainPreset::Balanced
+        } else if self.equals(Self::full()) {
+            TerrainPreset::Full
+        } else {
+            TerrainPreset::Custom
+        }
+    }
+
+    const fn equals(self, other: Self) -> bool {
+        self.precise_biome_boundaries == other.precise_biome_boundaries
+            && self.physical_surface == other.physical_surface
+            && self.caves == other.caves
+            && self.rivers_lakes == other.rivers_lakes
+            && self.volcanoes == other.volcanoes
+            && self.springs == other.springs
+            && self.exposed_dikes == other.exposed_dikes
+            && self.large_rocks_special_soils == other.large_rocks_special_soils
+            && self.surface_litter == other.surface_litter
+    }
+}
+
+fn legacy_terrain_detail() -> TerrainDetailOptions {
+    TerrainDetailOptions {
+        surface_litter: false,
+        ..TerrainDetailOptions::full()
+    }
+}
+
+impl MapDetail {
+    pub const ALL: [Self; 5] = [
+        Self::Block,
+        Self::TwoBlocks,
+        Self::FourBlocks,
+        Self::EightBlocks,
+        Self::Chunk,
+    ];
+
+    pub const fn min_tile_zoom(self) -> i32 {
+        match self {
+            Self::Block => 0,
+            Self::TwoBlocks => 1,
+            Self::FourBlocks => 2,
+            Self::EightBlocks => 3,
+            Self::Chunk => 4,
+        }
+    }
+
+    pub fn label(self) -> &'static str {
+        match self {
+            Self::Block => "1 block",
+            Self::TwoBlocks => "2 blocks",
+            Self::FourBlocks => "4 blocks",
+            Self::EightBlocks => "8 blocks",
+            Self::Chunk => "16 blocks",
+        }
+    }
+}
+
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(default)]
 pub struct DisplayPrefs {
+    /// `None` preserves the legacy single-layer view for old sessions and API callers.
+    pub layer_stack: Option<Vec<LayerBlend>>,
+    pub grass_colors: bool,
+    pub grass_opacity: f32,
+    pub trees: bool,
+    pub tree_opacity: f32,
+    /// Fraction of the simulated calendar year; None retains annual-mean colors.
+    pub season: Option<f32>,
     pub palette: Palette,
     pub preset: Preset,
     pub highlighted_biomes: Vec<u16>,
@@ -42,14 +226,29 @@ pub struct DisplayPrefs {
     pub rainfall_enabled: bool,
     pub rainfall_min: f32,
     pub rainfall_max: f32,
+    pub height_shading: bool,
+    pub hillshade_strength: f32,
+    pub contours: crate::contours::ContourPrefs,
+    pub loading_filter: LoadingFilter,
+    pub max_detail: MapDetail,
     pub hidden_ore_ids: Vec<String>,
     pub hidden_structure_ids: Vec<String>,
+    pub hidden_volcano_ids: Vec<String>,
     pub feature_bar_ores: bool,
+    /// Generation work for optional terrain detail. Legacy sessions retain full detail.
+    #[serde(default = "legacy_terrain_detail")]
+    pub terrain: TerrainDetailOptions,
 }
 
 impl Default for DisplayPrefs {
     fn default() -> Self {
         Self {
+            layer_stack: None,
+            grass_colors: false,
+            grass_opacity: 1.0,
+            trees: false,
+            tree_opacity: 1.0,
+            season: None,
             palette: Palette::Natural,
             preset: Preset::Exploration,
             highlighted_biomes: Vec::new(),
@@ -60,9 +259,16 @@ impl Default for DisplayPrefs {
             rainfall_enabled: false,
             rainfall_min: 0.,
             rainfall_max: 500.,
+            height_shading: false,
+            hillshade_strength: 1.0,
+            contours: Default::default(),
+            loading_filter: LoadingFilter::Nearest,
+            max_detail: MapDetail::Block,
             hidden_ore_ids: Vec::new(),
             hidden_structure_ids: default_hidden_structure_ids().to_vec(),
+            hidden_volcano_ids: Vec::new(),
             feature_bar_ores: false,
+            terrain: TerrainDetailOptions::fast(),
         }
     }
 }
@@ -75,7 +281,8 @@ fn default_hidden_structure_ids() -> &'static [String] {
             .into_iter()
             .flat_map(|dimension| crate::structure_support::catalog(dimension))
             .filter(|(id, _)| {
-                crate::structure_icons::ruin_topic(id).is_some()
+                crate::structure_loot::ruin_group(id)
+                    == Some(crate::structure_loot::RuinGroup::Lootless)
                     || matches!(
                         id.as_str(),
                         "minecraft:nether_fossil"
@@ -93,11 +300,191 @@ fn default_hidden_structure_ids() -> &'static [String] {
 }
 
 impl DisplayPrefs {
+    pub fn terrain_preset(&self) -> TerrainPreset {
+        self.terrain.preset()
+    }
+
+    /// Apply a sampling preset without changing marker visibility filters.
+    pub fn apply_terrain_preset(&mut self, preset: TerrainPreset) {
+        self.terrain = match preset {
+            TerrainPreset::Fast => TerrainDetailOptions::fast(),
+            TerrainPreset::Balanced => TerrainDetailOptions::balanced(),
+            TerrainPreset::Full => TerrainDetailOptions::full(),
+            TerrainPreset::Custom => return,
+        };
+        let biome_stack = Some(vec![LayerBlend {
+            layer: Layer::Biomes,
+            opacity: 1.0,
+        }]);
+        self.layer_stack = biome_stack;
+        match preset {
+            TerrainPreset::Fast => {
+                self.grass_colors = false;
+                self.trees = false;
+                self.height_shading = false;
+                self.contours.enabled = false;
+            }
+            TerrainPreset::Balanced => {
+                self.grass_colors = true;
+                self.trees = false;
+                self.height_shading = true;
+                self.contours.enabled = false;
+            }
+            TerrainPreset::Full => {
+                self.max_detail = MapDetail::Block;
+                self.grass_colors = true;
+                self.trees = true;
+                self.height_shading = true;
+                self.contours.enabled = true;
+            }
+            TerrainPreset::Custom => {}
+        }
+    }
+
+    pub fn simulated_season(&self) -> Option<f32> {
+        self.season
+            .filter(|value| value.is_finite())
+            .map(|value| value.rem_euclid(1.))
+    }
+
+    pub fn supports_layer(dimension: Dimension, layer: Layer) -> bool {
+        if layer == Layer::Ground {
+            return dimension == Dimension::Overworld;
+        }
+        match dimension {
+            Dimension::Overworld => true,
+            Dimension::Beneath => layer == Layer::Biomes,
+            Dimension::Moon => matches!(layer, Layer::Biomes | Layer::Height),
+            Dimension::Mars => matches!(layer, Layer::Biomes | Layer::Height | Layer::Water),
+        }
+    }
+
+    /// Enabled layers in stable back-to-front order. Call once when building a tile/export plan,
+    /// never in a per-pixel loop. Empty explicit stacks remain empty (grass-only is valid).
+    pub fn active_layers(&self, fallback: Layer, dimension: Dimension) -> Vec<LayerBlend> {
+        let stack = self.layer_stack.as_deref().unwrap_or(&[]);
+        if self.layer_stack.is_none() {
+            return vec![LayerBlend {
+                layer: fallback,
+                opacity: 1.0,
+            }];
+        }
+        let mut seen = HashSet::new();
+        let mut layers: Vec<_> = stack
+            .iter()
+            .filter(|&blend| {
+                seen.insert(blend.layer) && Self::supports_layer(dimension, blend.layer)
+            })
+            .map(|blend| LayerBlend {
+                layer: blend.layer,
+                opacity: blend.opacity.clamp(0.0, 1.0),
+            })
+            .collect();
+        if !stack.is_empty() && layers.is_empty() {
+            layers.push(LayerBlend {
+                layer: Layer::Biomes,
+                opacity: 1.0,
+            });
+        }
+        layers
+    }
+
+    pub fn layer_enabled(&self, layer: Layer, fallback: Layer) -> bool {
+        self.layer_stack
+            .as_ref()
+            .map_or(layer == fallback, |stack| {
+                stack.iter().any(|blend| blend.layer == layer)
+            })
+    }
+
+    pub fn set_layer_enabled(&mut self, layer: Layer, enabled: bool, fallback: Layer) {
+        let stack = self.layer_stack.get_or_insert_with(|| {
+            vec![LayerBlend {
+                layer: fallback,
+                opacity: 1.0,
+            }]
+        });
+        if enabled {
+            if !stack.iter().any(|blend| blend.layer == layer) {
+                stack.push(LayerBlend {
+                    layer,
+                    opacity: if stack.is_empty() && !self.grass_colors {
+                        1.0
+                    } else {
+                        0.55
+                    },
+                });
+            }
+        } else {
+            stack.retain(|blend| blend.layer != layer);
+        }
+    }
+
+    pub fn set_layer_opacity(&mut self, layer: Layer, opacity: f32, fallback: Layer) {
+        let stack = self.layer_stack.get_or_insert_with(|| {
+            vec![LayerBlend {
+                layer: fallback,
+                opacity: 1.0,
+            }]
+        });
+        let opacity = opacity.clamp(0.0, 1.0);
+        if let Some(blend) = stack.iter_mut().find(|blend| blend.layer == layer) {
+            blend.opacity = opacity;
+        } else {
+            stack.push(LayerBlend { layer, opacity });
+        }
+    }
+
+    /// Move among the current dimension's enabled layers. Negative offsets move
+    /// toward the background; positive offsets move toward the foreground.
+    /// Unsupported layers retain their slots and preferences across dimensions.
+    pub fn move_layer(&mut self, layer: Layer, offset: i32, fallback: Layer, dimension: Dimension) {
+        if offset == 0 || !Self::supports_layer(dimension, layer) {
+            return;
+        }
+        let stack = self.layer_stack.get_or_insert_with(|| {
+            vec![LayerBlend {
+                layer: fallback,
+                opacity: 1.,
+            }]
+        });
+        let slots: Vec<usize> = stack
+            .iter()
+            .enumerate()
+            .filter_map(|(index, blend)| {
+                Self::supports_layer(dimension, blend.layer).then_some(index)
+            })
+            .collect();
+        let Some(start) = slots.iter().position(|&index| stack[index].layer == layer) else {
+            return;
+        };
+        let end = (start as i64 + i64::from(offset)).clamp(0, slots.len().saturating_sub(1) as i64)
+            as usize;
+        if start < end {
+            for i in start..end {
+                stack.swap(slots[i], slots[i + 1]);
+            }
+        } else {
+            for i in (end..start).rev() {
+                stack.swap(slots[i], slots[i + 1]);
+            }
+        }
+    }
+
     /// Used once when upgrading an existing installation; later user toggles are retained.
     pub fn apply_structure_visibility_defaults(&mut self) {
         for id in default_hidden_structure_ids() {
             self.set_feature_visible(&MarkerKind::Structure, id, false);
         }
+    }
+
+    /// Undo the former name-based Ruins default once for buildings with possible loot.
+    pub fn restore_building_visibility(&mut self) {
+        self.hidden_structure_ids.retain(|id| {
+            id != "tfg:illagers/norse_village_ruined"
+                && crate::structure_loot::ruin_group(id)
+                    != Some(crate::structure_loot::RuinGroup::Building)
+        });
     }
 
     /// Set one stable feature type's visibility. Occurrence coordinates are stripped so one
@@ -107,6 +494,7 @@ impl DisplayPrefs {
         let hidden = match kind {
             MarkerKind::Ore => &mut self.hidden_ore_ids,
             MarkerKind::Structure => &mut self.hidden_structure_ids,
+            MarkerKind::Volcano => &mut self.hidden_volcano_ids,
             _ => return,
         };
         if visible {
@@ -128,6 +516,7 @@ impl DisplayPrefs {
         let hidden = match kind {
             MarkerKind::Ore => &mut self.hidden_ore_ids,
             MarkerKind::Structure => &mut self.hidden_structure_ids,
+            MarkerKind::Volcano => &mut self.hidden_volcano_ids,
             _ => return,
         };
         *hidden = ids
@@ -144,6 +533,12 @@ impl DisplayPrefs {
 
     pub fn same_raster(&self, other: &Self) -> bool {
         self.palette == other.palette
+            && self.simulated_season() == other.simulated_season()
+            && self.layer_stack == other.layer_stack
+            && self.grass_colors == other.grass_colors
+            && (!self.grass_colors || self.grass_opacity == other.grass_opacity)
+            && self.trees == other.trees
+            && (!self.trees || self.tree_opacity == other.tree_opacity)
             && self.highlighted_biomes == other.highlighted_biomes
             && self.highlighted_rocks == other.highlighted_rocks
             && self.temperature_enabled == other.temperature_enabled
@@ -154,6 +549,10 @@ impl DisplayPrefs {
             && (!self.rainfall_enabled
                 || self.rainfall_min == other.rainfall_min
                     && self.rainfall_max == other.rainfall_max)
+            && self.height_shading == other.height_shading
+            && (!self.height_shading || self.hillshade_strength == other.hillshade_strength)
+            && self.contours.same_raster(&other.contours)
+            && self.terrain == other.terrain
     }
 
     pub fn has_highlight_filter(&self) -> bool {
@@ -212,6 +611,9 @@ impl DisplayPrefs {
             MarkerKind::Structure => !self.hidden_structure_ids.iter().any(|id| {
                 id == marker.id.split('@').next().unwrap_or(&marker.id) || id == &marker.label
             }),
+            MarkerKind::Volcano => !self.hidden_volcano_ids.iter().any(|id| {
+                id == marker.id.split('@').next().unwrap_or(&marker.id) || id == &marker.label
+            }),
             _ => true,
         }
     }
@@ -245,6 +647,7 @@ impl DisplayPrefs {
         let hidden = match kind {
             MarkerKind::Ore => &self.hidden_ore_ids,
             MarkerKind::Structure => &self.hidden_structure_ids,
+            MarkerKind::Volcano => &self.hidden_volcano_ids,
             _ => return ids.collect(),
         };
         ids.filter(|id| !hidden.contains(id)).collect()
@@ -261,9 +664,326 @@ impl DisplayPrefs {
     }
 }
 
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct LayerBlend {
+    pub layer: Layer,
+    pub opacity: f32,
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn simulated_calendar_roundtrips_and_invalidates_only_color_identity() {
+        let average: DisplayPrefs = serde_json::from_str("{}").unwrap();
+        assert_eq!(average.simulated_season(), None);
+        let autumn = DisplayPrefs {
+            season: Some(0.8),
+            ..average.clone()
+        };
+        let restored: DisplayPrefs =
+            serde_json::from_str(&serde_json::to_string(&autumn).unwrap()).unwrap();
+        assert_eq!(restored.simulated_season(), Some(0.8));
+        assert!(!average.same_raster(&autumn));
+        let january = DisplayPrefs {
+            season: Some(0.),
+            ..average.clone()
+        };
+        let wrapped = DisplayPrefs {
+            season: Some(1.),
+            ..average.clone()
+        };
+        assert!(january.same_raster(&wrapped));
+        let invalid = DisplayPrefs {
+            season: Some(f32::NAN),
+            ..average.clone()
+        };
+        assert!(average.same_raster(&invalid));
+    }
+
+    #[test]
+    fn hillshade_is_part_of_raster_identity_only_when_enabled() {
+        let base = DisplayPrefs::default();
+        let mut changed = base.clone();
+        changed.hillshade_strength = 0.9;
+        assert!(base.same_raster(&changed));
+        changed.height_shading = true;
+        assert!(!base.same_raster(&changed));
+        let mut other_enabled = changed.clone();
+        other_enabled.hillshade_strength = 0.7;
+        assert!(!changed.same_raster(&other_enabled));
+    }
+
+    #[test]
+    fn old_preferences_default_to_unshaded_relief() {
+        let prefs: DisplayPrefs = serde_json::from_str("{}").unwrap();
+        assert!(prefs.layer_stack.is_none());
+        assert_eq!(prefs.terrain, legacy_terrain_detail());
+        assert!(!prefs.terrain.surface_litter);
+        assert!(!prefs.grass_colors);
+        assert!(!prefs.trees);
+        assert!(!prefs.height_shading);
+        assert_eq!(prefs.hillshade_strength, 1.0);
+        assert!(!prefs.contours.enabled);
+        assert_eq!(prefs.loading_filter, LoadingFilter::Nearest);
+        assert_eq!(prefs.max_detail, MapDetail::Block);
+    }
+
+    #[test]
+    fn new_display_defaults_to_fast_terrain_sampling() {
+        let prefs = DisplayPrefs::default();
+        assert_eq!(prefs.terrain, TerrainDetailOptions::fast());
+        assert_eq!(prefs.terrain_preset(), TerrainPreset::Fast);
+    }
+
+    #[test]
+    fn explicit_terrain_options_persist_and_derive_their_preset() {
+        let mut custom = TerrainDetailOptions::full();
+        custom.springs = false;
+        for options in [
+            TerrainDetailOptions::fast(),
+            TerrainDetailOptions::balanced(),
+            TerrainDetailOptions::full(),
+            custom,
+        ] {
+            let prefs = DisplayPrefs {
+                terrain: options,
+                ..DisplayPrefs::default()
+            };
+            let restored: DisplayPrefs =
+                serde_json::from_str(&serde_json::to_string(&prefs).unwrap()).unwrap();
+            assert_eq!(restored.terrain, options);
+            assert_eq!(restored.terrain_preset(), options.preset());
+        }
+    }
+
+    #[test]
+    fn terrain_presets_preserve_hidden_feature_filters() {
+        let mut prefs = DisplayPrefs {
+            hidden_ore_ids: vec!["tfc:ore/native_copper".into()],
+            hidden_structure_ids: vec!["tfg:village/ruined".into()],
+            hidden_volcano_ids: vec!["terralens:volcano/cinder".into()],
+            ..DisplayPrefs::default()
+        };
+        let hidden_ores = prefs.hidden_ore_ids.clone();
+        let hidden_structures = prefs.hidden_structure_ids.clone();
+        let hidden_volcanoes = prefs.hidden_volcano_ids.clone();
+
+        for preset in [
+            TerrainPreset::Balanced,
+            TerrainPreset::Full,
+            TerrainPreset::Fast,
+        ] {
+            prefs.apply_terrain_preset(preset);
+            assert_eq!(prefs.hidden_ore_ids, hidden_ores);
+            assert_eq!(prefs.hidden_structure_ids, hidden_structures);
+            assert_eq!(prefs.hidden_volcano_ids, hidden_volcanoes);
+        }
+    }
+
+    #[test]
+    fn terrain_option_changes_invalidate_the_raster() {
+        let original = DisplayPrefs::default();
+        let mut changed = original.clone();
+        changed.terrain.volcanoes = true;
+        assert!(!original.same_raster(&changed));
+    }
+
+    #[test]
+    fn fast_to_full_preset_updates_visual_layers_and_detail() {
+        let mut prefs = DisplayPrefs::default();
+        assert!(!prefs.grass_colors);
+        assert!(!prefs.trees);
+        assert!(!prefs.height_shading);
+
+        prefs.apply_terrain_preset(TerrainPreset::Full);
+        assert_eq!(prefs.terrain, TerrainDetailOptions::full());
+        assert_eq!(prefs.terrain_preset(), TerrainPreset::Full);
+        assert_eq!(
+            prefs.layer_stack.as_deref(),
+            Some(
+                &[LayerBlend {
+                    layer: Layer::Biomes,
+                    opacity: 1.0,
+                }][..]
+            )
+        );
+        assert!(prefs.grass_colors);
+        assert!(prefs.trees);
+        assert!(prefs.height_shading);
+        assert!(prefs.contours.enabled);
+
+        prefs.apply_terrain_preset(TerrainPreset::Fast);
+        assert_eq!(prefs.terrain, TerrainDetailOptions::fast());
+        assert!(!prefs.grass_colors);
+        assert!(!prefs.trees);
+        assert!(!prefs.height_shading);
+        assert!(!prefs.contours.enabled);
+    }
+
+    #[test]
+    fn layer_stack_toggles_preserve_layers_and_use_composable_defaults() {
+        let mut prefs = DisplayPrefs::default();
+        prefs.set_layer_enabled(Layer::Temperature, true, Layer::Biomes);
+        assert_eq!(
+            prefs.layer_stack.as_ref().unwrap(),
+            &[
+                LayerBlend {
+                    layer: Layer::Biomes,
+                    opacity: 1.0
+                },
+                LayerBlend {
+                    layer: Layer::Temperature,
+                    opacity: 0.55
+                }
+            ]
+        );
+        prefs.set_layer_enabled(Layer::Rainfall, true, Layer::Biomes);
+        assert_eq!(
+            prefs
+                .active_layers(Layer::Biomes, Dimension::Overworld)
+                .len(),
+            3
+        );
+        prefs.set_layer_enabled(Layer::Temperature, false, Layer::Biomes);
+        assert_eq!(
+            prefs
+                .active_layers(Layer::Biomes, Dimension::Overworld)
+                .iter()
+                .map(|entry| entry.layer)
+                .collect::<Vec<_>>(),
+            vec![Layer::Biomes, Layer::Rainfall]
+        );
+
+        let mut grass_base = DisplayPrefs::default();
+        grass_base.grass_colors = true;
+        grass_base.set_layer_enabled(Layer::Temperature, true, Layer::Biomes);
+        assert_eq!(
+            grass_base
+                .active_layers(Layer::Biomes, Dimension::Overworld)
+                .iter()
+                .find(|blend| blend.layer == Layer::Temperature)
+                .unwrap()
+                .opacity,
+            0.55
+        );
+    }
+
+    #[test]
+    fn layer_stack_roundtrips_and_filters_dimension_layers() {
+        let mut prefs = DisplayPrefs::default();
+        prefs.set_layer_enabled(Layer::Geology, true, Layer::Biomes);
+        prefs.set_layer_opacity(Layer::Geology, 1.4, Layer::Biomes);
+        prefs.grass_colors = true;
+        prefs.trees = true;
+        let decoded: DisplayPrefs =
+            serde_json::from_str(&serde_json::to_string(&prefs).unwrap()).unwrap();
+        assert_eq!(decoded, prefs);
+        assert_eq!(
+            decoded.active_layers(Layer::Biomes, Dimension::Moon),
+            vec![LayerBlend {
+                layer: Layer::Biomes,
+                opacity: 1.0
+            }]
+        );
+        assert_eq!(
+            decoded.active_layers(Layer::Biomes, Dimension::Overworld)[1].opacity,
+            1.0
+        );
+        assert!(!prefs.same_raster(&DisplayPrefs::default()));
+    }
+
+    #[test]
+    fn layer_order_moves_visible_rows_without_disturbing_other_dimensions() {
+        let mut prefs = DisplayPrefs {
+            layer_stack: Some(vec![
+                LayerBlend {
+                    layer: Layer::Biomes,
+                    opacity: 1.,
+                },
+                LayerBlend {
+                    layer: Layer::Temperature,
+                    opacity: 0.3,
+                },
+                LayerBlend {
+                    layer: Layer::Height,
+                    opacity: 0.7,
+                },
+            ]),
+            ..Default::default()
+        };
+        prefs.move_layer(Layer::Height, -1, Layer::Biomes, Dimension::Moon);
+        let stack = prefs.layer_stack.as_ref().unwrap();
+        assert_eq!(stack[0].layer, Layer::Height);
+        assert_eq!(stack[0].opacity, 0.7);
+        assert_eq!(stack[1].layer, Layer::Temperature);
+        assert_eq!(stack[1].opacity, 0.3);
+        assert_eq!(stack[2].layer, Layer::Biomes);
+        let before = prefs.clone();
+        prefs.move_layer(Layer::Temperature, 1, Layer::Biomes, Dimension::Moon);
+        assert_eq!(prefs, before, "unsupported rows cannot be reordered here");
+        prefs.move_layer(Layer::Height, i32::MAX, Layer::Biomes, Dimension::Moon);
+        assert_eq!(prefs.layer_stack.as_ref().unwrap()[2].layer, Layer::Height);
+        prefs.move_layer(Layer::Biomes, i32::MIN, Layer::Biomes, Dimension::Moon);
+        assert_eq!(prefs.layer_stack.as_ref().unwrap()[0].layer, Layer::Biomes);
+    }
+
+    #[test]
+    fn presets_add_their_focus_layer_without_replacing_the_composition() {
+        let mut prefs = DisplayPrefs::default();
+        prefs.set_layer_enabled(Layer::Temperature, true, Layer::Biomes);
+        let preset_layer = prefs.apply_preset(Preset::Forestry);
+        prefs.set_layer_enabled(preset_layer, true, Layer::Biomes);
+        assert_eq!(preset_layer, Layer::Forest);
+        assert_eq!(
+            prefs
+                .active_layers(Layer::Biomes, Dimension::Overworld)
+                .iter()
+                .map(|entry| entry.layer)
+                .collect::<Vec<_>>(),
+            vec![Layer::Biomes, Layer::Temperature, Layer::Forest]
+        );
+        assert_eq!(prefs.preset, Preset::Forestry);
+    }
+
+    #[test]
+    fn sampling_preferences_persist_without_changing_raster_contents() {
+        let base = DisplayPrefs::default();
+        for detail in MapDetail::ALL {
+            for filter in LoadingFilter::ALL {
+                let changed = DisplayPrefs {
+                    max_detail: detail,
+                    loading_filter: filter,
+                    ..base.clone()
+                };
+                assert!(base.same_raster(&changed));
+                let restored: DisplayPrefs =
+                    serde_json::from_str(&serde_json::to_string(&changed).unwrap()).unwrap();
+                assert_eq!(changed, restored);
+            }
+        }
+    }
+
+    #[test]
+    fn contour_preferences_persist_and_invalidate_visible_rasters() {
+        let base = DisplayPrefs::default();
+        let mut changed = base.clone();
+        changed.contours.interval = 20;
+        changed.contours.color = [90, 70, 50];
+        assert!(
+            base.same_raster(&changed),
+            "hidden lines need no new raster"
+        );
+        changed.contours.enabled = true;
+        assert!(!base.same_raster(&changed));
+        let mut other = changed.clone();
+        other.contours.interval = 5;
+        assert!(!changed.same_raster(&other));
+        let restored: DisplayPrefs =
+            serde_json::from_str(&serde_json::to_string(&changed).unwrap()).unwrap();
+        assert_eq!(changed, restored);
+    }
 
     #[test]
     fn feature_filters_apply_to_every_occurrence_of_a_type() {
@@ -346,13 +1066,29 @@ mod tests {
     }
 
     #[test]
+    fn volcano_visibility_is_separate_from_structures_and_strips_instance_coordinates() {
+        let mut prefs = DisplayPrefs::default();
+        let mut marker = structure("terralens:volcano/active_shield");
+        marker.kind = MarkerKind::Volcano;
+        prefs.set_feature_visible(&MarkerKind::Volcano, &marker.id, false);
+        assert!(!prefs.marker_visible(&marker, 0.5));
+        assert!(
+            !prefs
+                .hidden_structure_ids
+                .iter()
+                .any(|id| id.starts_with("terralens:volcano/"))
+        );
+        prefs.set_feature_visible(&MarkerKind::Volcano, &marker.id, true);
+        assert!(prefs.marker_visible(&marker, 0.5));
+    }
+
+    #[test]
     fn quieter_structure_defaults_can_be_overridden_per_type_and_persisted() {
         let mut prefs = DisplayPrefs::default();
         for id in [
             "minecraft:nether_fossil",
             "tfg:ocean/ocean_moai_0",
             "tfg:illagers/forest_roaming",
-            "tfc_ruins:ruin_small",
             "tfg:aqueduct/aqueduct",
             "tfg:moon/cheese_ores",
             "tfg:moon/moon_rabbit_houses",
@@ -365,16 +1101,26 @@ mod tests {
         }
         for dimension in Dimension::ALL {
             for (id, _) in crate::structure_support::catalog(dimension) {
-                if crate::structure_icons::ruin_topic(id).is_some() {
-                    assert!(!prefs.marker_visible(&structure(id), 0.5), "{id}");
+                match crate::structure_loot::ruin_group(id) {
+                    Some(crate::structure_loot::RuinGroup::Lootless) => {
+                        assert!(!prefs.marker_visible(&structure(id), 0.5), "{id}")
+                    }
+                    Some(crate::structure_loot::RuinGroup::Building) => {
+                        assert!(prefs.marker_visible(&structure(id), 0.5), "{id}")
+                    }
+                    None => {}
                 }
             }
         }
         for id in [
+            "tfc_ruins:ruin_small",
+            "tfc_ruins:ruin_beach",
+            "tfc_ruins:ruin_rich",
             "minecraft:bastion_remnant",
             "tfg:beneath/tower",
             "tfg:mineshaft/mineshaft",
             "tfg:illagers/norse_village_living",
+            "tfg:illagers/norse_village_ruined",
             "tfg:moon/moonbase",
         ] {
             assert!(prefs.marker_visible(&structure(id), 0.5), "{id}");

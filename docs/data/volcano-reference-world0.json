@@ -1,0 +1,899 @@
+{
+  "seed": 0,
+  "world_alias": "0",
+  "dimension": "minecraft:overworld",
+  "method": "Exact Rust TfgCellular2D family lattice over saved nonempty MCA regions; accepted centers require an existing FULL chunk, matching saved center surface quart biome, and original type_for_center_biome noise rarity threshold.",
+  "region_files_total": 1218,
+  "region_files_scanned": 1218,
+  "last_region_file": "r.99.57.mca",
+  "counts": {
+    "enumerated_points": 16036,
+    "center_chunk_reads": 16004,
+    "missing_or_incomplete": 12280,
+    "full_center_chunks": 3724,
+    "eligible_full_centers": 78
+  },
+  "found_by_type": {
+    "active_shield": [
+      {
+        "center": [
+          -2754,
+          4513
+        ],
+        "noise": 0.12143489718437195,
+        "saved_center_biome": "tfg:earth/active_shield_volcano",
+        "top_y": 100,
+        "top_block": "minecraft:water",
+        "top_is_lava": false
+      }
+    ],
+    "dormant_shield": [
+      {
+        "center": [
+          -50957,
+          89948
+        ],
+        "noise": -0.4144432544708252,
+        "saved_center_biome": "tfg:earth/dormant_shield_volcano",
+        "top_y": 90,
+        "top_block": "tfc:wood/leaves/palm",
+        "top_is_lava": false
+      },
+      {
+        "center": [
+          -50636,
+          89606
+        ],
+        "noise": -0.17534489929676056,
+        "saved_center_biome": "tfg:earth/dormant_shield_volcano",
+        "top_y": 64,
+        "top_block": "tfc:sand/black",
+        "top_is_lava": false
+      }
+    ],
+    "sunken_shield": [
+      {
+        "center": [
+          -96019,
+          -21397
+        ],
+        "noise": 0.4599993824958801,
+        "saved_center_biome": "tfg:earth/sunken_shield_volcano",
+        "top_y": 62,
+        "top_block": "tfc:fluid/salt_water",
+        "top_is_lava": false
+      },
+      {
+        "center": [
+          -96625,
+          -21280
+        ],
+        "noise": 0.4370959997177124,
+        "saved_center_biome": "tfg:earth/sunken_shield_volcano",
+        "top_y": 62,
+        "top_block": "tfc:fluid/salt_water",
+        "top_is_lava": false
+      },
+      {
+        "center": [
+          -96655,
+          -21732
+        ],
+        "noise": 0.25754210352897644,
+        "saved_center_biome": "tfg:earth/sunken_shield_volcano",
+        "top_y": 62,
+        "top_block": "tfc:fluid/salt_water",
+        "top_is_lava": false
+      },
+      {
+        "center": [
+          -96399,
+          -22005
+        ],
+        "noise": -0.2586178183555603,
+        "saved_center_biome": "tfg:earth/sunken_shield_volcano",
+        "top_y": 62,
+        "top_block": "tfc:fluid/salt_water",
+        "top_is_lava": false
+      },
+      {
+        "center": [
+          -99278,
+          -21961
+        ],
+        "noise": 0.10975117981433868,
+        "saved_center_biome": "tfg:earth/sunken_shield_volcano",
+        "top_y": 62,
+        "top_block": "tfc:fluid/salt_water",
+        "top_is_lava": false
+      }
+    ],
+    "extinct_shield": [
+      {
+        "center": [
+          -99625,
+          -21719
+        ],
+        "noise": 0.035984840244054794,
+        "saved_center_biome": "tfg:earth/extinct_shield_volcano",
+        "top_y": 104,
+        "top_block": "tfg:grass/mollisol",
+        "top_is_lava": false
+      },
+      {
+        "center": [
+          -99622,
+          -22050
+        ],
+        "noise": 0.46407684683799744,
+        "saved_center_biome": "tfg:earth/extinct_shield_volcano",
+        "top_y": 68,
+        "top_block": "afc:wood/fallen_leaves/mountain_fir",
+        "top_is_lava": false
+      },
+      {
+        "center": [
+          -50061,
+          92306
+        ],
+        "noise": -0.4016949236392975,
+        "saved_center_biome": "tfg:earth/extinct_shield_volcano",
+        "top_y": 69,
+        "top_block": "tfg:tuff_gravel",
+        "top_is_lava": false
+      },
+      {
+        "center": [
+          19624,
+          -3052
+        ],
+        "noise": -0.4522026479244232,
+        "saved_center_biome": "tfg:earth/extinct_shield_volcano",
+        "top_y": 86,
+        "top_block": "tfg:grass/mollisol",
+        "top_is_lava": false
+      }
+    ],
+    "cinder": [
+      {
+        "center": [
+          -101364,
+          -14703
+        ],
+        "noise": 0.009919648990035057,
+        "saved_center_biome": "tfg:earth/canyons",
+        "top_y": 80,
+        "top_block": "tfc:rock/cobble/dacite",
+        "top_is_lava": false
+      },
+      {
+        "center": [
+          -101333,
+          -14937
+        ],
+        "noise": -0.11749820411205292,
+        "saved_center_biome": "tfg:earth/canyons",
+        "top_y": 104,
+        "top_block": "minecraft:lava",
+        "top_is_lava": true
+      },
+      {
+        "center": [
+          -129452,
+          -21840
+        ],
+        "noise": 0.04491971433162689,
+        "saved_center_biome": "tfg:earth/canyons",
+        "top_y": 95,
+        "top_block": "tfc:groundcover/pumice",
+        "top_is_lava": false
+      },
+      {
+        "center": [
+          -129855,
+          -21812
+        ],
+        "noise": -0.05811171978712082,
+        "saved_center_biome": "tfg:earth/canyons",
+        "top_y": 105,
+        "top_block": "minecraft:lava",
+        "top_is_lava": true
+      },
+      {
+        "center": [
+          -13816,
+          40917
+        ],
+        "noise": 0.4538401961326599,
+        "saved_center_biome": "tfg:earth/volcanic_oceanic_mountains",
+        "top_y": 138,
+        "top_block": "gtceu:sulfur_indicator",
+        "top_is_lava": false
+      },
+      {
+        "center": [
+          -13711,
+          40869
+        ],
+        "noise": -0.16663898527622223,
+        "saved_center_biome": "tfg:earth/volcanic_oceanic_mountains",
+        "top_y": 96,
+        "top_block": "minecraft:lava",
+        "top_is_lava": true
+      },
+      {
+        "center": [
+          -13823,
+          40984
+        ],
+        "noise": -0.46508827805519104,
+        "saved_center_biome": "tfg:earth/volcanic_oceanic_mountains",
+        "top_y": 113,
+        "top_block": "minecraft:lava",
+        "top_is_lava": true
+      },
+      {
+        "center": [
+          -14229,
+          40951
+        ],
+        "noise": -0.16675758361816406,
+        "saved_center_biome": "tfg:earth/volcanic_oceanic_mountains",
+        "top_y": 96,
+        "top_block": "minecraft:lava",
+        "top_is_lava": true
+      },
+      {
+        "center": [
+          -14048,
+          40773
+        ],
+        "noise": 0.007924063131213188,
+        "saved_center_biome": "tfg:earth/volcanic_oceanic_mountains",
+        "top_y": 104,
+        "top_block": "minecraft:lava",
+        "top_is_lava": true
+      },
+      {
+        "center": [
+          -13933,
+          40869
+        ],
+        "noise": 0.4872611463069916,
+        "saved_center_biome": "tfg:earth/volcanic_oceanic_mountains",
+        "top_y": 109,
+        "top_block": "minecraft:lava",
+        "top_is_lava": true
+      },
+      {
+        "center": [
+          -13864,
+          40957
+        ],
+        "noise": 0.43119117617607117,
+        "saved_center_biome": "tfg:earth/volcanic_oceanic_mountains",
+        "top_y": 111,
+        "top_block": "minecraft:lava",
+        "top_is_lava": true
+      },
+      {
+        "center": [
+          -14265,
+          41089
+        ],
+        "noise": 0.3407670855522156,
+        "saved_center_biome": "tfg:earth/volcanic_oceanic_mountains",
+        "top_y": 107,
+        "top_block": "minecraft:snow",
+        "top_is_lava": false
+      },
+      {
+        "center": [
+          -14159,
+          41118
+        ],
+        "noise": -0.20133250951766968,
+        "saved_center_biome": "tfg:earth/volcanic_oceanic_mountains",
+        "top_y": 98,
+        "top_block": "minecraft:lava",
+        "top_is_lava": true
+      },
+      {
+        "center": [
+          -13952,
+          41101
+        ],
+        "noise": -0.4387219548225403,
+        "saved_center_biome": "tfg:earth/volcanic_oceanic_mountains",
+        "top_y": 100,
+        "top_block": "tfc:fluid/spring_water",
+        "top_is_lava": false
+      },
+      {
+        "center": [
+          -13906,
+          41065
+        ],
+        "noise": 0.43937331438064575,
+        "saved_center_biome": "tfg:earth/volcanic_oceanic_mountains",
+        "top_y": 98,
+        "top_block": "minecraft:lava",
+        "top_is_lava": true
+      },
+      {
+        "center": [
+          -13892,
+          41173
+        ],
+        "noise": 0.22108714282512665,
+        "saved_center_biome": "tfg:earth/volcanic_oceanic_mountains",
+        "top_y": 99,
+        "top_block": "minecraft:lava",
+        "top_is_lava": true
+      },
+      {
+        "center": [
+          -1264,
+          4689
+        ],
+        "noise": 0.37975940108299255,
+        "saved_center_biome": "tfg:earth/volcanic_oceanic_mountains",
+        "top_y": 101,
+        "top_block": "tfc:rock/raw/basalt",
+        "top_is_lava": false
+      },
+      {
+        "center": [
+          -2954,
+          5204
+        ],
+        "noise": 0.4537608325481415,
+        "saved_center_biome": "tfg:earth/volcanic_oceanic_mountains",
+        "top_y": 80,
+        "top_block": "tfg:grass/mollisol",
+        "top_is_lava": false
+      },
+      {
+        "center": [
+          -3033,
+          5368
+        ],
+        "noise": -0.2868914306163788,
+        "saved_center_biome": "tfg:earth/volcanic_oceanic_mountains",
+        "top_y": 98,
+        "top_block": "minecraft:lava",
+        "top_is_lava": true
+      },
+      {
+        "center": [
+          -3191,
+          5149
+        ],
+        "noise": 0.022884447127580643,
+        "saved_center_biome": "tfg:earth/volcanic_oceanic_mountains",
+        "top_y": 98,
+        "top_block": "minecraft:water",
+        "top_is_lava": false
+      },
+      {
+        "center": [
+          -49396,
+          92325
+        ],
+        "noise": 0.08065596222877502,
+        "saved_center_biome": "tfg:earth/canyons",
+        "top_y": 102,
+        "top_block": "minecraft:lava",
+        "top_is_lava": true
+      },
+      {
+        "center": [
+          -49483,
+          92583
+        ],
+        "noise": 0.022770866751670837,
+        "saved_center_biome": "tfg:earth/canyons",
+        "top_y": 104,
+        "top_block": "minecraft:lava",
+        "top_is_lava": true
+      },
+      {
+        "center": [
+          -49293,
+          92582
+        ],
+        "noise": 0.1317819356918335,
+        "saved_center_biome": "tfg:earth/canyons",
+        "top_y": 104,
+        "top_block": "minecraft:lava",
+        "top_is_lava": true
+      },
+      {
+        "center": [
+          -49476,
+          92740
+        ],
+        "noise": -0.0956420823931694,
+        "saved_center_biome": "tfg:earth/canyons",
+        "top_y": 105,
+        "top_block": "minecraft:lava",
+        "top_is_lava": true
+      },
+      {
+        "center": [
+          -49930,
+          92752
+        ],
+        "noise": 0.009407050907611847,
+        "saved_center_biome": "tfg:earth/canyons",
+        "top_y": 105,
+        "top_block": "minecraft:lava",
+        "top_is_lava": true
+      },
+      {
+        "center": [
+          -49926,
+          92969
+        ],
+        "noise": 0.1547708511352539,
+        "saved_center_biome": "tfg:earth/canyons",
+        "top_y": 102,
+        "top_block": "tfc:rock/raw/basalt",
+        "top_is_lava": false
+      },
+      {
+        "center": [
+          -49817,
+          93027
+        ],
+        "noise": 0.04334815591573715,
+        "saved_center_biome": "tfg:earth/canyons",
+        "top_y": 105,
+        "top_block": "minecraft:water",
+        "top_is_lava": false
+      },
+      {
+        "center": [
+          -49791,
+          93509
+        ],
+        "noise": -0.07178361713886261,
+        "saved_center_biome": "tfg:earth/canyons",
+        "top_y": 105,
+        "top_block": "minecraft:lava",
+        "top_is_lava": true
+      },
+      {
+        "center": [
+          13267,
+          14538
+        ],
+        "noise": -0.13264019787311554,
+        "saved_center_biome": "tfg:earth/canyons",
+        "top_y": 103,
+        "top_block": "minecraft:lava",
+        "top_is_lava": true
+      },
+      {
+        "center": [
+          13664,
+          14159
+        ],
+        "noise": -0.001273617148399353,
+        "saved_center_biome": "tfg:earth/canyons",
+        "top_y": 104,
+        "top_block": "minecraft:lava",
+        "top_is_lava": true
+      },
+      {
+        "center": [
+          13627,
+          14193
+        ],
+        "noise": 0.05149678513407707,
+        "saved_center_biome": "tfg:earth/canyons",
+        "top_y": 105,
+        "top_block": "minecraft:lava",
+        "top_is_lava": true
+      },
+      {
+        "center": [
+          14808,
+          14260
+        ],
+        "noise": -0.09634415060281754,
+        "saved_center_biome": "tfg:earth/canyons",
+        "top_y": 104,
+        "top_block": "minecraft:lava",
+        "top_is_lava": true
+      },
+      {
+        "center": [
+          14840,
+          14327
+        ],
+        "noise": 0.04544617235660553,
+        "saved_center_biome": "tfg:earth/canyons",
+        "top_y": 105,
+        "top_block": "minecraft:water",
+        "top_is_lava": false
+      },
+      {
+        "center": [
+          1856,
+          1147
+        ],
+        "noise": -0.13006556034088135,
+        "saved_center_biome": "tfg:earth/canyons",
+        "top_y": 105,
+        "top_block": "minecraft:water",
+        "top_is_lava": false
+      },
+      {
+        "center": [
+          16159,
+          14896
+        ],
+        "noise": 0.10743529349565506,
+        "saved_center_biome": "tfg:earth/canyons",
+        "top_y": 95,
+        "top_block": "tfc:rock/raw/basalt",
+        "top_is_lava": false
+      },
+      {
+        "center": [
+          16295,
+          14969
+        ],
+        "noise": 0.1577548086643219,
+        "saved_center_biome": "tfg:earth/canyons",
+        "top_y": 105,
+        "top_block": "minecraft:lava",
+        "top_is_lava": true
+      },
+      {
+        "center": [
+          16285,
+          15229
+        ],
+        "noise": 0.04881078377366066,
+        "saved_center_biome": "tfg:earth/canyons",
+        "top_y": 72,
+        "top_block": "tfc:plant/scutch_grass",
+        "top_is_lava": false
+      },
+      {
+        "center": [
+          16411,
+          15369
+        ],
+        "noise": -0.09458553791046143,
+        "saved_center_biome": "tfg:earth/canyons",
+        "top_y": 105,
+        "top_block": "minecraft:lava",
+        "top_is_lava": true
+      },
+      {
+        "center": [
+          16396,
+          15438
+        ],
+        "noise": 0.07471086084842682,
+        "saved_center_biome": "tfg:earth/canyons",
+        "top_y": 105,
+        "top_block": "minecraft:lava",
+        "top_is_lava": true
+      },
+      {
+        "center": [
+          17679,
+          16046
+        ],
+        "noise": 0.16048046946525574,
+        "saved_center_biome": "tfg:earth/canyons",
+        "top_y": 92,
+        "top_block": "afc:wood/leaves/black_oak",
+        "top_is_lava": false
+      },
+      {
+        "center": [
+          20067,
+          -3133
+        ],
+        "noise": 0.05596829578280449,
+        "saved_center_biome": "tfg:earth/doline_canyons",
+        "top_y": 102,
+        "top_block": "tfc:rock/raw/basalt",
+        "top_is_lava": false
+      },
+      {
+        "center": [
+          20319,
+          -3490
+        ],
+        "noise": 0.16658274829387665,
+        "saved_center_biome": "tfg:earth/canyons",
+        "top_y": 105,
+        "top_block": "minecraft:lava",
+        "top_is_lava": true
+      },
+      {
+        "center": [
+          20848,
+          -2915
+        ],
+        "noise": -0.09707733243703842,
+        "saved_center_biome": "tfg:earth/doline_canyons",
+        "top_y": 102,
+        "top_block": "tfc:wood/leaves/oak",
+        "top_is_lava": false
+      },
+      {
+        "center": [
+          20507,
+          -3105
+        ],
+        "noise": 0.11704664677381516,
+        "saved_center_biome": "tfg:earth/canyons",
+        "top_y": 105,
+        "top_block": "minecraft:lava",
+        "top_is_lava": true
+      },
+      {
+        "center": [
+          20801,
+          -3153
+        ],
+        "noise": -0.1579243540763855,
+        "saved_center_biome": "tfg:earth/canyons",
+        "top_y": 105,
+        "top_block": "minecraft:lava",
+        "top_is_lava": true
+      },
+      {
+        "center": [
+          21045,
+          -2761
+        ],
+        "noise": 0.1627298891544342,
+        "saved_center_biome": "tfg:earth/doline_canyons",
+        "top_y": 94,
+        "top_block": "tfc:rock/raw/basalt",
+        "top_is_lava": false
+      },
+      {
+        "center": [
+          21182,
+          -2971
+        ],
+        "noise": -0.1267874389886856,
+        "saved_center_biome": "tfg:earth/doline_canyons",
+        "top_y": 94,
+        "top_block": "tfc:rock/raw/basalt",
+        "top_is_lava": false
+      },
+      {
+        "center": [
+          21177,
+          -2647
+        ],
+        "noise": 0.1055995300412178,
+        "saved_center_biome": "tfg:earth/doline_canyons",
+        "top_y": 95,
+        "top_block": "tfc:rock/raw/basalt",
+        "top_is_lava": false
+      },
+      {
+        "center": [
+          24197,
+          10736
+        ],
+        "noise": -0.4053289592266083,
+        "saved_center_biome": "tfg:earth/volcanic_oceanic_mountains",
+        "top_y": 98,
+        "top_block": "minecraft:water",
+        "top_is_lava": false
+      },
+      {
+        "center": [
+          24373,
+          10804
+        ],
+        "noise": -0.40179431438446045,
+        "saved_center_biome": "tfg:earth/volcanic_oceanic_mountains",
+        "top_y": 98,
+        "top_block": "minecraft:lava",
+        "top_is_lava": true
+      },
+      {
+        "center": [
+          24411,
+          10853
+        ],
+        "noise": 0.435160368680954,
+        "saved_center_biome": "tfg:earth/volcanic_oceanic_mountains",
+        "top_y": 96,
+        "top_block": "minecraft:lava",
+        "top_is_lava": true
+      },
+      {
+        "center": [
+          24109,
+          11604
+        ],
+        "noise": 0.3840097486972809,
+        "saved_center_biome": "tfg:earth/volcanic_oceanic_mountains",
+        "top_y": 97,
+        "top_block": "minecraft:lava",
+        "top_is_lava": true
+      },
+      {
+        "center": [
+          24103,
+          11714
+        ],
+        "noise": 0.05614112317562103,
+        "saved_center_biome": "tfg:earth/volcanic_oceanic_mountains",
+        "top_y": 112,
+        "top_block": "tfc:rock/magma/basalt",
+        "top_is_lava": false
+      }
+    ],
+    "tuya": [
+      {
+        "center": [
+          5518,
+          -6365
+        ],
+        "noise": 0.3408089578151703,
+        "saved_center_biome": "tfg:earth/tuyas",
+        "top_y": 92,
+        "top_block": "minecraft:lava",
+        "top_is_lava": true
+      },
+      {
+        "center": [
+          8487,
+          26906
+        ],
+        "noise": 0.0010497593320906162,
+        "saved_center_biome": "tfg:earth/tuyas",
+        "top_y": 89,
+        "top_block": "minecraft:lava",
+        "top_is_lava": true
+      },
+      {
+        "center": [
+          9135,
+          26408
+        ],
+        "noise": 0.4898914098739624,
+        "saved_center_biome": "tfg:earth/tuyas",
+        "top_y": 93,
+        "top_block": "minecraft:lava",
+        "top_is_lava": true
+      },
+      {
+        "center": [
+          8743,
+          26712
+        ],
+        "noise": -0.37148329615592957,
+        "saved_center_biome": "tfg:earth/tuyas",
+        "top_y": 96,
+        "top_block": "minecraft:lava",
+        "top_is_lava": true
+      },
+      {
+        "center": [
+          9080,
+          26729
+        ],
+        "noise": 0.1473720371723175,
+        "saved_center_biome": "tfg:earth/tuyas",
+        "top_y": 83,
+        "top_block": "minecraft:snow",
+        "top_is_lava": false
+      },
+      {
+        "center": [
+          8808,
+          27212
+        ],
+        "noise": 0.15894505381584167,
+        "saved_center_biome": "tfg:earth/tuyas",
+        "top_y": 95,
+        "top_block": "minecraft:lava",
+        "top_is_lava": true
+      },
+      {
+        "center": [
+          9637,
+          26947
+        ],
+        "noise": -0.2124161422252655,
+        "saved_center_biome": "tfg:earth/tuyas",
+        "top_y": 92,
+        "top_block": "tfc:snow_pile",
+        "top_is_lava": false
+      },
+      {
+        "center": [
+          12704,
+          33274
+        ],
+        "noise": -0.36382120847702026,
+        "saved_center_biome": "tfg:earth/tuyas",
+        "top_y": 94,
+        "top_block": "minecraft:lava",
+        "top_is_lava": true
+      },
+      {
+        "center": [
+          12987,
+          33077
+        ],
+        "noise": 0.15453466773033142,
+        "saved_center_biome": "tfg:earth/tuyas",
+        "top_y": 94,
+        "top_block": "minecraft:water",
+        "top_is_lava": false
+      },
+      {
+        "center": [
+          12967,
+          33340
+        ],
+        "noise": 0.16968733072280884,
+        "saved_center_biome": "tfg:earth/tuyas",
+        "top_y": 95,
+        "top_block": "minecraft:lava",
+        "top_is_lava": true
+      },
+      {
+        "center": [
+          13689,
+          33974
+        ],
+        "noise": -0.08532223105430603,
+        "saved_center_biome": "tfg:earth/tuyas",
+        "top_y": 91,
+        "top_block": "minecraft:lava",
+        "top_is_lava": true
+      },
+      {
+        "center": [
+          14791,
+          33304
+        ],
+        "noise": -0.14466673135757446,
+        "saved_center_biome": "tfg:earth/tuyas",
+        "top_y": 96,
+        "top_block": "minecraft:lava",
+        "top_is_lava": true
+      }
+    ],
+    "glacial_tuya": [
+      {
+        "center": [
+          49954,
+          28225
+        ],
+        "noise": 0.1151142567396164,
+        "saved_center_biome": "tfg:earth/ice_sheet_tuyas",
+        "top_y": 96,
+        "top_block": "minecraft:lava",
+        "top_is_lava": true
+      }
+    ]
+  },
+  "target_per_type": 3,
+  "completed_all_types": false,
+  "elapsed_seconds": 35.22,
+  "notes": [
+    "Each center is a valid seed-0 sampler candidate with an existing FULL saved chunk. Saved biome family gating is applied; no generation or model-only inference.",
+    "top_is_lava checks only the actual highest non-air saved block at the center.",
+    "Missing types are not treated as impossible; fewer than three found means they were uncommon in the scanned saved area.",
+    "All saves were opened read-only; no Minecraft launch."
+  ]
+}

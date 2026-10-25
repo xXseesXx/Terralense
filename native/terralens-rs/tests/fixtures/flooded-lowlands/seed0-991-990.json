@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "provenance": "read-only world 0 chunk NBT and saved block-state observation",
+  "seed": 0,
+  "dimension": "minecraft:overworld",
+  "requested_point": {"x": 15864, "z": 15850},
+  "candidate": {
+    "structure_id": "tfg:illagers/malay_village_living",
+    "start_chunk": {"x": 991, "z": 990},
+    "marker": {"x": 15864, "z": 15848}
+  },
+  "saved_chunk": {
+    "status": "minecraft:full",
+    "structures_starts_present": true,
+    "structure_start_ids": [],
+    "structures_references_present": true,
+    "structure_reference_ids": [],
+    "tfc_chunk_data_status": "FULL",
+    "biome_at_y63": "tfg:earth/lowlands",
+    "terrain_height": 59,
+    "fluid_surface_block_y": 62,
+    "top_fluid_columns": {"minecraft:water": 124, "tfc:fluid/salt_water": 52},
+    "other_aquatic_plant_columns": 80,
+    "temperature_range": [15.4557, 15.5552],
+    "rainfall_range": [365.6615, 367.2081],
+    "forest": "SPARSE"
+  }
+}

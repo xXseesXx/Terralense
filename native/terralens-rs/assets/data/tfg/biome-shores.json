@@ -1,0 +1,21 @@
+{
+  "source": "TerraFirmaGreg Core Modern 0.9.25, TFGBiomes.java and TFGChunkHeightFiller.java (f4929e7)",
+  "shoreBaseHeightMeaning": "Absolute tfg$getShoreBaseHeight value: BiomeBuilderMixin adds SEA_LEVEL_Y to the registered shore offset; default is SEA_LEVEL_Y.",
+  "ocean": ["deep_ocean_trench", "deep_ocean", "ocean", "ocean_reef"],
+  "shore": {
+    "shore": ["sandy", 59],
+    "tidal_flats": ["sandy", 59],
+    "sea_stacks": ["sea_stacks", 57],
+    "terrace_upper": ["upper_terrace", 63],
+    "terrace_lower": ["lower_terrace", 63],
+    "setback_cliffs": ["setback_cliffs", 63],
+    "coastal_dunes": ["dunes", 63],
+    "rocky_shores": ["rocky_shores", 63],
+    "embayments": ["embayments", 63],
+    "shield_volcano_shore": ["embayments", 63],
+    "old_shield_volcano_shore": ["sandy", 63],
+    "ice_sheet_oceanic_mountains_edge": ["classic", 47],
+    "meltwater_lake": ["classic", 47],
+    "ice_sheet_shore": ["classic", 51]
+  }
+}

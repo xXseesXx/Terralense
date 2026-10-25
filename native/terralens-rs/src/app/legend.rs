@@ -7,18 +7,10 @@ use crate::{
 };
 use eframe::egui::{self, Align2, Color32, RichText, Ui};
 
+#[derive(Default)]
 pub struct State {
     open: bool,
     filter: String,
-}
-
-impl Default for State {
-    fn default() -> Self {
-        Self {
-            open: true,
-            filter: String::new(),
-        }
-    }
 }
 
 impl State {
@@ -52,6 +44,12 @@ impl State {
             return None;
         }
 
+        let visible_layers: Vec<Layer> = display
+            .active_layers(layer, dimension)
+            .into_iter()
+            .filter(|blend| blend.opacity.is_finite() && blend.opacity > 0.0)
+            .map(|blend| blend.layer)
+            .collect();
         let mut layer_change = None;
         let mut open = true;
         egui::Window::new("Legend")
@@ -74,9 +72,7 @@ impl State {
                             .selected_text(layer.label())
                             .width(160.0)
                             .show_ui(ui, |ui| {
-                                for candidate in Layer::ALL.into_iter().filter(|candidate| {
-                                    super::TerraLensApp::layer_supported(dimension, *candidate)
-                                }) {
+                                for candidate in visible_layers.iter().copied() {
                                     ui.selectable_value(
                                         &mut selected,
                                         candidate,
@@ -99,6 +95,8 @@ impl State {
                     show_geology(ui, display, &mut self.filter);
                 } else if layer == Layer::Forest {
                     show_forest(ui, display.palette);
+                } else if layer == Layer::Ground {
+                    ui.label("Ground block colors · hover for block and elevation");
                 } else if dimension == Dimension::Mars && layer == Layer::Water {
                     ui.horizontal(|ui| {
                         swatch(ui, Color32::from_rgb(78, 119, 139), "River biome");

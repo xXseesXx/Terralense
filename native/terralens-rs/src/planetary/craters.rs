@@ -105,10 +105,10 @@ impl Craters {
         eligible: &impl Fn(i32, i32) -> bool,
     ) -> [Option<Crater>; 4] {
         let key = (chunk_x, chunk_z);
-        if let Ok(mut cache) = self.cache.lock() {
-            if let Some(placements) = cache.get(&key) {
-                return *placements;
-            }
+        if let Ok(mut cache) = self.cache.lock()
+            && let Some(placements) = cache.get(&key)
+        {
+            return *placements;
         }
         let eligible = eligible(chunk_x, chunk_z);
         let mut placements = [None; 4];

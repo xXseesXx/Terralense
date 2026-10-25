@@ -1,0 +1,114 @@
+{
+  "seed": 0,
+  "fixture": "tests/fixtures/volcanic-terrain/seed0-water-magma.json",
+  "scope": "Forest foliage-column coverage over the existing six-site World 0 volcanic fixture; includes saved bushes and other foliage; not per-tree error or a representative world sample",
+  "baseline_source": "docs/VEGETATION-GENERATION.md historical index25 first-air physical-fluid-only gate",
+  "before": {
+    "tp": 2369,
+    "fp": 2289,
+    "fn": 776,
+    "precision": 0.508587376556462,
+    "recall": 0.7532591414944356,
+    "f1": 0.60720235806741
+  },
+  "after": {
+    "f1": 0.6380368098159509,
+    "fn": 1325,
+    "fp": 740,
+    "precision": 0.7109375,
+    "recall": 0.5786963434022258,
+    "tp": 1820
+  },
+  "false_positive_column_reduction": 0.6767147225862822,
+  "sites": [
+    {
+      "center": [
+        1856,
+        1147
+      ],
+      "columns": 2304,
+      "f1": 0.6701388888888888,
+      "fn": 187,
+      "fp": 193,
+      "precision": 0.6666666666666666,
+      "recall": 0.6736474694589878,
+      "saved_foliage_columns": 573,
+      "tp": 386
+    },
+    {
+      "center": [
+        14840,
+        14327
+      ],
+      "columns": 2304,
+      "f1": 0.5789473684210527,
+      "fn": 730,
+      "fp": 198,
+      "precision": 0.7631578947368421,
+      "recall": 0.46637426900584794,
+      "saved_foliage_columns": 1368,
+      "tp": 638
+    },
+    {
+      "center": [
+        -3191,
+        5149
+      ],
+      "columns": 2304,
+      "f1": 0.016260162601626015,
+      "fn": 7,
+      "fp": 114,
+      "precision": 0.008695652173913044,
+      "recall": 0.125,
+      "saved_foliage_columns": 8,
+      "tp": 1
+    },
+    {
+      "center": [
+        13664,
+        14159
+      ],
+      "columns": 2304,
+      "f1": 0.7677450507001448,
+      "fn": 257,
+      "fp": 224,
+      "precision": 0.7801766437684003,
+      "recall": 0.7557034220532319,
+      "saved_foliage_columns": 1052,
+      "tp": 795
+    },
+    {
+      "center": [
+        -14048,
+        40773
+      ],
+      "columns": 2304,
+      "f1": 0.0,
+      "fn": 0,
+      "fp": 11,
+      "precision": 0.0,
+      "recall": 0.0,
+      "saved_foliage_columns": 0,
+      "tp": 0
+    },
+    {
+      "center": [
+        -49483,
+        92583
+      ],
+      "columns": 2304,
+      "f1": 0.0,
+      "fn": 144,
+      "fp": 0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "saved_foliage_columns": 144,
+      "tp": 0
+    }
+  ],
+  "notes": [
+    "Exact root support and clearance rules operate on estimated terrain, which can also exclude real trees when substrate estimates differ.",
+    "The source changes preserve tree template silhouettes and actual saved tree surfaces.",
+    "A block-column coverage score cannot certify exact origins or global tree-generation accuracy."
+  ]
+}

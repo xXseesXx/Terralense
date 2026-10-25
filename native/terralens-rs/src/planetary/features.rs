@@ -563,9 +563,9 @@ fn tri(r: &mut Xoroshiro, delta: f64) -> f64 {
     (r.next_double() - r.next_double()) * delta
 }
 fn metaball2(r: &mut Xoroshiro, size: i32) -> (f64, f64) {
-    let min = f32::from(0.1f32 * size as f32) as f64;
-    let max = f32::from(0.3f32 * size as f32) as f64;
-    let radius = f32::from(0.5f32 * size as f32) as f64;
+    let min = (0.1f32 * size as f32) as f64;
+    let max = (0.3f32 * size as f32) as f64;
+    let radius = (0.5f32 * size as f32) as f64;
     let n = 3 + r.next_int_bound(5);
     let (mut total, mut x, mut z) = (0., 0., 0.);
     for _ in 0..n {
@@ -584,8 +584,8 @@ fn metaball2(r: &mut Xoroshiro, size: i32) -> (f64, f64) {
     }
 }
 fn metaball3(r: &mut Xoroshiro, size: i32) -> (f64, f64, f64) {
-    let max = f32::from(0.3f32 * size as f32) as f64;
-    let radius = f32::from(0.5f32 * size as f32) as f64;
+    let max = (0.3f32 * size as f32) as f64;
+    let radius = (0.5f32 * size as f32) as f64;
     let n = 5 + r.next_int_bound(2);
     let (mut total, mut x, mut y, mut z) = (0., 0., 0., 0.);
     for _ in 0..n {
@@ -615,10 +615,10 @@ fn materials(v: &Value) -> Vec<String> {
     let mut out = Vec::new();
     for b in v["blocks"].as_array().into_iter().flatten() {
         for e in b["with"].as_array().into_iter().flatten() {
-            if let Some(id) = e["block"].as_str() {
-                if let Some((_, m)) = id.rsplit_once(':') {
-                    out.push(m.replace("_ore", "").replace("_", " "));
-                }
+            if let Some(id) = e["block"].as_str()
+                && let Some((_, m)) = id.rsplit_once(':')
+            {
+                out.push(m.replace("_ore", "").replace("_", " "));
             }
         }
     }

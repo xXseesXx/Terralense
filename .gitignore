@@ -4,6 +4,7 @@
 *.py[cod]
 *.log
 *.partial
+/dist/
 .env
 .env.*
 
@@ -21,5 +22,6 @@
 /docs/*.json
 /docs/*.png
 !/docs/native-qol-export.png
+!/docs/terralens-full-detail.png
 /docs/VALIDATION.md
 /docs/*.local.md

@@ -1,0 +1,659 @@
+{
+  "biomes": {
+    "active_shield_volcano": {
+      "factory": "ShieldVolcanoSurfaceBuilder.ACTIVE",
+      "is_shore": false,
+      "normal_min_depth": null,
+      "sandy_river_shores": true
+    },
+    "ancient_shield_volcano": {
+      "factory": "ShieldVolcanoSurfaceBuilder.DORMANT",
+      "is_shore": false,
+      "normal_min_depth": null,
+      "sandy_river_shores": true
+    },
+    "badlands": {
+      "factory": "TFGBadlandsSurfaceBuilder.NORMAL",
+      "is_shore": false,
+      "normal_min_depth": null,
+      "sandy_river_shores": true
+    },
+    "burren_badlands": {
+      "factory": "BurrenSurfaceBuilder.INSTANCE",
+      "is_shore": false,
+      "normal_min_depth": null,
+      "sandy_river_shores": false
+    },
+    "burren_badlands_tall": {
+      "factory": "BurrenSurfaceBuilder.INSTANCE",
+      "is_shore": false,
+      "normal_min_depth": null,
+      "sandy_river_shores": false
+    },
+    "burren_plains": {
+      "factory": "BurrenSurfaceBuilder.INSTANCE",
+      "is_shore": false,
+      "normal_min_depth": null,
+      "sandy_river_shores": false
+    },
+    "burren_plateau": {
+      "factory": "BurrenSurfaceBuilder.INSTANCE",
+      "is_shore": false,
+      "normal_min_depth": null,
+      "sandy_river_shores": false
+    },
+    "burren_roche_moutonee": {
+      "factory": "BurrenSurfaceBuilder.INSTANCE",
+      "is_shore": false,
+      "normal_min_depth": null,
+      "sandy_river_shores": false
+    },
+    "buttes": {
+      "factory": "TFGBadlandsSurfaceBuilder.MESAS",
+      "is_shore": false,
+      "normal_min_depth": null,
+      "sandy_river_shores": true
+    },
+    "canyons": {
+      "factory": "SimpleSurfaceBuilder.VOLCANIC_SOIL",
+      "is_shore": false,
+      "normal_min_depth": null,
+      "sandy_river_shores": false
+    },
+    "cenote_canyons": {
+      "factory": "TFGNormalSurfaceBuilder.INSTANCE",
+      "is_shore": false,
+      "normal_min_depth": -1,
+      "sandy_river_shores": false
+    },
+    "cenote_highlands": {
+      "factory": "TFGNormalSurfaceBuilder.INSTANCE",
+      "is_shore": false,
+      "normal_min_depth": -1,
+      "sandy_river_shores": false
+    },
+    "cenote_hills": {
+      "factory": "TFGNormalSurfaceBuilder.INSTANCE",
+      "is_shore": false,
+      "normal_min_depth": -1,
+      "sandy_river_shores": true
+    },
+    "cenote_plains": {
+      "factory": "TFGNormalSurfaceBuilder.INSTANCE",
+      "is_shore": false,
+      "normal_min_depth": -1,
+      "sandy_river_shores": true
+    },
+    "cenote_plateau": {
+      "factory": "TFGNormalSurfaceBuilder.INSTANCE",
+      "is_shore": false,
+      "normal_min_depth": -1,
+      "sandy_river_shores": false
+    },
+    "cenote_rolling_hills": {
+      "factory": "TFGNormalSurfaceBuilder.INSTANCE",
+      "is_shore": false,
+      "normal_min_depth": -1,
+      "sandy_river_shores": true
+    },
+    "coastal_dunes": {
+      "factory": "ShoreAndOceanSurfaceBuilder.SANDY",
+      "is_shore": true,
+      "normal_min_depth": null,
+      "sandy_river_shores": false
+    },
+    "deep_ocean": {
+      "factory": "ShoreAndOceanSurfaceBuilder.OCEAN",
+      "is_shore": false,
+      "normal_min_depth": null,
+      "sandy_river_shores": true
+    },
+    "deep_ocean_trench": {
+      "factory": "ShoreAndOceanSurfaceBuilder.OCEAN",
+      "is_shore": false,
+      "normal_min_depth": null,
+      "sandy_river_shores": true
+    },
+    "doline_canyons": {
+      "factory": "SimpleSurfaceBuilder.VOLCANIC_SOIL",
+      "is_shore": false,
+      "normal_min_depth": null,
+      "sandy_river_shores": false
+    },
+    "doline_highlands": {
+      "factory": "TFGNormalSurfaceBuilder.INSTANCE",
+      "is_shore": false,
+      "normal_min_depth": -1,
+      "sandy_river_shores": true
+    },
+    "doline_hills": {
+      "factory": "TFGNormalSurfaceBuilder.INSTANCE",
+      "is_shore": false,
+      "normal_min_depth": -1,
+      "sandy_river_shores": true
+    },
+    "doline_plains": {
+      "factory": "TFGNormalSurfaceBuilder.INSTANCE",
+      "is_shore": false,
+      "normal_min_depth": -1,
+      "sandy_river_shores": true
+    },
+    "doline_plateau": {
+      "factory": "TFGNormalSurfaceBuilder.INSTANCE",
+      "is_shore": false,
+      "normal_min_depth": -1,
+      "sandy_river_shores": false
+    },
+    "doline_rolling_hills": {
+      "factory": "TFGNormalSurfaceBuilder.INSTANCE",
+      "is_shore": false,
+      "normal_min_depth": -1,
+      "sandy_river_shores": true
+    },
+    "dormant_shield_volcano": {
+      "factory": "ShieldVolcanoSurfaceBuilder.DORMANT",
+      "is_shore": false,
+      "normal_min_depth": null,
+      "sandy_river_shores": true
+    },
+    "drumlins": {
+      "factory": "TFGNormalSurfaceBuilder.INSTANCE",
+      "is_shore": false,
+      "normal_min_depth": -1,
+      "sandy_river_shores": true
+    },
+    "dune_sea": {
+      "factory": "DuneSurfaceBuilder::new",
+      "is_shore": false,
+      "normal_min_depth": null,
+      "sandy_river_shores": true
+    },
+    "embayments": {
+      "factory": "ShoreAndOceanSurfaceBuilder.SEA_CLIFFS",
+      "is_shore": true,
+      "normal_min_depth": null,
+      "sandy_river_shores": false
+    },
+    "extinct_shield_volcano": {
+      "factory": "ShieldVolcanoSurfaceBuilder.DORMANT",
+      "is_shore": false,
+      "normal_min_depth": null,
+      "sandy_river_shores": true
+    },
+    "extreme_doline_mountains": {
+      "factory": "TFGNormalSurfaceBuilder.ROCKY",
+      "is_shore": false,
+      "normal_min_depth": -3,
+      "sandy_river_shores": true
+    },
+    "extreme_doline_plateau": {
+      "factory": "TFGNormalSurfaceBuilder.ROCKY",
+      "is_shore": false,
+      "normal_min_depth": -3,
+      "sandy_river_shores": true
+    },
+    "glacially_carved_mountains": {
+      "factory": "TFGNormalSurfaceBuilder.ROCKY",
+      "is_shore": false,
+      "normal_min_depth": -3,
+      "sandy_river_shores": false
+    },
+    "glacially_carved_oceanic_mountains": {
+      "factory": "TFGNormalSurfaceBuilder.ROCKY",
+      "is_shore": false,
+      "normal_min_depth": -3,
+      "sandy_river_shores": false
+    },
+    "glaciated_mountains": {
+      "factory": "IceSheetSurfaceBuilder.GLACIATED_MOUNTAINS",
+      "is_shore": false,
+      "normal_min_depth": null,
+      "sandy_river_shores": false
+    },
+    "glaciated_oceanic_mountains": {
+      "factory": "IceSheetSurfaceBuilder.GLACIATED_OCEANIC_MOUNTAINS",
+      "is_shore": false,
+      "normal_min_depth": null,
+      "sandy_river_shores": false
+    },
+    "glaciated_shield_volcano": {
+      "factory": "IceSheetShieldVolcanoSurfaceBuilder.GLACIATED",
+      "is_shore": false,
+      "normal_min_depth": null,
+      "sandy_river_shores": false
+    },
+    "grassy_dunes": {
+      "factory": "GrassyDunesSurfaceBuilder::new",
+      "is_shore": false,
+      "normal_min_depth": null,
+      "sandy_river_shores": true
+    },
+    "guano_island": {
+      "factory": "ShoreAndOceanSurfaceBuilder.ROCKY_SHORE",
+      "is_shore": false,
+      "normal_min_depth": null,
+      "sandy_river_shores": false
+    },
+    "highlands": {
+      "factory": "TFGNormalSurfaceBuilder.ROCKY",
+      "is_shore": false,
+      "normal_min_depth": -3,
+      "sandy_river_shores": true
+    },
+    "hills": {
+      "factory": "TFGNormalSurfaceBuilder.INSTANCE",
+      "is_shore": false,
+      "normal_min_depth": -1,
+      "sandy_river_shores": true
+    },
+    "hoodoos": {
+      "factory": "TFGBadlandsSurfaceBuilder.HOODOOS",
+      "is_shore": false,
+      "normal_min_depth": null,
+      "sandy_river_shores": true
+    },
+    "ice_sheet": {
+      "factory": "IceSheetSurfaceBuilder.NORMAL",
+      "is_shore": false,
+      "normal_min_depth": null,
+      "sandy_river_shores": false
+    },
+    "ice_sheet_edge": {
+      "factory": "IceSheetSurfaceBuilder.EDGE",
+      "is_shore": false,
+      "normal_min_depth": null,
+      "sandy_river_shores": false
+    },
+    "ice_sheet_mountains": {
+      "factory": "IceSheetSurfaceBuilder.ICE_SHEET_MOUNTAINS",
+      "is_shore": false,
+      "normal_min_depth": null,
+      "sandy_river_shores": false
+    },
+    "ice_sheet_mountains_edge": {
+      "factory": "IceSheetSurfaceBuilder.ICE_SHEET_MOUNTAINS",
+      "is_shore": false,
+      "normal_min_depth": null,
+      "sandy_river_shores": false
+    },
+    "ice_sheet_oceanic": {
+      "factory": "IceSheetSurfaceBuilder.OCEANIC",
+      "is_shore": false,
+      "normal_min_depth": null,
+      "sandy_river_shores": false
+    },
+    "ice_sheet_oceanic_mountains": {
+      "factory": "IceSheetSurfaceBuilder.ICE_SHEET_OCEANIC_MOUNTAINS",
+      "is_shore": false,
+      "normal_min_depth": null,
+      "sandy_river_shores": false
+    },
+    "ice_sheet_oceanic_mountains_edge": {
+      "factory": "IceSheetSurfaceBuilder.ICE_SHEET_OCEANIC_MOUNTAINS",
+      "is_shore": true,
+      "normal_min_depth": null,
+      "sandy_river_shores": false
+    },
+    "ice_sheet_shield_volcano": {
+      "factory": "IceSheetShieldVolcanoSurfaceBuilder.ICE_SHEET",
+      "is_shore": false,
+      "normal_min_depth": null,
+      "sandy_river_shores": false
+    },
+    "ice_sheet_shore": {
+      "factory": "IceSheetSurfaceBuilder.OCEANIC",
+      "is_shore": true,
+      "normal_min_depth": null,
+      "sandy_river_shores": false
+    },
+    "ice_sheet_tuyas": {
+      "factory": "IceSheetSurfaceBuilder.NORMAL",
+      "is_shore": false,
+      "normal_min_depth": null,
+      "sandy_river_shores": false
+    },
+    "ice_sheet_tuyas_edge": {
+      "factory": "IceSheetSurfaceBuilder.EDGE",
+      "is_shore": false,
+      "normal_min_depth": null,
+      "sandy_river_shores": false
+    },
+    "inverted_patterned_ground": {
+      "factory": "PatternedGroundSurfaceBuilder.INSTANCE",
+      "is_shore": false,
+      "normal_min_depth": null,
+      "sandy_river_shores": true
+    },
+    "knob_and_kettle": {
+      "factory": "TFGNormalSurfaceBuilder.INSTANCE",
+      "is_shore": false,
+      "normal_min_depth": -1,
+      "sandy_river_shores": true
+    },
+    "lake": {
+      "factory": "TFGNormalSurfaceBuilder.INSTANCE",
+      "is_shore": false,
+      "normal_min_depth": -1,
+      "sandy_river_shores": true
+    },
+    "low_canyons": {
+      "factory": "TFGNormalSurfaceBuilder.INSTANCE",
+      "is_shore": false,
+      "normal_min_depth": -1,
+      "sandy_river_shores": false
+    },
+    "lowlands": {
+      "factory": "TFGLowlandsSurfaceBuilder.INSTANCE",
+      "is_shore": false,
+      "normal_min_depth": null,
+      "sandy_river_shores": false
+    },
+    "meltwater_lake": {
+      "factory": "IceSheetSurfaceBuilder.EDGE_LAKE",
+      "is_shore": true,
+      "normal_min_depth": null,
+      "sandy_river_shores": true
+    },
+    "mesas": {
+      "factory": "TFGBadlandsSurfaceBuilder.MESAS",
+      "is_shore": false,
+      "normal_min_depth": null,
+      "sandy_river_shores": true
+    },
+    "mountain_lake": {
+      "factory": "TFGNormalSurfaceBuilder.ROCKY",
+      "is_shore": false,
+      "normal_min_depth": -3,
+      "sandy_river_shores": true
+    },
+    "mountains": {
+      "factory": "TFGNormalSurfaceBuilder.ROCKY",
+      "is_shore": false,
+      "normal_min_depth": -3,
+      "sandy_river_shores": true
+    },
+    "mud_flats": {
+      "factory": "seed -> new FlatsSurfaceBuilder(true)",
+      "is_shore": false,
+      "normal_min_depth": null,
+      "sandy_river_shores": false
+    },
+    "ocean": {
+      "factory": "ShoreAndOceanSurfaceBuilder.OCEAN",
+      "is_shore": false,
+      "normal_min_depth": null,
+      "sandy_river_shores": true
+    },
+    "ocean_reef": {
+      "factory": "ShoreAndOceanSurfaceBuilder.OCEAN",
+      "is_shore": false,
+      "normal_min_depth": null,
+      "sandy_river_shores": true
+    },
+    "oceanic_mountain_lake": {
+      "factory": "ShoreAndOceanSurfaceBuilder.MOUNTAINS",
+      "is_shore": false,
+      "normal_min_depth": null,
+      "sandy_river_shores": true
+    },
+    "oceanic_mountains": {
+      "factory": "ShoreAndOceanSurfaceBuilder.MOUNTAINS",
+      "is_shore": false,
+      "normal_min_depth": null,
+      "sandy_river_shores": true
+    },
+    "old_mountain_lake": {
+      "factory": "TFGNormalSurfaceBuilder.ROCKY",
+      "is_shore": false,
+      "normal_min_depth": -3,
+      "sandy_river_shores": true
+    },
+    "old_mountains": {
+      "factory": "TFGNormalSurfaceBuilder.ROCKY",
+      "is_shore": false,
+      "normal_min_depth": -3,
+      "sandy_river_shores": true
+    },
+    "old_shield_volcano_shore": {
+      "factory": "ShoreAndOceanSurfaceBuilder.OLD_SHIELD_VOLCANO",
+      "is_shore": true,
+      "normal_min_depth": null,
+      "sandy_river_shores": true
+    },
+    "patterned_ground": {
+      "factory": "PatternedGroundSurfaceBuilder.INSTANCE",
+      "is_shore": false,
+      "normal_min_depth": null,
+      "sandy_river_shores": true
+    },
+    "plains": {
+      "factory": "TFGNormalSurfaceBuilder.INSTANCE",
+      "is_shore": false,
+      "normal_min_depth": -1,
+      "sandy_river_shores": true
+    },
+    "plateau": {
+      "factory": "TFGNormalSurfaceBuilder.INSTANCE",
+      "is_shore": false,
+      "normal_min_depth": -1,
+      "sandy_river_shores": false
+    },
+    "plateau_lake": {
+      "factory": "TFGNormalSurfaceBuilder.INSTANCE",
+      "is_shore": false,
+      "normal_min_depth": -1,
+      "sandy_river_shores": true
+    },
+    "plateau_wide": {
+      "factory": "TFGNormalSurfaceBuilder.INSTANCE",
+      "is_shore": false,
+      "normal_min_depth": -1,
+      "sandy_river_shores": false
+    },
+    "river": {
+      "factory": "TFGRiverSurfaceBuilder.INSTANCE)",
+      "is_shore": false,
+      "normal_min_depth": null,
+      "sandy_river_shores": true
+    },
+    "rocky_plateau": {
+      "factory": "RockyPlateauSurfaceBuilder.INSTANCE",
+      "is_shore": false,
+      "normal_min_depth": null,
+      "sandy_river_shores": false
+    },
+    "rocky_shores": {
+      "factory": "ShoreAndOceanSurfaceBuilder.ROCKY_SHORE",
+      "is_shore": true,
+      "normal_min_depth": null,
+      "sandy_river_shores": false
+    },
+    "rolling_hills": {
+      "factory": "TFGNormalSurfaceBuilder.INSTANCE",
+      "is_shore": false,
+      "normal_min_depth": -1,
+      "sandy_river_shores": true
+    },
+    "salt_flats": {
+      "factory": "seed -> new FlatsSurfaceBuilder(false)",
+      "is_shore": false,
+      "normal_min_depth": null,
+      "sandy_river_shores": false
+    },
+    "salt_marsh": {
+      "factory": "TFGLowlandsSurfaceBuilder.INSTANCE",
+      "is_shore": false,
+      "normal_min_depth": null,
+      "sandy_river_shores": false
+    },
+    "sea_stacks": {
+      "factory": "ShoreAndOceanSurfaceBuilder.SEA_CLIFFS",
+      "is_shore": true,
+      "normal_min_depth": null,
+      "sandy_river_shores": false
+    },
+    "setback_cliffs": {
+      "factory": "ShoreAndOceanSurfaceBuilder.SANDY",
+      "is_shore": true,
+      "normal_min_depth": null,
+      "sandy_river_shores": false
+    },
+    "shield_volcano_shore": {
+      "factory": "ShoreAndOceanSurfaceBuilder.ACTIVE_SHIELD_VOLCANO",
+      "is_shore": true,
+      "normal_min_depth": null,
+      "sandy_river_shores": true
+    },
+    "shilin_canyons": {
+      "factory": "ShilinSurfaceBuilder.INSTANCE",
+      "is_shore": false,
+      "normal_min_depth": null,
+      "sandy_river_shores": true
+    },
+    "shilin_highlands": {
+      "factory": "ShilinSurfaceBuilder.INSTANCE",
+      "is_shore": false,
+      "normal_min_depth": null,
+      "sandy_river_shores": true
+    },
+    "shilin_hills": {
+      "factory": "ShilinSurfaceBuilder.INSTANCE",
+      "is_shore": false,
+      "normal_min_depth": null,
+      "sandy_river_shores": true
+    },
+    "shilin_plains": {
+      "factory": "ShilinSurfaceBuilder.INSTANCE",
+      "is_shore": false,
+      "normal_min_depth": null,
+      "sandy_river_shores": true
+    },
+    "shilin_plateau": {
+      "factory": "ShilinSurfaceBuilder.INSTANCE",
+      "is_shore": false,
+      "normal_min_depth": null,
+      "sandy_river_shores": true
+    },
+    "shore": {
+      "factory": "ShoreAndOceanSurfaceBuilder.SANDY",
+      "is_shore": true,
+      "normal_min_depth": null,
+      "sandy_river_shores": false
+    },
+    "stair_step_canyons": {
+      "factory": "TFGBadlandsSurfaceBuilder.MESAS",
+      "is_shore": false,
+      "normal_min_depth": null,
+      "sandy_river_shores": true
+    },
+    "stone_circles": {
+      "factory": "StoneCirclesSurfaceBuilder.INSTANCE",
+      "is_shore": false,
+      "normal_min_depth": null,
+      "sandy_river_shores": true
+    },
+    "subglacial_lake": {
+      "factory": "IceSheetSurfaceBuilder.HIDDEN_LAKE",
+      "is_shore": false,
+      "normal_min_depth": null,
+      "sandy_river_shores": true
+    },
+    "sunken_shield_volcano": {
+      "factory": "ShieldVolcanoSurfaceBuilder.DORMANT",
+      "is_shore": false,
+      "normal_min_depth": null,
+      "sandy_river_shores": true
+    },
+    "terrace_lower": {
+      "factory": "ShoreAndOceanSurfaceBuilder.SEA_CLIFFS",
+      "is_shore": true,
+      "normal_min_depth": null,
+      "sandy_river_shores": false
+    },
+    "terrace_upper": {
+      "factory": "ShoreAndOceanSurfaceBuilder.SEA_CLIFFS",
+      "is_shore": true,
+      "normal_min_depth": null,
+      "sandy_river_shores": false
+    },
+    "tidal_flats": {
+      "factory": "ShoreAndOceanSurfaceBuilder.SANDY",
+      "is_shore": true,
+      "normal_min_depth": null,
+      "sandy_river_shores": false
+    },
+    "tower_karst_bay": {
+      "factory": "TFGNormalSurfaceBuilder.ROCKY",
+      "is_shore": false,
+      "normal_min_depth": -3,
+      "sandy_river_shores": false
+    },
+    "tower_karst_canyons": {
+      "factory": "TFGNormalSurfaceBuilder.ROCKY",
+      "is_shore": false,
+      "normal_min_depth": -3,
+      "sandy_river_shores": false
+    },
+    "tower_karst_highlands": {
+      "factory": "TFGNormalSurfaceBuilder.ROCKY",
+      "is_shore": false,
+      "normal_min_depth": -3,
+      "sandy_river_shores": true
+    },
+    "tower_karst_hills": {
+      "factory": "TFGNormalSurfaceBuilder.ROCKY",
+      "is_shore": false,
+      "normal_min_depth": -3,
+      "sandy_river_shores": true
+    },
+    "tower_karst_lake": {
+      "factory": "TFGNormalSurfaceBuilder.ROCKY",
+      "is_shore": false,
+      "normal_min_depth": -3,
+      "sandy_river_shores": false
+    },
+    "tower_karst_plains": {
+      "factory": "TFGNormalSurfaceBuilder.ROCKY",
+      "is_shore": false,
+      "normal_min_depth": -3,
+      "sandy_river_shores": true
+    },
+    "tuyas": {
+      "factory": "TFGNormalSurfaceBuilder.INSTANCE",
+      "is_shore": false,
+      "normal_min_depth": -1,
+      "sandy_river_shores": true
+    },
+    "volcanic_mountain_lake": {
+      "factory": "SimpleSurfaceBuilder.ROCKY_VOLCANIC_SOIL",
+      "is_shore": false,
+      "normal_min_depth": null,
+      "sandy_river_shores": true
+    },
+    "volcanic_mountains": {
+      "factory": "SimpleSurfaceBuilder.ROCKY_VOLCANIC_SOIL))",
+      "is_shore": false,
+      "normal_min_depth": null,
+      "sandy_river_shores": true
+    },
+    "volcanic_oceanic_mountain_lake": {
+      "factory": "ShoreAndOceanSurfaceBuilder.VOLCANIC_MOUNTAINS",
+      "is_shore": false,
+      "normal_min_depth": null,
+      "sandy_river_shores": true
+    },
+    "volcanic_oceanic_mountains": {
+      "factory": "ShoreAndOceanSurfaceBuilder.VOLCANIC_MOUNTAINS",
+      "is_shore": false,
+      "normal_min_depth": null,
+      "sandy_river_shores": true
+    },
+    "whorled_canyons": {
+      "factory": "TFGBadlandsSurfaceBuilder.WARPED",
+      "is_shore": false,
+      "normal_min_depth": null,
+      "sandy_river_shores": true
+    }
+  },
+  "source": "TFG Core 0.9.25 f4929e738e83dbc8d46680276faa67520dffa172 TFGBiomes.java"
+}

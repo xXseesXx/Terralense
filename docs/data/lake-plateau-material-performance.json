@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "seed": 0,
+  "saved_world": false,
+  "scope": "Release child engine, cold tile then layer switch; complete RGBA/biome/water payload SHA-256; excludes native GPU presentation",
+  "results": [
+    {
+      "case": "seed-grass-ground-volcano",
+      "layer": "Biomes",
+      "seconds": 1.978802,
+      "sha256": "809a46c5a005152206a0a6155370823232c4460ed5cf5daaf7b82cebf8ad25dc",
+      "bulk_bytes": 462864
+    },
+    {
+      "case": "seed-grass-ground-volcano",
+      "layer": "Ground",
+      "seconds": 1.181579,
+      "sha256": "809a46c5a005152206a0a6155370823232c4460ed5cf5daaf7b82cebf8ad25dc",
+      "bulk_bytes": 462864
+    },
+    {
+      "case": "seed-grass-ground-medium",
+      "layer": "Biomes",
+      "seconds": 9.418773,
+      "sha256": "4edfb27b4634656933f46764ea16ed883f2868dfd5ca919acefe83eb85387ef3",
+      "bulk_bytes": 462864
+    },
+    {
+      "case": "seed-grass-ground-medium",
+      "layer": "Ground",
+      "seconds": 7.500739,
+      "sha256": "4edfb27b4634656933f46764ea16ed883f2868dfd5ca919acefe83eb85387ef3",
+      "bulk_bytes": 462864
+    }
+  ]
+}

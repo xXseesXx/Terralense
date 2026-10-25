@@ -1,0 +1,372 @@
+{
+  "provenance": "Direct ZIP resource decode from installed TFG Core; no Rust output used.",
+  "jar_sha256": "fdf9a3521a08870eae8f43a5aea1c5ea2f8e07884f516445837c0fdc2a648ec1",
+  "resource_sha256": {
+    "data/tfc/worldgen/placed_feature/sticks_shore_patch.json": "2aef7ee98dcefd5b70e671bbe4e875e858702f4af62303075dae47abc83546c0",
+    "data/tfc/worldgen/configured_feature/sticks_shore_patch.json": "31202d4e2a462393265aff9469008b69f47b879d10ee40860306b65bf4a29aa2",
+    "data/tfc/worldgen/placed_feature/sticks_shore.json": "00cd84e187a7c6765d91affbe14702ca6b5ea77c1da4023fdcd9a47597af4949",
+    "data/tfc/worldgen/placed_feature/sticks_forest_patch.json": "a3c3603e7dedd946aab4563c710c3afa7c85cf6946a29613fd5e04381c81d1e6",
+    "data/tfc/worldgen/configured_feature/sticks_forest_patch.json": "10eaa1f8726566c5efcafc67fb32154c63371536d3149a9f592f925877531996",
+    "data/tfc/worldgen/placed_feature/sticks_forest.json": "8ca37048641fb9a9941835620d58a0c13f086c1488a121ed4c4637d8ba5cfb4b",
+    "data/tfc/worldgen/placed_feature/salt_lick_patch.json": "3d42a01b39dc9d7859602d2b4623d76753fd9f7655c00a1128de7f45f9a05386",
+    "data/tfc/worldgen/configured_feature/salt_lick_patch.json": "2e50cb0f1093706d6e6c10615c924acaa9dd1b62a48cfb6155918478c36ff985",
+    "data/tfc/worldgen/placed_feature/salt_lick.json": "9ee332cca3e8921532a1df48db638b7dd68a455b3ac3c2a9611455a792f00b94",
+    "data/tfg/worldgen/placed_feature/earth/plant/dry_grass_patch.json": "9f22663f631ea0b6b6c08341ec4a79fc266b86a159b692ea1c738466cc5f26f9",
+    "data/tfg/worldgen/configured_feature/earth/plant/dry_grass_patch.json": "3d1c088a2b04f1674832019cd04a8c55cc2dbe2691a158862c6eb56109bc8246",
+    "data/tfg/worldgen/placed_feature/earth/plant/dry_grass.json": "c8c6bb82ab280a84aed184e0345be065b0bc6ec98f14fcbc2719972ad9b2cb5e",
+    "data/tfg/worldgen/placed_feature/earth/salt_lick_patch.json": "a93147171b9fe583db433d1d551e5f9be3531f024b030aaf33317b83edb8e029",
+    "data/tfg/worldgen/configured_feature/earth/salt_lick_patch.json": "a381cb8af2f0b9b96a43286d8dd61e77695b15bb9f2938b77c856e3070ea62b7",
+    "data/tfc/worldgen/placed_feature/surface_loose_rocks.json": "0cd354ab486257d81cb458c4eceb0c53017f457bdc4a0252c531e690d8207749",
+    "data/tfc/worldgen/configured_feature/surface_loose_rocks.json": "673770701acd0e4e08b6c48351964daee6832467e9eb9894f29ef23cf2797a8b",
+    "data/tfc/worldgen/placed_feature/loose_rock.json": "ad9711f84b97c2ec544dd0bd7c88b4823464577ad9f06cc2e2b985b7636f32d0"
+  },
+  "features": [
+    {
+      "id": "tfc:sticks_shore_patch",
+      "placed": {
+        "feature": "tfc:sticks_shore_patch",
+        "placement": [
+          {
+            "chance": 2,
+            "type": "minecraft:rarity_filter"
+          },
+          {
+            "type": "minecraft:in_square"
+          },
+          {
+            "max_temperature": 50,
+            "max_rainfall": 500,
+            "type": "tfc:climate",
+            "min_rainfall": 50,
+            "min_temperature": -50
+          },
+          {
+            "type": "tfc:biome"
+          }
+        ],
+        "__comment__": "This file was automatically created by mcresources"
+      },
+      "configured": {
+        "__comment__": "This file was automatically created by mcresources",
+        "type": "minecraft:random_patch",
+        "config": {
+          "xz_spread": 15,
+          "tries": 18,
+          "y_spread": 1,
+          "feature": "tfc:sticks_shore"
+        }
+      },
+      "child_placed": {
+        "feature": "tfc:sticks_shore",
+        "placement": [
+          {
+            "heightmap": "OCEAN_FLOOR_WG",
+            "type": "minecraft:heightmap"
+          },
+          {
+            "predicate": {
+              "type": "tfc:air_or_empty_fluid"
+            },
+            "type": "block_predicate_filter"
+          },
+          {
+            "predicate": {
+              "state": {
+                "Properties": {
+                  "fluid": "empty"
+                },
+                "Name": "tfc:groundcover/stick"
+              },
+              "type": "tfc:would_survive_with_fluid"
+            },
+            "type": "block_predicate_filter"
+          }
+        ],
+        "__comment__": "This file was automatically created by mcresources"
+      }
+    },
+    {
+      "id": "tfc:sticks_forest_patch",
+      "placed": {
+        "feature": "tfc:sticks_forest_patch",
+        "placement": [
+          {
+            "chance": 3,
+            "type": "minecraft:rarity_filter"
+          },
+          {
+            "type": "minecraft:in_square"
+          },
+          {
+            "max_temperature": 50,
+            "max_rainfall": 500,
+            "type": "tfc:climate",
+            "min_rainfall": 70,
+            "min_forest": "normal",
+            "min_temperature": -20
+          }
+        ],
+        "__comment__": "This file was automatically created by mcresources"
+      },
+      "configured": {
+        "__comment__": "This file was automatically created by mcresources",
+        "type": "minecraft:random_patch",
+        "config": {
+          "xz_spread": 15,
+          "tries": 20,
+          "y_spread": 1,
+          "feature": "tfc:sticks_forest"
+        }
+      },
+      "child_placed": {
+        "feature": "tfc:sticks_forest",
+        "placement": [
+          {
+            "heightmap": "WORLD_SURFACE_WG",
+            "type": "minecraft:heightmap"
+          },
+          {
+            "predicate": {
+              "type": "tfc:replaceable"
+            },
+            "type": "block_predicate_filter"
+          },
+          {
+            "predicate": {
+              "state": {
+                "Properties": {
+                  "fluid": "empty"
+                },
+                "Name": "tfc:groundcover/stick"
+              },
+              "type": "would_survive"
+            },
+            "type": "block_predicate_filter"
+          }
+        ],
+        "__comment__": "This file was automatically created by mcresources"
+      }
+    },
+    {
+      "id": "tfc:salt_lick_patch",
+      "placed": {
+        "feature": "tfc:salt_lick_patch",
+        "placement": [
+          {
+            "chance": 110,
+            "type": "minecraft:rarity_filter"
+          },
+          {
+            "type": "minecraft:in_square"
+          },
+          {
+            "max_temperature": 33,
+            "max_rainfall": 500,
+            "type": "tfc:climate",
+            "min_rainfall": 100,
+            "min_forest": "normal",
+            "min_temperature": 5
+          }
+        ],
+        "__comment__": "This file was automatically created by mcresources"
+      },
+      "configured": {
+        "__comment__": "This file was automatically created by mcresources",
+        "type": "minecraft:random_patch",
+        "config": {
+          "xz_spread": 5,
+          "tries": 100,
+          "y_spread": 1,
+          "feature": "tfc:salt_lick"
+        }
+      },
+      "child_placed": {
+        "feature": "tfc:salt_lick",
+        "placement": [
+          {
+            "heightmap": "WORLD_SURFACE_WG",
+            "type": "minecraft:heightmap"
+          },
+          {
+            "predicate": {
+              "type": "tfc:replaceable"
+            },
+            "type": "block_predicate_filter"
+          },
+          {
+            "predicate": {
+              "state": {
+                "Properties": {
+                  "fluid": "empty"
+                },
+                "Name": "tfc:groundcover/salt_lick"
+              },
+              "type": "would_survive"
+            },
+            "type": "block_predicate_filter"
+          }
+        ],
+        "__comment__": "This file was automatically created by mcresources"
+      }
+    },
+    {
+      "id": "tfg:earth/plant/dry_grass_patch",
+      "placed": {
+        "feature": "tfg:earth/plant/dry_grass_patch",
+        "placement": [
+          {
+            "chance": 5,
+            "type": "minecraft:rarity_filter"
+          },
+          {
+            "type": "minecraft:in_square"
+          },
+          {
+            "heightmap": "WORLD_SURFACE_WG",
+            "type": "minecraft:heightmap"
+          },
+          {
+            "max_temperature": 40,
+            "max_rainfall": 95,
+            "max_forest": "old_growth",
+            "type": "tfc:climate",
+            "min_rainfall": 15,
+            "min_forest": "edge",
+            "min_temperature": -13
+          }
+        ],
+        "__comment__": "This file was automatically created by mcresources"
+      },
+      "configured": {
+        "type": "minecraft:random_patch",
+        "config": {
+          "xz_spread": 15,
+          "tries": 10,
+          "y_spread": 1,
+          "feature": "tfg:earth/plant/dry_grass"
+        }
+      },
+      "child_placed": {
+        "feature": "tfg:earth/plant/dry_grass",
+        "placement": [
+          {
+            "heightmap": "WORLD_SURFACE_WG",
+            "type": "minecraft:heightmap"
+          },
+          {
+            "predicate": {
+              "type": "tfc:air_or_empty_fluid"
+            },
+            "type": "block_predicate_filter"
+          },
+          {
+            "predicate": {
+              "state": {
+                "Properties": {
+                  "stage": "1",
+                  "age": "1"
+                },
+                "Name": "tfg:plant/dry_grass"
+              },
+              "type": "would_survive"
+            },
+            "type": "block_predicate_filter"
+          },
+          {
+            "min_elevation": 1,
+            "max_elevation": 512,
+            "type": "tfg:intertidal"
+          }
+        ],
+        "__comment__": "This file was automatically created by mcresources"
+      }
+    },
+    {
+      "id": "tfg:earth/salt_lick_patch",
+      "placed": {
+        "feature": "tfg:earth/salt_lick_patch",
+        "placement": [
+          {
+            "chance": 2,
+            "type": "minecraft:rarity_filter"
+          },
+          {
+            "type": "minecraft:in_square"
+          },
+          {
+            "type": "minecraft:biome"
+          }
+        ]
+      },
+      "configured": {
+        "type": "minecraft:random_patch",
+        "config": {
+          "xz_spread": 8,
+          "tries": 32,
+          "y_spread": 1,
+          "feature": "tfc:salt_lick"
+        }
+      },
+      "child_placed": {
+        "feature": "tfc:salt_lick",
+        "placement": [
+          {
+            "heightmap": "WORLD_SURFACE_WG",
+            "type": "minecraft:heightmap"
+          },
+          {
+            "predicate": {
+              "type": "tfc:replaceable"
+            },
+            "type": "block_predicate_filter"
+          },
+          {
+            "predicate": {
+              "state": {
+                "Properties": {
+                  "fluid": "empty"
+                },
+                "Name": "tfc:groundcover/salt_lick"
+              },
+              "type": "would_survive"
+            },
+            "type": "block_predicate_filter"
+          }
+        ],
+        "__comment__": "This file was automatically created by mcresources"
+      }
+    },
+    {
+      "id": "tfc:surface_loose_rocks",
+      "placed": {
+        "feature": "tfc:surface_loose_rocks",
+        "placement": [
+          {
+            "type": "minecraft:in_square"
+          }
+        ],
+        "__comment__": "This file was automatically created by mcresources"
+      },
+      "configured": {
+        "__comment__": "This file was automatically created by mcresources",
+        "type": "minecraft:random_patch",
+        "config": {
+          "xz_spread": 7,
+          "tries": 8,
+          "y_spread": 1,
+          "feature": "tfc:loose_rock"
+        }
+      },
+      "child_placed": {
+        "feature": "tfc:loose_rock",
+        "placement": [
+          {
+            "heightmap": "OCEAN_FLOOR_WG",
+            "type": "minecraft:heightmap"
+          }
+        ],
+        "__comment__": "This file was automatically created by mcresources"
+      }
+    }
+  ]
+}

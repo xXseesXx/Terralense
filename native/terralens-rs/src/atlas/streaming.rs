@@ -26,14 +26,19 @@ pub(super) struct TileScheduler {
     max_detail: usize,
 }
 pub(super) fn worker_count() -> usize {
-    std::thread::available_parallelism()
-        .map_or(2, |n| n.get())
-        .saturating_sub(2)
-        .clamp(1, 4)
+    // Keep half the available logical CPUs for Minecraft and the desktop, while
+    // using more than four workers on machines that can actually run them.
+    static COUNT: std::sync::OnceLock<usize> = std::sync::OnceLock::new();
+    *COUNT.get_or_init(|| {
+        std::thread::available_parallelism()
+            .map_or(2, |n| n.get())
+            .saturating_div(2)
+            .clamp(1, 8)
+    })
 }
 impl TileScheduler {
     pub fn new() -> (Self, Receiver<()>) {
-        let (wake, rx) = bounded(6);
+        let (wake, rx) = bounded(worker_count() + 2);
         (
             Self {
                 state: Mutex::new(Queue::default()),
@@ -53,7 +58,7 @@ impl TileScheduler {
             .filter(|t| !state.active.contains(&(epoch, t.key)))
             .take(1024)
             .collect();
-        let signals = state.queued.len().min(6);
+        let signals = state.queued.len().min(worker_count() + 2);
         drop(state);
         for _ in 0..signals {
             let _ = self.wake.try_send(());
@@ -108,6 +113,8 @@ mod tests {
                 display: crate::display::DisplayPrefs::default(),
                 dimension: crate::dimension::Dimension::Overworld,
                 slice_y: 96,
+                world_path: None,
+                source_revision: 0,
             },
             key: TileKey {
                 x,

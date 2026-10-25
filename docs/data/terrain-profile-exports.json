@@ -1,0 +1,116 @@
+[
+  {
+    "case": "fast-regional",
+    "path": "/tmp/terralens-detail-fast-regional.png",
+    "seconds": 0.30086058199958643,
+    "sha256": "f7220e1f2b7ea4395d29c378ee865d9d5f549187e10babfd59871214db6b6eb7",
+    "reply": {
+      "Export": [
+        1,
+        1,
+        {
+          "Ok": {
+            "path": "/tmp/terralens-detail-fast-regional.png",
+            "note": "256 \u00d7 256 \u00b7 Biomes",
+            "data": null
+          }
+        }
+      ]
+    }
+  },
+  {
+    "case": "seed-cinder-off",
+    "path": "/tmp/terralens-detail-seed-cinder-off.png",
+    "seconds": 0.13450826800180948,
+    "sha256": "88e5e304b45328d2d9d3b72b2e170c6a108d7d10b546c5e32422ba6c40399ee4",
+    "reply": {
+      "Export": [
+        2,
+        2,
+        {
+          "Ok": {
+            "path": "/tmp/terralens-detail-seed-cinder-off.png",
+            "note": "128 \u00d7 128 \u00b7 Biomes",
+            "data": null
+          }
+        }
+      ]
+    }
+  },
+  {
+    "case": "seed-cinder-litter",
+    "path": "/tmp/terralens-detail-seed-cinder-litter.png",
+    "seconds": 0.15276248400186887,
+    "sha256": "d097aa74cb6b84460b1836b0166c5d8136b01d787e34a71c17ba8c9eb3d0f4e8",
+    "reply": {
+      "Export": [
+        3,
+        3,
+        {
+          "Ok": {
+            "path": "/tmp/terralens-detail-seed-cinder-litter.png",
+            "note": "128 \u00d7 128 \u00b7 Biomes",
+            "data": null
+          }
+        }
+      ]
+    }
+  },
+  {
+    "case": "saved-cinder-litter",
+    "path": "/tmp/terralens-detail-saved-cinder-litter.png",
+    "seconds": 0.10997125999710988,
+    "sha256": "dbb97712820afb753e9ad6f77b033a12380aecb490f7506e1eeeb6f7a0dcc595",
+    "reply": {
+      "Export": [
+        4,
+        4,
+        {
+          "Ok": {
+            "path": "/tmp/terralens-detail-saved-cinder-litter.png",
+            "note": "128 \u00d7 128 \u00b7 Biomes",
+            "data": null
+          }
+        }
+      ]
+    }
+  },
+  {
+    "case": "saved-forest-litter",
+    "path": "/tmp/terralens-detail-saved-forest-litter.png",
+    "seconds": 0.08013836600002833,
+    "sha256": "4bf4013f8bbd03461f3383c82669ec49469f8de9adf6a3557df2f90c1511abf7",
+    "reply": {
+      "Export": [
+        5,
+        5,
+        {
+          "Ok": {
+            "path": "/tmp/terralens-detail-saved-forest-litter.png",
+            "note": "128 \u00d7 128 \u00b7 Biomes",
+            "data": null
+          }
+        }
+      ]
+    }
+  },
+  {
+    "case": "seed-forest-litter",
+    "path": "/tmp/terralens-detail-seed-forest-litter.png",
+    "seconds": 0.21631571399848326,
+    "sha256": "dcbc601e3001105f14fb74a9ecaf0096716e7ee265fd0aea6238c55004007747",
+    "reply": {
+      "Export": [
+        6,
+        6,
+        {
+          "Ok": {
+            "path": "/tmp/terralens-detail-seed-forest-litter.png",
+            "note": "128 \u00d7 128 \u00b7 Biomes",
+            "data": null
+          }
+        }
+      ]
+    }
+  }
+]

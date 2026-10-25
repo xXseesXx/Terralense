@@ -1,0 +1,163 @@
+{
+  "reference": {
+    "dimension": "minecraft:overworld",
+    "extraction_script": "tools/reference/extract_ground.py",
+    "kind": "independent_python_read_only_anvil_nbt",
+    "notes": [
+      "All 256 columns per fixed FULL chunk, including vegetation and waterlogged cover.",
+      "NBT copies contain only original block-state sections and Status; no entities, containers or save metadata.",
+      "No Minecraft launch, chunk generation or save writes."
+    ],
+    "seed": 0,
+    "stable_during_extraction": true,
+    "world_alias": "0"
+  },
+  "scope": "Independent saved top columns compared with seed-only litter. Earlier vegetation, structures, post-generation changes and occupied-state differences remain; hidden ground litter is not directly observable in top columns. This is not saved-reader or full chunk generation parity.",
+  "seed": 0,
+  "sites": [
+    {
+      "chunk": [
+        552,
+        694
+      ],
+      "exact_block_y_matches": 2,
+      "litter_xy_matches": 2,
+      "projected_columns_below_saved_cover": 0,
+      "projected_litter": {
+        "tfc:rock/loose/shale": 1,
+        "tfc:rock/mossy_loose/shale": 1
+      },
+      "saved_top_litter": {
+        "tfc:rock/loose/shale": 1,
+        "tfc:rock/mossy_loose/shale": 1
+      },
+      "site": "floodplain_nearshore"
+    },
+    {
+      "chunk": [
+        -173,
+        282
+      ],
+      "exact_block_y_matches": 1,
+      "litter_xy_matches": 1,
+      "projected_columns_below_saved_cover": 5,
+      "projected_litter": {
+        "tfc:rock/loose/dacite": 7
+      },
+      "saved_top_litter": {
+        "afc:wood/fallen_leaves/eucalyptus": 4,
+        "afc:wood/twig/eucalyptus": 5,
+        "tfc:groundcover/feather": 3,
+        "tfc:groundcover/pumice": 1,
+        "tfc:rock/loose/dacite": 2
+      },
+      "site": "active_shield_canopy"
+    },
+    {
+      "chunk": [
+        -79,
+        293
+      ],
+      "exact_block_y_matches": 11,
+      "litter_xy_matches": 11,
+      "projected_columns_below_saved_cover": 0,
+      "projected_litter": {
+        "tfc:rock/loose/andesite": 6,
+        "tfc:rock/mossy_loose/andesite": 5
+      },
+      "saved_top_litter": {
+        "tfc:groundcover/pumice": 13,
+        "tfc:rock/loose/andesite": 6,
+        "tfc:rock/mossy_loose/andesite": 5
+      },
+      "site": "cinder_cone"
+    },
+    {
+      "chunk": [
+        3122,
+        1764
+      ],
+      "exact_block_y_matches": 0,
+      "litter_xy_matches": 0,
+      "projected_columns_below_saved_cover": 6,
+      "projected_litter": {
+        "tfc:rock/loose/limestone": 5,
+        "tfc:rock/mossy_loose/limestone": 6
+      },
+      "saved_top_litter": {},
+      "site": "glacial_tuya"
+    },
+    {
+      "chunk": [
+        344,
+        -398
+      ],
+      "exact_block_y_matches": 4,
+      "litter_xy_matches": 4,
+      "projected_columns_below_saved_cover": 0,
+      "projected_litter": {
+        "tfc:rock/loose/rhyolite": 5,
+        "tfc:rock/mossy_loose/rhyolite": 3
+      },
+      "saved_top_litter": {
+        "tfc:rock/loose/rhyolite": 3,
+        "tfc:rock/mossy_loose/rhyolite": 3
+      },
+      "site": "tuya_raw_rock"
+    },
+    {
+      "chunk": [
+        0,
+        0
+      ],
+      "exact_block_y_matches": 1,
+      "litter_xy_matches": 1,
+      "projected_columns_below_saved_cover": 1,
+      "projected_litter": {
+        "tfc:groundcover/stick": 1,
+        "tfc:rock/loose/conglomerate": 3,
+        "tfc:rock/mossy_loose/conglomerate": 3
+      },
+      "saved_top_litter": {
+        "tfc:groundcover/seaweed": 2,
+        "tfc:groundcover/stick": 6,
+        "tfc:rock/loose/conglomerate": 2,
+        "tfc:rock/mossy_loose/conglomerate": 2
+      },
+      "site": "saved_plain"
+    },
+    {
+      "chunk": [
+        551,
+        694
+      ],
+      "exact_block_y_matches": 3,
+      "litter_xy_matches": 3,
+      "projected_columns_below_saved_cover": 6,
+      "projected_litter": {
+        "tfc:rock/loose/shale": 7,
+        "tfc:rock/mossy_loose/shale": 2
+      },
+      "saved_top_litter": {
+        "tfc:rock/loose/shale": 1,
+        "tfc:rock/mossy_loose/shale": 2
+      },
+      "site": "river_waterlogged_bank"
+    },
+    {
+      "chunk": [
+        3123,
+        1765
+      ],
+      "exact_block_y_matches": 0,
+      "litter_xy_matches": 0,
+      "projected_columns_below_saved_cover": 2,
+      "projected_litter": {
+        "tfc:rock/loose/limestone": 5,
+        "tfc:rock/mossy_loose/limestone": 6
+      },
+      "saved_top_litter": {},
+      "site": "glacial_snow_rim"
+    }
+  ]
+}

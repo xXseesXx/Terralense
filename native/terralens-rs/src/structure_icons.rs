@@ -5,6 +5,22 @@ mod tfg;
 
 pub const MAP_ICON_SIZE: u32 = 32;
 
+/// Close volcano views expose the caldera raster beneath the navigation sprite.
+/// Selected pins remain fully visible and every other marker keeps its normal style.
+pub fn map_opacity(kind: &crate::model::MarkerKind, blocks_per_pixel: f64, selected: bool) -> u8 {
+    if selected || *kind != crate::model::MarkerKind::Volcano {
+        return 255;
+    }
+    (((blocks_per_pixel - 1.) / 3.).clamp(0., 1.) * 255.).round() as u8
+}
+
+pub fn player_uuid(id: &str) -> Option<&str> {
+    id.split('@')
+        .next()?
+        .strip_prefix("minecraft:player/")
+        .filter(|uuid| !uuid.is_empty())
+}
+
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 pub enum RuinTopic {
     Masonry,
@@ -13,9 +29,22 @@ pub enum RuinTopic {
     Monument,
 }
 
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+enum VolcanoStyle {
+    Cinder,
+    Ring,
+    Dormant,
+    Tuya,
+    Ice,
+}
+
 /// One ruin category across mods, with the original building topic retained for its sprite.
 pub fn ruin_topic(id: &str) -> Option<RuinTopic> {
     let id = id.split('@').next().unwrap_or(id).to_ascii_lowercase();
+    // This TFG entry is a dead but intact village variant, not a ruin-site marker.
+    if id == "tfg:illagers/norse_village_ruined" {
+        return None;
+    }
     let (namespace, path) = id.split_once(':').unwrap_or(("", id.as_str()));
     let words: Vec<_> = path.split(|c: char| !c.is_ascii_alphanumeric()).collect();
     let has = |word| words.contains(&word);
@@ -81,6 +110,7 @@ pub enum Family {
     Fossil,
     Treasure,
     Igloo,
+    Volcano,
     Outpost,
     Landmark,
 }
@@ -89,6 +119,9 @@ pub enum Family {
 /// receive a generic landmark pin so new pack content never disappears from the map.
 pub fn family(id: &str) -> Family {
     let id = id.to_ascii_lowercase();
+    if id.starts_with("terralens:volcano/") {
+        return Family::Volcano;
+    }
     let id = id.rsplit_once(':').map_or(id.as_str(), |(_, path)| path);
     // These point annotations are deliberately kept out of structure families.
     if id == "world_spawn" {
@@ -176,13 +209,33 @@ enum Sprite {
     MoonCheese,
     MoonBase,
     MoonRabbitHouse,
+    Volcano(VolcanoStyle),
     Ruin(RuinTopic),
+    RuinedBuilding(RuinTopic),
     Glyph(Family),
 }
 
 fn sprite(id: &str) -> Sprite {
     let id = id.split('@').next().unwrap_or(id).to_ascii_lowercase();
+    if id.starts_with("terralens:volcano/") {
+        let kind = id.trim_start_matches("terralens:volcano/");
+        let style = match kind {
+            "active_shield" | "cinder_cone" => VolcanoStyle::Cinder,
+            "dormant_shield" | "extinct_shield" | "ancient_shield" | "sunken_shield"
+            | "shore_shield" | "tuff_ring" => VolcanoStyle::Ring,
+            "tuya" => VolcanoStyle::Tuya,
+            "glacial_tuya" => VolcanoStyle::Ice,
+            _ if kind.contains("glaciated") || kind.contains("ice") => VolcanoStyle::Ice,
+            _ if kind.contains("tuff") || kind.contains("ring") => VolcanoStyle::Ring,
+            _ if kind.contains("active") || kind.contains("cinder") => VolcanoStyle::Cinder,
+            _ => VolcanoStyle::Dormant,
+        };
+        return Sprite::Volcano(style);
+    }
     match id.as_str() {
+        "terralens:ruined_buildings" => {
+            return Sprite::RuinedBuilding(RuinTopic::Masonry);
+        }
         "tfg:moon/cheese_ores" => return Sprite::MoonCheese,
         "tfg:moon/moonbase" => return Sprite::MoonBase,
         "tfg:moon/moon_rabbit_houses" => return Sprite::MoonRabbitHouse,
@@ -221,6 +274,9 @@ fn sprite(id: &str) -> Sprite {
         return Sprite::Cubiomes(name);
     }
     if let Some(topic) = ruin_topic(&id) {
+        if crate::structure_loot::has_loot(&id) {
+            return Sprite::RuinedBuilding(topic);
+        }
         return Sprite::Ruin(topic);
     }
     // Intact TFG churches, camps and timber mine openings retain their own symbols.
@@ -300,11 +356,29 @@ fn cubiomes_image(name: &str) -> RgbaImage {
 
 /// Draw each object's silhouette on alpha, preserving the original pixel-art edges.
 pub fn raster(id: &str, size: u32) -> RgbaImage {
+    if let Some(uuid) = player_uuid(id) {
+        return crate::player_heads::cached(uuid)
+            .map(|head| {
+                imageops::resize(
+                    &head,
+                    size.clamp(8, 128),
+                    size.clamp(8, 128),
+                    imageops::FilterType::Nearest,
+                )
+            })
+            .unwrap_or_else(|| crate::player_heads::fallback_head(size.clamp(8, 128)));
+    }
     let image = match sprite(id) {
         Sprite::Cubiomes(name) => cubiomes_image(name),
         Sprite::MoonCheese => moon_cheese(),
         Sprite::MoonBase => tfg::moon_dome(),
         Sprite::MoonRabbitHouse => tfg::moon_rabbit_house(),
+        Sprite::Volcano(VolcanoStyle::Cinder) => tfg::volcano_cinder_cone(),
+        Sprite::Volcano(VolcanoStyle::Ring) => tfg::volcano_tuff_ring(),
+        Sprite::Volcano(VolcanoStyle::Dormant) => tfg::volcano_dormant_cone(),
+        Sprite::Volcano(VolcanoStyle::Tuya) => tfg::volcano_tuya(),
+        Sprite::Volcano(VolcanoStyle::Ice) => tfg::volcano_ice_cone(),
+        Sprite::RuinedBuilding(topic) => tfg::ruined_building_with_chest(topic),
         Sprite::Ruin(RuinTopic::Masonry) => tfg::cracked_limestone_brick(),
         Sprite::Ruin(RuinTopic::Church) => tfg::ruined_church(),
         Sprite::Ruin(RuinTopic::Tower) => tfg::ruined_tower(),
@@ -411,6 +485,7 @@ fn color(f: Family) -> [u8; 4] {
         Family::Igloo => [181, 218, 233, 255],
         Family::Outpost => [192, 174, 148, 255],
         Family::Landmark => [204, 210, 185, 255],
+        Family::Volcano => [213, 101, 67, 255],
     }
 }
 fn px(im: &mut RgbaImage, x: i32, y: i32, c: [u8; 4]) {
@@ -527,20 +602,48 @@ fn player(im: &mut RgbaImage, c: [u8; 4]) {
 }
 
 #[cfg(feature = "gui")]
+#[derive(Default)]
 pub struct IconCache {
     textures: std::collections::HashMap<Sprite, eframe::egui::TextureHandle>,
+    players: std::collections::HashMap<String, (u64, eframe::egui::TextureHandle)>,
 }
 #[cfg(feature = "gui")]
-impl Default for IconCache {
-    fn default() -> Self {
-        Self {
-            textures: std::collections::HashMap::new(),
-        }
-    }
-}
 #[cfg(feature = "gui")]
 impl IconCache {
     pub fn get(&mut self, ctx: &eframe::egui::Context, id: &str) -> &eframe::egui::TextureHandle {
+        if let Some(uuid) = player_uuid(id) {
+            crate::player_heads::request(uuid);
+            if crate::player_heads::pending(uuid) {
+                ctx.request_repaint_after(std::time::Duration::from_millis(200));
+            }
+            let revision = crate::player_heads::revision(uuid);
+            let entry = self.players.entry(uuid.to_owned()).or_insert_with(|| {
+                let image = raster(id, MAP_ICON_SIZE);
+                (
+                    revision,
+                    ctx.load_texture(
+                        format!("player-head-{uuid}"),
+                        eframe::egui::ColorImage::from_rgba_unmultiplied(
+                            [image.width() as usize, image.height() as usize],
+                            image.as_raw(),
+                        ),
+                        eframe::egui::TextureOptions::NEAREST,
+                    ),
+                )
+            });
+            if entry.0 != revision {
+                let image = raster(id, MAP_ICON_SIZE);
+                entry.1.set(
+                    eframe::egui::ColorImage::from_rgba_unmultiplied(
+                        [image.width() as usize, image.height() as usize],
+                        image.as_raw(),
+                    ),
+                    eframe::egui::TextureOptions::NEAREST,
+                );
+                entry.0 = revision;
+            }
+            return &entry.1;
+        }
         let sprite = sprite(id);
         self.textures.entry(sprite).or_insert_with(|| {
             let im = raster(id, 32);
@@ -581,7 +684,12 @@ mod tests {
             ("wan_ancient_beasts:abandoned_village", RuinTopic::Masonry),
         ] {
             assert_eq!(ruin_topic(id), Some(expected), "{id}");
-            assert_eq!(sprite(id), Sprite::Ruin(expected), "{id}");
+            let expected_sprite = if crate::structure_loot::has_loot(id) {
+                Sprite::RuinedBuilding(expected)
+            } else {
+                Sprite::Ruin(expected)
+            };
+            assert_eq!(sprite(id), expected_sprite, "{id}");
         }
         for id in [
             "tfg:beneath/tower",
@@ -590,6 +698,7 @@ mod tests {
             "tfg:ocean/ocean_monument",
             "minecraft:ancient_city",
             "tfg:illagers/arabic_village_living",
+            "tfg:illagers/norse_village_ruined",
             "tfg:moon/moonbase",
             "tfg:earth/ancient_shield_volcano",
         ] {
@@ -600,10 +709,39 @@ mod tests {
             Sprite::Cubiomes("portal")
         );
         assert_eq!(
+            sprite("tfg:illagers/norse_village_ruined"),
+            Sprite::Tfg(Family::Settlement)
+        );
+        assert_eq!(
             raster("tfg:aqueduct/aqueduct", 32),
             raster("tfc_ruined_world:ancient_monument_2", 32),
             "Aqueduct uses the original ruined monument silhouette"
         );
+    }
+
+    #[test]
+    fn loot_bearing_ruined_remains_keep_topic_art_with_a_container_accent() {
+        let id = "tfc_ruins:ruin_small";
+        assert!(crate::structure_loot::has_loot(id));
+        assert_eq!(sprite(id), Sprite::RuinedBuilding(RuinTopic::Masonry));
+        assert_eq!(
+            sprite("terralens:ruined_buildings"),
+            Sprite::RuinedBuilding(RuinTopic::Masonry)
+        );
+        let with_chest = raster(id, 32);
+        let canonical = raster("terralens:ruined_buildings", 32);
+        assert_eq!(canonical, with_chest);
+        assert!(
+            with_chest.pixels().any(|pixel| {
+                pixel[3] > 0 && pixel[0] >= 210 && pixel[1] >= 160 && pixel[2] >= 55
+            })
+        );
+        assert_ne!(
+            with_chest,
+            fit_silhouette(&tfg::cracked_limestone_brick(), 32),
+            "loot accent differentiates a building from ordinary stone remains"
+        );
+        assert!(with_chest.pixels().any(|pixel| pixel[3] == 0));
     }
 
     #[test]
@@ -626,7 +764,7 @@ mod tests {
         );
         assert_eq!(
             sprite("tfc_ruins:ruin_small"),
-            Sprite::Ruin(RuinTopic::Masonry)
+            Sprite::RuinedBuilding(RuinTopic::Masonry)
         );
         assert_eq!(
             sprite("tfc_ruined_world:limestone_church"),
@@ -677,6 +815,79 @@ mod tests {
             0,
             "the tunnel opening stays transparent"
         );
+    }
+
+    #[test]
+    fn volcano_markers_use_transparent_state_specific_silhouettes() {
+        for (id, style) in [
+            (
+                "terralens:volcano/active_shield@-8,12",
+                VolcanoStyle::Cinder,
+            ),
+            ("terralens:volcano/cinder_cone@16,24", VolcanoStyle::Cinder),
+            (
+                "terralens:volcano/dormant_shield@-32,-9",
+                VolcanoStyle::Ring,
+            ),
+            ("terralens:volcano/extinct_shield", VolcanoStyle::Ring),
+            ("terralens:volcano/ancient_shield", VolcanoStyle::Ring),
+            ("terralens:volcano/sunken_shield", VolcanoStyle::Ring),
+            ("terralens:volcano/shore_shield", VolcanoStyle::Ring),
+            ("terralens:volcano/tuff_ring", VolcanoStyle::Ring),
+            ("terralens:volcano/tuya@40,80", VolcanoStyle::Tuya),
+            ("terralens:volcano/glacial_tuya@40,80", VolcanoStyle::Ice),
+        ] {
+            assert_eq!(family(id), Family::Volcano);
+            assert_eq!(sprite(id), Sprite::Volcano(style));
+        }
+        let icons = [
+            (
+                "terralens:volcano/active_shield@-8,12",
+                VolcanoStyle::Cinder,
+            ),
+            ("terralens:volcano/unclassified", VolcanoStyle::Dormant),
+            ("terralens:volcano/dormant_shield", VolcanoStyle::Ring),
+            ("terralens:volcano/tuya", VolcanoStyle::Tuya),
+            ("terralens:volcano/glacial_tuya", VolcanoStyle::Ice),
+        ];
+        let mut rendered = Vec::new();
+        for (id, style) in icons {
+            assert_eq!(sprite(id), Sprite::Volcano(style));
+            let image = raster(id, 32);
+            assert_eq!(image.dimensions(), (32, 32));
+            assert!(image.pixels().any(|pixel| pixel[3] == 0), "{id}");
+            assert!(image.pixels().any(|pixel| pixel[3] == 255), "{id}");
+            for (x, y) in [(0, 0), (31, 0), (0, 31), (31, 31)] {
+                assert_eq!(image.get_pixel(x, y)[3], 0, "{id}");
+            }
+            rendered.push(image);
+        }
+        for left in 0..rendered.len() {
+            for right in left + 1..rendered.len() {
+                assert_ne!(rendered[left], rendered[right]);
+            }
+        }
+        assert!(
+            rendered[0]
+                .pixels()
+                .any(|pixel| pixel[0] > 230 && pixel[1] > 90 && pixel[2] < 90)
+        );
+        assert_eq!(
+            rendered[1].get_pixel(18, 1)[3],
+            0,
+            "dormant cone has no smoke"
+        );
+        assert_eq!(
+            rendered[2].get_pixel(16, 18)[3],
+            0,
+            "tuff ring keeps its crater open"
+        );
+        assert!(
+            rendered[4]
+                .pixels()
+                .any(|pixel| pixel[0] > 195 && pixel[1] > 220 && pixel[2] > 210)
+        );
+        assert_eq!(raster("terralens:volcano/cinder_cone", 32), rendered[0]);
     }
 
     #[test]
@@ -733,11 +944,16 @@ mod tests {
     }
 
     #[test]
-    fn spawn_and_player_icons_are_transparent_and_distinct() {
+    fn player_markers_render_minecraft_heads_and_spawn_retains_its_own_symbol() {
         let spawn = raster("minecraft:world_spawn", 32);
         let player = raster("minecraft:player/1234-abcd", 32);
         assert_ne!(spawn.as_raw(), player.as_raw());
         assert_eq!(spawn.get_pixel(0, 0)[3], 0);
-        assert_eq!(player.get_pixel(0, 0)[3], 0);
+        assert_eq!(player, crate::player_heads::fallback_head(32));
+        assert_eq!(
+            player_uuid("minecraft:player/1234-abcd@2,-3"),
+            Some("1234-abcd")
+        );
+        assert!(player_uuid("minecraft:world_spawn").is_none());
     }
 }

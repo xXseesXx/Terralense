@@ -10,10 +10,11 @@ pub fn cached_area<F: Fn(i32, i32) -> i32 + 'static>(source: F) -> Area {
     Rc::new(move |x, z| {
         let slot = (x.wrapping_mul(501125321) ^ z.wrapping_mul(1136930381)) as u32 as usize
             & (CACHE_SIZE - 1);
-        if let Some((cx, cz, value)) = cache.borrow()[slot] {
-            if cx == x && cz == z {
-                return value;
-            }
+        if let Some((cx, cz, value)) = cache.borrow()[slot]
+            && cx == x
+            && cz == z
+        {
+            return value;
         }
         let value = source(x, z);
         cache.borrow_mut()[slot] = Some((x, z, value));

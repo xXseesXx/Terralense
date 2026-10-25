@@ -41,3 +41,13 @@ local image use an original cheese-wedge sprite from `tfg.rs`.
 The icon-inclusive application is distributed under GPL-3.0 using EUPL-1.2's compatible-license
 clause. Original source files retain their EUPL-1.2 notices. Both license texts and the full source
 are available with the repository. See `NOTICE.md` for other bundled artwork and dependencies.
+
+Loot-bearing ruined buildings retain their masonry/church/tower/monument topic and add an
+original small chest silhouette. Loot evidence comes from the installed template/processor
+audit, not the registry name. The canonical Ruined buildings group uses that chest-accent art;
+lootless Ruins retain the plain broken-stone symbols. No image backdrop is added.
+
+Volcano markers use original transparent pixel art: an active cinder cone with its lava vent,
+a quiet shield cone, an open tuff ring, and an ice-covered cone. The symbols are generated in
+`src/structure_icons/tfg.rs`; marker IDs select the state-specific silhouette without adding a
+badge or background.

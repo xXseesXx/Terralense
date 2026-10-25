@@ -1,0 +1,40 @@
+{
+  "seed": 0,
+  "release_tests_passed": 482,
+  "spring_water_layer_checks": [
+    "Biomes",
+    "Ground",
+    "Temperature",
+    "Rainfall",
+    "Height",
+    "Geology",
+    "Forest",
+    "Water"
+  ],
+  "wet_witness": {
+    "x": 14386,
+    "z": 13643,
+    "y": 96,
+    "block": "tfc:fluid/spring_water",
+    "bed_y": 95
+  },
+  "dry_witness": {
+    "x": 14430,
+    "z": 12807,
+    "y": 86
+  },
+  "java_checks": [
+    "Metaballs2D full 29x29 footprint and RNG continuation",
+    "TFG active spring step3/index2 origin and selector",
+    "GT vein registry ordering and weighted picks at negative coordinates"
+  ],
+  "source_checks": [
+    "Merged tree support tags regenerate from installed resources",
+    "Fluid registry ordering regenerates from TFG definitions and KubeJS"
+  ],
+  "notes": [
+    "Witnesses are sampler outputs, not separately generated Minecraft chunks.",
+    "Saved volcanic surface fixtures pass with procedural springs enabled.",
+    "No structure marker is registered for springs."
+  ]
+}

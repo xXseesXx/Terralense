@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """Rebuild a deterministic Minecraft 1.20 FeatureSorter profile from installed TFG biome/tag JSON.
 
-This is a research/development extraction script, not part of runtime. It intentionally sorts
-possible biome keys to produce a reproducible offline profile. TFG's live IdentityHashMap order
-is JVM-dependent, so the result is not claimed to reproduce a particular game process.
+This is a research/development extraction script, not part of runtime. The default uses a
+source-legal biome encounter order whose two parallel spring indices match saved World 0
+geometry. --canonical selects resource-key order instead. TFG's live IdentityHashMap order
+is JVM-dependent; neither profile is a complete captured game-process order.
 """
 from __future__ import annotations
 import argparse, hashlib, json, re, zipfile
@@ -12,9 +13,6 @@ from pathlib import Path
 
 INSTANCE = Path.home()/'.local/share/PrismLauncher/instances/TerraFirmaGreg-Modern/minecraft'
 PROJECT = Path(__file__).resolve().parents[1]
-MODS = INSTANCE/'mods'
-CORE_JAR = MODS/'TerraFirmaGreg-Core-Modern-0.9.25.jar'
-TFC_SOURCE = Path('/tmp/tfg-core-0.9.25/src/main/resources')
 
 
 def read_resource(pack: Path, name: str):
@@ -42,6 +40,7 @@ def main():
     ap=argparse.ArgumentParser()
     ap.add_argument('--out', type=Path, default=PROJECT/'native/terralens-rs/src/vegetation/assets/feature-order.json')
     ap.add_argument('--instance', type=Path, default=INSTANCE)
+    ap.add_argument('--canonical', action='store_true', help='Use resource-key sorted offline order instead of the saved-reference spring order')
     args=ap.parse_args()
     mods=args.instance/'mods'
     core=mods/'TerraFirmaGreg-Core-Modern-0.9.25.jar'
@@ -52,6 +51,12 @@ def main():
                           if n.startswith('data/tfg/worldgen/biome/earth/') and n.endswith('.json'))
         biome_json={key:json.loads(z.read('data/tfg/worldgen/biome/earth/'+key.split('tfg:earth/',1)[1]+'.json'))
                     for key in biome_keys}
+    order_profile = None
+    if not args.canonical:
+        order_file = PROJECT/'native/terralens-rs/src/vegetation/assets/feature-order-biomes.json'
+        order_profile = json.loads(order_file.read_text())
+        assert sorted(order_profile['biomes']) == biome_keys, 'reference order must contain exactly the installed biome set'
+        biome_keys = order_profile['biomes']
     # Resource-pack order for tags is approximated as lexicographic mod-jar order; core's source
     # directory is included only if a corresponding resource is absent in the jar.
     packs=sorted(mods.glob('*.jar'), key=lambda p:p.name)
@@ -86,7 +91,9 @@ def main():
             source=match.group(1)
             for m in re.finditer(r'event\.add\(\s*["\']([^"\']+)["\']\s*,\s*["\']([^"\']+)["\']\s*\)', source):
                 tag,value=m.groups()
-                if tag.startswith(('tfc:feature/','tfg:feature/','firmalife:feature/')) or (tag.startswith(('tfc:in_biome/','tfg:in_biome/')) and value in ('tfg:earth/crop/palm_tree/coconut_patch','tfg:earth/crop/palm_tree/date_patch')):
+                if (tag.startswith(('tfc:feature/','tfg:feature/','firmalife:feature/'))
+                    or tag == 'tfc:in_biome/underground_structures'
+                    or (tag.startswith(('tfc:in_biome/','tfg:in_biome/')) and value in ('tfg:earth/crop/palm_tree/coconut_patch','tfg:earth/crop/palm_tree/date_patch'))):
                     tags.setdefault(tag,[]).append(value)
             for m in re.finditer(r'event\.remove\(\s*["\']([^"\']+)["\']\s*,\s*["\']([^"\']+)["\']\s*\)', source):
                 tag,value=m.groups()
@@ -128,19 +135,19 @@ def main():
         biome_steps[biome]=steps
         max_steps=max(max_steps,len(steps))
 
-    # Faithful FeatureSorter graph: global IDs by first feature encounter, edge each consecutive
-    # placed feature within each biome and generation step, DFS roots/successors by (step,globalId).
+    # FeatureSorter edges join consecutive features across each full biome sequence,
+    # including transitions between steps. IDs follow first encounter.
     global_ids={}
     nodes=set()
     edges=defaultdict(set)
     for biome in biome_keys:
+        seq=[]
         for step, features in enumerate(biome_steps[biome]):
-            seq=[]
             for fid in features:
                 if fid not in global_ids: global_ids[fid]=len(global_ids)
                 node=(step,global_ids[fid]); nodes.add(node); seq.append(node)
-            for a,b in zip(seq,seq[1:]):
-                if a!=b: edges[a].add(b)
+        for a,b in zip(seq,seq[1:]):
+            if a!=b: edges[a].add(b)
     visited=set(); active=[]; active_set=set(); post=[]
     def visit(node):
         if node in visited:return
@@ -175,7 +182,7 @@ def main():
                     'possibleBiomeOrder':biome_keys,
                     'tagResourcePackOrder':[p.name for p in packs]},
          'featureSorter':{'description':'MC FeatureSorter: first-seen feature IDs, per-biome/per-stage consecutive edges, DFS roots/successors ordered by (step,globalId), reverse postorder.',
-                          'runtimeCaveat':'TFGBiomes.TFG_EXTENSIONS is an IdentityHashMap, so live possible-biome order can differ. Tag resources are merged in lexicographic mod-jar filename order; KubeJS processing includes literal feature-tag additions/removals and the expanded palm-fruit biome loop from registerTFGOverworldPlacedFeatures. Other dynamic KubeJS biome-tag additions are excluded because applying every script event as a raw tag list produced a cyclic graph; actual runtime ordering/semantics must be captured to match live indices. These indexes/memberships are exact for this documented canonical extraction profile, not a captured runtime profile.'},
+                          'runtimeCaveat':'TFGBiomes.TFG_EXTENSIONS is an IdentityHashMap, so live possible-biome order can differ. Tag resources are merged in lexicographic mod-jar filename order; KubeJS processing includes literal feature-tag additions/removals, underground fluid-vein additions and the expanded palm-fruit biome loop from registerTFGOverworldPlacedFeatures. Other dynamic KubeJS biome-tag additions are excluded because applying every script event as a raw tag list produced a cyclic graph; actual runtime ordering/semantics must be captured to match live indices. These indexes and memberships are exact for the documented extraction inputs, not a captured runtime profile.'},
          'stages':stage_orders,
          'featureBiomes':{fid:sorted(biomes) for fid,biomes in sorted(feature_biomes.items())},
          'activeCropFeatures':active_crops,
@@ -184,6 +191,12 @@ def main():
                            'hash':'h=salt XOR ((long)x*501125321) XOR ((long)y*1136930381) XOR z; h*=0x27d4eb2d; return sign-extended (int)h',
                            'feature':'random.setSeed(base); s=(index*random.nextLong()*203704237L) XOR (step*random.nextLong()*758031792L) XOR base; random.setSeed(s)',
                            'random':'WorldgenRandom wrapping XoroshiroRandomSource; same random passed through feature placement and reseeded per feature.'}}
+    if order_profile:
+        out['profile']['id'] = order_profile['id']
+        out['profile']['biomeInputOrder'] = 'legal FeatureSorter encounter-order witness; two parallel springs resolved against saved World 0 geometry, not a captured complete JVM map order'
+        out['profile']['sourceOrderEvidence'] = order_profile['evidence']
+        out['featureSorter']['runtimeCaveat'] += ' The selected profile resolves the two parallel spring indices against saved World 0 geometry using a source-legal encounter-order witness; the complete live JVM order is not captured.'
+    out['featureSorter']['description'] = 'MC FeatureSorter: first-seen feature IDs, consecutive edges across each full biome feature sequence, DFS roots/successors ordered by (step,globalId), reverse postorder.'
     args.out.parent.mkdir(parents=True,exist_ok=True)
     args.out.write_text(json.dumps(out,indent=2)+'\n')
     print(f'wrote {args.out}; biomes={len(biome_keys)} features={len(global_ids)} stages={len(stage_orders)} crops={len(active_crops)} forest={forest[:1]}')

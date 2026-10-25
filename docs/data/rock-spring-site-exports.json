@@ -1,0 +1,90 @@
+[
+  {
+    "path": "/tmp/terralens-spring-final-reference-seed.png",
+    "season": null,
+    "seconds": 0.4206082319997222,
+    "sha256": "03b04dbcbdd313a933a622b4f61eb497b42f06a2a9686b143115dae77b70f4a8",
+    "reply": {
+      "Export": [
+        1,
+        1,
+        {
+          "Ok": {
+            "path": "/tmp/terralens-spring-final-reference-seed.png",
+            "note": "128 \u00d7 128 \u00b7 Biomes",
+            "data": null
+          }
+        }
+      ]
+    },
+    "surface_probe": {
+      "point": {
+        "x": -319262.0,
+        "z": 16107.0
+      },
+      "biome": "tfg:earth/plateau",
+      "ocean": false,
+      "surface_water": false,
+      "ground_block": "tfc:grass/loam",
+      "ground_y": 87,
+      "ground_saved": false,
+      "climate": {
+        "temperature": 15.605048179626465,
+        "rainfall": 251.92428588867188
+      },
+      "height": 87.0,
+      "forest": 0,
+      "rocks": [
+        "chert",
+        "quartzite",
+        "schist"
+      ],
+      "hotspot": 0.0,
+      "hotspot_age": 0.0
+    }
+  },
+  {
+    "path": "/tmp/terralens-spring-final-reference-saved.png",
+    "season": null,
+    "seconds": 0.18757199800165836,
+    "sha256": "40bde8c29ba4ecf4ac5e042abc33ef96601b6a1a8d3d76ea775b6fedd3e6eb4b",
+    "reply": {
+      "Export": [
+        2,
+        2,
+        {
+          "Ok": {
+            "path": "/tmp/terralens-spring-final-reference-saved.png",
+            "note": "128 \u00d7 128 \u00b7 Biomes",
+            "data": null
+          }
+        }
+      ]
+    },
+    "surface_probe": {
+      "point": {
+        "x": -319262.0,
+        "z": 16107.0
+      },
+      "biome": "tfg:earth/plateau",
+      "ocean": false,
+      "surface_water": false,
+      "ground_block": "tfc:grass/loam",
+      "ground_y": 87,
+      "ground_saved": true,
+      "climate": {
+        "temperature": 15.605048179626465,
+        "rainfall": 251.92428588867188
+      },
+      "height": 87.0,
+      "forest": 0,
+      "rocks": [
+        "chert",
+        "quartzite",
+        "schist"
+      ],
+      "hotspot": 0.0,
+      "hotspot_age": 0.0
+    }
+  }
+]

@@ -40,3 +40,20 @@ fn release_help_and_version_are_available_without_a_display() {
         assert!(String::from_utf8_lossy(&output.stdout).contains("TerraLens"));
     }
 }
+
+#[test]
+fn release_build_metadata_is_available_without_a_display() {
+    let output = Command::new(env!("CARGO_BIN_EXE_terralens"))
+        .arg("--build-info")
+        .env_remove("DISPLAY")
+        .env_remove("WAYLAND_DISPLAY")
+        .output()
+        .unwrap();
+    assert!(output.status.success());
+    let info: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
+    assert_eq!(info["version"], env!("CARGO_PKG_VERSION"));
+    assert_eq!(info["diagnostics"], false);
+    if info["official"] == true {
+        assert_eq!(info["optional_game_artwork"], false);
+    }
+}

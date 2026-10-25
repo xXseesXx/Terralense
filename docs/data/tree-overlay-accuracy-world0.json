@@ -1,0 +1,360 @@
+{
+  "schema": 1,
+  "checked_date": "2026-10-25",
+  "seed": 0,
+  "tfg_core": "0.9.25",
+  "tfc": "3.2.25",
+  "fixture": "native/terralens-rs/tests/fixtures/volcanic-terrain/seed0-water-magma.json",
+  "method": "One engine export pixel per block over six independent 48 by 48 saved reference areas; compare Biomes PNG with Trees off/on against saved exposed leaf blocks. Reference rows sorted by Z then X. No Minecraft chunks generated or save files modified.",
+  "scope": "13,824 volcanic reference columns, 3,145 exposed foliage columns. This is not a representative world sample; foliage includes bushes. Metrics measure 2D coverage, not species, height, individual trees or seasonal color.",
+  "binary_sha256": {
+    "before": "9e4ed21507dd6ab24e301080aea971f55c985fe470b44904dbfbf602692c2b2c",
+    "after": "551809c44b29998bb665a4f7281049970962e4aeeec83e1ce6d79bccdd947f04"
+  },
+  "runs": {
+    "before-seed": {
+      "totals": {
+        "columns": 13824,
+        "tp": 2237,
+        "fp": 2150,
+        "fn": 908,
+        "tn": 8529
+      },
+      "precision": 0.5099156599042626,
+      "recall": 0.7112877583465819,
+      "f1": 0.5939989378651088,
+      "sites": [
+        {
+          "center": [
+            1856,
+            1147
+          ],
+          "columns": 2304,
+          "tp": 454,
+          "fp": 598,
+          "fn": 119,
+          "tn": 1133,
+          "seconds": 0.209
+        },
+        {
+          "center": [
+            14840,
+            14327
+          ],
+          "columns": 2304,
+          "tp": 1012,
+          "fp": 644,
+          "fn": 356,
+          "tn": 292,
+          "seconds": 0.111
+        },
+        {
+          "center": [
+            -3191,
+            5149
+          ],
+          "columns": 2304,
+          "tp": 0,
+          "fp": 172,
+          "fn": 8,
+          "tn": 2124,
+          "seconds": 0.069
+        },
+        {
+          "center": [
+            13664,
+            14159
+          ],
+          "columns": 2304,
+          "tp": 771,
+          "fp": 725,
+          "fn": 281,
+          "tn": 527,
+          "seconds": 0.031
+        },
+        {
+          "center": [
+            -14048,
+            40773
+          ],
+          "columns": 2304,
+          "tp": 0,
+          "fp": 11,
+          "fn": 0,
+          "tn": 2293,
+          "seconds": 0.148
+        },
+        {
+          "center": [
+            -49483,
+            92583
+          ],
+          "columns": 2304,
+          "tp": 0,
+          "fp": 0,
+          "fn": 144,
+          "tn": 2160,
+          "seconds": 0.149
+        }
+      ]
+    },
+    "final-seed": {
+      "totals": {
+        "columns": 13824,
+        "tp": 2369,
+        "fp": 2289,
+        "fn": 776,
+        "tn": 8390
+      },
+      "precision": 0.508587376556462,
+      "recall": 0.7532591414944356,
+      "f1": 0.60720235806741,
+      "sites": [
+        {
+          "center": [
+            1856,
+            1147
+          ],
+          "columns": 2304,
+          "tp": 461,
+          "fp": 673,
+          "fn": 112,
+          "tn": 1058,
+          "seconds": 0.23
+        },
+        {
+          "center": [
+            14840,
+            14327
+          ],
+          "columns": 2304,
+          "tp": 1124,
+          "fp": 727,
+          "fn": 244,
+          "tn": 209,
+          "seconds": 0.136
+        },
+        {
+          "center": [
+            -3191,
+            5149
+          ],
+          "columns": 2304,
+          "tp": 0,
+          "fp": 141,
+          "fn": 8,
+          "tn": 2155,
+          "seconds": 0.071
+        },
+        {
+          "center": [
+            13664,
+            14159
+          ],
+          "columns": 2304,
+          "tp": 784,
+          "fp": 737,
+          "fn": 268,
+          "tn": 515,
+          "seconds": 0.057
+        },
+        {
+          "center": [
+            -14048,
+            40773
+          ],
+          "columns": 2304,
+          "tp": 0,
+          "fp": 11,
+          "fn": 0,
+          "tn": 2293,
+          "seconds": 0.168
+        },
+        {
+          "center": [
+            -49483,
+            92583
+          ],
+          "columns": 2304,
+          "tp": 0,
+          "fp": 0,
+          "fn": 144,
+          "tn": 2160,
+          "seconds": 0.174
+        }
+      ]
+    },
+    "before-saved": {
+      "totals": {
+        "columns": 13824,
+        "tp": 3134,
+        "fp": 0,
+        "fn": 11,
+        "tn": 10679
+      },
+      "precision": 1.0,
+      "recall": 0.9965023847376788,
+      "f1": 0.9982481286829112,
+      "sites": [
+        {
+          "center": [
+            1856,
+            1147
+          ],
+          "columns": 2304,
+          "tp": 562,
+          "fp": 0,
+          "fn": 11,
+          "tn": 1731,
+          "seconds": 0.191
+        },
+        {
+          "center": [
+            14840,
+            14327
+          ],
+          "columns": 2304,
+          "tp": 1368,
+          "fp": 0,
+          "fn": 0,
+          "tn": 936,
+          "seconds": 0.105
+        },
+        {
+          "center": [
+            -3191,
+            5149
+          ],
+          "columns": 2304,
+          "tp": 8,
+          "fp": 0,
+          "fn": 0,
+          "tn": 2296,
+          "seconds": 0.077
+        },
+        {
+          "center": [
+            13664,
+            14159
+          ],
+          "columns": 2304,
+          "tp": 1052,
+          "fp": 0,
+          "fn": 0,
+          "tn": 1252,
+          "seconds": 0.025
+        },
+        {
+          "center": [
+            -14048,
+            40773
+          ],
+          "columns": 2304,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 2304,
+          "seconds": 0.158
+        },
+        {
+          "center": [
+            -49483,
+            92583
+          ],
+          "columns": 2304,
+          "tp": 144,
+          "fp": 0,
+          "fn": 0,
+          "tn": 2160,
+          "seconds": 0.146
+        }
+      ]
+    },
+    "final-saved": {
+      "totals": {
+        "columns": 13824,
+        "tp": 3145,
+        "fp": 0,
+        "fn": 0,
+        "tn": 10679
+      },
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "sites": [
+        {
+          "center": [
+            1856,
+            1147
+          ],
+          "columns": 2304,
+          "tp": 573,
+          "fp": 0,
+          "fn": 0,
+          "tn": 1731,
+          "seconds": 0.194
+        },
+        {
+          "center": [
+            14840,
+            14327
+          ],
+          "columns": 2304,
+          "tp": 1368,
+          "fp": 0,
+          "fn": 0,
+          "tn": 936,
+          "seconds": 0.104
+        },
+        {
+          "center": [
+            -3191,
+            5149
+          ],
+          "columns": 2304,
+          "tp": 8,
+          "fp": 0,
+          "fn": 0,
+          "tn": 2296,
+          "seconds": 0.075
+        },
+        {
+          "center": [
+            13664,
+            14159
+          ],
+          "columns": 2304,
+          "tp": 1052,
+          "fp": 0,
+          "fn": 0,
+          "tn": 1252,
+          "seconds": 0.025
+        },
+        {
+          "center": [
+            -14048,
+            40773
+          ],
+          "columns": 2304,
+          "tp": 0,
+          "fp": 0,
+          "fn": 0,
+          "tn": 2304,
+          "seconds": 0.16
+        },
+        {
+          "center": [
+            -49483,
+            92583
+          ],
+          "columns": 2304,
+          "tp": 144,
+          "fp": 0,
+          "fn": 0,
+          "tn": 2160,
+          "seconds": 0.148
+        }
+      ]
+    }
+  }
+}

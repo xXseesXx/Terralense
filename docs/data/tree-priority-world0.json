@@ -1,0 +1,20 @@
+{
+  "seed": 0,
+  "scope": "Read-only saved World 0 reference columns within [14816,14304,14864,14352]; actual engine PNG exports at 8 pixels/block with Trees, relief and 1-block contours enabled",
+  "saved_tree_columns_equal_over_ground_and_geology": 1368,
+  "wood_columns": 0,
+  "canopy_columns_with_corrected_relief": 1353,
+  "notes": [
+    "Trees are opaque. Both background layers retain relief and contours.",
+    "Shape/projection is independently checked by installed NBT extraction and Rust template silhouette tests.",
+    "This is a local rendering regression, not a global seed-generation accuracy estimate."
+  ],
+  "release_tests_passed": 468,
+  "source_check": {
+    "command": "python3 tools/extract_tree_templates.py --check",
+    "matched_entries": 61,
+    "matched_features": 158,
+    "matched_structures": 15
+  },
+  "default_tile_parity_cases": 22
+}

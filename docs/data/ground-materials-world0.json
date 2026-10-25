@@ -1,0 +1,100 @@
+{
+  "accuracy": 0.7275390625,
+  "columns": 2048,
+  "matched_material_or_fluid": 1490,
+  "mode": "seed_only_without_saved_ground",
+  "notes": [
+    "Fixed sites are biased toward volcanic and covered terrain; this is not a global accuracy estimate.",
+    "Only fluid class is scored on water, lava and magma columns; their fill heights are evaluated separately.",
+    "Saved-chunk extraction is checked independently in prism::surface tests and is not included in this seed-only score."
+  ],
+  "seed": 0,
+  "sites": [
+    {
+      "accuracy": 0.984375,
+      "columns": 256,
+      "matched_material_or_fluid": 252,
+      "mismatched_actual_materials": {
+        "tfc:grass/silt -> tfg:grass/oxisol": 4
+      },
+      "site": "floodplain_nearshore"
+    },
+    {
+      "accuracy": 0.203125,
+      "columns": 256,
+      "matched_material_or_fluid": 52,
+      "mismatched_actual_materials": {
+        "minecraft:water -> tfc:rock/raw/basalt": 6,
+        "tfc:rock/hardened/basalt -> tfc:rock/raw/basalt": 4,
+        "tfg:duff/mollisol -> tfc:rock/raw/basalt": 115,
+        "tfg:grass/mollisol -> Water(100)": 1,
+        "tfg:grass/mollisol -> tfc:rock/raw/basalt": 76,
+        "tfg:pile/volcanic_ash -> tfc:rock/raw/basalt": 2
+      },
+      "site": "active_shield_canopy"
+    },
+    {
+      "accuracy": 0.94921875,
+      "columns": 256,
+      "matched_material_or_fluid": 243,
+      "mismatched_actual_materials": {
+        "tfc:rock/magma/basalt -> tfc:rock/raw/basalt": 1,
+        "tfc:rock/raw/basalt -> Lava(101)": 1,
+        "tfc:rock/raw/basalt -> Magma(100)": 6,
+        "tfc:rock/raw/basalt -> Magma(101)": 1,
+        "tfc:rock/raw/basalt -> Magma(97)": 1,
+        "tfc:rock/raw/basalt -> Magma(99)": 3
+      },
+      "site": "cinder_cone"
+    },
+    {
+      "accuracy": 0.96484375,
+      "columns": 256,
+      "matched_material_or_fluid": 247,
+      "mismatched_actual_materials": {
+        "tfc:rock/magma/basalt -> tfc:rock/raw/basalt": 2,
+        "tfg:pile/volcanic_ash -> tfc:rock/raw/basalt": 6,
+        "tfg:pile/volcanic_ash -> tfc:rock/raw/limestone": 1
+      },
+      "site": "glacial_tuya"
+    },
+    {
+      "accuracy": 0.39453125,
+      "columns": 256,
+      "matched_material_or_fluid": 101,
+      "mismatched_actual_materials": {
+        "tfc:rock/raw/granite -> tfc:rock/raw/basalt": 135,
+        "tfg:pile/volcanic_ash -> tfc:rock/raw/basalt": 20
+      },
+      "site": "tuya_raw_rock"
+    },
+    {
+      "accuracy": 0.65625,
+      "columns": 256,
+      "matched_material_or_fluid": 168,
+      "mismatched_actual_materials": {
+        "tfc:grass/silty_loam -> tfc:sand/red": 88
+      },
+      "site": "saved_plain"
+    },
+    {
+      "accuracy": 1.0,
+      "columns": 256,
+      "matched_material_or_fluid": 256,
+      "mismatched_actual_materials": {},
+      "site": "river_waterlogged_bank"
+    },
+    {
+      "accuracy": 0.66796875,
+      "columns": 256,
+      "matched_material_or_fluid": 171,
+      "mismatched_actual_materials": {
+        "minecraft:blue_ice -> tfc:rock/raw/basalt": 52,
+        "minecraft:ice -> tfc:rock/raw/basalt": 2,
+        "tfc:rock/magma/basalt -> tfc:rock/raw/basalt": 14,
+        "tfg:pile/volcanic_ash -> tfc:rock/raw/basalt": 17
+      },
+      "site": "glacial_snow_rim"
+    }
+  ]
+}

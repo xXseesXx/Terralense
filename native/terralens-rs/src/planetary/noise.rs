@@ -163,7 +163,7 @@ impl Perlin {
 }
 
 #[derive(Clone)]
-pub(super) struct NormalNoise {
+pub(crate) struct NormalNoise {
     first: Perlin,
     second: Perlin,
     factor: f64,
@@ -199,11 +199,11 @@ impl NormalNoise {
     }
 }
 
-pub(super) fn root_positional(seed: i64) -> (u64, u64) {
+pub(crate) fn root_positional(seed: i64) -> (u64, u64) {
     let mut random = Xoroshiro::new(seed);
     (random.next_long() as u64, random.next_long() as u64)
 }
-pub(super) fn named_source(lo: u64, hi: u64, name: &str) -> Xoroshiro {
+pub(crate) fn named_source(lo: u64, hi: u64, name: &str) -> Xoroshiro {
     let digest = md5::compute(name.as_bytes());
     let read = |offset: usize| u64::from_be_bytes(digest.0[offset..offset + 8].try_into().unwrap());
     Xoroshiro::from_state(read(0) ^ lo, read(8) ^ hi)

@@ -1,0 +1,162 @@
+{
+  "schema": 1,
+  "seed": 0,
+  "saved_world": true,
+  "scope": "Release child engine, cold tile then layer switch; complete RGBA/biome/water payload SHA-256; excludes native GPU presentation",
+  "results": [
+    {
+      "case": "block-volcano-seed",
+      "layer": "Biomes",
+      "seconds": 0.83256,
+      "sha256": "e1fc591cbb70984f8734c089eb6dbe49ac47d43f9df5f3713adaab460702094e",
+      "bulk_bytes": 462864
+    },
+    {
+      "case": "block-volcano-seed",
+      "layer": "Rainfall",
+      "seconds": 0.049357,
+      "sha256": "ce9483f1288880983a23ffce6322e7ac474ebcf346376d27eb97d9345fb64fd9",
+      "bulk_bytes": 462864
+    },
+    {
+      "case": "block-volcano-save",
+      "layer": "Biomes",
+      "seconds": 0.808345,
+      "sha256": "9c5b50aff56b2344b5f2f96f054f255a1f294101e58995172b9a6992174f5790",
+      "bulk_bytes": 462864
+    },
+    {
+      "case": "block-volcano-save",
+      "layer": "Rainfall",
+      "seconds": 0.220795,
+      "sha256": "a834da2be75b26d90514b99b0045e3e252b79376d4e5515810b13692e9b80e21",
+      "bulk_bytes": 462864
+    },
+    {
+      "case": "block-water-save",
+      "layer": "Biomes",
+      "seconds": 0.834264,
+      "sha256": "8b893d914958c3f80d7391372832dcb74a0016f2782cb261cb5ed8dc2afe45b2",
+      "bulk_bytes": 462864
+    },
+    {
+      "case": "block-water-save",
+      "layer": "Rainfall",
+      "seconds": 0.107026,
+      "sha256": "58b8ff17e0cb03912230e1f26aaf73d2bf027200f72db30c5dd228129fd7b32c",
+      "bulk_bytes": 462864
+    },
+    {
+      "case": "medium-regional",
+      "layer": "Biomes",
+      "seconds": 3.090946,
+      "sha256": "8faf30ae0e715361b86c2005db0e10c5595ac9f40f5fa5c75d0dfa5a2aebd7d3",
+      "bulk_bytes": 462864
+    },
+    {
+      "case": "medium-regional",
+      "layer": "Rainfall",
+      "seconds": 0.185895,
+      "sha256": "f8b5105f76d9c560363d859f12ad1a7284945e4ac2dddc25236518ebf26eedd6",
+      "bulk_bytes": 462864
+    },
+    {
+      "case": "far-overview",
+      "layer": "Biomes",
+      "seconds": 1.647522,
+      "sha256": "c793e8f09f011300535b27d6dd787624e54ad2fca74ca90d0ea525d50a0bd349",
+      "bulk_bytes": 29712
+    },
+    {
+      "case": "far-overview",
+      "layer": "Rainfall",
+      "seconds": 0.054111,
+      "sha256": "4510d0b21cc48ef148711ebbc5dcbbcc391bf412970a3f0a603822506be7b80b",
+      "bulk_bytes": 29712
+    },
+    {
+      "case": "far-detail",
+      "layer": "Biomes",
+      "seconds": 7.559829,
+      "sha256": "5f26117b8e8bcde477ca37397f5a16c067b92f8dafe25365589e3faa09cd0f3b",
+      "bulk_bytes": 462864
+    },
+    {
+      "case": "far-detail",
+      "layer": "Rainfall",
+      "seconds": 0.227365,
+      "sha256": "14a9a27235c464b081c8156fc8eb516f603903ed2e7b341b7df9c0d8c5b7bc6e",
+      "bulk_bytes": 462864
+    },
+    {
+      "case": "unshaded-block",
+      "layer": "Biomes",
+      "seconds": 0.760618,
+      "sha256": "5d27b0373d5867a25a3b48720caefa2eac4563ae459dd49dfc74e05068cbf7e1",
+      "bulk_bytes": 462864
+    },
+    {
+      "case": "unshaded-block",
+      "layer": "Rainfall",
+      "seconds": 0.03648,
+      "sha256": "591da4b69d22bfb068835aed374325c74845c144a4302b7ecbe0de0abaaaac69",
+      "bulk_bytes": 462864
+    },
+    {
+      "case": "unshaded-medium",
+      "layer": "Biomes",
+      "seconds": 3.045931,
+      "sha256": "3eb1ea301832a40c8c1463626d93f1a826094917e5c780b8fc8b847355962d6e",
+      "bulk_bytes": 462864
+    },
+    {
+      "case": "unshaded-medium",
+      "layer": "Rainfall",
+      "seconds": 0.163185,
+      "sha256": "d28f895c624b2ea18b3a2886b0eb4ddad18b65721cc2e457edc9cd56f24e593c",
+      "bulk_bytes": 462864
+    },
+    {
+      "case": "moon",
+      "layer": "Biomes",
+      "seconds": 0.655125,
+      "sha256": "e8661e48c7c12c70d8f4243ad15092a5584517bc7952984a3e71c9ed7c787d0c",
+      "bulk_bytes": 29712
+    },
+    {
+      "case": "moon",
+      "layer": "Rainfall",
+      "seconds": 0.013849,
+      "sha256": "e8661e48c7c12c70d8f4243ad15092a5584517bc7952984a3e71c9ed7c787d0c",
+      "bulk_bytes": 29712
+    },
+    {
+      "case": "mars",
+      "layer": "Biomes",
+      "seconds": 0.545021,
+      "sha256": "964ea6785ecc3bc7080691f02c0dc004fb4e829fae1f686c9ced020146540364",
+      "bulk_bytes": 29712
+    },
+    {
+      "case": "mars",
+      "layer": "Rainfall",
+      "seconds": 0.02112,
+      "sha256": "964ea6785ecc3bc7080691f02c0dc004fb4e829fae1f686c9ced020146540364",
+      "bulk_bytes": 29712
+    },
+    {
+      "case": "beneath",
+      "layer": "Biomes",
+      "seconds": 0.030476,
+      "sha256": "8177cdafc98698d722a102b6fda3c3a023b5e66cda708f001fe521d235a11c7e",
+      "bulk_bytes": 29712
+    },
+    {
+      "case": "beneath",
+      "layer": "Rainfall",
+      "seconds": 0.018865,
+      "sha256": "8177cdafc98698d722a102b6fda3c3a023b5e66cda708f001fe521d235a11c7e",
+      "bulk_bytes": 29712
+    }
+  ]
+}

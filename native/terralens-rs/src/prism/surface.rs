@@ -15,7 +15,7 @@ const SECTOR: u64 = 4096;
 const MAX_COMPRESSED: usize = 16 * 1024 * 1024;
 const MAX_DECOMPRESSED: usize = 64 * 1024 * 1024;
 
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct SurfaceChunk {
     pub chunk_x: i32,
     pub chunk_z: i32,
@@ -23,7 +23,7 @@ pub struct SurfaceChunk {
     pub columns: Vec<SurfaceColumn>,
 }
 
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct SurfaceColumn {
     pub y: i32,
     pub block: String,
@@ -31,6 +31,226 @@ pub struct SurfaceColumn {
     pub crop: Option<String>,
     /// A compact approximate display tint, not a sampled game texture.
     pub color: [u8; 3],
+}
+
+/// The saved substrate under foliage and crop cover for one chunk-local column.
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+pub struct GroundChunk {
+    pub chunk_x: i32,
+    pub chunk_z: i32,
+    /// Chunk-local columns in z-major order: `z * 16 + x`.
+    pub columns: Vec<GroundColumn>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+pub struct GroundColumn {
+    /// `i32::MIN` and an empty block identify a column with no saved substrate.
+    pub y: i32,
+    pub block: String,
+}
+
+/// Read the saved ground material below plants, crops, trees and decorative cover.
+/// The ordinary surface reader remains unchanged and continues to report foliage.
+pub fn read_ground_tile(
+    world_path: &Path,
+    chunk_x: i32,
+    chunk_z: i32,
+) -> Result<Option<GroundChunk>, String> {
+    let Some(root) = read_chunk_nbt(world_path, chunk_x, chunk_z)? else {
+        return Ok(None);
+    };
+    Ok(ground_chunk(&root, chunk_x, chunk_z))
+}
+
+fn ground_chunk(root: &Nbt, chunk_x: i32, chunk_z: i32) -> Option<GroundChunk> {
+    let data = root.get("Level").unwrap_or(root);
+    if !matches!(
+        data.get("Status").and_then(Nbt::string),
+        Some("minecraft:full" | "full")
+    ) {
+        return None;
+    }
+    let sections = data
+        .get("sections")
+        .or_else(|| data.get("Sections"))?
+        .list()?;
+    let mut decoded = Vec::with_capacity(sections.len());
+    for section in sections {
+        let section_y = section.get("Y")?.i64()? as i32;
+        let (palette, packed) = if let Some(states) = section.get("block_states") {
+            (
+                states.get("palette")?.list()?,
+                states.get("data").and_then(Nbt::long_array),
+            )
+        } else {
+            (
+                section.get("Palette")?.list()?,
+                section.get("BlockStates").and_then(Nbt::long_array),
+            )
+        };
+        if palette.is_empty() {
+            continue;
+        }
+        let names = palette.iter().map(block_name).collect::<Option<Vec<_>>>()?;
+        let fluids = palette.iter().map(block_fluid).collect::<Vec<_>>();
+        let (bits, per_long, mask) = if names.len() <= 1 {
+            (0, 0, 0)
+        } else {
+            let packed = packed?;
+            let bits = (usize::BITS - (names.len() - 1).leading_zeros()).max(4) as usize;
+            if bits > 32 {
+                continue;
+            }
+            let per_long = 64 / bits;
+            if packed.len() < 4096usize.div_ceil(per_long) {
+                continue;
+            }
+            (bits, per_long, (1u64 << bits) - 1)
+        };
+        decoded.push((section_y, names, fluids, packed, bits, per_long, mask));
+    }
+    decoded.sort_by_key(|(y, ..)| std::cmp::Reverse(*y));
+    let mut best: Vec<Option<(i32, String)>> = vec![None; 256];
+    for (section_y, names, fluids, packed, bits, per_long, mask) in decoded {
+        if best.iter().all(Option::is_some) {
+            break;
+        }
+        for dy in (0..16usize).rev() {
+            let y = section_y * 16 + dy as i32;
+            for z in 0..16usize {
+                for x in 0..16usize {
+                    let column = z * 16 + x;
+                    if best[column].is_some() {
+                        continue;
+                    }
+                    let palette_index = if names.len() == 1 {
+                        0
+                    } else {
+                        let index = (dy * 16 + z) * 16 + x;
+                        let word = packed.as_ref()?[index / per_long] as u64;
+                        ((word >> ((index % per_long) * bits)) & mask) as usize
+                    };
+                    let name = names.get(palette_index)?;
+                    if !is_air(name) && is_ground_material(name) {
+                        best[column] = Some((y, name.clone()));
+                    } else if let Some(fluid) = fluids.get(palette_index).cloned().flatten() {
+                        // Plants and loose blocks can contain one fluid layer. Keep that
+                        // saved surface-water signal so a riverbed does not become dry.
+                        best[column] = Some((y, fluid));
+                    }
+                }
+            }
+            if best.iter().all(Option::is_some) {
+                break;
+            }
+        }
+    }
+    if best.iter().all(Option::is_none) {
+        return None;
+    }
+    Some(GroundChunk {
+        chunk_x,
+        chunk_z,
+        columns: best
+            .into_iter()
+            .map(|cell| match cell {
+                Some((y, block)) => GroundColumn { y, block },
+                None => GroundColumn {
+                    y: i32::MIN,
+                    block: String::new(),
+                },
+            })
+            .collect(),
+    })
+}
+
+fn block_fluid(state: &Nbt) -> Option<String> {
+    let properties = state.get("Properties")?;
+    let value = ["fluid", "fluid_type", "fluid_state"]
+        .iter()
+        .find_map(|key| properties.get(key).and_then(Nbt::string));
+    if let Some(value) = value {
+        if value == "empty" || value == "none" {
+            return None;
+        }
+        // TFC's fluid property serializes vanilla water as `water` even on
+        // modded plants. Block and fluid namespaces need not be the same.
+        return match value {
+            "water" | "minecraft:water" => Some("minecraft:water".into()),
+            "salt_water" | "tfc:salt_water" => Some("tfc:fluid/salt_water".into()),
+            "river_water" | "tfc:river_water" => Some("tfc:fluid/river_water".into()),
+            "spring_water" | "tfc:spring_water" => Some("tfc:fluid/spring_water".into()),
+            "lava" | "minecraft:lava" => Some("minecraft:lava".into()),
+            _ => None,
+        };
+    }
+    let waterlogged = properties
+        .get("waterlogged")
+        .and_then(Nbt::string)
+        .is_some_and(|value| value == "true");
+    waterlogged.then(|| "minecraft:water".to_owned())
+}
+
+fn is_ground_material(block: &str) -> bool {
+    let path = block.rsplit_once(':').map_or(block, |(_, p)| p);
+    if path.ends_with("water")
+        || path.ends_with("lava")
+        || path.ends_with("magma")
+        || path.contains("/magma/")
+        || matches!(path, "magma_block" | "hardened_clay")
+    {
+        return true;
+    }
+    // Keep this as a terrain allowlist: trees, crops, exposed decoration, containers,
+    // ores and generated building blocks are traversed downward to their substrate.
+    path.starts_with("grass/")
+        || path.starts_with("clay_grass/")
+        || path.starts_with("dirt/")
+        || path.starts_with("coarse_dirt/")
+        || path.starts_with("duff/")
+        || path.starts_with("mud/")
+        || path.starts_with("clay/")
+        || path.starts_with("rooted_dirt/")
+        || path.starts_with("farmland/")
+        || path.starts_with("grass_path/")
+        || path.starts_with("raw_sandstone/")
+        || path.starts_with("sand/")
+        || path == "pile/volcanic_ash"
+        || path.starts_with("rock/raw/")
+        || path.starts_with("rock/gravel/")
+        || path.starts_with("rock/hardened/")
+        || path.starts_with("rock/cobble/")
+        || path.starts_with("rock/mossy_cobble/")
+        || path.starts_with("muddy_roots/")
+        || matches!(
+            path,
+            "stone"
+                | "tuff"
+                | "halite"
+                | "sea_ice"
+                | "mud"
+                | "rooted_dirt"
+                | "clay"
+                | "deepslate"
+                | "dirt"
+                | "coarse_dirt"
+                | "podzol"
+                | "mycelium"
+                | "grass_block"
+                | "farmland"
+                | "dirt_path"
+                | "sand"
+                | "red_sand"
+                | "gravel"
+                | "snow_block"
+                | "ice"
+                | "packed_ice"
+                | "blue_ice"
+                | "netherrack"
+                | "basalt"
+                | "blackstone"
+                | "end_stone"
+        )
 }
 
 /// Read one generated chunk from `world/region/r.<rx>.<rz>.mca` and extract its
@@ -166,7 +386,11 @@ fn biome_chunk(root: &Nbt, y: i32) -> Option<Vec<String>> {
     None
 }
 
-fn read_chunk_nbt(world_path: &Path, chunk_x: i32, chunk_z: i32) -> Result<Option<Nbt>, String> {
+pub(super) fn read_chunk_nbt(
+    world_path: &Path,
+    chunk_x: i32,
+    chunk_z: i32,
+) -> Result<Option<Nbt>, String> {
     let (region_x, region_z, slot) = region_address(chunk_x, chunk_z);
     let path = world_path
         .join("region")
@@ -193,7 +417,7 @@ fn read_chunk_nbt(world_path: &Path, chunk_x: i32, chunk_z: i32) -> Result<Optio
         return Ok(None);
     }
     let len = u32::from_be_bytes(record_head[..4].try_into().unwrap()) as usize;
-    if len < 1 || len > MAX_COMPRESSED || len + 4 > sectors * SECTOR as usize {
+    if !(1..=MAX_COMPRESSED).contains(&len) || len + 4 > sectors * SECTOR as usize {
         return Ok(None);
     }
     let mut compressed = vec![0; len - 1];
@@ -410,7 +634,11 @@ fn surface_chunk(root: &Nbt, chunk_x: i32, chunk_z: i32) -> Option<SurfaceChunk>
         .get("sections")
         .or_else(|| data.get("Sections"))?
         .list()?;
-    let mut best: Vec<Option<(i32, String)>> = vec![None; 256];
+    // Validate section metadata up front, then walk from the highest section down.
+    // Saved chunks commonly have many vertical sections, but once a column's top
+    // block is found its lower packed indices cannot affect a surface-only result.
+    // Keeping the packed arrays borrowed also avoids cloning their ~2 KiB buffers.
+    let mut decoded = Vec::with_capacity(sections.len());
     for section in sections {
         let section_y = section.get("Y")?.i64()? as i32;
         let (palette, packed) = if let Some(states) = section.get("block_states") {
@@ -428,31 +656,60 @@ fn surface_chunk(root: &Nbt, chunk_x: i32, chunk_z: i32) -> Option<SurfaceChunk>
             continue;
         }
         let names = palette.iter().map(block_name).collect::<Option<Vec<_>>>()?;
+        let (bits, per_long, mask) = if names.len() == 1 {
+            (0usize, 0usize, 0u64)
+        } else {
+            let packed = packed?;
+            let bits = (usize::BITS - (names.len() - 1).leading_zeros()).max(4) as usize;
+            if bits > 32 {
+                decoded.push((section_y, names, None, bits, 0, 0));
+                continue;
+            }
+            let per_long = 64 / bits;
+            if packed.len() < 4096usize.div_ceil(per_long) {
+                decoded.push((section_y, names, None, bits, per_long, 0));
+                continue;
+            }
+            (bits, per_long, (1u64 << bits) - 1)
+        };
+        decoded.push((section_y, names, packed, bits, per_long, mask));
+    }
+    // Stable ordering preserves the old first-section-wins behavior for malformed
+    // duplicate-Y input while making normal (unique-Y) input independent of order.
+    decoded.sort_by_key(|(section_y, ..)| std::cmp::Reverse(*section_y));
+    let mut best: Vec<Option<(i32, String)>> = vec![None; 256];
+    for (section_y, names, packed, bits, per_long, mask) in decoded {
+        let section_top = section_y * 16 + 15;
+        if best
+            .iter()
+            .all(|cell| cell.as_ref().is_some_and(|(y, _)| *y >= section_top))
+        {
+            break;
+        }
         if names.len() == 1 {
-            let name = names[0].clone();
-            if !is_air(&name) {
-                let y = section_y * 16 + 15;
+            let name = &names[0];
+            if !is_air(name) {
+                let y = section_top;
                 for item in &mut best {
-                    if item.as_ref().is_none_or(|(old, _)| y > *old) {
+                    if item.as_ref().is_none_or(|(old_y, _)| y > *old_y) {
                         *item = Some((y, name.clone()));
                     }
                 }
             }
             continue;
         }
-        let packed = packed?;
-        let bits = (usize::BITS - (names.len() - 1).leading_zeros()).max(4) as usize;
-        if bits > 32 {
-            continue;
-        }
-        let per_long = 64 / bits;
-        let mask = (1u64 << bits) - 1;
-        if packed.len() < 4096usize.div_ceil(per_long) {
-            continue;
-        }
-        for y in 0..16usize {
+        let Some(packed) = packed else { continue };
+        for y in (0..16usize).rev() {
+            let block_y = section_y * 16 + y as i32;
             for z in 0..16usize {
                 for x in 0..16usize {
+                    let column = z * 16 + x;
+                    if best[column]
+                        .as_ref()
+                        .is_some_and(|(old_y, _)| *old_y >= block_y)
+                    {
+                        continue;
+                    }
                     let index = (y * 16 + z) * 16 + x;
                     let word = packed[index / per_long] as u64;
                     let palette_index = ((word >> ((index % per_long) * bits)) & mask) as usize;
@@ -462,14 +719,7 @@ fn surface_chunk(root: &Nbt, chunk_x: i32, chunk_z: i32) -> Option<SurfaceChunk>
                     if is_air(name) {
                         continue;
                     }
-                    let column = z * 16 + x;
-                    let block_y = section_y * 16 + y as i32;
-                    if best[column]
-                        .as_ref()
-                        .is_none_or(|(old_y, _)| block_y > *old_y)
-                    {
-                        best[column] = Some((block_y, name.clone()));
-                    }
+                    best[column] = Some((block_y, name.clone()));
                 }
             }
         }
@@ -565,6 +815,15 @@ fn is_crop(block: &str) -> bool {
     .any(|needle| leaf.contains(needle))
 }
 fn tint(block: &str) -> [u8; 3] {
+    match crate::volcanic_lava::Surface::from_block(block, 0) {
+        Some(crate::volcanic_lava::Surface::Lava(_)) => return crate::volcanic_lava::COLOR,
+        Some(crate::volcanic_lava::Surface::Magma(_)) => return crate::volcanic_lava::MAGMA_COLOR,
+        Some(crate::volcanic_lava::Surface::Water(_)) => return [43, 105, 133],
+        None => {}
+    }
+    if let Some(color) = crate::ground_palette::color(block) {
+        return color;
+    }
     let path = block.rsplit_once(':').map_or(block, |(_, p)| p);
     let s = path.rsplit('/').next().unwrap_or(path);
     // These representative values are averages of the shipped TFG / Ad Astra
@@ -622,7 +881,7 @@ fn tint(block: &str) -> [u8; 3] {
 }
 
 impl Nbt {
-    fn long_array(&self) -> Option<&[i64]> {
+    pub(super) fn long_array(&self) -> Option<&[i64]> {
         if let Self::LongArray(v) = self {
             Some(v)
         } else {
@@ -640,6 +899,214 @@ fn region_address(chunk_x: i32, chunk_z: i32) -> (i32, i32, usize) {
 mod tests {
     use super::*;
     use std::collections::HashMap;
+
+    #[test]
+    fn ground_below_cover_matches_independent_saved_chunk_fixtures() {
+        let fixture: serde_json::Value = serde_json::from_str(include_str!(
+            "../../tests/fixtures/ground/seed0-ground-samples.json"
+        ))
+        .unwrap();
+        let snapshots: &[(&str, &[u8])] = &[
+            (
+                "floodplain_nearshore",
+                include_bytes!("../../tests/fixtures/ground/floodplain_nearshore.nbt.gz"),
+            ),
+            (
+                "active_shield_canopy",
+                include_bytes!("../../tests/fixtures/ground/active_shield_canopy.nbt.gz"),
+            ),
+            (
+                "cinder_cone",
+                include_bytes!("../../tests/fixtures/ground/cinder_cone.nbt.gz"),
+            ),
+            (
+                "glacial_tuya",
+                include_bytes!("../../tests/fixtures/ground/glacial_tuya.nbt.gz"),
+            ),
+            (
+                "tuya_raw_rock",
+                include_bytes!("../../tests/fixtures/ground/tuya_raw_rock.nbt.gz"),
+            ),
+            (
+                "saved_plain",
+                include_bytes!("../../tests/fixtures/ground/saved_plain.nbt.gz"),
+            ),
+            (
+                "river_waterlogged_bank",
+                include_bytes!("../../tests/fixtures/ground/river_waterlogged_bank.nbt.gz"),
+            ),
+            (
+                "glacial_snow_rim",
+                include_bytes!("../../tests/fixtures/ground/glacial_snow_rim.nbt.gz"),
+            ),
+        ];
+        let mut count = 0;
+        let mut covered = 0;
+        for site in fixture["sites"].as_array().unwrap() {
+            let bytes = snapshots
+                .iter()
+                .find(|(name, _)| Some(*name) == site["name"].as_str())
+                .unwrap()
+                .1;
+            let mut raw = Vec::new();
+            GzDecoder::new(bytes).read_to_end(&mut raw).unwrap();
+            let nbt = decode_nbt_with_long_arrays(&raw).unwrap();
+            let cx = site["chunk"][0].as_i64().unwrap() as i32;
+            let cz = site["chunk"][1].as_i64().unwrap() as i32;
+            let actual = ground_chunk(&nbt, cx, cz).unwrap();
+            for row in site["columns"].as_array().unwrap() {
+                let index =
+                    row["z"].as_u64().unwrap() as usize * 16 + row["x"].as_u64().unwrap() as usize;
+                let column = &actual.columns[index];
+                let block = row["ground_block"].as_str().unwrap();
+                assert_eq!(column.block, block, "{} column {index}", site["name"]);
+                assert_eq!(i64::from(column.y), row["ground_y"].as_i64().unwrap());
+                if crate::volcanic_lava::Surface::from_block(block, column.y).is_none()
+                    && !crate::ground_palette::is_grass_soil(block)
+                {
+                    assert!(
+                        crate::ground_palette::color(block).is_some(),
+                        "missing ground color for {block}"
+                    );
+                }
+                count += 1;
+                covered += usize::from(row["top_block"] != row["ground_block"]);
+            }
+        }
+        assert_eq!(count, 2048);
+        assert!(
+            covered >= 800,
+            "fixtures must exercise ground below actual cover"
+        );
+    }
+
+    #[test]
+    fn waterlogged_plants_keep_the_saved_fluid_plane_above_the_gravel() {
+        let wet = |fluid: &str| {
+            Nbt::Compound(HashMap::from([
+                ("Name".into(), Nbt::String("tfc:plant/duckweed".into())),
+                (
+                    "Properties".into(),
+                    Nbt::Compound(HashMap::from([("fluid".into(), Nbt::String(fluid.into()))])),
+                ),
+            ]))
+        };
+        let mut values = vec![0usize; 4096];
+        values[14 * 256] = 2; // waterlogged plant at Y62
+        values[13 * 256] = 1; // gravel bed at Y61
+        values[14 * 256 + 1] = 3; // dry plant over the adjacent gravel
+        values[13 * 256 + 1] = 1;
+        let nbt = full_chunk(vec![packed_custom(
+            3,
+            vec![
+                block("minecraft:air"),
+                block("tfc:rock/gravel/shale"),
+                wet("water"),
+                wet("empty"),
+            ],
+            &values,
+            4,
+        )]);
+        let chunk = ground_chunk(&nbt, 0, 0).unwrap();
+        assert_eq!(
+            (&*chunk.columns[0].block, chunk.columns[0].y),
+            ("minecraft:water", 62)
+        );
+        assert_eq!(
+            (&*chunk.columns[1].block, chunk.columns[1].y),
+            ("tfc:rock/gravel/shale", 61)
+        );
+        assert_eq!(
+            block_fluid(&wet("salt_water")).as_deref(),
+            Some("tfc:fluid/salt_water")
+        );
+    }
+
+    #[test]
+    fn farm_soil_paths_and_raw_sandstone_are_ground_beneath_crop_cover() {
+        let mut values = vec![0; 4096];
+        values[4 * 256] = 1; // crop at Y68
+        values[3 * 256] = 2; // farmland at Y67
+        values[2 * 256 + 1] = 3; // path at Y66
+        values[256 + 2] = 4; // raw sandstone at Y65
+        let nbt = full_chunk(vec![
+            section(3, vec![block("tfc:rock/raw/granite")], None),
+            packed_custom(
+                4,
+                vec![
+                    block("minecraft:air"),
+                    block("tfc:crop/wheat"),
+                    block("tfc:farmland/loam"),
+                    block("tfc:grass_path/silt"),
+                    block("tfc:raw_sandstone/red"),
+                ],
+                &values,
+                4,
+            ),
+        ]);
+        let chunk = ground_chunk(&nbt, 0, 0).unwrap();
+        for (i, (block, y)) in [
+            ("tfc:farmland/loam", 67),
+            ("tfc:grass_path/silt", 66),
+            ("tfc:raw_sandstone/red", 65),
+        ]
+        .iter()
+        .enumerate()
+        {
+            assert_eq!(chunk.columns[i].block, *block);
+            assert_eq!(chunk.columns[i].y, *y);
+            assert!(crate::ground_palette::color(block).is_some());
+        }
+        for soil in ["loam", "sandy_loam", "silty_loam", "silt"] {
+            assert!(crate::ground_palette::is_grass_soil(&format!(
+                "tfc:clay_grass/{soil}"
+            )));
+        }
+    }
+
+    #[test]
+    fn boulders_and_special_soils_remain_visible_beneath_vegetation() {
+        let materials = [
+            "tfc:rock/mossy_cobble/basalt",
+            "tfg:duff/loam",
+            "tfg:grass/alfisol",
+            "tfg:dirt/podzol",
+            "tfg:coarse_dirt/podzol",
+            "tfg:muddy_roots/podzol",
+        ];
+        let mut palette = vec![block("minecraft:air"), block("tfc:plant/short_grass")];
+        palette.extend(materials.iter().map(|name| block(name)));
+        let mut values = vec![0; 4096];
+        for i in 0..materials.len() {
+            values[4 * 256 + i] = 1;
+            values[3 * 256 + i] = i + 2;
+        }
+        let chunk = ground_chunk(
+            &full_chunk(vec![packed_custom(4, palette, &values, 4)]),
+            0,
+            0,
+        )
+        .unwrap();
+        for (i, material) in materials.iter().enumerate() {
+            assert_eq!(
+                (chunk.columns[i].block.as_str(), chunk.columns[i].y),
+                (*material, 67)
+            );
+            assert!(
+                crate::ground_palette::color(material).is_some(),
+                "{material}"
+            );
+        }
+        // The top texture, rather than the side of a dirt column, supplies the map color.
+        assert_eq!(
+            crate::ground_palette::color("tfg:coarse_dirt/podzol"),
+            Some([106, 63, 42])
+        );
+        assert_eq!(
+            crate::ground_palette::color("tfc:rock/mossy_cobble/basalt"),
+            Some([75, 85, 63])
+        );
+    }
 
     fn block(name: &str) -> Nbt {
         Nbt::Compound(HashMap::from([("Name".into(), Nbt::String(name.into()))]))
@@ -678,6 +1145,215 @@ mod tests {
             ],
             Some(packed.into_iter().map(|v| v as i64).collect()),
         )
+    }
+
+    // Frozen implementation used as an output oracle for the tile-only fast path.
+    fn reference_surface_chunk(root: &Nbt, chunk_x: i32, chunk_z: i32) -> Option<SurfaceChunk> {
+        let data = root.get("Level").unwrap_or(root);
+        let status = data.get("Status")?.string()?;
+        if status != "minecraft:full" && status != "full" {
+            return None;
+        }
+        let sections = data
+            .get("sections")
+            .or_else(|| data.get("Sections"))?
+            .list()?;
+        let mut best: Vec<Option<(i32, String)>> = vec![None; 256];
+        for section in sections {
+            let section_y = section.get("Y")?.i64()? as i32;
+            let (palette, packed) = if let Some(states) = section.get("block_states") {
+                (
+                    states.get("palette")?.list()?,
+                    states.get("data").and_then(Nbt::long_array),
+                )
+            } else {
+                (
+                    section.get("Palette")?.list()?,
+                    section.get("BlockStates").and_then(Nbt::long_array),
+                )
+            };
+            if palette.is_empty() {
+                continue;
+            }
+            let names = palette.iter().map(block_name).collect::<Option<Vec<_>>>()?;
+            if names.len() == 1 {
+                let name = names[0].clone();
+                if !is_air(&name) {
+                    let y = section_y * 16 + 15;
+                    for item in &mut best {
+                        if item.as_ref().is_none_or(|(old, _)| y > *old) {
+                            *item = Some((y, name.clone()));
+                        }
+                    }
+                }
+                continue;
+            }
+            let packed = packed?;
+            let bits = (usize::BITS - (names.len() - 1).leading_zeros()).max(4) as usize;
+            if bits > 32 {
+                continue;
+            }
+            let per_long = 64 / bits;
+            let mask = (1u64 << bits) - 1;
+            if packed.len() < 4096usize.div_ceil(per_long) {
+                continue;
+            }
+            for y in 0..16usize {
+                for z in 0..16usize {
+                    for x in 0..16usize {
+                        let index = (y * 16 + z) * 16 + x;
+                        let palette_index = ((packed[index / per_long] as u64
+                            >> ((index % per_long) * bits))
+                            & mask) as usize;
+                        let Some(name) = names.get(palette_index) else {
+                            continue;
+                        };
+                        if is_air(name) {
+                            continue;
+                        }
+                        let column = z * 16 + x;
+                        let block_y = section_y * 16 + y as i32;
+                        if best[column].as_ref().is_none_or(|(old, _)| block_y > *old) {
+                            best[column] = Some((block_y, name.clone()));
+                        }
+                    }
+                }
+            }
+        }
+        if best.iter().all(Option::is_none) {
+            return None;
+        }
+        Some(SurfaceChunk {
+            chunk_x,
+            chunk_z,
+            columns: best
+                .into_iter()
+                .map(|cell| {
+                    cell.map(|(y, block)| make_column(y, block))
+                        .unwrap_or_else(empty_column)
+                })
+                .collect(),
+        })
+    }
+
+    fn packed_custom(y: i64, names: Vec<Nbt>, values: &[usize], bits: usize) -> Nbt {
+        let per_long = 64 / bits;
+        let mut packed = vec![0u64; 4096usize.div_ceil(per_long)];
+        for (i, value) in values.iter().copied().enumerate() {
+            packed[i / per_long] |= (value as u64) << ((i % per_long) * bits);
+        }
+        section(
+            y,
+            names,
+            Some(packed.into_iter().map(|v| v as i64).collect()),
+        )
+    }
+
+    #[test]
+    fn optimized_surface_tile_matches_frozen_reference_for_order_palettes_and_malformed_sections() {
+        let palette = vec![
+            block("minecraft:air"),
+            block("tfc:wood/leaves/oak"),
+            block("tfc:crop/wheat"),
+        ];
+        let mut values = vec![0usize; 4096];
+        // One lower block and two higher blocks in different columns.
+        values[256 + 2 * 16 + 3] = 1;
+        values[14 * 256 + 2 * 16 + 3] = 2;
+        values[7 * 256 + 5 * 16 + 6] = 1;
+        let high = packed_custom(4, palette, &values, 4);
+        let lower = section(2, vec![block("minecraft:stone")], None);
+        // Deliberately reverse section order; output must remain height sorted.
+        let ordinary = full_chunk(vec![lower.clone(), high.clone()]);
+        assert_eq!(
+            surface_chunk(&ordinary, -7, 12),
+            reference_surface_chunk(&ordinary, -7, 12)
+        );
+
+        // A short but present packed array is ignored by the old implementation;
+        // it must not hide a valid lower uniform section in the fast path.
+        let short = section(
+            9,
+            vec![block("minecraft:air"), block("minecraft:lava")],
+            Some(vec![0]),
+        );
+        let malformed_short = full_chunk(vec![short, lower]);
+        assert_eq!(
+            surface_chunk(&malformed_short, 0, 0),
+            reference_surface_chunk(&malformed_short, 0, 0)
+        );
+
+        // Missing packed data remains a hard malformed-section rejection.
+        let missing = full_chunk(vec![section(
+            4,
+            vec![block("minecraft:air"), block("minecraft:stone")],
+            None,
+        )]);
+        assert_eq!(
+            surface_chunk(&missing, 0, 0),
+            reference_surface_chunk(&missing, 0, 0)
+        );
+        assert!(surface_chunk(&missing, 0, 0).is_none());
+
+        // Invalid palette indices are skipped, matching the existing decoder.
+        let invalid_index = packed_custom(
+            0,
+            vec![block("minecraft:air"), block("minecraft:stone")],
+            &[3; 4096],
+            4,
+        );
+        let root = full_chunk(vec![invalid_index]);
+        assert_eq!(
+            surface_chunk(&root, 0, 0),
+            reference_surface_chunk(&root, 0, 0)
+        );
+        assert!(surface_chunk(&root, 0, 0).is_none());
+
+        let incomplete = Nbt::Compound(HashMap::from([
+            ("Status".into(), Nbt::String("minecraft:features".into())),
+            ("sections".into(), Nbt::List(vec![high])),
+        ]));
+        assert_eq!(
+            surface_chunk(&incomplete, 0, 0),
+            reference_surface_chunk(&incomplete, 0, 0)
+        );
+    }
+
+    #[test]
+    fn optimized_surface_tile_keeps_max_height_across_duplicate_section_y() {
+        let palette = || vec![block("minecraft:air"), block("tfc:crop/wheat")];
+        let mut lower = vec![0usize; 4096];
+        let mut higher = vec![0usize; 4096];
+        for column in 0..256 {
+            lower[256 + column] = 1;
+            higher[15 * 256 + column] = 1;
+        }
+        // The old decoder chooses the highest block when duplicate section-Y
+        // records appear, even though these records are malformed Anvil input.
+        let root = full_chunk(vec![
+            packed_custom(0, palette(), &lower, 4),
+            packed_custom(0, palette(), &higher, 4),
+        ]);
+        let actual = surface_chunk(&root, 0, 0).unwrap();
+        assert_eq!(actual, reference_surface_chunk(&root, 0, 0).unwrap());
+        assert!(actual.columns.iter().all(|column| column.y == 15));
+    }
+
+    #[test]
+    fn optimized_surface_tile_matches_saved_chunks_when_world_path_is_provided() {
+        let Ok(path) = std::env::var("TERRALENS_TEST_WORLD") else {
+            return;
+        };
+        let path = Path::new(&path);
+        for (cx, cz) in [(-79, 293), (854, 884), (-173, 282), (3122, 1764)] {
+            let root = read_chunk_nbt(path, cx, cz)
+                .unwrap()
+                .expect("requested saved chunk");
+            assert_eq!(
+                surface_chunk(&root, cx, cz),
+                reference_surface_chunk(&root, cx, cz)
+            );
+        }
     }
 
     #[test]
@@ -826,7 +1502,7 @@ mod tests {
         ]);
         let chunk = surface_chunk(&root, 0, 0).unwrap();
         assert_eq!(chunk.columns.len(), 256);
-        let crop = &chunk.columns[1 * 16 + 2];
+        let crop = &chunk.columns[16 + 2];
         assert_eq!((crop.y, crop.crop.as_deref()), (5, Some("tfc:crop/maize")));
         let leaves = &chunk.columns[4 * 16 + 3];
         assert_eq!((leaves.y, leaves.tree.as_deref()), (9, Some("oak")));
@@ -887,7 +1563,9 @@ mod tests {
         assert_eq!(tint("tfg:rock/gravel_moon_deepslate"), [54, 61, 65]);
         assert_eq!(tint("ad_astra:mars_stone"), [196, 126, 85]);
         assert_eq!(tint("tfg:rock/gravel_mars"), [196, 126, 85]);
-        assert_eq!(tint("minecraft:red_sand"), [196, 126, 85]);
+        // Vanilla red sand uses its own shipped texture average, independently
+        // of the representative Martian stone palette.
+        assert_eq!(tint("minecraft:red_sand"), [189, 101, 32]);
     }
 
     #[test]
@@ -907,8 +1585,12 @@ mod tests {
         )
         .unwrap();
         assert_eq!(water_only.columns[0].block, "minecraft:water");
-        assert_eq!(water_only.columns[0].color, [76, 137, 176]);
-        assert_eq!(tint("minecraft:lava"), [226, 91, 30]);
+        assert_eq!(water_only.columns[0].color, [43, 105, 133]);
+        assert_eq!(tint("minecraft:lava"), crate::volcanic_lava::COLOR);
+        assert_eq!(
+            tint("tfc:rock/magma/basalt"),
+            crate::volcanic_lava::MAGMA_COLOR
+        );
         assert_ne!(tint("minecraft:crimson_stem"), tint("minecraft:oak_leaves"));
         assert!(is_crop("tfc:dead_crop/maize"));
         assert!(tree_species("tfc:wood/fallen_leaves/oak").is_none());

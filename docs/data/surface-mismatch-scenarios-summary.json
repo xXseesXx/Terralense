@@ -1,0 +1,35 @@
+{
+  "seed": 0,
+  "columns": 12257,
+  "before_failures": 707,
+  "after_failures": 573,
+  "resolved": 134,
+  "newly_failing": 0,
+  "resolved_categories": {
+    "boulder_water_priority": 49,
+    "steep_river_builder": 52,
+    "old_shield_shore_land_builder": 33
+  },
+  "soil_order_replay": {
+    "strict_soil_only_explanations": 344,
+    "largest_three_pairs": 317,
+    "actual_scheduling_history_recovered": false
+  },
+  "unresolved_examples": {
+    "clay_grass_oxisol_columns": 18,
+    "shore_saltwater_columns": 13,
+    "boulder_exact_rng_or_history": "not isolated"
+  },
+  "voxel_actual_blocks": {
+    "rock_spike": 285,
+    "hardened_rock": 127,
+    "calcite": 36,
+    "icicle": 4,
+    "other": 36
+  },
+  "notes": [
+    "Voxel disagreements are separate from surface-material failures.",
+    "Soil-order replay proves reachable outcomes, not the actual saved generation schedule.",
+    "Observed snow/ice substrate excluded consistently; no predicted failures are excluded."
+  ]
+}

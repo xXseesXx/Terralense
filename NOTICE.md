@@ -5,7 +5,7 @@ TerraLens's original source is under the European Union Public Licence, version 
 work under [GPL-3.0](licenses/GPL-3.0.txt), using EUPL-1.2 article 5 and its compatible-license
 appendix. The original source retains its EUPL notices. The full corresponding source, original
 art files, and build scripts are available at https://github.com/xXseesXx/Terralense.
-Native Rust conversion, Prism import, renderer and viewer additions were made on 22–23 October 2026.
+Native Rust conversion, Prism import, renderer and viewer additions were made on 22–25 October 2026.
 The changes include isolated generation workers, dimension-aware save reading, search, cutaways,
 vegetation preview, map tools, original structure icons and export composition.
 
@@ -29,9 +29,28 @@ projects and their notices include:
 - TerraFirmaGreg Core: https://github.com/TerraFirmaGreg-Team/Core-Modern (LGPL-3.0).
 - TerraFirmaGreg pack: https://github.com/TerraFirmaGreg-Team/Modpack-Modern (LGPL-3.0).
 - GregTech CEu Modern: https://github.com/GregTechCEu/GregTech-Modern (LGPL-3.0).
+- ArborFirmaCraft 1.0.22: https://github.com/Therighthon/ArborFirmaCraft (the installed package declares MIT; Therighthon, with assets credited to Dodo). Its original MIT copyright and permission notice is retained in [licenses/ARBORFIRMACRAFT-MIT.txt](licenses/ARBORFIRMACRAFT-MIT.txt), copied from the published upstream history at `af8a3369c2a956fd45e43c03e961e436fcfbb8be`. Newer upstream revisions changed their license; the bundled blossom palettes retain the installed version’s attribution.
 
-No mod JARs, player files, save chunks, account credentials or upstream Git history are distributed.
+No mod JARs, player files, account credentials or upstream Git history are distributed.
 The fixture observations are immutable numeric/block-ID captures used for verification.
+Ground-material tests include stripped block-state sections from eight seed-0 chunks;
+entities, containers, inventories and other save metadata are excluded.
+The small ground-color palette contains texture-average RGB values; its source and
+regeneration procedure are recorded in `native/terralens-rs/assets/ground-colors/README.md`.
+Surface-decoration code follows TFC's `BouldersFeature`, `BabyBoulderFeature`,
+`Metaballs3D` and `FlatEnoughPlacement`, and TFG's `SoilDiscFeature`. Effective
+feature configurations are stored in `src/ground/decorations/assets/` within the
+Rust crate; soil extraction follows the installed placed-feature references.
+Natural springs follow TFC's `HotSpringFeature` and `Metaballs2D`, plus the
+installed TFG/GTCEu bedrock-fluid selection and placement rules. Their source
+notes and independent Java verification inputs are under `src/hot_springs/`.
+
+The surface cave/aquifer pass follows TFC's `TFCAquifer`, interpolated density
+functions and cave/canyon carvers, with TFG's three-dimensional river walls and
+badlands sandstone rules. The OpenSimplex2S kernel and 3D vector tables derive
+from FastNoiseLite 1.0.1, copyright © 2020 Jordan Peck and contributors, under
+[MIT](licenses/FASTNOISELITE-MIT.txt). Extracted settings and source fingerprints
+are retained in `src/caves/assets/` within the Rust crate.
 
 Moon/Mars profiles also use Ad Astra 1.15.21 data, copyright Alex Nijjar and contributors:
 https://github.com/terrarium-earth/Ad-Astra/tree/1.20.1 . Under the Terrarium License v1, files in
@@ -62,6 +81,18 @@ https://github.com/GregTechCEu/GregTech-Modern/blob/v7.5.3-1.20.1/README.md.
 Copies of LGPL-3.0 and GPL-3.0 are in `licenses/`; the source projects remain available at the
 links above. The application icon and TFG-specific landmark sprites are original TerraLens artwork.
 
+## TFC climate colormaps
+
+The unchanged grass, water, default foliage, autumn and winter colormap PNGs come from TerraFirmaCraft 3.2.25,
+distributed with TerraFirmaGreg Core 0.9.25, and are licensed under EUPL-1.2. Their exact
+source paths and SHA-256 checksums are in
+[native/terralens-rs/assets/map-colors/README.md](native/terralens-rs/assets/map-colors/README.md).
+The climate sampler follows the installed `TFCColors.getClimateColor` indexing and TFG's
+average-temperature elevation adjustment. Optional calendar simulation uses TFG's monthly
+temperature rule, species foliage transitions and palm lifecycle colors. Four unchanged blossom
+palettes come from ArborFirmaCraft 1.0.22 under MIT; its authorship and license metadata are
+recorded in the asset README. Daily weather and time-of-day temperature variation are omitted.
+
 ## Cubiomes Viewer structure artwork
 
 The vanilla structure and world-spawn PNGs are copied from **Cubiomes Viewer**, copyright Cubitect
@@ -82,6 +113,12 @@ https://interoperable-europe.ec.europa.eu/collection/eupl/how-use-eupl.
 
 ## Fonts and Rust dependencies
 
+TerraLens's terrain slope/depth equations and texture-sampling behavior were
+independently implemented against the locally installed Xaero World Map 1.47.0
+and XaeroLib 1.7.3 profile. No Xaero code or texture assets are distributed.
+The numeric contract, independent reference checks and remaining differences
+are documented in [the rendering reference](docs/XAERO-SHADING.md).
+
 The embedded, unmodified Hack-Regular font used for PNG export text is from epaint_default_fonts
 0.33.3 / Source Foundry's Hack project: https://github.com/source-foundry/Hack.
 Its MIT and Bitstream Vera notices are retained in
@@ -89,7 +126,7 @@ Its MIT and Bitstream Vera notices are retained in
 
 Rust dependencies retain their own licenses. Exact versions and checksums are in `Cargo.lock`.
 The application links eframe/egui, serde, flate2, rayon, crossbeam-channel, lru, image, md5 and ab_glyph.
-Source and license information accompany those packages in the Cargo registry.
+Release archives bundle their license and copyright texts under `third-party-licenses/`, with a `THIRD-PARTY-NOTICES.md` index. Notices omitted from published crate archives are retained from their exact upstream commits in [licenses/rust/](licenses/rust/). The matching source archive includes vendored Cargo dependencies for offline builds.
 
 Minecraft and mod names are used to identify compatible data. TerraLens is independent of their
 publishers and of Cubiomes Viewer and Amidst.

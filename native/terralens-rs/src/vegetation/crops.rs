@@ -6,7 +6,7 @@
 //! are evaluated against TerraLens' predicted height model, so these are seed
 //! predictions rather than confirmed block placements.
 
-use super::{FeatureRandom, SurfacePlant, SurfacePlantKind};
+use super::{FeatureRandom, SurfacePlant, SurfacePlantKind, templates::TemplateBlockKind};
 use crate::{biome, world::World};
 use serde_json::Value;
 use std::{collections::HashSet, sync::OnceLock};
@@ -32,6 +32,9 @@ struct CropFeature {
     xz_spread: u32,
     y_spread: u32,
     spreading_crop: bool,
+    tree_placement_width: u8,
+    tree_placement_height: u8,
+    tree_ground_type: String,
 }
 
 fn forest_level(value: &Value, default: u8) -> u8 {
@@ -97,6 +100,10 @@ fn parse_feature(record: &Value) -> Option<CropFeature> {
         .get("y_spread")
         .and_then(Value::as_u64)
         .unwrap_or(if dynamic_palm { 3 } else { 0 }) as u32;
+    let tree_placement = record
+        .get("inner")
+        .and_then(|inner| inner.get("config"))
+        .and_then(|inner| inner.get("placement"));
     let placement = record.get("placed")?.get("placement")?.as_array()?;
     let chance = placement
         .iter()
@@ -138,6 +145,19 @@ fn parse_feature(record: &Value) -> Option<CropFeature> {
         tries,
         xz_spread,
         y_spread,
+        tree_placement_width: tree_placement
+            .and_then(|placement| placement.get("width"))
+            .and_then(Value::as_u64)
+            .unwrap_or(1) as u8,
+        tree_placement_height: tree_placement
+            .and_then(|placement| placement.get("height"))
+            .and_then(Value::as_u64)
+            .unwrap_or(1) as u8,
+        tree_ground_type: tree_placement
+            .and_then(|placement| placement.get("ground_type"))
+            .and_then(Value::as_str)
+            .unwrap_or("normal")
+            .to_owned(),
         spreading_crop: record
             .get("inner")
             .and_then(|inner| inner.get("type"))
@@ -212,7 +232,9 @@ fn random_patch_offsets(
 /// predicates cannot be exact until the predicted terrain is backed by saved
 /// chunk blocks; climate, rarity, in-square placement, and patch offsets are
 /// evaluated in their source order.
-pub(super) fn generate(
+/// Generate ordinary crops without palm-tree child features. The independent
+/// canopy source already computes those tree templates and shares their cache.
+pub(super) fn generate_crop_only(
     world: &World,
     chunk_x: i32,
     chunk_z: i32,
@@ -289,14 +311,34 @@ pub(super) fn generate(
             });
         }
     }
-    plants.extend(generate_palm_tree_patches(
-        world,
-        chunk_x,
-        chunk_z,
-        &seed_for_feature,
-        cancel,
-    ));
     plants
+}
+
+/// Generate only the coconut/date tree crowns used by the standalone Trees
+/// overlay. Keeps the tree view from paying for or duplicating crop patches.
+pub(super) fn generate_tree_patches(
+    world: &World,
+    chunk_x: i32,
+    chunk_z: i32,
+    cancel: &impl Fn() -> bool,
+) -> Vec<SurfacePlant> {
+    let seed_for_feature = |id: &str| {
+        if !super::feature_biome_allowed(world, chunk_x, chunk_z, id) {
+            return None;
+        }
+        // Palm fruit patches are attached to the large-features step (8); all
+        // ordinary crops use vegetal-decoration step (9).
+        let step = if is_palm_patch(id) { 8 } else { 9 };
+        let index = super::feature_index_in_step(id, step)?;
+        Some(super::feature_seed(
+            chunk_x,
+            chunk_z,
+            super::OVERWORLD_MIN_Y,
+            step,
+            index,
+        ))
+    };
+    generate_palm_tree_patches(world, chunk_x, chunk_z, &seed_for_feature, cancel)
 }
 
 /// TFG coconut/date patches are dynamic_random_patch features whose inner feature
@@ -338,10 +380,17 @@ fn generate_palm_tree_patches(
         let Some(patch_height) = world.height(patch_x, patch_z) else {
             continue;
         };
-        let patch_top = patch_height.floor() as i32 + 1;
-        if !near_saltwater_biome(
+        let patch_top = crate::ground::pre_forest_sample(world, patch_x, patch_z)
+            .map_or(patch_height as i32 + 1, |ground| ground.y.saturating_add(1));
+        // WORLD_SURFACE_WG sees water above the sea floor. Its below-origin
+        // block cannot pass the bamboo planting predicate in a flooded column.
+        if world.is_surface_water(patch_x, patch_z) || world.is_surface_fluid(patch_x, patch_z) {
+            continue;
+        }
+        if !near_saltwater(
             world,
             patch_x,
+            patch_top,
             patch_z,
             if feature.id.ends_with("/coconut_patch") {
                 20
@@ -349,6 +398,13 @@ fn generate_palm_tree_patches(
                 35
             },
         ) {
+            continue;
+        }
+        // The outer patch has its own support predicate before FlatEnough:
+        // bamboo's merged vanilla+TFG tag, distinct from the child tree's sand rule.
+        if !crate::ground::pre_forest_sample(world, patch_x, patch_z)
+            .is_some_and(|ground| super::trees::bamboo_plantable_on(&ground.block))
+        {
             continue;
         }
         // `flat_enough` tests the block occupancy of a 5x5 surface patch and
@@ -401,7 +457,8 @@ fn generate_palm_tree_patches(
             let Some(height) = world.height(x, z) else {
                 continue;
             };
-            let y = height.floor() as i32 + 1;
+            let y = crate::ground::pre_forest_sample(world, x, z)
+                .map_or(height as i32 + 1, |ground| ground.y.saturating_add(1));
 
             // RandomTreeFeature consumes placement rotation, mirror, then chooses
             // one of four structure variants before validating ground.
@@ -415,11 +472,30 @@ fn generate_palm_tree_patches(
             else {
                 continue;
             };
+            if !super::trees::valid_tree_placement(
+                world,
+                x,
+                z,
+                y,
+                feature.tree_placement_width,
+                feature.tree_placement_height,
+                &feature.tree_ground_type,
+                &template,
+                false,
+            ) {
+                continue;
+            }
             template.finish_palette(&mut random);
             for cell in template.cells {
                 let column_x = x.saturating_add(cell.x as i32);
                 let column_z = z.saturating_add(cell.z as i32);
                 let top = y.saturating_add(cell.y as i32);
+                if world
+                    .height(column_x, column_z)
+                    .is_some_and(|surface| top <= surface as i32)
+                {
+                    continue;
+                }
                 if !seen.insert((column_x, top, column_z, species)) {
                     continue;
                 }
@@ -427,7 +503,11 @@ fn generate_palm_tree_patches(
                     x: column_x,
                     y: top,
                     z: column_z,
-                    kind: SurfacePlantKind::Tree,
+                    kind: if cell.kind == TemplateBlockKind::Wood {
+                        SurfacePlantKind::TreeWood
+                    } else {
+                        SurfacePlantKind::Tree
+                    },
                     variant: structure_id.clone(),
                 });
             }
@@ -440,37 +520,46 @@ fn is_palm_patch(id: &str) -> bool {
     id.ends_with("/coconut_patch") || id.ends_with("/date_patch")
 }
 
-fn near_saltwater_biome(world: &World, x: i32, z: i32, radius: i32) -> bool {
-    let stride = 8;
-    let mut dz = -radius;
-    while dz <= radius {
-        let mut dx = -radius;
-        while dx <= radius {
-            if dx * dx + dz * dz <= radius * radius
-                && biome::is_ocean(
-                    world
-                        .region
-                        .biome(x.saturating_add(dx), z.saturating_add(dz)),
-                )
-            {
-                return true;
-            }
-            dx += stride;
-        }
-        dz += stride;
+fn near_saltwater(world: &World, x: i32, y: i32, z: i32, radius: i32) -> bool {
+    let sea_top = crate::surface_water::SEA_SURFACE_BLOCK_Y;
+    if y.saturating_sub(radius) > sea_top {
+        return false;
     }
-    false
+    let wet = |dx: i32, dz: i32| {
+        let (px, pz) = (x.saturating_add(dx), z.saturating_add(dz));
+        if !biome::is_ocean(world.region.biome(px, pz)) {
+            return false;
+        }
+        world
+            .height(px, pz)
+            .is_some_and(|height| saltwater_intersects(y, radius, height as i32, sea_top))
+    };
+    // Find broad shorelines quickly, then check all remaining block columns so
+    // narrow inlets and square corners still follow NearFluidPlacement's box.
+    if (-radius..=radius)
+        .step_by(8)
+        .any(|dx| (-radius..=radius).step_by(8).any(|dz| wet(dx, dz)))
+    {
+        return true;
+    }
+    (-radius..=radius).any(|dx| (-radius..=radius).any(|dz| wet(dx, dz)))
+}
+
+fn saltwater_intersects(origin_y: i32, radius: i32, solid_top: i32, water_top: i32) -> bool {
+    origin_y
+        .saturating_sub(radius)
+        .max(solid_top.saturating_add(1))
+        <= origin_y.min(water_top)
 }
 
 fn flat_enough_position(world: &World, x: i32, z: i32, top_y: i32, flatness: f32) -> Option<i32> {
     for depth in 0..4 {
-        let surface_level = top_y - depth - 1;
+        let surface_level = top_y - depth;
         let mut occupied = 0;
         for dz in -2..=2 {
             for dx in -2..=2 {
-                if world
-                    .height(x + dx, z + dz)
-                    .is_some_and(|height| height.floor() as i32 >= surface_level)
+                if crate::ground::pre_forest_sample(world, x + dx, z + dz)
+                    .is_some_and(|ground| ground.y >= surface_level)
                 {
                     occupied += 1;
                 }
@@ -486,6 +575,24 @@ fn flat_enough_position(world: &World, x: i32, z: i32, top_y: i32, flatness: f32
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn palm_near_fluid_requires_water_in_the_vertical_search_box() {
+        assert!(saltwater_intersects(65, 20, 50, 62));
+        assert!(saltwater_intersects(82, 20, 50, 62));
+        assert!(
+            !saltwater_intersects(83, 20, 50, 62),
+            "ocean below a cliff is out of reach"
+        );
+        assert!(
+            !saltwater_intersects(65, 20, 70, 62),
+            "dry ocean-biome columns contain no saltwater"
+        );
+        assert!(
+            !saltwater_intersects(50, 20, 50, 62),
+            "no fluid below the sea floor"
+        );
+    }
 
     #[test]
     fn spreading_crop_child_random_draws_interleave_between_attempts() {
@@ -556,6 +663,20 @@ mod tests {
             assert_eq!(feature.chance, 160);
             assert_eq!(feature.tries, 3);
             assert_eq!(feature.block, format!("tfg:earth/crop/palm_tree/{species}"));
+        }
+    }
+
+    #[test]
+    fn palm_tree_patch_features_use_large_features_step_eight() {
+        for (id, expected_index) in [
+            ("tfg:earth/crop/palm_tree/coconut_patch", 39),
+            ("tfg:earth/crop/palm_tree/date_patch", 40),
+        ] {
+            assert_eq!(
+                super::super::feature_index_in_step(id, 8),
+                Some(expected_index)
+            );
+            assert_eq!(super::super::feature_index_in_step(id, 9), None);
         }
     }
 

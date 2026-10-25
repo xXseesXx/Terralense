@@ -1,0 +1,172 @@
+{
+  "reference": {
+    "candidate_allocated_slots": 1253774,
+    "candidates_visited_until_sample_complete": 140,
+    "dimension": "minecraft:overworld",
+    "method": "allocated region slots ranked by SHA-256(VERSION:chunkX:chunkZ), retaining first N FULL TFC chunks",
+    "minecraft_launched": false,
+    "notes": [
+      "This is a deterministic spread sample of already allocated/generated save chunks, not a sample of unexplored coordinates.",
+      "Raw quart surface biome, TFC chunk climate corners, TFC surfaceHeight, highest saved block, substrate, and leaf presence are kept as distinct observations.",
+      "Feature chunks include local player exploration bias; results are not a universal world-wide generation guarantee."
+    ],
+    "ranking_version": "terralens-world0-generated-chunk-rank-v1",
+    "read_only": true,
+    "region_sha256": {
+      "r.-189.-44.mca": "ee25f81c4a8a860a258d54acd85bcbac26039ed5a871f0217c462874d754cc16",
+      "r.-195.-43.mca": "6215c2b7c02c22cf9dd0f3dbf3b1955c434a6a1dc7aa50fcdcf9ae59de4321e5",
+      "r.-198.-31.mca": "74f6cb5a60a195fd91bd739394f2a5944e6a60b211f77a36d65c023c2235a73a",
+      "r.-199.-28.mca": "7e8a01b3257e87982f5c9d6d75e2d7053d1af8b7ff24795c61a3aac74e118406",
+      "r.-202.-29.mca": "6570f86eb20fbdb5a903087369569daafcc9e4361030bb819ca0c7cc8d2cadfe",
+      "r.-203.-28.mca": "500b0ec3b8ca7e7cd04e62f1ea5112645d46b9e1751562f078d835207b409a5b",
+      "r.-220.-31.mca": "a1c165b3ebdb7557c61125c31045f04505edd36a4b6b6157485786742c541120",
+      "r.-242.5.mca": "8af97b2099310332d1ca738c3cdadde24d66697b2437e363958520f3f2a2dad0",
+      "r.-252.-37.mca": "506180c9eb9063b2398abf5c39b3d3e6f807956556e80ab4c35161cb6582389f",
+      "r.-252.-40.mca": "a9e916e517a3b1320c693e3705c0e36cf16583fc5c02feb11439c00694c87db6",
+      "r.-253.-43.mca": "2f62372b634d14321279dec6c9ee868c1602cf0cf8f730451bd5335f00137f2e",
+      "r.-254.-42.mca": "f5329109290b4e63d5fa30eb4fb6e7ec913971f9b99abd402e839a3b5de6c4e6",
+      "r.-254.-44.mca": "7e6d691504ea2580abe1903de6402e0aeb35f4f3872c621ba237b2dc2a7d58c7",
+      "r.-255.-46.mca": "6110bf6addfef330a8574d050bdc7fecda59cc9d4d8a8e216a4f54d9bf1d6ce0",
+      "r.-255.28.mca": "28427f91994d46f8122fbbf576ae001f15a4271ab52ee494c3b9c205342deb7e",
+      "r.-256.29.mca": "c8509ab980148bea81f32208c2aa349bdea57206a2febf1d9548ce4a42af0395",
+      "r.-295.20.mca": "358f6ecc018a25adf62ba8874acbbdfbcebfdf499309bb5f51e982c7a7e24266",
+      "r.-296.21.mca": "45160cf2fc5c440082e7f2d0976e7e250676ba293816ea507ead6c67763aeaae",
+      "r.-303.18.mca": "688d7e4a7b53bbb86649687be13466f5b078a3fee592cc1ec80bd44d77345516",
+      "r.-379.-45.mca": "d3e4fd53847c84aa22b8f1e64669e48d225143564eb6eec1ca07cd649fd6b650",
+      "r.-379.-48.mca": "1e49987a4203fb3e434d11fdbf8f5ed492a5abcdbf4e083943a373b004e16391",
+      "r.-384.-35.mca": "e921ad79ffa33fa41405c369cb71677e010f9a451ac32de3e5eade0b66465287",
+      "r.-390.-35.mca": "8520358305aa676002b8bace14d5fc3eb56ad7d19045375c7f0d743a5444b370",
+      "r.-391.-37.mca": "c6ab8397a71328532b4a5a7db6dcc3da89a78766e5a856a979867b551471771d",
+      "r.-392.-38.mca": "1304d04c85f62e76ef247ea53ea021713fbec39450139f19a98009f491df52f9",
+      "r.-4.10.mca": "b1a2c48bdff8b4d02701a6f7b206577b765c43749b0ca3cf0d9a38a26ed81806",
+      "r.-504.17.mca": "ba966992025ca0eed3b887026cb4c673d1497722d5dc72b8dcb10cfdbc889272",
+      "r.-506.16.mca": "10699c0e24136d5324ec021e874277dd660aa85b7c36fd8392821c7dc99585e2",
+      "r.-550.98.mca": "18f865108f235a6d0c9dbb8dabca21e595d9b4e341127dddb859708010db78ad",
+      "r.-552.94.mca": "c001cdd99423be786e6b3ab1971c0952032d9adc91b4789fde789277fc8b9ed2",
+      "r.17.50.mca": "7a670374d554e7dffbf8b1722dfb7b8db00633284c351d1732c8b6bcc003ddfb",
+      "r.27.34.mca": "ed0707a6ba0bb8ca8388f612f20806b468562dd6d729707a8f9665bad114a31e",
+      "r.28.28.mca": "a6cc04961aa5256dcc50433fb0efb032bce89e075e08be5ba95cf894b31eb45b",
+      "r.29.28.mca": "47137393bc5bce522828eb123d79bc859d6b3397769f9adea17db95feb98c9a7",
+      "r.3.1.mca": "ffcd0c595ffe3a8bf954303f33cb00a80de988e47335f5c57bfd222515b013b0",
+      "r.30.65.mca": "22c30672f8ff4eb2aa95091e90266275b22fd6ca239c515acc3995fd2d72cfa8",
+      "r.30.66.mca": "33487b3fab16a2e35aa4df6f948649c8b99fe8e0770262d90f394f54fc2a5ecf",
+      "r.31.31.mca": "caaf41e01fd372117235cc82c3f36d2ef383e108b5ef478dfbfd991b765dfb5d",
+      "r.34.31.mca": "12401cc26bb31af959968a51e77f922b1efaf769a5ffb8aae0e1d6c8753b9f87",
+      "r.38.-5.mca": "6478aaf7336ca74625b464e13e5b790448c45ab243727ff7e6e3b5f1ce41f410",
+      "r.40.30.mca": "8426d525cf89475a6361e0d793a00a70a6d764e9647f342e7a77989785799e22",
+      "r.41.26.mca": "5775d2a5d361c3525f3746250ce5be35a46f5b836bd560870c5c78add48e41e3",
+      "r.41.33.mca": "c146af8165558387a4ba71673a091efa82c1ff6e29d595e2286c3ddeb6c44393",
+      "r.67.14.mca": "6937b41335a2b56d01e8602a17bf9008d4c3454f9fc6e5346f253c216fd2aefb",
+      "r.92.32.mca": "ea41c497d6cf3e3d3a4b7ecb83eebe256b0a97116c2fa38578ea3e4c20c7351d",
+      "r.93.42.mca": "5f86ef42487f7cd8db474d30c057edeba799584f0f1576a0a105d3de77c639df"
+    },
+    "requested_full_chunks": 48,
+    "saved_level_seed": 0,
+    "seed": 0,
+    "world_alias": "0",
+    "world_source_sha256": {
+      "data/tfg_worldgen_versions.dat": "17607624dcf8763cb97f4b160fd44f07e13db8dc5507247b209a9b0d0e175de3",
+      "installed_mod/TerraFirmaGreg-Core-Modern-0.9.25.jar": "fdf9a3521a08870eae8f43a5aea1c5ea2f8e07884f516445837c0fdc2a648ec1"
+    }
+  },
+  "scope": "Independent saved reference; seed-only World with no save source. Stages are diagnostic evidence, not automatic proof of a source cause.",
+  "seed": 0,
+  "surface_columns": 12257,
+  "surface_matches": 11693,
+  "surface_mismatches": 564,
+  "surface_pairs": {
+    "tfc:clay/sandy_loam -> tfg:coarse_dirt/sandy_loam": 2,
+    "tfc:clay_grass/sandy_loam -> tfg:duff/sandy_loam": 15,
+    "tfc:dirt/loam -> water": 1,
+    "tfc:grass/sandy_loam -> tfc:rock/mossy_cobble/andesite": 1,
+    "tfc:mud/loam -> tfc:grass/loam": 4,
+    "tfc:mud/silty_loam -> tfg:duff/silt": 8,
+    "tfc:rock/cobble/chalk -> water": 2,
+    "tfc:rock/cobble/chert -> tfc:rock/raw/chert": 3,
+    "tfc:rock/cobble/conglomerate -> tfc:rock/raw/conglomerate": 8,
+    "tfc:rock/cobble/shale -> tfc:rock/raw/shale": 10,
+    "tfc:rock/gravel/chalk -> tfc:grass/silt": 3,
+    "tfc:rock/gravel/chalk -> tfg:duff/silt": 5,
+    "tfc:rock/gravel/chalk -> water": 10,
+    "tfc:rock/hardened/chalk -> tfc:grass/silt": 2,
+    "tfc:rock/hardened/gabbro -> tfc:sand/brown": 1,
+    "tfc:rock/mossy_cobble/basalt -> tfg:duff/silt": 1,
+    "tfc:rock/mossy_cobble/shale -> tfc:rock/cobble/shale": 8,
+    "tfc:rock/raw/chalk -> tfc:grass/silt": 3,
+    "tfc:rock/raw/chalk -> tfg:duff/silt": 2,
+    "tfc:rock/raw/chert -> tfc:rock/gravel/chert": 5,
+    "tfc:rock/raw/chert -> tfg:coarse_dirt/sandy_loam": 4,
+    "tfc:rock/raw/shale -> tfc:grass/loam": 16,
+    "tfc:rock/raw/shale -> tfg:duff/loam": 17,
+    "tfg:clay_grass/oxisol -> tfg:grass/oxisol": 18,
+    "tfg:coarse_dirt/sandy_loam -> tfc:rock/gravel/shale": 1,
+    "tfg:dirt/alfisol -> tfg:grass/alfisol": 2,
+    "tfg:dirt/mollisol -> tfg:duff/mollisol": 5,
+    "tfg:dirt/mollisol -> tfg:grass/mollisol": 11,
+    "tfg:duff/podzol -> tfc:rock/cobble/claystone": 10,
+    "tfg:duff/podzol -> tfc:rock/mossy_cobble/claystone": 21,
+    "tfg:duff/podzol -> tfg:duff/alfisol": 15,
+    "tfg:grass/alfisol -> tfg:duff/alfisol": 116,
+    "tfg:grass/podzol -> tfc:rock/cobble/claystone": 4,
+    "tfg:grass/podzol -> tfc:rock/mossy_cobble/claystone": 2,
+    "tfg:grass/podzol -> tfg:duff/alfisol": 26,
+    "tfg:grass/podzol -> tfg:duff/podzol": 175,
+    "tfg:grass/podzol -> tfg:grass/alfisol": 12,
+    "tfg:pile/volcanic_ash -> tfc:rock/raw/basalt": 2,
+    "water -> tfc:sand/brown": 5,
+    "water -> tfc:sand/yellow": 8
+  },
+  "surface_stages": {
+    "early_decoration": 67,
+    "fluid_or_terrain_coverage": 13,
+    "later_decoration": 399,
+    "missing_raised_surface": 15,
+    "surface_builder_or_substrate": 70
+  },
+  "voxel_stages": {
+    "air_carver": 195,
+    "density_or_later_decoration": 293
+  },
+  "prior_surface_matches": 11684,
+  "prior_surface_mismatches": 573,
+  "resolved_columns": [
+    [
+      -112512,
+      -15549
+    ],
+    [
+      -112512,
+      -15548
+    ],
+    [
+      -112512,
+      -15547
+    ],
+    [
+      -112512,
+      -15546
+    ],
+    [
+      -112512,
+      -15539
+    ],
+    [
+      -112512,
+      -15538
+    ],
+    [
+      -112511,
+      -15546
+    ],
+    [
+      -112511,
+      -15539
+    ],
+    [
+      -99488,
+      -21584
+    ]
+  ],
+  "newly_failing_columns": [],
+  "full_audit_sha256": "11821da15802a6e794b644eb51229b75d110c04cacc9877eddcc11d90926df24"
+}

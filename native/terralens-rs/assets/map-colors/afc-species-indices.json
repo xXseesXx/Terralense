@@ -1,0 +1,231 @@
+{
+  "wood": [
+    {
+      "species": "baobab",
+      "conifer": false,
+      "autumn_index": 212
+    },
+    {
+      "species": "eucalyptus",
+      "conifer": false,
+      "autumn_index": 150
+    },
+    {
+      "species": "mahogany",
+      "conifer": false,
+      "autumn_index": 10
+    },
+    {
+      "species": "hevea",
+      "conifer": false,
+      "autumn_index": 130
+    },
+    {
+      "species": "tualang",
+      "conifer": false,
+      "autumn_index": 226
+    },
+    {
+      "species": "teak",
+      "conifer": false,
+      "autumn_index": 240
+    },
+    {
+      "species": "cypress",
+      "conifer": true,
+      "autumn_index": 0
+    },
+    {
+      "species": "fig",
+      "conifer": false,
+      "autumn_index": 250
+    },
+    {
+      "species": "ironwood",
+      "conifer": false,
+      "autumn_index": 200
+    },
+    {
+      "species": "ipe",
+      "conifer": false,
+      "autumn_index": 254
+    }
+  ],
+  "species": [
+    {
+      "species": "gum_arabic",
+      "conifer": false,
+      "autumn_index": 196
+    },
+    {
+      "species": "acacia_koa",
+      "conifer": false,
+      "autumn_index": 180
+    },
+    {
+      "species": "poplar",
+      "conifer": false,
+      "autumn_index": 250
+    },
+    {
+      "species": "mpingo_blackwood",
+      "conifer": false,
+      "autumn_index": 200
+    },
+    {
+      "species": "mountain_fir",
+      "conifer": true,
+      "autumn_index": 0
+    },
+    {
+      "species": "balsam_fir",
+      "conifer": true,
+      "autumn_index": 0
+    },
+    {
+      "species": "scrub_hickory",
+      "conifer": false,
+      "autumn_index": 220
+    },
+    {
+      "species": "red_silk_cotton",
+      "conifer": false,
+      "autumn_index": 150
+    },
+    {
+      "species": "bigleaf_maple",
+      "conifer": false,
+      "autumn_index": 215
+    },
+    {
+      "species": "weeping_maple",
+      "conifer": true,
+      "autumn_index": 0
+    },
+    {
+      "species": "black_oak",
+      "conifer": false,
+      "autumn_index": 180
+    },
+    {
+      "species": "live_oak",
+      "conifer": false,
+      "autumn_index": 155
+    },
+    {
+      "species": "jaggery_palm",
+      "conifer": false,
+      "autumn_index": 249
+    },
+    {
+      "species": "stone_pine",
+      "conifer": true,
+      "autumn_index": 0
+    },
+    {
+      "species": "red_pine",
+      "conifer": true,
+      "autumn_index": 0
+    },
+    {
+      "species": "tamarack",
+      "conifer": false,
+      "autumn_index": 254
+    },
+    {
+      "species": "giant_rosewood",
+      "conifer": false,
+      "autumn_index": 190
+    },
+    {
+      "species": "coast_redwood",
+      "conifer": true,
+      "autumn_index": 0
+    },
+    {
+      "species": "coast_spruce",
+      "conifer": true,
+      "autumn_index": 0
+    },
+    {
+      "species": "sitka_spruce",
+      "conifer": true,
+      "autumn_index": 0
+    },
+    {
+      "species": "black_spruce",
+      "conifer": true,
+      "autumn_index": 0
+    },
+    {
+      "species": "atlas_cedar",
+      "conifer": true,
+      "autumn_index": 0
+    },
+    {
+      "species": "weeping_willow",
+      "conifer": false,
+      "autumn_index": 240
+    },
+    {
+      "species": "rainbow_eucalyptus",
+      "conifer": false,
+      "autumn_index": 30
+    },
+    {
+      "species": "mountain_ash",
+      "conifer": false,
+      "autumn_index": 150
+    },
+    {
+      "species": "rubber_fig",
+      "conifer": false,
+      "autumn_index": 80
+    },
+    {
+      "species": "redcedar",
+      "conifer": true,
+      "autumn_index": 0
+    },
+    {
+      "species": "weeping_cypress",
+      "conifer": true,
+      "autumn_index": 0
+    },
+    {
+      "species": "bald_cypress",
+      "conifer": false,
+      "autumn_index": 130
+    },
+    {
+      "species": "sapele_mahogany",
+      "conifer": false,
+      "autumn_index": 170
+    },
+    {
+      "species": "small_leaf_mahogany",
+      "conifer": false,
+      "autumn_index": 240
+    },
+    {
+      "species": "iroko_teak",
+      "conifer": false,
+      "autumn_index": 140
+    },
+    {
+      "species": "flame_of_the_forest",
+      "conifer": false,
+      "autumn_index": 0
+    },
+    {
+      "species": "lebombo_ironwood",
+      "conifer": false,
+      "autumn_index": 230
+    },
+    {
+      "species": "horsetail_ironwood",
+      "conifer": false,
+      "autumn_index": 220
+    }
+  ]
+}

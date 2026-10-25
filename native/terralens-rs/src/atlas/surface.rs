@@ -25,6 +25,10 @@ pub enum SurfaceSource {
 pub(super) struct SurfaceData {
     pub chunk: SurfaceChunk,
     pub source: SurfaceSource,
+    /// Annual mean temperature and rainfall, in the same units as TFC climate,
+    /// for each chunk-local column. Empty on older cached surfaces.
+    #[serde(default)]
+    pub climate: Vec<[f32; 2]>,
 }
 
 struct CachedChunk {
@@ -48,6 +52,8 @@ pub(super) struct SurfaceView {
     upload_center: Option<Point>,
     serial: u64,
     pending: Option<u64>,
+    season: Option<f32>,
+    temperature_scale: f64,
     status: String,
 }
 
@@ -66,12 +72,52 @@ impl Default for SurfaceView {
             upload_center: None,
             serial: 0,
             pending: None,
+            season: None,
+            temperature_scale: 20_000.0,
             status: "Exact surface detail is off".into(),
         }
     }
 }
 
 impl SurfaceView {
+    /// Change only the cached surface colors. Chunk data and geometry remain in
+    /// memory, and no save scan or seed generation is scheduled.
+    pub fn set_season(&mut self, season: Option<f32>, temperature_scale: f64) {
+        let season = season
+            .filter(|value| value.is_finite())
+            .map(|value| value.rem_euclid(1.0));
+        let temperature_scale = if temperature_scale.is_finite() {
+            temperature_scale.max(0.0)
+        } else {
+            self.temperature_scale
+        };
+        if self.season == season
+            && (season.is_none() || self.temperature_scale == temperature_scale)
+        {
+            self.temperature_scale = temperature_scale;
+            return;
+        }
+        self.season = season;
+        self.temperature_scale = temperature_scale;
+        let keys: Vec<_> = self
+            .cache
+            .iter()
+            .filter_map(|(key, entry)| {
+                entry
+                    .as_ref()
+                    .and_then(|chunk| chunk.texture.as_ref().map(|_| *key))
+            })
+            .collect();
+        for key in keys {
+            if let Some(Some(chunk)) = self.cache.get_mut(&key) {
+                chunk.texture = None;
+            }
+            if self.upload_queued.insert(key) {
+                self.uploads.push_back(key);
+            }
+        }
+    }
+
     pub fn set_dimension(&mut self, dimension: crate::dimension::Dimension, slice_y: i32) {
         if self.dimension != dimension || self.slice_y != slice_y {
             self.dimension = dimension;
@@ -507,6 +553,7 @@ impl SurfaceView {
                 } else {
                     column.color
                 };
+                let base = self.seasonal_color(entry, i, key, column).unwrap_or(base);
                 Color32::from_rgb(
                     (base[0] as f32 * light).clamp(0., 255.) as u8,
                     (base[1] as f32 * light).clamp(0., 255.) as u8,
@@ -514,6 +561,70 @@ impl SurfaceView {
                 )
             })
             .collect()
+    }
+
+    fn seasonal_color(
+        &self,
+        entry: &CachedChunk,
+        index: usize,
+        key: ChunkKey,
+        column: &SurfaceColumn,
+    ) -> Option<[u8; 3]> {
+        let season = self.season?;
+        if self.dimension != crate::dimension::Dimension::Overworld
+            || entry.data.climate.len() <= index
+        {
+            return None;
+        }
+        let [temperature, rainfall] = entry.data.climate[index];
+        if !temperature.is_finite() || !rainfall.is_finite() {
+            return None;
+        }
+        let x = key.0.saturating_mul(16).saturating_add((index % 16) as i32);
+        let z = key.1.saturating_mul(16).saturating_add((index / 16) as i32);
+        if crate::ground_palette::is_grass_soil(&column.block) {
+            let tint = crate::map_colors::grass_at(
+                f64::from(temperature),
+                f64::from(rainfall),
+                x,
+                column.y,
+                z,
+                self.temperature_scale,
+                Some(season),
+            );
+            return Some(crate::ground_palette::multiply_tint(
+                crate::ground_palette::grass_tint_overlay().unwrap_or([255; 3]),
+                tint,
+            ));
+        }
+        if is_water_block(&column.block) {
+            return Some(crate::map_colors::water_at(
+                f64::from(temperature),
+                f64::from(rainfall),
+                z,
+                self.temperature_scale,
+                Some(season),
+            ));
+        }
+        if is_leaf_block(&column.block)
+            && let Some(species) = column.tree.as_deref()
+            && let Some(texture) = crate::ground_palette::tree_color(species, true)
+        {
+            let tint = crate::map_colors::foliage_at(
+                f64::from(temperature),
+                f64::from(rainfall),
+                x,
+                column.y,
+                z,
+                species,
+                self.temperature_scale,
+                Some(season),
+            );
+            return Some(crate::ground_palette::multiply_tint(texture, tint));
+        }
+        // Keep the current pixel for wood, crops, non-tinted blocks and unknown
+        // tree species. In particular, seasonal colors must not alter geometry.
+        None
     }
 
     fn height_at(&self, key: ChunkKey, x: i32, z: i32) -> Option<f32> {
@@ -525,8 +636,25 @@ impl SurfaceView {
     }
 }
 
+fn is_leaf_block(block: &str) -> bool {
+    let path = block.rsplit_once(':').map_or(block, |(_, path)| path);
+    path.contains("/leaves/")
+        || path.ends_with("_leaves")
+        || path.ends_with("_leaf")
+        || path == "leaves"
+}
+
+fn is_water_block(block: &str) -> bool {
+    let path = block.rsplit_once(':').map_or(block, |(_, path)| path);
+    matches!(
+        path.strip_prefix("fluid/").unwrap_or(path),
+        "water" | "flowing_water" | "river_water" | "salt_water" | "fresh_water" | "spring_water"
+    )
+}
+
 #[cfg(test)]
 mod tests {
+
     use super::*;
 
     fn bounds(min_x: f64, min_z: f64, max_x: f64, max_z: f64) -> Bounds {
@@ -554,6 +682,73 @@ mod tests {
                     .collect(),
             },
             source: SurfaceSource::Predicted,
+            climate: vec![],
+        }
+    }
+
+    #[test]
+    fn calendar_recolors_cached_saved_and_seed_surfaces_without_changing_blocks() {
+        let ctx = egui::Context::default();
+        for source in [SurfaceSource::Saved, SurfaceSource::Predicted] {
+            let key = ChunkKey(3, -800);
+            let mut data = dummy_chunk(key.0, key.1);
+            data.source = source;
+            data.climate = vec![[8., 250.]; 256];
+            data.chunk.columns[0].block = "tfc:grass/loam".into();
+            data.chunk.columns[1].block = "tfc:wood/leaves/oak".into();
+            data.chunk.columns[1].tree = Some("oak".into());
+            data.chunk.columns[2].block = "tfc:wood/log/oak".into();
+            data.chunk.columns[2].tree = Some("oak".into());
+            data.chunk.columns[3].block = "tfc:fluid/river_water".into();
+            let original = data.chunk.clone();
+            let mut view = SurfaceView::default();
+            view.enabled = true;
+            view.cache.put(
+                key,
+                Some(CachedChunk {
+                    data,
+                    texture: Some(ctx.load_texture(
+                        "season-control",
+                        egui::ColorImage::new([16, 16], vec![Color32::GRAY; 256]),
+                        TextureOptions::NEAREST,
+                    )),
+                }),
+            );
+            let average = view.rasterize(key);
+            view.set_season(Some(0.), 20_000.);
+            let winter = view.rasterize(key);
+            view.set_season(Some(0.75), 20_000.);
+            let autumn = view.rasterize(key);
+            assert_ne!(winter[0], autumn[0], "grass reacts to averaged climate");
+            assert_ne!(winter[1], autumn[1], "oak follows its foliage palette");
+            assert_ne!(winter[3], autumn[3], "water follows monthly climate");
+            assert_eq!(average[2], winter[2], "wood is never foliage tinted");
+            assert_eq!(average[4], autumn[4], "stone remains unchanged");
+            assert_eq!(
+                view.cache.peek(&key).unwrap().as_ref().unwrap().data.chunk,
+                original
+            );
+            assert!(
+                view.cache
+                    .peek(&key)
+                    .unwrap()
+                    .as_ref()
+                    .unwrap()
+                    .texture
+                    .is_none()
+            );
+            assert!(view.upload_queued.contains(&key));
+            let area = bounds(48., -12800., 63., -12785.);
+            assert!(
+                view.take_request(area, Point { x: 56., z: -12792. }, 0.25)
+                    .is_none()
+            );
+            view.set_season(None, 20_000.);
+            assert_eq!(
+                view.rasterize(key),
+                average,
+                "average reset restores original pixels"
+            );
         }
     }
 

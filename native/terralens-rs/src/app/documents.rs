@@ -3,6 +3,16 @@ use super::*;
 use crate::{exports, model::Bounds};
 
 impl TerraLensApp {
+    pub(super) fn reload_world(&mut self) {
+        if let Some(path) = self
+            .selected
+            .and_then(|index| self.worlds.get(index))
+            .map(|world| world.path.clone())
+        {
+            self.open_source_file(path, Some(self.current_view()));
+        }
+    }
+
     pub(super) fn request_file(&mut self, kind: file_dialogs::Kind) {
         if kind == file_dialogs::Kind::ExportMarkers && !self.file_dialogs.busy() {
             self.pending_marker_export = None;
@@ -81,10 +91,10 @@ impl TerraLensApp {
                         == 1
                     {
                         self.prefs.navigation.remap_world(&old, &world.id);
-                        if let Some(view) = &mut restore {
-                            if view.world_id == old {
-                                view.world_id = world.id.clone();
-                            }
+                        if let Some(view) = &mut restore
+                            && view.world_id == old
+                        {
+                            view.world_id = world.id.clone();
                         }
                     }
                 }
@@ -110,10 +120,10 @@ impl TerraLensApp {
                         .unwrap_or(Dimension::Overworld);
                     self.prefs.layer = 0;
                 }
-                if let Some(view) = &mut restore {
-                    if !Self::world_supports_dimension(&self.worlds[selected], view.dimension) {
-                        view.dimension = self.prefs.dimension;
-                    }
+                if let Some(view) = &mut restore
+                    && !Self::world_supports_dimension(&self.worlds[selected], view.dimension)
+                {
+                    view.dimension = self.prefs.dimension;
                 }
                 self.activate_world(selected, ctx);
                 if let Some(view) = restore {
@@ -164,16 +174,16 @@ impl TerraLensApp {
                     }
                 }
                 Kind::Export | Kind::ExportMarkers => {
-                    if selection.kind == Kind::ExportMarkers {
-                        if let Some(markers) = self.pending_marker_export.take() {
-                            if let Some(atlas) = &mut self.atlas {
-                                atlas.export(exports::Request::Markers {
-                                    markers,
-                                    path: selection.path,
-                                });
-                            }
-                            return;
+                    if selection.kind == Kind::ExportMarkers
+                        && let Some(markers) = self.pending_marker_export.take()
+                    {
+                        if let Some(atlas) = &mut self.atlas {
+                            atlas.export(exports::Request::Markers {
+                                markers,
+                                path: selection.path,
+                            });
                         }
+                        return;
                     }
                     let picker = if selection.kind == Kind::Export {
                         export_panel::Picker::Map

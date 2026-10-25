@@ -6,6 +6,7 @@
 
 use crate::prism::{SurfaceChunk, SurfaceColumn};
 use crate::random::Xoroshiro;
+use crate::surface_water::SEA_SURFACE_BLOCK_Y;
 use crate::world::World;
 use lru::LruCache;
 use serde_json::Value;
@@ -14,10 +15,59 @@ use std::collections::{HashMap, HashSet};
 use std::num::NonZeroUsize;
 use std::sync::{Arc, OnceLock};
 
+mod canopy;
 mod climate;
 pub mod crops;
 pub mod templates;
 mod trees;
+
+pub use canopy::{Canopy, CanopyKind, canopy_at};
+
+/// Generate one TFC forest-feature source chunk with an explicit sorted feature
+/// index. This diagnostic hook supports comparing the canonical FeatureSorter
+/// profile with saved chunks when the live pack has dynamic biome registration.
+#[doc(hidden)]
+#[cfg(feature = "diagnostics")]
+pub fn tree_source_chunk_with_feature_index(
+    world: &World,
+    chunk_x: i32,
+    chunk_z: i32,
+    index: u32,
+    cancel: &impl Fn() -> bool,
+) -> Vec<SurfacePlant> {
+    let mut plants = trees::generate_with_index(world, chunk_x, chunk_z, index, cancel);
+    if !cancel() {
+        plants.extend(crops::generate_tree_patches(
+            world, chunk_x, chunk_z, cancel,
+        ));
+    }
+    plants
+}
+
+/// Generate only the TFC forest feature for a chosen FeatureSorter index and
+/// optionally apply the approximate height-support check. Physical fluid gates
+/// remain active. Diagnostics compare support-gate effects with saved chunks.
+#[doc(hidden)]
+#[cfg(feature = "diagnostics")]
+pub fn forest_source_chunk_with_options(
+    world: &World,
+    chunk_x: i32,
+    chunk_z: i32,
+    index: u32,
+    full_height_support_proxy: bool,
+    first_available_origin: bool,
+    cancel: &impl Fn() -> bool,
+) -> Vec<SurfacePlant> {
+    trees::generate_with_index_options(
+        world,
+        chunk_x,
+        chunk_z,
+        index,
+        full_height_support_proxy,
+        first_available_origin,
+        cancel,
+    )
+}
 
 const FEATURE_ORDER: &str = include_str!("vegetation/assets/feature-order.json");
 const OVERWORLD_MIN_Y: i32 = -64;
@@ -42,6 +92,11 @@ impl FeatureRandom {
     pub(super) fn next_float(&mut self) -> f32 {
         (self.next(24) as f32) / (1u32 << 24) as f32
     }
+    pub(super) fn next_double(&mut self) -> f64 {
+        let high = self.next(26) as i64;
+        let low = self.next(27) as i64;
+        ((high << 27) + low) as f64 / (1_u64 << 53) as f64
+    }
     pub(super) fn next_int_bound(&mut self, bound: i32) -> i32 {
         assert!(bound > 0, "bound must be positive");
         if bound & -bound == bound {
@@ -60,6 +115,7 @@ impl FeatureRandom {
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum SurfacePlantKind {
     Tree,
+    TreeWood,
     Bush,
     Crop,
 }
@@ -72,6 +128,26 @@ pub struct SurfacePlant {
     pub kind: SurfacePlantKind,
     /// Stable namespaced feature/species ID, for example `tfc:tree/oak_entry`.
     pub variant: String,
+}
+
+/// ForestFeature's top-level ground debris produced after a successful tree pass.
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub(crate) struct ForestLitterBlock {
+    pub x: i32,
+    pub y: i32,
+    pub z: i32,
+    pub block: String,
+}
+
+/// Source-chunk groundcover and fallen-leaf placements from the same ForestFeature
+/// RNG simulation used for the optional predicted canopy.
+pub(crate) fn forest_litter_source_chunk(
+    world: &World,
+    chunk_x: i32,
+    chunk_z: i32,
+    cancel: &impl Fn() -> bool,
+) -> Vec<ForestLitterBlock> {
+    trees::generate_litter(world, chunk_x, chunk_z, cancel)
 }
 
 #[derive(Clone, Copy, Debug, Hash, PartialEq, Eq)]
@@ -103,9 +179,11 @@ fn source_plants(
     if let Some(cached) = PLANT_CACHE.with(|cache| cache.borrow_mut().get(&key).cloned()) {
         return cached;
     }
-    let mut plants = trees::generate(world, chunk_x, chunk_z, cancel);
+    let mut plants = canopy::source_trees(world, chunk_x, chunk_z, cancel)
+        .as_ref()
+        .clone();
     if !cancel() {
-        plants.extend(crops::generate(
+        let crop_plants = crops::generate_crop_only(
             world,
             chunk_x,
             chunk_z,
@@ -117,7 +195,10 @@ fn source_plants(
                 Some(feature_seed(chunk_x, chunk_z, OVERWORLD_MIN_Y, step, index))
             },
             cancel,
-        ));
+        );
+        // Forest and palm trees were already composed by the shared canopy
+        // source; detail-mode crop work only computes ordinary crop patches.
+        plants.extend(crop_plants);
     }
     let plants = Arc::new(plants);
     if !cancel() {
@@ -169,14 +250,14 @@ pub fn feature_seed(
 ) -> i64 {
     let base = decoration_seed(chunk_x, chunk_z, origin_y);
     let mut random = FeatureRandom::new(base);
-    let seed = (feature_index as i64)
+
+    (feature_index as i64)
         .wrapping_mul(random.next_long())
         .wrapping_mul(203_704_237)
         ^ (decoration_step as i64)
             .wrapping_mul(random.next_long())
             .wrapping_mul(758_031_792)
-        ^ base;
-    seed
+        ^ base
 }
 
 #[cfg(test)]
@@ -216,38 +297,38 @@ pub fn generate_surface(
             }
             let x = origin_x.wrapping_add(local_x);
             let z = origin_z.wrapping_add(local_z);
-            let probe = world.sample(x, z, true);
-            let y = probe.height.unwrap_or(63.0).round() as i32;
-            let water = probe.ocean || is_water_biome_id(&probe.biome);
-            let block = if water {
+            let mut probe = world.sample(x, z, true);
+            crate::ground_view::populate(world, x, z, &mut probe, false);
+            let y = probe
+                .ground_y
+                .unwrap_or_else(|| probe.height.unwrap_or(63.0).round() as i32);
+            let lava = probe.surface_lava;
+            let magma = probe.surface_magma;
+            let water = lava.is_none() && magma.is_none() && probe.is_water();
+            let block = if lava.is_some() {
+                "minecraft:lava".to_owned()
+            } else if magma.is_some() {
+                "tfc:rock/magma/basalt".to_owned()
+            } else if water {
                 "minecraft:water".to_owned()
             } else {
-                let biome = probe.biome.to_ascii_lowercase();
-                let category = if biome.contains("desert")
-                    || biome.contains("dune")
-                    || biome.contains("badlands")
-                    || biome.contains("sand")
-                {
-                    "sand"
-                } else if biome.contains("glacier")
-                    || biome.contains("tundra")
-                    || biome.contains("snow")
-                    || probe.climate.temperature < -8.0
-                {
-                    "snow"
-                } else if probe.climate.rainfall < 120.0 && probe.climate.temperature > 12.0 {
-                    "dry_grass"
-                } else {
-                    "grass"
-                };
-                format!("terralens:predicted_surface/{category}")
+                probe
+                    .ground_block
+                    .clone()
+                    .unwrap_or_else(|| "minecraft:stone".to_owned())
             };
             columns.push(SurfaceColumn {
-                y: if water { y.max(63) } else { y },
+                // Terrain height remains the predicted ground height. Fluid occupies
+                // blocks below sea level, so its top block is Y=62, not Y=63.
+                // Above-sea river/lake columns retain their sampled local height.
+                y: lava
+                    .or(magma)
+                    .or(probe.surface_water_y)
+                    .unwrap_or_else(|| if water { y.max(SEA_SURFACE_BLOCK_Y) } else { y }),
                 block,
                 tree: None,
                 crop: None,
-                color: surface_tint(&probe, y),
+                color: surface_tint(&probe, lava.or(magma).unwrap_or(y)),
             });
         }
     }
@@ -284,7 +365,10 @@ pub fn generate_surface(
                     plant.y,
                     plant.z,
                     &plant.variant,
-                    matches!(plant.kind, SurfacePlantKind::Tree),
+                    matches!(
+                        plant.kind,
+                        SurfacePlantKind::Tree | SurfacePlantKind::TreeWood
+                    ),
                 );
             }
         }
@@ -310,6 +394,10 @@ fn annotate_column(
     let dz = z - chunk_z.wrapping_mul(16);
     if (0..16).contains(&dx) && (0..16).contains(&dz) {
         let column = &mut columns[dz as usize * 16 + dx as usize];
+        // Fluid surfaces and exposed magma cannot support these plant annotations.
+        if crate::volcanic_lava::Surface::from_block(&column.block, column.y).is_some() {
+            return;
+        }
         if tree {
             if y >= column.y {
                 column.tree = Some(variant.to_owned());
@@ -328,8 +416,8 @@ fn annotate_column(
     }
 }
 
-/// The TFC decoration pass includes a feature when its holder is present in any
-/// biome palette across the source chunk and its eight neighbors.
+/// TFC merges feature holders from the source chunk and its eight neighboring
+/// biome palettes before decorating. Feature presence in that union is the gate.
 pub(super) fn feature_biome_allowed(
     world: &World,
     chunk_x: i32,
@@ -389,72 +477,88 @@ pub(super) fn feature_biome_allowed(
     union.iter().any(|biome| allowed.contains(biome))
 }
 
+/// Exact BiomePlacement predicate for features whose placed-feature chain includes
+/// `tfc:biome`. Unlike the chunk-union gate above, this checks the biome at the
+/// candidate's own block position.
+pub(super) fn feature_biome_at_position_allowed(
+    world: &World,
+    x: i32,
+    z: i32,
+    feature_id: &str,
+) -> bool {
+    static FEATURE_BIOMES: OnceLock<HashMap<String, HashSet<String>>> = OnceLock::new();
+    let mapping = FEATURE_BIOMES.get_or_init(|| {
+        let data: Value = serde_json::from_str(FEATURE_ORDER)
+            .expect("bundled TFG feature biome profile must be valid JSON");
+        data["featureBiomes"]
+            .as_object()
+            .into_iter()
+            .flatten()
+            .filter_map(|(id, value)| {
+                Some((
+                    id.clone(),
+                    value
+                        .as_array()?
+                        .iter()
+                        .filter_map(Value::as_str)
+                        .map(str::to_owned)
+                        .collect(),
+                ))
+            })
+            .collect()
+    });
+    mapping.get(feature_id).is_some_and(|allowed| {
+        let name = crate::biome::biome_name(world.region.biome(x, z));
+        allowed.contains(name)
+    })
+}
+
 pub(super) fn is_water_biome_id(id: &str) -> bool {
     id.ends_with("/river") || id.ends_with("lake") || id.ends_with("/ocean") || id.ends_with("sea")
 }
 
-fn canonical_feature_index(id: &str) -> Option<(i32, u32)> {
-    static INDICES: OnceLock<HashMap<String, (i32, u32)>> = OnceLock::new();
-    INDICES
-        .get_or_init(|| {
-            let data: Value = serde_json::from_str(FEATURE_ORDER)
-                .expect("bundled TFG FeatureSorter profile must be valid JSON");
-            data["activeCropFeatures"]
-                .as_array()
-                .into_iter()
-                .flatten()
-                .filter_map(|entry| {
-                    Some((
-                        entry["id"].as_str()?.to_owned(),
-                        (
-                            entry["step"].as_i64()? as i32,
-                            entry["index"].as_u64()? as u32,
-                        ),
-                    ))
-                })
-                .collect()
-        })
-        .get(id)
-        .copied()
+pub(super) fn feature_index_in_step(id: &str, step: i32) -> Option<u32> {
+    static INDICES: OnceLock<HashMap<i32, HashMap<String, u32>>> = OnceLock::new();
+    let stages = INDICES.get_or_init(|| {
+        let data: Value = serde_json::from_str(FEATURE_ORDER)
+            .expect("bundled TFG FeatureSorter profile must be valid JSON");
+        data["stages"]
+            .as_object()
+            .unwrap()
+            .iter()
+            .map(|(step, features)| {
+                let indices = features
+                    .as_array()
+                    .unwrap()
+                    .iter()
+                    .enumerate()
+                    .filter_map(|(index, id)| Some((id.as_str()?.to_owned(), index as u32)))
+                    .collect();
+                (step.parse().expect("numeric decoration step"), indices)
+            })
+            .collect()
+    });
+    stages.get(&step)?.get(id).copied()
 }
 
-fn surface_tint(probe: &crate::model::Probe, y: i32) -> [u8; 3] {
+fn canonical_feature_index(id: &str) -> Option<(i32, u32)> {
+    feature_index_in_step(id, 9).map(|index| (9, index))
+}
+
+fn surface_tint(probe: &crate::model::Probe, _y: i32) -> [u8; 3] {
+    if probe.surface_magma.is_some() {
+        return crate::volcanic_lava::MAGMA_COLOR;
+    }
+    if probe.surface_lava.is_some() {
+        return crate::volcanic_lava::COLOR;
+    }
     if probe.ocean {
         return [40, 93, 119];
     }
-    if is_water_biome_id(&probe.biome) {
+    if probe.is_water() {
         return [73, 151, 164];
     }
-    let biome = probe.biome.to_ascii_lowercase();
-    if ["desert", "dune", "badlands", "sand"]
-        .iter()
-        .any(|name| biome.contains(name))
-    {
-        return [188, 164, 117];
-    }
-    if ["glacier", "tundra", "snow"]
-        .iter()
-        .any(|name| biome.contains(name))
-        || probe.climate.temperature < -8.
-    {
-        return [214, 225, 224];
-    }
-    if probe.climate.rainfall < 120. && probe.climate.temperature > 12. {
-        return [166, 164, 102];
-    }
-    let t = ((y - 60) as f64 / 200.0).clamp(0.0, 1.0);
-    let stops = [
-        [117.0, 160.0, 120.0],
-        [159.0, 173.0, 133.0],
-        [174.0, 157.0, 126.0],
-        [157.0, 144.0, 136.0],
-        [220.0, 226.0, 222.0],
-    ];
-    let scaled = t * (stops.len() - 1) as f64;
-    let low = (scaled.floor() as usize).min(stops.len() - 2);
-    let high = low + 1;
-    let mix = scaled - low as f64;
-    std::array::from_fn(|i| (stops[low][i] + (stops[high][i] - stops[low][i]) * mix).round() as u8)
+    crate::ground_view::probe_color(probe).unwrap_or([128, 128, 128])
 }
 
 #[cfg(test)]
@@ -486,6 +590,104 @@ mod surface_tests {
         annotate_column(&mut columns, 0, 0, 0, 90, 0, "tfc:wild_crop/wheat", false);
         assert_eq!(columns[0].tree, None);
         assert_eq!(columns[0].crop.as_deref(), Some("tfc:wild_crop/wheat"));
+    }
+
+    #[test]
+    fn plants_do_not_replace_a_flooded_surface_column() {
+        let mut columns = vec![SurfaceColumn {
+            y: SEA_SURFACE_BLOCK_Y,
+            block: "minecraft:water".into(),
+            tree: None,
+            crop: None,
+            color: [73, 151, 164],
+        }];
+        annotate_column(&mut columns, 0, 0, 0, 80, 0, "tfc:tree/oak", true);
+        annotate_column(&mut columns, 0, 0, 0, 64, 0, "tfc:wild_crop/wheat", false);
+        assert_eq!(columns[0].y, SEA_SURFACE_BLOCK_Y);
+        assert_eq!(columns[0].block, "minecraft:water");
+        assert!(columns[0].tree.is_none() && columns[0].crop.is_none());
+    }
+
+    #[test]
+    fn exposed_magma_stays_solid_and_has_no_tree_or_crop_annotations() {
+        for block in ["minecraft:magma_block", "tfc:rock/magma/basalt"] {
+            let mut columns = vec![SurfaceColumn {
+                y: 103,
+                block: block.into(),
+                tree: None,
+                crop: None,
+                color: crate::volcanic_lava::MAGMA_COLOR,
+            }];
+            annotate_column(&mut columns, 0, 0, 0, 120, 0, "tfc:tree/oak", true);
+            annotate_column(&mut columns, 0, 0, 0, 120, 0, "tfc:wild_crop/wheat", false);
+            assert_eq!(columns[0].block, block);
+            assert_eq!(columns[0].y, 103);
+            assert!(columns[0].tree.is_none() && columns[0].crop.is_none());
+        }
+    }
+
+    #[test]
+    fn caldera_detail_renders_lava_at_the_fluid_level_and_keeps_plants_off_it() {
+        let world = World::new(0, crate::model::Settings::default());
+        let (x, z) = (5511, -6368);
+        let chunk = generate_surface(&world, x >> 4, z >> 4, &|| false);
+        let index = (z.rem_euclid(16) * 16 + x.rem_euclid(16)) as usize;
+        let column = &chunk.columns[index];
+        assert_eq!(column.block, "minecraft:lava");
+        assert_eq!(column.y, 92);
+        assert_eq!(column.color, crate::volcanic_lava::COLOR);
+        assert!(column.tree.is_none() && column.crop.is_none());
+        let mut columns = vec![column.clone()];
+        annotate_column(&mut columns, 0, 0, 0, 120, 0, "tfc:tree/oak", true);
+        assert_eq!(columns[0].block, "minecraft:lava");
+    }
+
+    #[test]
+    fn seed_zero_lowland_probe_renders_sea_level_water_without_raising_terrain() {
+        let world = World::new(0, crate::model::Settings::default());
+        // Search a small fixed seed-zero window for non-ocean land below sea level.
+        // This exercises the independently sampled height/water mask rather than a
+        // synthetic biome fixture. The chosen probe's source height remains intact.
+        let mut flooded = None;
+        'search: for z in 15_808..15_904 {
+            for x in 15_808..15_904 {
+                let probe = world.sample(x, z, true);
+                if probe.surface_water && !probe.ocean && probe.height.is_some_and(|h| h < 63.0) {
+                    flooded = Some((x, z, probe));
+                    break 'search;
+                }
+            }
+        }
+        let (x, z, probe) = flooded.expect("seed-zero window should contain flooded lowland");
+        let chunk = generate_surface(&world, x >> 4, z >> 4, &|| false);
+        let column = &chunk.columns[(z.rem_euclid(16) * 16 + x.rem_euclid(16)) as usize];
+        assert!(
+            probe.height.unwrap() < 63.0,
+            "raw terrain height was changed"
+        );
+        assert_eq!(column.y, SEA_SURFACE_BLOCK_Y);
+        assert_eq!(column.block, "minecraft:water");
+        assert!(column.tree.is_none() && column.crop.is_none());
+    }
+
+    #[test]
+    fn detailed_floodplain_does_not_turn_the_observed_dry_bank_into_water() {
+        let world = World::new(0, crate::model::Settings::default());
+        let chunk = generate_surface(&world, 8833 >> 4, 11107 >> 4, &|| false);
+        let bank =
+            &chunk.columns[(11107_i32.rem_euclid(16) * 16 + 8833_i32.rem_euclid(16)) as usize];
+        assert_ne!(bank.block, "minecraft:water");
+        let wet_chunk = generate_surface(&world, 8827 >> 4, 11107 >> 4, &|| false);
+        let bed =
+            &wet_chunk.columns[(11107_i32.rem_euclid(16) * 16 + 8827_i32.rem_euclid(16)) as usize];
+        assert_eq!(bed.block, "minecraft:water");
+        assert_eq!(bed.y, SEA_SURFACE_BLOCK_Y);
+        assert!(bed.tree.is_none() && bed.crop.is_none());
+        assert_eq!(
+            world.height(8833, 11107),
+            Some(61.),
+            "fixing surface water must not alter the structure-height model"
+        );
     }
 
     #[test]

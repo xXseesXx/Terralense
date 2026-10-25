@@ -1,0 +1,6965 @@
+{
+  "schema": 1,
+  "provenance": {
+    "kind": "standalone_java_transcription_of_pinned_source_math_plus_unmodified_upstream_png",
+    "scope": "Numeric source control; not a Forge client or native Minecraft rendering test.",
+    "source_commit": "f4929e738e83dbc8d46680276faa67520dffa172",
+    "afc_jar_sha256": "b115634932de50474bf6c28b57b49633c0a7361bafdb9f7e1cca61c052147fd9",
+    "oracle_java_sha256": "0ced7deccd63dfeb8d3477f50a98eaa0617681ace4ec3a8858e9f39c018ec91b",
+    "texture_sha256": {
+      "tfc/grass.png": "289451d8c948b347b835d6383f405d606ab3f3eb133352bdd29671719b65949d",
+      "tfc/foliage.png": "d6bac38080bd747f1f024ee5ff63587a055fd44df36b13c5e5195e9c19c243ad",
+      "tfc/foliage_fall.png": "5a32da320ec3691911eeea5c74a3e710d13f0699f490f8f87f94c8fb63b55c05",
+      "tfc/foliage_winter.png": "f0c30aac734ce762d857ea9a79463ef00e9052c36e10d62499956efee03215b0",
+      "tfc/water.png": "dcd96bbedd3e21dadaafeb0ea5b37aa1b52d0673e5de7045bf3e2267a4da0af4",
+      "afc/foliage_jacaranda.png": "3a1fb1ceaee4e7fe627c73d00455b1c371c96e13770bd5a6b4cb3cf77cd2fc0e",
+      "afc/foliage_yellow.png": "15ba3a0d8379214e9cd337a240c0618575418b5fc380b4989ea6a32c5bfac96f",
+      "afc/foliage_red.png": "aab9be44c69dc3e51bd4898aa1bca64dc4db06823714cbbd63665277768c0d66",
+      "afc/foliage_orange.png": "87159224020b20b9da5ed9b67b4d764fcfff1a7ba34ff71859d7aa7d090ff1c2"
+    },
+    "source_methods": [
+      "OverworldClimateModelMixin.calculateMonthlyTemperature",
+      "OverworldClimateModel.adjustTemperatureByElevation",
+      "TFCColors.getSeasonalFoliageColor",
+      "TFCColors.getAutumnColor",
+      "Helpers.hash",
+      "ClientEventHandler.registerColorHandlerBlocks",
+      "AFC ModEventClientBusEvents.registerColorHandlerBlocks",
+      "AFCColors.getAdjustedNoisyMonth",
+      "PalmColorProvider.getPalmFoliageColor"
+    ],
+    "intentional_divergence": "None date preserves historical TerraLens annual mean rather than a live calendar. Daily/time-of-day temperature is set to zero."
+  },
+  "samples": [
+    {
+      "kind": "grass",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 0,
+      "temperature_scale": 20000.0,
+      "season": null,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        93,
+        155,
+        82
+      ]
+    },
+    {
+      "kind": "grass",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 0,
+      "temperature_scale": 20000.0,
+      "season": 0.0,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        95,
+        154,
+        89
+      ]
+    },
+    {
+      "kind": "grass",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 0,
+      "temperature_scale": 20000.0,
+      "season": 0.25,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        93,
+        155,
+        82
+      ]
+    },
+    {
+      "kind": "grass",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 0,
+      "temperature_scale": 20000.0,
+      "season": 0.5,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        94,
+        156,
+        82
+      ]
+    },
+    {
+      "kind": "grass",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 0,
+      "temperature_scale": 20000.0,
+      "season": 0.75,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        93,
+        155,
+        82
+      ]
+    },
+    {
+      "kind": "grass",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 0,
+      "temperature_scale": 20000.0,
+      "season": 0.999,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        95,
+        154,
+        89
+      ]
+    },
+    {
+      "kind": "grass",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 100,
+      "z": -10000,
+      "temperature_scale": 20000.0,
+      "season": null,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        94,
+        154,
+        85
+      ]
+    },
+    {
+      "kind": "grass",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 100,
+      "z": -10000,
+      "temperature_scale": 20000.0,
+      "season": 0.0,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        107,
+        153,
+        118
+      ]
+    },
+    {
+      "kind": "grass",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 100,
+      "z": -10000,
+      "temperature_scale": 20000.0,
+      "season": 0.25,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        94,
+        154,
+        85
+      ]
+    },
+    {
+      "kind": "grass",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 100,
+      "z": -10000,
+      "temperature_scale": 20000.0,
+      "season": 0.5,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        104,
+        161,
+        83
+      ]
+    },
+    {
+      "kind": "grass",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 100,
+      "z": -10000,
+      "temperature_scale": 20000.0,
+      "season": 0.75,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        94,
+        154,
+        85
+      ]
+    },
+    {
+      "kind": "grass",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 100,
+      "z": -10000,
+      "temperature_scale": 20000.0,
+      "season": 0.999,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        107,
+        153,
+        118
+      ]
+    },
+    {
+      "kind": "grass",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 10000,
+      "temperature_scale": 20000.0,
+      "season": null,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        93,
+        155,
+        82
+      ]
+    },
+    {
+      "kind": "grass",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 10000,
+      "temperature_scale": 20000.0,
+      "season": 0.0,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        93,
+        155,
+        82
+      ]
+    },
+    {
+      "kind": "grass",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 10000,
+      "temperature_scale": 20000.0,
+      "season": 0.25,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        93,
+        155,
+        82
+      ]
+    },
+    {
+      "kind": "grass",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 10000,
+      "temperature_scale": 20000.0,
+      "season": 0.5,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        93,
+        155,
+        82
+      ]
+    },
+    {
+      "kind": "grass",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 10000,
+      "temperature_scale": 20000.0,
+      "season": 0.75,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        93,
+        155,
+        82
+      ]
+    },
+    {
+      "kind": "grass",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 10000,
+      "temperature_scale": 20000.0,
+      "season": 0.999,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        93,
+        155,
+        82
+      ]
+    },
+    {
+      "kind": "grass",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 30000,
+      "temperature_scale": 20000.0,
+      "season": null,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        93,
+        155,
+        82
+      ]
+    },
+    {
+      "kind": "grass",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 30000,
+      "temperature_scale": 20000.0,
+      "season": 0.0,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        134,
+        172,
+        84
+      ]
+    },
+    {
+      "kind": "grass",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 30000,
+      "temperature_scale": 20000.0,
+      "season": 0.25,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        93,
+        155,
+        82
+      ]
+    },
+    {
+      "kind": "grass",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 30000,
+      "temperature_scale": 20000.0,
+      "season": 0.5,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        104,
+        154,
+        109
+      ]
+    },
+    {
+      "kind": "grass",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 30000,
+      "temperature_scale": 20000.0,
+      "season": 0.75,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        93,
+        155,
+        82
+      ]
+    },
+    {
+      "kind": "grass",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 30000,
+      "temperature_scale": 20000.0,
+      "season": 0.999,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        134,
+        172,
+        84
+      ]
+    },
+    {
+      "kind": "grass",
+      "temperature": -15.0,
+      "rainfall": 475.0,
+      "x": -514,
+      "y": 180,
+      "z": -24000,
+      "temperature_scale": 12000.0,
+      "season": null,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        109,
+        153,
+        122
+      ]
+    },
+    {
+      "kind": "grass",
+      "temperature": -15.0,
+      "rainfall": 475.0,
+      "x": -514,
+      "y": 180,
+      "z": -24000,
+      "temperature_scale": 12000.0,
+      "season": 0.0,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        109,
+        153,
+        122
+      ]
+    },
+    {
+      "kind": "grass",
+      "temperature": -15.0,
+      "rainfall": 475.0,
+      "x": -514,
+      "y": 180,
+      "z": -24000,
+      "temperature_scale": 12000.0,
+      "season": 0.25,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        109,
+        153,
+        122
+      ]
+    },
+    {
+      "kind": "grass",
+      "temperature": -15.0,
+      "rainfall": 475.0,
+      "x": -514,
+      "y": 180,
+      "z": -24000,
+      "temperature_scale": 12000.0,
+      "season": 0.5,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        109,
+        153,
+        122
+      ]
+    },
+    {
+      "kind": "grass",
+      "temperature": -15.0,
+      "rainfall": 475.0,
+      "x": -514,
+      "y": 180,
+      "z": -24000,
+      "temperature_scale": 12000.0,
+      "season": 0.75,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        109,
+        153,
+        122
+      ]
+    },
+    {
+      "kind": "grass",
+      "temperature": -15.0,
+      "rainfall": 475.0,
+      "x": -514,
+      "y": 180,
+      "z": -24000,
+      "temperature_scale": 12000.0,
+      "season": 0.999,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        109,
+        153,
+        122
+      ]
+    },
+    {
+      "kind": "grass",
+      "temperature": 15.0,
+      "rainfall": 75.0,
+      "x": 1001,
+      "y": -32,
+      "z": 18000,
+      "temperature_scale": 12000.0,
+      "season": null,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        250,
+        214,
+        90
+      ]
+    },
+    {
+      "kind": "grass",
+      "temperature": 15.0,
+      "rainfall": 75.0,
+      "x": 1001,
+      "y": -32,
+      "z": 18000,
+      "temperature_scale": 12000.0,
+      "season": 0.0,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        250,
+        214,
+        90
+      ]
+    },
+    {
+      "kind": "grass",
+      "temperature": 15.0,
+      "rainfall": 75.0,
+      "x": 1001,
+      "y": -32,
+      "z": 18000,
+      "temperature_scale": 12000.0,
+      "season": 0.25,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        250,
+        214,
+        90
+      ]
+    },
+    {
+      "kind": "grass",
+      "temperature": 15.0,
+      "rainfall": 75.0,
+      "x": 1001,
+      "y": -32,
+      "z": 18000,
+      "temperature_scale": 12000.0,
+      "season": 0.5,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        250,
+        214,
+        90
+      ]
+    },
+    {
+      "kind": "grass",
+      "temperature": 15.0,
+      "rainfall": 75.0,
+      "x": 1001,
+      "y": -32,
+      "z": 18000,
+      "temperature_scale": 12000.0,
+      "season": 0.75,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        250,
+        214,
+        90
+      ]
+    },
+    {
+      "kind": "grass",
+      "temperature": 15.0,
+      "rainfall": 75.0,
+      "x": 1001,
+      "y": -32,
+      "z": 18000,
+      "temperature_scale": 12000.0,
+      "season": 0.999,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        250,
+        214,
+        90
+      ]
+    },
+    {
+      "kind": "grass",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 0,
+      "z": 0,
+      "temperature_scale": 20000.0,
+      "season": null,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        93,
+        155,
+        82
+      ]
+    },
+    {
+      "kind": "grass",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 0,
+      "z": 0,
+      "temperature_scale": 20000.0,
+      "season": 0.0,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        93,
+        155,
+        82
+      ]
+    },
+    {
+      "kind": "grass",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 0,
+      "z": 0,
+      "temperature_scale": 20000.0,
+      "season": 0.25,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        93,
+        155,
+        82
+      ]
+    },
+    {
+      "kind": "grass",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 0,
+      "z": 0,
+      "temperature_scale": 20000.0,
+      "season": 0.5,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        93,
+        155,
+        82
+      ]
+    },
+    {
+      "kind": "grass",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 0,
+      "z": 0,
+      "temperature_scale": 20000.0,
+      "season": 0.75,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        93,
+        155,
+        82
+      ]
+    },
+    {
+      "kind": "grass",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 0,
+      "z": 0,
+      "temperature_scale": 20000.0,
+      "season": 0.999,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        93,
+        155,
+        82
+      ]
+    },
+    {
+      "kind": "grass",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 0,
+      "temperature_scale": 0.0,
+      "season": null,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        93,
+        155,
+        82
+      ]
+    },
+    {
+      "kind": "grass",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 0,
+      "temperature_scale": 0.0,
+      "season": 0.0,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        93,
+        155,
+        82
+      ]
+    },
+    {
+      "kind": "grass",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 0,
+      "temperature_scale": 0.0,
+      "season": 0.25,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        93,
+        155,
+        82
+      ]
+    },
+    {
+      "kind": "grass",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 0,
+      "temperature_scale": 0.0,
+      "season": 0.5,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        93,
+        155,
+        82
+      ]
+    },
+    {
+      "kind": "grass",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 0,
+      "temperature_scale": 0.0,
+      "season": 0.75,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        93,
+        155,
+        82
+      ]
+    },
+    {
+      "kind": "grass",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 0,
+      "temperature_scale": 0.0,
+      "season": 0.999,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        93,
+        155,
+        82
+      ]
+    },
+    {
+      "kind": "water",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 0,
+      "temperature_scale": 20000.0,
+      "season": null,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        59,
+        101,
+        162
+      ]
+    },
+    {
+      "kind": "water",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 0,
+      "temperature_scale": 20000.0,
+      "season": 0.0,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        53,
+        88,
+        145
+      ]
+    },
+    {
+      "kind": "water",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 0,
+      "temperature_scale": 20000.0,
+      "season": 0.25,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        59,
+        101,
+        162
+      ]
+    },
+    {
+      "kind": "water",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 0,
+      "temperature_scale": 20000.0,
+      "season": 0.5,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        65,
+        114,
+        179
+      ]
+    },
+    {
+      "kind": "water",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 0,
+      "temperature_scale": 20000.0,
+      "season": 0.75,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        59,
+        101,
+        162
+      ]
+    },
+    {
+      "kind": "water",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 0,
+      "temperature_scale": 20000.0,
+      "season": 0.999,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        53,
+        88,
+        145
+      ]
+    },
+    {
+      "kind": "water",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 100,
+      "z": -10000,
+      "temperature_scale": 20000.0,
+      "season": null,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        59,
+        101,
+        162
+      ]
+    },
+    {
+      "kind": "water",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 100,
+      "z": -10000,
+      "temperature_scale": 20000.0,
+      "season": 0.0,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        47,
+        74,
+        127
+      ]
+    },
+    {
+      "kind": "water",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 100,
+      "z": -10000,
+      "temperature_scale": 20000.0,
+      "season": 0.25,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        59,
+        101,
+        162
+      ]
+    },
+    {
+      "kind": "water",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 100,
+      "z": -10000,
+      "temperature_scale": 20000.0,
+      "season": 0.5,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        71,
+        127,
+        197
+      ]
+    },
+    {
+      "kind": "water",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 100,
+      "z": -10000,
+      "temperature_scale": 20000.0,
+      "season": 0.75,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        59,
+        101,
+        162
+      ]
+    },
+    {
+      "kind": "water",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 100,
+      "z": -10000,
+      "temperature_scale": 20000.0,
+      "season": 0.999,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        47,
+        74,
+        127
+      ]
+    },
+    {
+      "kind": "water",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 10000,
+      "temperature_scale": 20000.0,
+      "season": null,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        59,
+        101,
+        162
+      ]
+    },
+    {
+      "kind": "water",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 10000,
+      "temperature_scale": 20000.0,
+      "season": 0.0,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        59,
+        101,
+        162
+      ]
+    },
+    {
+      "kind": "water",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 10000,
+      "temperature_scale": 20000.0,
+      "season": 0.25,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        59,
+        101,
+        162
+      ]
+    },
+    {
+      "kind": "water",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 10000,
+      "temperature_scale": 20000.0,
+      "season": 0.5,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        59,
+        101,
+        162
+      ]
+    },
+    {
+      "kind": "water",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 10000,
+      "temperature_scale": 20000.0,
+      "season": 0.75,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        59,
+        101,
+        162
+      ]
+    },
+    {
+      "kind": "water",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 10000,
+      "temperature_scale": 20000.0,
+      "season": 0.999,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        59,
+        101,
+        162
+      ]
+    },
+    {
+      "kind": "water",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 30000,
+      "temperature_scale": 20000.0,
+      "season": null,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        59,
+        101,
+        162
+      ]
+    },
+    {
+      "kind": "water",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 30000,
+      "temperature_scale": 20000.0,
+      "season": 0.0,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        71,
+        127,
+        197
+      ]
+    },
+    {
+      "kind": "water",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 30000,
+      "temperature_scale": 20000.0,
+      "season": 0.25,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        59,
+        101,
+        162
+      ]
+    },
+    {
+      "kind": "water",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 30000,
+      "temperature_scale": 20000.0,
+      "season": 0.5,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        47,
+        74,
+        127
+      ]
+    },
+    {
+      "kind": "water",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 30000,
+      "temperature_scale": 20000.0,
+      "season": 0.75,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        59,
+        101,
+        162
+      ]
+    },
+    {
+      "kind": "water",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 30000,
+      "temperature_scale": 20000.0,
+      "season": 0.999,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        71,
+        127,
+        197
+      ]
+    },
+    {
+      "kind": "water",
+      "temperature": -15.0,
+      "rainfall": 475.0,
+      "x": -514,
+      "y": 180,
+      "z": -24000,
+      "temperature_scale": 12000.0,
+      "season": null,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        42,
+        64,
+        114
+      ]
+    },
+    {
+      "kind": "water",
+      "temperature": -15.0,
+      "rainfall": 475.0,
+      "x": -514,
+      "y": 180,
+      "z": -24000,
+      "temperature_scale": 12000.0,
+      "season": 0.0,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        48,
+        77,
+        131
+      ]
+    },
+    {
+      "kind": "water",
+      "temperature": -15.0,
+      "rainfall": 475.0,
+      "x": -514,
+      "y": 180,
+      "z": -24000,
+      "temperature_scale": 12000.0,
+      "season": 0.25,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        42,
+        64,
+        114
+      ]
+    },
+    {
+      "kind": "water",
+      "temperature": -15.0,
+      "rainfall": 475.0,
+      "x": -514,
+      "y": 180,
+      "z": -24000,
+      "temperature_scale": 12000.0,
+      "season": 0.5,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        39,
+        57,
+        104
+      ]
+    },
+    {
+      "kind": "water",
+      "temperature": -15.0,
+      "rainfall": 475.0,
+      "x": -514,
+      "y": 180,
+      "z": -24000,
+      "temperature_scale": 12000.0,
+      "season": 0.75,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        42,
+        64,
+        114
+      ]
+    },
+    {
+      "kind": "water",
+      "temperature": -15.0,
+      "rainfall": 475.0,
+      "x": -514,
+      "y": 180,
+      "z": -24000,
+      "temperature_scale": 12000.0,
+      "season": 0.999,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        48,
+        77,
+        131
+      ]
+    },
+    {
+      "kind": "water",
+      "temperature": 15.0,
+      "rainfall": 75.0,
+      "x": 1001,
+      "y": -32,
+      "z": 18000,
+      "temperature_scale": 12000.0,
+      "season": null,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        62,
+        108,
+        172
+      ]
+    },
+    {
+      "kind": "water",
+      "temperature": 15.0,
+      "rainfall": 75.0,
+      "x": 1001,
+      "y": -32,
+      "z": 18000,
+      "temperature_scale": 12000.0,
+      "season": 0.0,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        72,
+        130,
+        201
+      ]
+    },
+    {
+      "kind": "water",
+      "temperature": 15.0,
+      "rainfall": 75.0,
+      "x": 1001,
+      "y": -32,
+      "z": 18000,
+      "temperature_scale": 12000.0,
+      "season": 0.25,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        62,
+        108,
+        172
+      ]
+    },
+    {
+      "kind": "water",
+      "temperature": 15.0,
+      "rainfall": 75.0,
+      "x": 1001,
+      "y": -32,
+      "z": 18000,
+      "temperature_scale": 12000.0,
+      "season": 0.5,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        50,
+        82,
+        137
+      ]
+    },
+    {
+      "kind": "water",
+      "temperature": 15.0,
+      "rainfall": 75.0,
+      "x": 1001,
+      "y": -32,
+      "z": 18000,
+      "temperature_scale": 12000.0,
+      "season": 0.75,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        62,
+        108,
+        172
+      ]
+    },
+    {
+      "kind": "water",
+      "temperature": 15.0,
+      "rainfall": 75.0,
+      "x": 1001,
+      "y": -32,
+      "z": 18000,
+      "temperature_scale": 12000.0,
+      "season": 0.999,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        72,
+        130,
+        201
+      ]
+    },
+    {
+      "kind": "water",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 0,
+      "z": 0,
+      "temperature_scale": 20000.0,
+      "season": null,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        59,
+        101,
+        162
+      ]
+    },
+    {
+      "kind": "water",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 0,
+      "z": 0,
+      "temperature_scale": 20000.0,
+      "season": 0.0,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        53,
+        88,
+        145
+      ]
+    },
+    {
+      "kind": "water",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 0,
+      "z": 0,
+      "temperature_scale": 20000.0,
+      "season": 0.25,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        59,
+        101,
+        162
+      ]
+    },
+    {
+      "kind": "water",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 0,
+      "z": 0,
+      "temperature_scale": 20000.0,
+      "season": 0.5,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        65,
+        114,
+        179
+      ]
+    },
+    {
+      "kind": "water",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 0,
+      "z": 0,
+      "temperature_scale": 20000.0,
+      "season": 0.75,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        59,
+        101,
+        162
+      ]
+    },
+    {
+      "kind": "water",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 0,
+      "z": 0,
+      "temperature_scale": 20000.0,
+      "season": 0.999,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        53,
+        88,
+        145
+      ]
+    },
+    {
+      "kind": "water",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 0,
+      "temperature_scale": 0.0,
+      "season": null,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        59,
+        101,
+        162
+      ]
+    },
+    {
+      "kind": "water",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 0,
+      "temperature_scale": 0.0,
+      "season": 0.0,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        59,
+        101,
+        162
+      ]
+    },
+    {
+      "kind": "water",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 0,
+      "temperature_scale": 0.0,
+      "season": 0.25,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        59,
+        101,
+        162
+      ]
+    },
+    {
+      "kind": "water",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 0,
+      "temperature_scale": 0.0,
+      "season": 0.5,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        59,
+        101,
+        162
+      ]
+    },
+    {
+      "kind": "water",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 0,
+      "temperature_scale": 0.0,
+      "season": 0.75,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        59,
+        101,
+        162
+      ]
+    },
+    {
+      "kind": "water",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 0,
+      "temperature_scale": 0.0,
+      "season": 0.999,
+      "species": "",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        59,
+        101,
+        162
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 0,
+      "temperature_scale": 20000.0,
+      "season": null,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        98,
+        131,
+        57
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 0,
+      "temperature_scale": 20000.0,
+      "season": null,
+      "species": "pine",
+      "autumn_index": 0,
+      "conifer": true,
+      "expected_rgb": [
+        98,
+        131,
+        57
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 0,
+      "temperature_scale": 20000.0,
+      "season": null,
+      "species": "pine_krummholz",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        98,
+        131,
+        57
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 0,
+      "temperature_scale": 20000.0,
+      "season": null,
+      "species": "baobab",
+      "autumn_index": 212,
+      "conifer": false,
+      "expected_rgb": [
+        98,
+        131,
+        57
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 0,
+      "temperature_scale": 20000.0,
+      "season": null,
+      "species": "cypress",
+      "autumn_index": 0,
+      "conifer": true,
+      "expected_rgb": [
+        98,
+        131,
+        57
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 0,
+      "temperature_scale": 20000.0,
+      "season": 0.0,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        89,
+        43
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 0,
+      "temperature_scale": 20000.0,
+      "season": 0.0,
+      "species": "pine",
+      "autumn_index": 0,
+      "conifer": true,
+      "expected_rgb": [
+        108,
+        129,
+        66
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 0,
+      "temperature_scale": 20000.0,
+      "season": 0.0,
+      "species": "pine_krummholz",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        89,
+        43
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 0,
+      "temperature_scale": 20000.0,
+      "season": 0.0,
+      "species": "baobab",
+      "autumn_index": 212,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        89,
+        43
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 0,
+      "temperature_scale": 20000.0,
+      "season": 0.0,
+      "species": "cypress",
+      "autumn_index": 0,
+      "conifer": true,
+      "expected_rgb": [
+        108,
+        129,
+        66
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 0,
+      "temperature_scale": 20000.0,
+      "season": 0.5,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        91,
+        132,
+        49
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 0,
+      "temperature_scale": 20000.0,
+      "season": 0.5,
+      "species": "pine",
+      "autumn_index": 0,
+      "conifer": true,
+      "expected_rgb": [
+        91,
+        132,
+        49
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 0,
+      "temperature_scale": 20000.0,
+      "season": 0.5,
+      "species": "pine_krummholz",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        91,
+        132,
+        49
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 0,
+      "temperature_scale": 20000.0,
+      "season": 0.5,
+      "species": "baobab",
+      "autumn_index": 212,
+      "conifer": false,
+      "expected_rgb": [
+        91,
+        132,
+        49
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 0,
+      "temperature_scale": 20000.0,
+      "season": 0.5,
+      "species": "cypress",
+      "autumn_index": 0,
+      "conifer": true,
+      "expected_rgb": [
+        91,
+        132,
+        49
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 0,
+      "temperature_scale": 20000.0,
+      "season": 0.75,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        98,
+        131,
+        57
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 0,
+      "temperature_scale": 20000.0,
+      "season": 0.75,
+      "species": "pine",
+      "autumn_index": 0,
+      "conifer": true,
+      "expected_rgb": [
+        98,
+        131,
+        57
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 0,
+      "temperature_scale": 20000.0,
+      "season": 0.75,
+      "species": "pine_krummholz",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        98,
+        131,
+        57
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 0,
+      "temperature_scale": 20000.0,
+      "season": 0.75,
+      "species": "baobab",
+      "autumn_index": 212,
+      "conifer": false,
+      "expected_rgb": [
+        98,
+        131,
+        57
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 0,
+      "temperature_scale": 20000.0,
+      "season": 0.75,
+      "species": "cypress",
+      "autumn_index": 0,
+      "conifer": true,
+      "expected_rgb": [
+        98,
+        131,
+        57
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 0,
+      "temperature_scale": 20000.0,
+      "season": 0.875,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        241,
+        142,
+        0
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 0,
+      "temperature_scale": 20000.0,
+      "season": 0.875,
+      "species": "pine",
+      "autumn_index": 0,
+      "conifer": true,
+      "expected_rgb": [
+        105,
+        130,
+        63
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 0,
+      "temperature_scale": 20000.0,
+      "season": 0.875,
+      "species": "pine_krummholz",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        237,
+        76,
+        22
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 0,
+      "temperature_scale": 20000.0,
+      "season": 0.875,
+      "species": "baobab",
+      "autumn_index": 212,
+      "conifer": false,
+      "expected_rgb": [
+        219,
+        158,
+        30
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 0,
+      "temperature_scale": 20000.0,
+      "season": 0.875,
+      "species": "cypress",
+      "autumn_index": 0,
+      "conifer": true,
+      "expected_rgb": [
+        105,
+        130,
+        63
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 0,
+      "temperature_scale": 20000.0,
+      "season": 0.99,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        89,
+        43
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 0,
+      "temperature_scale": 20000.0,
+      "season": 0.99,
+      "species": "pine",
+      "autumn_index": 0,
+      "conifer": true,
+      "expected_rgb": [
+        108,
+        129,
+        66
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 0,
+      "temperature_scale": 20000.0,
+      "season": 0.99,
+      "species": "pine_krummholz",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        89,
+        43
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 0,
+      "temperature_scale": 20000.0,
+      "season": 0.99,
+      "species": "baobab",
+      "autumn_index": 212,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        89,
+        43
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 0,
+      "temperature_scale": 20000.0,
+      "season": 0.99,
+      "species": "cypress",
+      "autumn_index": 0,
+      "conifer": true,
+      "expected_rgb": [
+        108,
+        129,
+        66
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 100,
+      "z": -10000,
+      "temperature_scale": 20000.0,
+      "season": null,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        105,
+        130,
+        63
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 100,
+      "z": -10000,
+      "temperature_scale": 20000.0,
+      "season": null,
+      "species": "pine",
+      "autumn_index": 0,
+      "conifer": true,
+      "expected_rgb": [
+        105,
+        130,
+        63
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 100,
+      "z": -10000,
+      "temperature_scale": 20000.0,
+      "season": null,
+      "species": "pine_krummholz",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        105,
+        130,
+        63
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 100,
+      "z": -10000,
+      "temperature_scale": 20000.0,
+      "season": null,
+      "species": "baobab",
+      "autumn_index": 212,
+      "conifer": false,
+      "expected_rgb": [
+        105,
+        130,
+        63
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 100,
+      "z": -10000,
+      "temperature_scale": 20000.0,
+      "season": null,
+      "species": "cypress",
+      "autumn_index": 0,
+      "conifer": true,
+      "expected_rgb": [
+        105,
+        130,
+        63
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 100,
+      "z": -10000,
+      "temperature_scale": 20000.0,
+      "season": 0.0,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        89,
+        43
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 100,
+      "z": -10000,
+      "temperature_scale": 20000.0,
+      "season": 0.0,
+      "species": "pine",
+      "autumn_index": 0,
+      "conifer": true,
+      "expected_rgb": [
+        120,
+        127,
+        78
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 100,
+      "z": -10000,
+      "temperature_scale": 20000.0,
+      "season": 0.0,
+      "species": "pine_krummholz",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        89,
+        43
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 100,
+      "z": -10000,
+      "temperature_scale": 20000.0,
+      "season": 0.0,
+      "species": "baobab",
+      "autumn_index": 212,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        89,
+        43
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 100,
+      "z": -10000,
+      "temperature_scale": 20000.0,
+      "season": 0.0,
+      "species": "cypress",
+      "autumn_index": 0,
+      "conifer": true,
+      "expected_rgb": [
+        120,
+        127,
+        78
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 100,
+      "z": -10000,
+      "temperature_scale": 20000.0,
+      "season": 0.5,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        89,
+        133,
+        47
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 100,
+      "z": -10000,
+      "temperature_scale": 20000.0,
+      "season": 0.5,
+      "species": "pine",
+      "autumn_index": 0,
+      "conifer": true,
+      "expected_rgb": [
+        89,
+        133,
+        47
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 100,
+      "z": -10000,
+      "temperature_scale": 20000.0,
+      "season": 0.5,
+      "species": "pine_krummholz",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        89,
+        133,
+        47
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 100,
+      "z": -10000,
+      "temperature_scale": 20000.0,
+      "season": 0.5,
+      "species": "baobab",
+      "autumn_index": 212,
+      "conifer": false,
+      "expected_rgb": [
+        89,
+        133,
+        47
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 100,
+      "z": -10000,
+      "temperature_scale": 20000.0,
+      "season": 0.5,
+      "species": "cypress",
+      "autumn_index": 0,
+      "conifer": true,
+      "expected_rgb": [
+        89,
+        133,
+        47
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 100,
+      "z": -10000,
+      "temperature_scale": 20000.0,
+      "season": 0.75,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        208,
+        209,
+        56
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 100,
+      "z": -10000,
+      "temperature_scale": 20000.0,
+      "season": 0.75,
+      "species": "pine",
+      "autumn_index": 0,
+      "conifer": true,
+      "expected_rgb": [
+        105,
+        130,
+        63
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 100,
+      "z": -10000,
+      "temperature_scale": 20000.0,
+      "season": 0.75,
+      "species": "pine_krummholz",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        206,
+        208,
+        56
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 100,
+      "z": -10000,
+      "temperature_scale": 20000.0,
+      "season": 0.75,
+      "species": "baobab",
+      "autumn_index": 212,
+      "conifer": false,
+      "expected_rgb": [
+        188,
+        194,
+        57
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 100,
+      "z": -10000,
+      "temperature_scale": 20000.0,
+      "season": 0.75,
+      "species": "cypress",
+      "autumn_index": 0,
+      "conifer": true,
+      "expected_rgb": [
+        105,
+        130,
+        63
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 100,
+      "z": -10000,
+      "temperature_scale": 20000.0,
+      "season": 0.875,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        181,
+        95,
+        31
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 100,
+      "z": -10000,
+      "temperature_scale": 20000.0,
+      "season": 0.875,
+      "species": "pine",
+      "autumn_index": 0,
+      "conifer": true,
+      "expected_rgb": [
+        116,
+        128,
+        75
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 100,
+      "z": -10000,
+      "temperature_scale": 20000.0,
+      "season": 0.875,
+      "species": "pine_krummholz",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        168,
+        66,
+        37
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 100,
+      "z": -10000,
+      "temperature_scale": 20000.0,
+      "season": 0.875,
+      "species": "baobab",
+      "autumn_index": 212,
+      "conifer": false,
+      "expected_rgb": [
+        138,
+        91,
+        40
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 100,
+      "z": -10000,
+      "temperature_scale": 20000.0,
+      "season": 0.875,
+      "species": "cypress",
+      "autumn_index": 0,
+      "conifer": true,
+      "expected_rgb": [
+        116,
+        128,
+        75
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 100,
+      "z": -10000,
+      "temperature_scale": 20000.0,
+      "season": 0.99,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        89,
+        43
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 100,
+      "z": -10000,
+      "temperature_scale": 20000.0,
+      "season": 0.99,
+      "species": "pine",
+      "autumn_index": 0,
+      "conifer": true,
+      "expected_rgb": [
+        119,
+        127,
+        78
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 100,
+      "z": -10000,
+      "temperature_scale": 20000.0,
+      "season": 0.99,
+      "species": "pine_krummholz",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        89,
+        43
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 100,
+      "z": -10000,
+      "temperature_scale": 20000.0,
+      "season": 0.99,
+      "species": "baobab",
+      "autumn_index": 212,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        89,
+        43
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 100,
+      "z": -10000,
+      "temperature_scale": 20000.0,
+      "season": 0.99,
+      "species": "cypress",
+      "autumn_index": 0,
+      "conifer": true,
+      "expected_rgb": [
+        119,
+        127,
+        78
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 10000,
+      "temperature_scale": 20000.0,
+      "season": null,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        98,
+        131,
+        57
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 10000,
+      "temperature_scale": 20000.0,
+      "season": null,
+      "species": "pine",
+      "autumn_index": 0,
+      "conifer": true,
+      "expected_rgb": [
+        98,
+        131,
+        57
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 10000,
+      "temperature_scale": 20000.0,
+      "season": null,
+      "species": "pine_krummholz",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        98,
+        131,
+        57
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 10000,
+      "temperature_scale": 20000.0,
+      "season": null,
+      "species": "baobab",
+      "autumn_index": 212,
+      "conifer": false,
+      "expected_rgb": [
+        98,
+        131,
+        57
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 10000,
+      "temperature_scale": 20000.0,
+      "season": null,
+      "species": "cypress",
+      "autumn_index": 0,
+      "conifer": true,
+      "expected_rgb": [
+        98,
+        131,
+        57
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 10000,
+      "temperature_scale": 20000.0,
+      "season": 0.0,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        89,
+        43
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 10000,
+      "temperature_scale": 20000.0,
+      "season": 0.0,
+      "species": "pine",
+      "autumn_index": 0,
+      "conifer": true,
+      "expected_rgb": [
+        98,
+        131,
+        57
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 10000,
+      "temperature_scale": 20000.0,
+      "season": 0.0,
+      "species": "pine_krummholz",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        89,
+        43
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 10000,
+      "temperature_scale": 20000.0,
+      "season": 0.0,
+      "species": "baobab",
+      "autumn_index": 212,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        89,
+        43
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 10000,
+      "temperature_scale": 20000.0,
+      "season": 0.0,
+      "species": "cypress",
+      "autumn_index": 0,
+      "conifer": true,
+      "expected_rgb": [
+        98,
+        131,
+        57
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 10000,
+      "temperature_scale": 20000.0,
+      "season": 0.5,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        98,
+        131,
+        57
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 10000,
+      "temperature_scale": 20000.0,
+      "season": 0.5,
+      "species": "pine",
+      "autumn_index": 0,
+      "conifer": true,
+      "expected_rgb": [
+        98,
+        131,
+        57
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 10000,
+      "temperature_scale": 20000.0,
+      "season": 0.5,
+      "species": "pine_krummholz",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        98,
+        131,
+        57
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 10000,
+      "temperature_scale": 20000.0,
+      "season": 0.5,
+      "species": "baobab",
+      "autumn_index": 212,
+      "conifer": false,
+      "expected_rgb": [
+        98,
+        131,
+        57
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 10000,
+      "temperature_scale": 20000.0,
+      "season": 0.5,
+      "species": "cypress",
+      "autumn_index": 0,
+      "conifer": true,
+      "expected_rgb": [
+        98,
+        131,
+        57
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 10000,
+      "temperature_scale": 20000.0,
+      "season": 0.75,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        98,
+        131,
+        57
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 10000,
+      "temperature_scale": 20000.0,
+      "season": 0.75,
+      "species": "pine",
+      "autumn_index": 0,
+      "conifer": true,
+      "expected_rgb": [
+        98,
+        131,
+        57
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 10000,
+      "temperature_scale": 20000.0,
+      "season": 0.75,
+      "species": "pine_krummholz",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        98,
+        131,
+        57
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 10000,
+      "temperature_scale": 20000.0,
+      "season": 0.75,
+      "species": "baobab",
+      "autumn_index": 212,
+      "conifer": false,
+      "expected_rgb": [
+        98,
+        131,
+        57
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 10000,
+      "temperature_scale": 20000.0,
+      "season": 0.75,
+      "species": "cypress",
+      "autumn_index": 0,
+      "conifer": true,
+      "expected_rgb": [
+        98,
+        131,
+        57
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 10000,
+      "temperature_scale": 20000.0,
+      "season": 0.875,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        189,
+        96,
+        30
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 10000,
+      "temperature_scale": 20000.0,
+      "season": 0.875,
+      "species": "pine",
+      "autumn_index": 0,
+      "conifer": true,
+      "expected_rgb": [
+        98,
+        131,
+        57
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 10000,
+      "temperature_scale": 20000.0,
+      "season": 0.875,
+      "species": "pine_krummholz",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        175,
+        62,
+        36
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 10000,
+      "temperature_scale": 20000.0,
+      "season": 0.875,
+      "species": "baobab",
+      "autumn_index": 212,
+      "conifer": false,
+      "expected_rgb": [
+        140,
+        91,
+        40
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 10000,
+      "temperature_scale": 20000.0,
+      "season": 0.875,
+      "species": "cypress",
+      "autumn_index": 0,
+      "conifer": true,
+      "expected_rgb": [
+        98,
+        131,
+        57
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 10000,
+      "temperature_scale": 20000.0,
+      "season": 0.99,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        89,
+        43
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 10000,
+      "temperature_scale": 20000.0,
+      "season": 0.99,
+      "species": "pine",
+      "autumn_index": 0,
+      "conifer": true,
+      "expected_rgb": [
+        98,
+        131,
+        57
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 10000,
+      "temperature_scale": 20000.0,
+      "season": 0.99,
+      "species": "pine_krummholz",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        89,
+        43
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 10000,
+      "temperature_scale": 20000.0,
+      "season": 0.99,
+      "species": "baobab",
+      "autumn_index": 212,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        89,
+        43
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": 120,
+      "y": 63,
+      "z": 10000,
+      "temperature_scale": 20000.0,
+      "season": 0.99,
+      "species": "cypress",
+      "autumn_index": 0,
+      "conifer": true,
+      "expected_rgb": [
+        98,
+        131,
+        57
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 30000,
+      "temperature_scale": 20000.0,
+      "season": null,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        98,
+        131,
+        57
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 30000,
+      "temperature_scale": 20000.0,
+      "season": null,
+      "species": "pine",
+      "autumn_index": 0,
+      "conifer": true,
+      "expected_rgb": [
+        98,
+        131,
+        57
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 30000,
+      "temperature_scale": 20000.0,
+      "season": null,
+      "species": "pine_krummholz",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        98,
+        131,
+        57
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 30000,
+      "temperature_scale": 20000.0,
+      "season": null,
+      "species": "baobab",
+      "autumn_index": 212,
+      "conifer": false,
+      "expected_rgb": [
+        98,
+        131,
+        57
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 30000,
+      "temperature_scale": 20000.0,
+      "season": null,
+      "species": "cypress",
+      "autumn_index": 0,
+      "conifer": true,
+      "expected_rgb": [
+        98,
+        131,
+        57
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 30000,
+      "temperature_scale": 20000.0,
+      "season": 0.0,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        89,
+        43
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 30000,
+      "temperature_scale": 20000.0,
+      "season": 0.0,
+      "species": "pine",
+      "autumn_index": 0,
+      "conifer": true,
+      "expected_rgb": [
+        86,
+        133,
+        45
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 30000,
+      "temperature_scale": 20000.0,
+      "season": 0.0,
+      "species": "pine_krummholz",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        89,
+        43
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 30000,
+      "temperature_scale": 20000.0,
+      "season": 0.0,
+      "species": "baobab",
+      "autumn_index": 212,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        89,
+        43
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 30000,
+      "temperature_scale": 20000.0,
+      "season": 0.0,
+      "species": "cypress",
+      "autumn_index": 0,
+      "conifer": true,
+      "expected_rgb": [
+        86,
+        133,
+        45
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 30000,
+      "temperature_scale": 20000.0,
+      "season": 0.5,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        116,
+        128,
+        74
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 30000,
+      "temperature_scale": 20000.0,
+      "season": 0.5,
+      "species": "pine",
+      "autumn_index": 0,
+      "conifer": true,
+      "expected_rgb": [
+        116,
+        128,
+        74
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 30000,
+      "temperature_scale": 20000.0,
+      "season": 0.5,
+      "species": "pine_krummholz",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        116,
+        128,
+        74
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 30000,
+      "temperature_scale": 20000.0,
+      "season": 0.5,
+      "species": "baobab",
+      "autumn_index": 212,
+      "conifer": false,
+      "expected_rgb": [
+        116,
+        128,
+        74
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 30000,
+      "temperature_scale": 20000.0,
+      "season": 0.5,
+      "species": "cypress",
+      "autumn_index": 0,
+      "conifer": true,
+      "expected_rgb": [
+        116,
+        128,
+        74
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 30000,
+      "temperature_scale": 20000.0,
+      "season": 0.75,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        98,
+        131,
+        57
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 30000,
+      "temperature_scale": 20000.0,
+      "season": 0.75,
+      "species": "pine",
+      "autumn_index": 0,
+      "conifer": true,
+      "expected_rgb": [
+        98,
+        131,
+        57
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 30000,
+      "temperature_scale": 20000.0,
+      "season": 0.75,
+      "species": "pine_krummholz",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        98,
+        131,
+        57
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 30000,
+      "temperature_scale": 20000.0,
+      "season": 0.75,
+      "species": "baobab",
+      "autumn_index": 212,
+      "conifer": false,
+      "expected_rgb": [
+        98,
+        131,
+        57
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 30000,
+      "temperature_scale": 20000.0,
+      "season": 0.75,
+      "species": "cypress",
+      "autumn_index": 0,
+      "conifer": true,
+      "expected_rgb": [
+        98,
+        131,
+        57
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 30000,
+      "temperature_scale": 20000.0,
+      "season": 0.875,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        240,
+        103,
+        19
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 30000,
+      "temperature_scale": 20000.0,
+      "season": 0.875,
+      "species": "pine",
+      "autumn_index": 0,
+      "conifer": true,
+      "expected_rgb": [
+        89,
+        133,
+        47
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 30000,
+      "temperature_scale": 20000.0,
+      "season": 0.875,
+      "species": "pine_krummholz",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        231,
+        32,
+        28
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 30000,
+      "temperature_scale": 20000.0,
+      "season": 0.875,
+      "species": "baobab",
+      "autumn_index": 212,
+      "conifer": false,
+      "expected_rgb": [
+        196,
+        136,
+        50
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 30000,
+      "temperature_scale": 20000.0,
+      "season": 0.875,
+      "species": "cypress",
+      "autumn_index": 0,
+      "conifer": true,
+      "expected_rgb": [
+        89,
+        133,
+        47
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 30000,
+      "temperature_scale": 20000.0,
+      "season": 0.99,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        89,
+        43
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 30000,
+      "temperature_scale": 20000.0,
+      "season": 0.99,
+      "species": "pine",
+      "autumn_index": 0,
+      "conifer": true,
+      "expected_rgb": [
+        86,
+        133,
+        45
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 30000,
+      "temperature_scale": 20000.0,
+      "season": 0.99,
+      "species": "pine_krummholz",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        89,
+        43
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 30000,
+      "temperature_scale": 20000.0,
+      "season": 0.99,
+      "species": "baobab",
+      "autumn_index": 212,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        89,
+        43
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 30000,
+      "temperature_scale": 20000.0,
+      "season": 0.99,
+      "species": "cypress",
+      "autumn_index": 0,
+      "conifer": true,
+      "expected_rgb": [
+        86,
+        133,
+        45
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": -15.0,
+      "rainfall": 475.0,
+      "x": -514,
+      "y": 180,
+      "z": -24000,
+      "temperature_scale": 12000.0,
+      "season": null,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        89,
+        119,
+        107
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": -15.0,
+      "rainfall": 475.0,
+      "x": -514,
+      "y": 180,
+      "z": -24000,
+      "temperature_scale": 12000.0,
+      "season": null,
+      "species": "pine",
+      "autumn_index": 0,
+      "conifer": true,
+      "expected_rgb": [
+        89,
+        119,
+        107
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": -15.0,
+      "rainfall": 475.0,
+      "x": -514,
+      "y": 180,
+      "z": -24000,
+      "temperature_scale": 12000.0,
+      "season": null,
+      "species": "pine_krummholz",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        89,
+        119,
+        107
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": -15.0,
+      "rainfall": 475.0,
+      "x": -514,
+      "y": 180,
+      "z": -24000,
+      "temperature_scale": 12000.0,
+      "season": null,
+      "species": "baobab",
+      "autumn_index": 212,
+      "conifer": false,
+      "expected_rgb": [
+        89,
+        119,
+        107
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": -15.0,
+      "rainfall": 475.0,
+      "x": -514,
+      "y": 180,
+      "z": -24000,
+      "temperature_scale": 12000.0,
+      "season": null,
+      "species": "cypress",
+      "autumn_index": 0,
+      "conifer": true,
+      "expected_rgb": [
+        89,
+        119,
+        107
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": -15.0,
+      "rainfall": 475.0,
+      "x": -514,
+      "y": 180,
+      "z": -24000,
+      "temperature_scale": 12000.0,
+      "season": 0.0,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        89,
+        43
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": -15.0,
+      "rainfall": 475.0,
+      "x": -514,
+      "y": 180,
+      "z": -24000,
+      "temperature_scale": 12000.0,
+      "season": 0.0,
+      "species": "pine",
+      "autumn_index": 0,
+      "conifer": true,
+      "expected_rgb": [
+        89,
+        119,
+        107
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": -15.0,
+      "rainfall": 475.0,
+      "x": -514,
+      "y": 180,
+      "z": -24000,
+      "temperature_scale": 12000.0,
+      "season": 0.0,
+      "species": "pine_krummholz",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        89,
+        43
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": -15.0,
+      "rainfall": 475.0,
+      "x": -514,
+      "y": 180,
+      "z": -24000,
+      "temperature_scale": 12000.0,
+      "season": 0.0,
+      "species": "baobab",
+      "autumn_index": 212,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        89,
+        43
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": -15.0,
+      "rainfall": 475.0,
+      "x": -514,
+      "y": 180,
+      "z": -24000,
+      "temperature_scale": 12000.0,
+      "season": 0.0,
+      "species": "cypress",
+      "autumn_index": 0,
+      "conifer": true,
+      "expected_rgb": [
+        89,
+        119,
+        107
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": -15.0,
+      "rainfall": 475.0,
+      "x": -514,
+      "y": 180,
+      "z": -24000,
+      "temperature_scale": 12000.0,
+      "season": 0.5,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        89,
+        119,
+        107
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": -15.0,
+      "rainfall": 475.0,
+      "x": -514,
+      "y": 180,
+      "z": -24000,
+      "temperature_scale": 12000.0,
+      "season": 0.5,
+      "species": "pine",
+      "autumn_index": 0,
+      "conifer": true,
+      "expected_rgb": [
+        89,
+        119,
+        107
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": -15.0,
+      "rainfall": 475.0,
+      "x": -514,
+      "y": 180,
+      "z": -24000,
+      "temperature_scale": 12000.0,
+      "season": 0.5,
+      "species": "pine_krummholz",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        89,
+        119,
+        107
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": -15.0,
+      "rainfall": 475.0,
+      "x": -514,
+      "y": 180,
+      "z": -24000,
+      "temperature_scale": 12000.0,
+      "season": 0.5,
+      "species": "baobab",
+      "autumn_index": 212,
+      "conifer": false,
+      "expected_rgb": [
+        89,
+        119,
+        107
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": -15.0,
+      "rainfall": 475.0,
+      "x": -514,
+      "y": 180,
+      "z": -24000,
+      "temperature_scale": 12000.0,
+      "season": 0.5,
+      "species": "cypress",
+      "autumn_index": 0,
+      "conifer": true,
+      "expected_rgb": [
+        89,
+        119,
+        107
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": -15.0,
+      "rainfall": 475.0,
+      "x": -514,
+      "y": 180,
+      "z": -24000,
+      "temperature_scale": 12000.0,
+      "season": 0.75,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        89,
+        43
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": -15.0,
+      "rainfall": 475.0,
+      "x": -514,
+      "y": 180,
+      "z": -24000,
+      "temperature_scale": 12000.0,
+      "season": 0.75,
+      "species": "pine",
+      "autumn_index": 0,
+      "conifer": true,
+      "expected_rgb": [
+        89,
+        119,
+        107
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": -15.0,
+      "rainfall": 475.0,
+      "x": -514,
+      "y": 180,
+      "z": -24000,
+      "temperature_scale": 12000.0,
+      "season": 0.75,
+      "species": "pine_krummholz",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        89,
+        43
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": -15.0,
+      "rainfall": 475.0,
+      "x": -514,
+      "y": 180,
+      "z": -24000,
+      "temperature_scale": 12000.0,
+      "season": 0.75,
+      "species": "baobab",
+      "autumn_index": 212,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        89,
+        43
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": -15.0,
+      "rainfall": 475.0,
+      "x": -514,
+      "y": 180,
+      "z": -24000,
+      "temperature_scale": 12000.0,
+      "season": 0.75,
+      "species": "cypress",
+      "autumn_index": 0,
+      "conifer": true,
+      "expected_rgb": [
+        89,
+        119,
+        107
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": -15.0,
+      "rainfall": 475.0,
+      "x": -514,
+      "y": 180,
+      "z": -24000,
+      "temperature_scale": 12000.0,
+      "season": 0.875,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        89,
+        43
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": -15.0,
+      "rainfall": 475.0,
+      "x": -514,
+      "y": 180,
+      "z": -24000,
+      "temperature_scale": 12000.0,
+      "season": 0.875,
+      "species": "pine",
+      "autumn_index": 0,
+      "conifer": true,
+      "expected_rgb": [
+        89,
+        119,
+        107
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": -15.0,
+      "rainfall": 475.0,
+      "x": -514,
+      "y": 180,
+      "z": -24000,
+      "temperature_scale": 12000.0,
+      "season": 0.875,
+      "species": "pine_krummholz",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        89,
+        43
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": -15.0,
+      "rainfall": 475.0,
+      "x": -514,
+      "y": 180,
+      "z": -24000,
+      "temperature_scale": 12000.0,
+      "season": 0.875,
+      "species": "baobab",
+      "autumn_index": 212,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        89,
+        43
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": -15.0,
+      "rainfall": 475.0,
+      "x": -514,
+      "y": 180,
+      "z": -24000,
+      "temperature_scale": 12000.0,
+      "season": 0.875,
+      "species": "cypress",
+      "autumn_index": 0,
+      "conifer": true,
+      "expected_rgb": [
+        89,
+        119,
+        107
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": -15.0,
+      "rainfall": 475.0,
+      "x": -514,
+      "y": 180,
+      "z": -24000,
+      "temperature_scale": 12000.0,
+      "season": 0.99,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        89,
+        43
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": -15.0,
+      "rainfall": 475.0,
+      "x": -514,
+      "y": 180,
+      "z": -24000,
+      "temperature_scale": 12000.0,
+      "season": 0.99,
+      "species": "pine",
+      "autumn_index": 0,
+      "conifer": true,
+      "expected_rgb": [
+        89,
+        119,
+        107
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": -15.0,
+      "rainfall": 475.0,
+      "x": -514,
+      "y": 180,
+      "z": -24000,
+      "temperature_scale": 12000.0,
+      "season": 0.99,
+      "species": "pine_krummholz",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        89,
+        43
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": -15.0,
+      "rainfall": 475.0,
+      "x": -514,
+      "y": 180,
+      "z": -24000,
+      "temperature_scale": 12000.0,
+      "season": 0.99,
+      "species": "baobab",
+      "autumn_index": 212,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        89,
+        43
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": -15.0,
+      "rainfall": 475.0,
+      "x": -514,
+      "y": 180,
+      "z": -24000,
+      "temperature_scale": 12000.0,
+      "season": 0.99,
+      "species": "cypress",
+      "autumn_index": 0,
+      "conifer": true,
+      "expected_rgb": [
+        89,
+        119,
+        107
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": -20.0,
+      "rainfall": 250.0,
+      "x": -2001,
+      "y": 83,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.1,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        89,
+        43
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": -20.0,
+      "rainfall": 250.0,
+      "x": -2001,
+      "y": 83,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.7,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        241,
+        130,
+        6
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": -20.0,
+      "rainfall": 250.0,
+      "x": -2001,
+      "y": 83,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.8,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        89,
+        43
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": -20.0,
+      "rainfall": 250.0,
+      "x": -2001,
+      "y": 83,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.9,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        89,
+        43
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": -3.0,
+      "rainfall": 250.0,
+      "x": -2001,
+      "y": 83,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.1,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        89,
+        43
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": -3.0,
+      "rainfall": 250.0,
+      "x": -2001,
+      "y": 83,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.7,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        114,
+        128,
+        72
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": -3.0,
+      "rainfall": 250.0,
+      "x": -2001,
+      "y": 83,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.8,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        250,
+        230,
+        48
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": -3.0,
+      "rainfall": 250.0,
+      "x": -2001,
+      "y": 83,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.9,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        89,
+        43
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 0.0,
+      "rainfall": 250.0,
+      "x": -2001,
+      "y": 83,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.1,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        89,
+        43
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 0.0,
+      "rainfall": 250.0,
+      "x": -2001,
+      "y": 83,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.7,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        111,
+        129,
+        69
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 0.0,
+      "rainfall": 250.0,
+      "x": -2001,
+      "y": 83,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.8,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        250,
+        231,
+        48
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 0.0,
+      "rainfall": 250.0,
+      "x": -2001,
+      "y": 83,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.9,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        89,
+        43
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -2001,
+      "y": 83,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.1,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        89,
+        43
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -2001,
+      "y": 83,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.7,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        101,
+        131,
+        59
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -2001,
+      "y": 83,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.8,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        245,
+        237,
+        54
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -2001,
+      "y": 83,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.9,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        89,
+        43
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 12.0,
+      "rainfall": 250.0,
+      "x": -2001,
+      "y": 83,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.1,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        89,
+        43
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 12.0,
+      "rainfall": 250.0,
+      "x": -2001,
+      "y": 83,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.7,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        98,
+        131,
+        57
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 12.0,
+      "rainfall": 250.0,
+      "x": -2001,
+      "y": 83,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.8,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        145,
+        61
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 12.0,
+      "rainfall": 250.0,
+      "x": -2001,
+      "y": 83,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.9,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        89,
+        43
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 12.000001,
+      "rainfall": 250.0,
+      "x": -2001,
+      "y": 83,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.1,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        89,
+        43
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 12.000001,
+      "rainfall": 250.0,
+      "x": -2001,
+      "y": 83,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.7,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        98,
+        131,
+        57
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 12.000001,
+      "rainfall": 250.0,
+      "x": -2001,
+      "y": 83,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.8,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        145,
+        61
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 12.000001,
+      "rainfall": 250.0,
+      "x": -2001,
+      "y": 83,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.9,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        89,
+        43
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 20.0,
+      "rainfall": 250.0,
+      "x": -2001,
+      "y": 83,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.1,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        44,
+        99,
+        52
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 20.0,
+      "rainfall": 250.0,
+      "x": -2001,
+      "y": 83,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.7,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        91,
+        132,
+        50
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 20.0,
+      "rainfall": 250.0,
+      "x": -2001,
+      "y": 83,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.8,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        94,
+        132,
+        52
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 20.0,
+      "rainfall": 250.0,
+      "x": -2001,
+      "y": 83,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.9,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        44,
+        99,
+        52
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -120,
+      "y": 63,
+      "z": 2345,
+      "temperature_scale": 20000.0,
+      "season": 0.17500000000000002,
+      "species": "ipe",
+      "autumn_index": 254,
+      "conifer": false,
+      "expected_rgb": [
+        251,
+        238,
+        53
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -120,
+      "y": 63,
+      "z": 2345,
+      "temperature_scale": 20000.0,
+      "season": 0.20833333333333334,
+      "species": "ipe",
+      "autumn_index": 254,
+      "conifer": false,
+      "expected_rgb": [
+        251,
+        238,
+        53
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -120,
+      "y": 63,
+      "z": 2345,
+      "temperature_scale": 20000.0,
+      "season": 0.25833333333333336,
+      "species": "ipe",
+      "autumn_index": 254,
+      "conifer": false,
+      "expected_rgb": [
+        251,
+        238,
+        53
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -120,
+      "y": 63,
+      "z": 2345,
+      "temperature_scale": 20000.0,
+      "season": 0.2916666666666667,
+      "species": "ipe",
+      "autumn_index": 254,
+      "conifer": false,
+      "expected_rgb": [
+        251,
+        238,
+        53
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -120,
+      "y": 63,
+      "z": 2345,
+      "temperature_scale": 20000.0,
+      "season": 0.375,
+      "species": "ipe",
+      "autumn_index": 254,
+      "conifer": false,
+      "expected_rgb": [
+        94,
+        132,
+        52
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -120,
+      "y": 63,
+      "z": 2345,
+      "temperature_scale": 20000.0,
+      "season": 0.625,
+      "species": "ipe",
+      "autumn_index": 254,
+      "conifer": false,
+      "expected_rgb": [
+        94,
+        132,
+        52
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -120,
+      "y": 63,
+      "z": 2345,
+      "temperature_scale": 20000.0,
+      "season": 0.17500000000000002,
+      "species": "giant_rosewood",
+      "autumn_index": 190,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        79,
+        142
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -120,
+      "y": 63,
+      "z": 2345,
+      "temperature_scale": 20000.0,
+      "season": 0.20833333333333334,
+      "species": "giant_rosewood",
+      "autumn_index": 190,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        79,
+        142
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -120,
+      "y": 63,
+      "z": 2345,
+      "temperature_scale": 20000.0,
+      "season": 0.25833333333333336,
+      "species": "giant_rosewood",
+      "autumn_index": 190,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        79,
+        142
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -120,
+      "y": 63,
+      "z": 2345,
+      "temperature_scale": 20000.0,
+      "season": 0.2916666666666667,
+      "species": "giant_rosewood",
+      "autumn_index": 190,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        79,
+        142
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -120,
+      "y": 63,
+      "z": 2345,
+      "temperature_scale": 20000.0,
+      "season": 0.375,
+      "species": "giant_rosewood",
+      "autumn_index": 190,
+      "conifer": false,
+      "expected_rgb": [
+        94,
+        132,
+        52
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -120,
+      "y": 63,
+      "z": 2345,
+      "temperature_scale": 20000.0,
+      "season": 0.625,
+      "species": "giant_rosewood",
+      "autumn_index": 190,
+      "conifer": false,
+      "expected_rgb": [
+        94,
+        132,
+        52
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -120,
+      "y": 63,
+      "z": 2345,
+      "temperature_scale": 20000.0,
+      "season": 0.17500000000000002,
+      "species": "red_silk_cotton",
+      "autumn_index": 150,
+      "conifer": false,
+      "expected_rgb": [
+        102,
+        130,
+        60
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -120,
+      "y": 63,
+      "z": 2345,
+      "temperature_scale": 20000.0,
+      "season": 0.20833333333333334,
+      "species": "red_silk_cotton",
+      "autumn_index": 150,
+      "conifer": false,
+      "expected_rgb": [
+        100,
+        131,
+        58
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -120,
+      "y": 63,
+      "z": 2345,
+      "temperature_scale": 20000.0,
+      "season": 0.25833333333333336,
+      "species": "red_silk_cotton",
+      "autumn_index": 150,
+      "conifer": false,
+      "expected_rgb": [
+        235,
+        28,
+        27
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -120,
+      "y": 63,
+      "z": 2345,
+      "temperature_scale": 20000.0,
+      "season": 0.2916666666666667,
+      "species": "red_silk_cotton",
+      "autumn_index": 150,
+      "conifer": false,
+      "expected_rgb": [
+        235,
+        28,
+        27
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -120,
+      "y": 63,
+      "z": 2345,
+      "temperature_scale": 20000.0,
+      "season": 0.375,
+      "species": "red_silk_cotton",
+      "autumn_index": 150,
+      "conifer": false,
+      "expected_rgb": [
+        235,
+        28,
+        27
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -120,
+      "y": 63,
+      "z": 2345,
+      "temperature_scale": 20000.0,
+      "season": 0.625,
+      "species": "red_silk_cotton",
+      "autumn_index": 150,
+      "conifer": false,
+      "expected_rgb": [
+        94,
+        132,
+        52
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -120,
+      "y": 63,
+      "z": 2345,
+      "temperature_scale": 20000.0,
+      "season": 0.17500000000000002,
+      "species": "flame_of_the_forest",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        222,
+        40,
+        0
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -120,
+      "y": 63,
+      "z": 2345,
+      "temperature_scale": 20000.0,
+      "season": 0.20833333333333334,
+      "species": "flame_of_the_forest",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        222,
+        40,
+        0
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -120,
+      "y": 63,
+      "z": 2345,
+      "temperature_scale": 20000.0,
+      "season": 0.25833333333333336,
+      "species": "flame_of_the_forest",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        222,
+        40,
+        0
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -120,
+      "y": 63,
+      "z": 2345,
+      "temperature_scale": 20000.0,
+      "season": 0.2916666666666667,
+      "species": "flame_of_the_forest",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        222,
+        40,
+        0
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -120,
+      "y": 63,
+      "z": 2345,
+      "temperature_scale": 20000.0,
+      "season": 0.375,
+      "species": "flame_of_the_forest",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        94,
+        132,
+        52
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -120,
+      "y": 63,
+      "z": 2345,
+      "temperature_scale": 20000.0,
+      "season": 0.625,
+      "species": "flame_of_the_forest",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        94,
+        132,
+        52
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 25.0,
+      "rainfall": 250.0,
+      "x": -120,
+      "y": 100,
+      "z": 2345,
+      "temperature_scale": 20000.0,
+      "season": 0.0,
+      "species": "coconut",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        157,
+        39
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 25.0,
+      "rainfall": 250.0,
+      "x": -120,
+      "y": 100,
+      "z": 2345,
+      "temperature_scale": 20000.0,
+      "season": 0.25,
+      "species": "coconut",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        157,
+        39
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 25.0,
+      "rainfall": 250.0,
+      "x": -120,
+      "y": 100,
+      "z": 2345,
+      "temperature_scale": 20000.0,
+      "season": 0.5,
+      "species": "coconut",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        101,
+        141,
+        44
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 25.0,
+      "rainfall": 250.0,
+      "x": -120,
+      "y": 100,
+      "z": 2345,
+      "temperature_scale": 20000.0,
+      "season": 0.75,
+      "species": "coconut",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        101,
+        141,
+        44
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 14.0,
+      "rainfall": 250.0,
+      "x": -120,
+      "y": 100,
+      "z": 2345,
+      "temperature_scale": 20000.0,
+      "season": 0.5,
+      "species": "coconut",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        141,
+        167,
+        37
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 25.0,
+      "rainfall": 25.0,
+      "x": -120,
+      "y": 100,
+      "z": 2345,
+      "temperature_scale": 20000.0,
+      "season": 0.75,
+      "species": "coconut",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        141,
+        167,
+        37
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 25.0,
+      "rainfall": 250.0,
+      "x": -120,
+      "y": 100,
+      "z": 2345,
+      "temperature_scale": 20000.0,
+      "season": 0.0,
+      "species": "oil_palm",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        126,
+        156,
+        40
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 25.0,
+      "rainfall": 250.0,
+      "x": -120,
+      "y": 100,
+      "z": 2345,
+      "temperature_scale": 20000.0,
+      "season": 0.25,
+      "species": "oil_palm",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        126,
+        156,
+        40
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 25.0,
+      "rainfall": 250.0,
+      "x": -120,
+      "y": 100,
+      "z": 2345,
+      "temperature_scale": 20000.0,
+      "season": 0.5,
+      "species": "oil_palm",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        126,
+        156,
+        40
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 25.0,
+      "rainfall": 250.0,
+      "x": -120,
+      "y": 100,
+      "z": 2345,
+      "temperature_scale": 20000.0,
+      "season": 0.75,
+      "species": "oil_palm",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        141,
+        167,
+        37
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 14.0,
+      "rainfall": 250.0,
+      "x": -120,
+      "y": 100,
+      "z": 2345,
+      "temperature_scale": 20000.0,
+      "season": 0.5,
+      "species": "oil_palm",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        142,
+        168,
+        37
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 25.0,
+      "rainfall": 25.0,
+      "x": -120,
+      "y": 100,
+      "z": 2345,
+      "temperature_scale": 20000.0,
+      "season": 0.75,
+      "species": "oil_palm",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        142,
+        168,
+        37
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 25.0,
+      "rainfall": 250.0,
+      "x": -120,
+      "y": 100,
+      "z": 2345,
+      "temperature_scale": 20000.0,
+      "season": 0.0,
+      "species": "date",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        142,
+        168,
+        37
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 25.0,
+      "rainfall": 250.0,
+      "x": -120,
+      "y": 100,
+      "z": 2345,
+      "temperature_scale": 20000.0,
+      "season": 0.25,
+      "species": "date",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        142,
+        168,
+        37
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 25.0,
+      "rainfall": 250.0,
+      "x": -120,
+      "y": 100,
+      "z": 2345,
+      "temperature_scale": 20000.0,
+      "season": 0.5,
+      "species": "date",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        142,
+        168,
+        37
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 25.0,
+      "rainfall": 250.0,
+      "x": -120,
+      "y": 100,
+      "z": 2345,
+      "temperature_scale": 20000.0,
+      "season": 0.75,
+      "species": "date",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        143,
+        166,
+        38
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 14.0,
+      "rainfall": 250.0,
+      "x": -120,
+      "y": 100,
+      "z": 2345,
+      "temperature_scale": 20000.0,
+      "season": 0.5,
+      "species": "date",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        142,
+        168,
+        37
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 25.0,
+      "rainfall": 25.0,
+      "x": -120,
+      "y": 100,
+      "z": 2345,
+      "temperature_scale": 20000.0,
+      "season": 0.75,
+      "species": "date",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        142,
+        168,
+        37
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 25.0,
+      "rainfall": 250.0,
+      "x": -120,
+      "y": 100,
+      "z": 2345,
+      "temperature_scale": 20000.0,
+      "season": 0.0,
+      "species": "acai",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        143,
+        166,
+        38
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 25.0,
+      "rainfall": 250.0,
+      "x": -120,
+      "y": 100,
+      "z": 2345,
+      "temperature_scale": 20000.0,
+      "season": 0.25,
+      "species": "acai",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        143,
+        166,
+        38
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 25.0,
+      "rainfall": 250.0,
+      "x": -120,
+      "y": 100,
+      "z": 2345,
+      "temperature_scale": 20000.0,
+      "season": 0.5,
+      "species": "acai",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        142,
+        168,
+        37
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 25.0,
+      "rainfall": 250.0,
+      "x": -120,
+      "y": 100,
+      "z": 2345,
+      "temperature_scale": 20000.0,
+      "season": 0.75,
+      "species": "acai",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        142,
+        168,
+        37
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 14.0,
+      "rainfall": 250.0,
+      "x": -120,
+      "y": 100,
+      "z": 2345,
+      "temperature_scale": 20000.0,
+      "season": 0.5,
+      "species": "acai",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        142,
+        168,
+        37
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 25.0,
+      "rainfall": 25.0,
+      "x": -120,
+      "y": 100,
+      "z": 2345,
+      "temperature_scale": 20000.0,
+      "season": 0.75,
+      "species": "acai",
+      "autumn_index": 0,
+      "conifer": false,
+      "expected_rgb": [
+        142,
+        168,
+        37
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": -20.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.62499994,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        121,
+        127,
+        79
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": -20.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.625,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        121,
+        127,
+        79
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": -20.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.62500006,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        188,
+        194,
+        57
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": -20.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.70833325,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        89,
+        43
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": -20.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.7083333,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        89,
+        43
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": -20.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.7083334,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        89,
+        43
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": -20.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.29166666,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        89,
+        43
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": -20.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.2916667,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        89,
+        43
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": -20.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.29166672,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        121,
+        127,
+        80
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": -3.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.70833325,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        111,
+        129,
+        69
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": -3.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.7083333,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        111,
+        129,
+        69
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": -3.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.7083334,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        188,
+        194,
+        57
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": -3.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.87499994,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        89,
+        43
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": -3.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.875,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        89,
+        43
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": -3.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.87500006,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        89,
+        43
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": -3.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.12499999,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        89,
+        43
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": -3.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.125,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        89,
+        43
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": -3.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.12500001,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        115,
+        128,
+        73
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 0.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.7103178,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        108,
+        129,
+        66
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 0.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.71031785,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        108,
+        129,
+        66
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 0.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.7103179,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        188,
+        194,
+        57
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 0.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.87438935,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        89,
+        43
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 0.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.8743894,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        89,
+        43
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 0.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.87438947,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        89,
+        43
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 0.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.12561058,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        89,
+        43
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 0.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.12561059,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        89,
+        43
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 0.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.1256106,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        112,
+        129,
+        70
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.7885965,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        100,
+        131,
+        58
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.7885966,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        100,
+        131,
+        58
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.78859663,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        188,
+        194,
+        57
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.90653193,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        89,
+        43
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.906532,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        89,
+        43
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.90653205,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        89,
+        43
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.093468,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        89,
+        43
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.09346801,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        89,
+        43
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 10.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.09346802,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        102,
+        130,
+        61
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 12.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.8266418,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        99,
+        131,
+        57
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 12.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.82664186,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        99,
+        131,
+        57
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 12.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.8266419,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        188,
+        194,
+        57
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 12.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.9284296,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        89,
+        43
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 12.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.92842966,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        124,
+        89,
+        43
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 12.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.9284297,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        187,
+        162,
+        52
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 12.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.07157033,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        187,
+        162,
+        52
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 12.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.07157034,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        187,
+        162,
+        52
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 12.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.071570344,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        101,
+        131,
+        59
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 12.000001,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.8266418,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        99,
+        131,
+        57
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 12.000001,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.82664186,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        99,
+        131,
+        57
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 12.000001,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.8266419,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        187,
+        162,
+        52
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 12.000001,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.8266418,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        99,
+        131,
+        57
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 12.000001,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.82664186,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        99,
+        131,
+        57
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 12.000001,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.8266419,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        187,
+        162,
+        52
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 12.000001,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.17335813,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        187,
+        162,
+        52
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 12.000001,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.17335814,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        187,
+        162,
+        52
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 12.000001,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.17335816,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        99,
+        131,
+        57
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 20.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.8266418,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        92,
+        132,
+        50
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 20.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.82664186,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        92,
+        132,
+        50
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 20.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.8266419,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        44,
+        99,
+        52
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 20.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.8266418,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        92,
+        132,
+        50
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 20.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.82664186,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        92,
+        132,
+        50
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 20.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.8266419,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        44,
+        99,
+        52
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 20.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.17335813,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        44,
+        99,
+        52
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 20.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.17335814,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        44,
+        99,
+        52
+      ]
+    },
+    {
+      "kind": "foliage",
+      "temperature": 20.0,
+      "rainfall": 250.0,
+      "x": -121,
+      "y": 63,
+      "z": 5001,
+      "temperature_scale": 20000.0,
+      "season": 0.17335816,
+      "species": "oak",
+      "autumn_index": 120,
+      "conifer": false,
+      "expected_rgb": [
+        92,
+        132,
+        50
+      ]
+    }
+  ]
+}

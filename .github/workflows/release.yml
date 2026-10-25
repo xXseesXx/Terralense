@@ -1,0 +1,143 @@
+name: Cross-platform release package
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_ref:
+        description: Branch, tag, or commit to package
+        required: true
+        default: main
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-package-${{ inputs.source_ref }}
+  cancel-in-progress: false
+
+jobs:
+  resolve:
+    name: Pin source revision
+    runs-on: ubuntu-24.04
+    outputs:
+      commit: ${{ steps.revision.outputs.commit }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ inputs.source_ref }}
+          fetch-depth: 0
+      - id: revision
+        name: Resolve immutable source commit
+        run: echo "commit=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+  linux:
+    name: Package Linux x86_64
+    needs: resolve
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ needs.resolve.outputs.commit }}
+          fetch-depth: 1
+      - uses: dtolnay/rust-toolchain@b725eda525362e7cf34af9a7243cac1e3f01a7ec # stable
+      - name: Native dependencies
+        run: sudo apt-get update && sudo apt-get install -y pkg-config libwayland-dev libxkbcommon-dev libxkbcommon-x11-dev libx11-dev libxi-dev libxcursor-dev libgl1-mesa-dev
+      - name: Build package and matching vendored source
+        run: tools/release/package-linux.sh dist/release
+      - name: Verify archive, installer and offline source build
+        run: tools/release/verify-linux-package.sh dist/release/terralens-0.4.0-linux-x86_64.tar.gz
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: terralens-linux-source-${{ needs.resolve.outputs.commit }}
+          path: dist/release/*
+          if-no-files-found: error
+          retention-days: 30
+
+  windows:
+    name: Package Windows x86_64
+    needs: [resolve, linux]
+    runs-on: windows-latest
+    env:
+      TERRALENS_OFFICIAL_BUILD: "1"
+      CARGO_TARGET_X86_64_PC_WINDOWS_MSVC_RUSTFLAGS: -C target-feature=+crt-static
+    steps:
+      - name: Preserve committed source bytes on Windows
+        shell: pwsh
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ needs.resolve.outputs.commit }}
+          fetch-depth: 1
+      - uses: ilammy/msvc-dev-cmd@0b201ec74fa43914dc39ae48a89fd1d8cb592756 # v1.13.0
+        with:
+          arch: x64
+      - uses: dtolnay/rust-toolchain@b725eda525362e7cf34af9a7243cac1e3f01a7ec # stable
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: "3.13"
+      - name: Install NASM for aws-lc-sys
+        shell: pwsh
+        run: |
+          choco install nasm --yes --no-progress
+          $nasmPath = Join-Path $env:ProgramFiles "NASM"
+          if (Test-Path (Join-Path $nasmPath "nasm.exe")) {
+            Add-Content -Path $env:GITHUB_PATH -Value $nasmPath
+            $env:PATH = "$nasmPath;$env:PATH"
+          }
+          nasm --version
+      - uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4
+        with:
+          name: terralens-linux-source-${{ needs.resolve.outputs.commit }}
+          path: dist/linux
+      - name: Run Windows release CLI and engine process tests
+        run: cargo test --release --locked --target x86_64-pc-windows-msvc --manifest-path native/terralens-rs/Cargo.toml --test release_cli --test engine_process
+      - name: Build Windows package against the shared source archive
+        shell: pwsh
+        run: |
+          $source = Get-ChildItem dist/linux -Filter "*-source.tar.gz" | Select-Object -First 1
+          $linux = Get-ChildItem dist/linux -Filter "terralens-*-linux-x86_64.tar.gz" | Where-Object { $_.Name -notlike "*-source.tar.gz" } | Select-Object -First 1
+          if (-not $source -or -not $linux) { throw "Linux package and source archive were not downloaded" }
+          tools/release/package-windows.ps1 -SourceArchive $source.FullName -LinuxPackageArchive $linux.FullName -OutputDirectory dist/release
+      - name: Verify Windows ZIP and corresponding source identity
+        shell: pwsh
+        run: |
+          $zip = Get-ChildItem dist/release -Filter "terralens-*-windows-x86_64.zip" | Select-Object -First 1
+          $source = Get-ChildItem dist/linux -Filter "*-source.tar.gz" | Select-Object -First 1
+          if (-not $zip -or -not $source) { throw "Windows release archive or source archive is missing" }
+          tools/release/verify-windows-package.ps1 -PackageArchive $zip.FullName -SourceArchive $source.FullName
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: terralens-windows-${{ needs.resolve.outputs.commit }}
+          path: dist/release/*
+          if-no-files-found: error
+          retention-days: 30
+
+  assemble:
+    name: Assemble release candidate artifacts
+    needs: [resolve, linux, windows]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4
+        with:
+          name: terralens-linux-source-${{ needs.resolve.outputs.commit }}
+          path: dist/release
+      - uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4
+        with:
+          name: terralens-windows-${{ needs.resolve.outputs.commit }}
+          path: dist/release
+      - name: Confirm all release candidate files are present
+        run: |
+          test -f dist/release/terralens-0.4.0-linux-x86_64.tar.gz
+          test -f dist/release/terralens-0.4.0-linux-x86_64-source.tar.gz
+          test -f dist/release/terralens-0.4.0-linux-x86_64.sha256
+          test -f dist/release/terralens-0.4.0-windows-x86_64.zip
+          test -f dist/release/terralens-0.4.0-windows-x86_64.sha256
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: terralens-release-0.4.0-${{ needs.resolve.outputs.commit }}
+          path: dist/release/*
+          if-no-files-found: error
+          retention-days: 30

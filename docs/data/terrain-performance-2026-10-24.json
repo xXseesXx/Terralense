@@ -1,0 +1,253 @@
+{
+  "schema": 1,
+  "date": "2026-10-24",
+  "machine": "AMD Ryzen 9 7900X3D, 24 logical CPUs, 61 GiB RAM",
+  "seed": 0,
+  "scope": "Fresh release child engine per case; Biomes then Rainfall; full RGBA/biome/water payload comparison. OS file cache not flushed. Excludes native GPU presentation. Timings are individual observations, not statistical averages.",
+  "baseline_binary_sha256": "4add1f097cce4b1df630be080c711b5941a23b5865b2b393fffe0a76e8c117aa",
+  "optimized_binary_sha256": "917b8f1736d00874f7783646a55228017b36957def0a2d34e94e53f644690c8a",
+  "matching_payloads": 22,
+  "results": [
+    {
+      "case": "block-volcano-seed",
+      "layer": "Biomes",
+      "before_seconds": 0.854487,
+      "after_seconds": 0.290691,
+      "speedup": 2.94,
+      "sha256": "d795fe5745cc5a8fb02bf86711c8fcf85828d95a0cdc990357e05a15009cef0e",
+      "bulk_bytes": 462864
+    },
+    {
+      "case": "block-volcano-seed",
+      "layer": "Rainfall",
+      "before_seconds": 0.690822,
+      "after_seconds": 0.049108,
+      "speedup": 14.07,
+      "sha256": "dc91313b673b48aadfafa6d6c06021281ceb75ac7707c2191856f096b0af6c62",
+      "bulk_bytes": 462864
+    },
+    {
+      "case": "block-volcano-save",
+      "layer": "Biomes",
+      "before_seconds": 0.827869,
+      "after_seconds": 0.294518,
+      "speedup": 2.81,
+      "sha256": "02c1eef4c3f9744f9602fc7e227643af247d7841f093eac73deb7864b96c327f",
+      "bulk_bytes": 462864
+    },
+    {
+      "case": "block-volcano-save",
+      "layer": "Rainfall",
+      "before_seconds": 0.707206,
+      "after_seconds": 0.048749,
+      "speedup": 14.51,
+      "sha256": "113617e268aa3facd20961bf07a75fee7f60dc3386e8c86a3df87021a9b7cbec",
+      "bulk_bytes": 462864
+    },
+    {
+      "case": "block-water-save",
+      "layer": "Biomes",
+      "before_seconds": 0.954625,
+      "after_seconds": 0.306718,
+      "speedup": 3.11,
+      "sha256": "ea6932f8fa2942abfc394c9d4d15edab06d2809cae0cd70e647fb33a8cafe182",
+      "bulk_bytes": 462864
+    },
+    {
+      "case": "block-water-save",
+      "layer": "Rainfall",
+      "before_seconds": 0.87266,
+      "after_seconds": 0.064987,
+      "speedup": 13.43,
+      "sha256": "9d6c44cc30b8926cbfdb6e175f4558a949f076cac460e7606f5dcbbd362a2857",
+      "bulk_bytes": 462864
+    },
+    {
+      "case": "medium-regional",
+      "layer": "Biomes",
+      "before_seconds": 5.219626,
+      "after_seconds": 1.26742,
+      "speedup": 4.12,
+      "sha256": "85daead4363b38ae53686a9038b3ce9cea9ef588ffcc5a6ac6299918b4990261",
+      "bulk_bytes": 462864
+    },
+    {
+      "case": "medium-regional",
+      "layer": "Rainfall",
+      "before_seconds": 5.137715,
+      "after_seconds": 0.192477,
+      "speedup": 26.69,
+      "sha256": "0b969d2d012163734a998cf403920b1a0764168d3684e8228d27dd1c37160b68",
+      "bulk_bytes": 462864
+    },
+    {
+      "case": "far-overview",
+      "layer": "Biomes",
+      "before_seconds": 3.006038,
+      "after_seconds": 1.414953,
+      "speedup": 2.12,
+      "sha256": "ae0dc4e006ecd5ebd342abff5d11aafb2f17f6ce5356941a5d7f47d149432605",
+      "bulk_bytes": 29712
+    },
+    {
+      "case": "far-overview",
+      "layer": "Rainfall",
+      "before_seconds": 0.761602,
+      "after_seconds": 0.059614,
+      "speedup": 12.78,
+      "sha256": "63982b9dc0f98ed37941994e57e299f39af52b25fa6fefb97db094cf13edaf93",
+      "bulk_bytes": 29712
+    },
+    {
+      "case": "far-detail",
+      "layer": "Biomes",
+      "before_seconds": 12.108633,
+      "after_seconds": 3.181413,
+      "speedup": 3.81,
+      "sha256": "e84978af1a86ee8dd3877fc94ebc7143bb0a2da36b8f3f91b05a6ce486c3202c",
+      "bulk_bytes": 462864
+    },
+    {
+      "case": "far-detail",
+      "layer": "Rainfall",
+      "before_seconds": 10.678314,
+      "after_seconds": 0.234389,
+      "speedup": 45.56,
+      "sha256": "21aed6f82257b922160051e07c2205df528168a007e5ea2f4dd38e349a8d3128",
+      "bulk_bytes": 462864
+    },
+    {
+      "case": "unshaded-block",
+      "layer": "Biomes",
+      "before_seconds": 0.762707,
+      "after_seconds": 0.285492,
+      "speedup": 2.67,
+      "sha256": "9bf5ef6a2b4e629393e04fcc855c1cbfde48b92712c97fd36f978938ddec25af",
+      "bulk_bytes": 462864
+    },
+    {
+      "case": "unshaded-block",
+      "layer": "Rainfall",
+      "before_seconds": 0.638085,
+      "after_seconds": 0.038686,
+      "speedup": 16.49,
+      "sha256": "fce80ad54ee4c6ced6ba23153e99e1002825d2a7c5a7ed1b98fbe360e080e757",
+      "bulk_bytes": 462864
+    },
+    {
+      "case": "unshaded-medium",
+      "layer": "Biomes",
+      "before_seconds": 4.374993,
+      "after_seconds": 1.226555,
+      "speedup": 3.57,
+      "sha256": "0ba86bc71590bb337e4e98007777a2d75638936320bfc4ea551f887f3ca2feb1",
+      "bulk_bytes": 462864
+    },
+    {
+      "case": "unshaded-medium",
+      "layer": "Rainfall",
+      "before_seconds": 4.181571,
+      "after_seconds": 0.167039,
+      "speedup": 25.03,
+      "sha256": "1446e4983735683b50532378ea9d6c762aa813550e917733140064f2af61c325",
+      "bulk_bytes": 462864
+    },
+    {
+      "case": "moon",
+      "layer": "Biomes",
+      "before_seconds": 0.68611,
+      "after_seconds": 0.684406,
+      "speedup": 1.0,
+      "sha256": "bff94d6395681723b2db4b364b0f56aadd504966e9d12d861ae085d4e2c5bd87",
+      "bulk_bytes": 29712
+    },
+    {
+      "case": "moon",
+      "layer": "Rainfall",
+      "before_seconds": 0.691818,
+      "after_seconds": 0.014219,
+      "speedup": 48.65,
+      "sha256": "bff94d6395681723b2db4b364b0f56aadd504966e9d12d861ae085d4e2c5bd87",
+      "bulk_bytes": 29712
+    },
+    {
+      "case": "mars",
+      "layer": "Biomes",
+      "before_seconds": 0.619504,
+      "after_seconds": 0.571821,
+      "speedup": 1.08,
+      "sha256": "3ebfd22f98ab574a973273100dc42fe7a63a933f6550ae5ecd40e26bda0c6cc0",
+      "bulk_bytes": 29712
+    },
+    {
+      "case": "mars",
+      "layer": "Rainfall",
+      "before_seconds": 0.571208,
+      "after_seconds": 0.022246,
+      "speedup": 25.68,
+      "sha256": "3ebfd22f98ab574a973273100dc42fe7a63a933f6550ae5ecd40e26bda0c6cc0",
+      "bulk_bytes": 29712
+    },
+    {
+      "case": "beneath",
+      "layer": "Biomes",
+      "before_seconds": 0.030905,
+      "after_seconds": 0.030232,
+      "speedup": 1.02,
+      "sha256": "8177cdafc98698d722a102b6fda3c3a023b5e66cda708f001fe521d235a11c7e",
+      "bulk_bytes": 29712
+    },
+    {
+      "case": "beneath",
+      "layer": "Rainfall",
+      "before_seconds": 0.026417,
+      "after_seconds": 0.019365,
+      "speedup": 1.36,
+      "sha256": "8177cdafc98698d722a102b6fda3c3a023b5e66cda708f001fe521d235a11c7e",
+      "bulk_bytes": 29712
+    }
+  ],
+  "viewer_first_optimized_pass": {
+    "coldRefinedMs": 7235.985566,
+    "enginePid": 571363,
+    "farZoomSettleMs": 103026.062977,
+    "frames": 13091,
+    "panSettleMs": 1604.799013,
+    "revisitRefinedMs": 0.030457,
+    "rssKiB": 29776,
+    "scope": "isolated Rust generation process and egui UI submission; excludes native GPU presentation",
+    "uiFrameMaxMs": 0.561908,
+    "uiFrameP50Ms": 0.046187,
+    "uiFrameP95Ms": 0.08604200000000001,
+    "viewport": [
+      1440,
+      900
+    ]
+  },
+  "viewer_final": {
+    "coldRefinedMs": 3245.375497,
+    "enginePid": 585500,
+    "farZoomSettleMs": 58452.281239,
+    "frames": 7492,
+    "panSettleMs": 761.3680830000001,
+    "revisitRefinedMs": 0.039665,
+    "rssKiB": 29756,
+    "scope": "isolated Rust generation process and egui UI submission; excludes native GPU presentation",
+    "uiFrameMaxMs": 0.250612,
+    "uiFrameP50Ms": 0.043753,
+    "uiFrameP95Ms": 0.079179,
+    "viewport": [
+      1440,
+      900
+    ]
+  },
+  "viewer_comparison_scope": "Same streaming scenario, first optimized 4-worker pass versus final lazy-caldera/8-worker pass; not a measurement of the original frozen release UI. Both measure egui submission and completed tile refinement, excluding native GPU presentation.",
+  "validation": {
+    "release_tests_passed": 422,
+    "identical_complete_tile_payloads": 22,
+    "actual_world0_all_layer_png_exports": 16,
+    "independent_saved_height_columns": 1334,
+    "independent_saved_surface_observations": 36864,
+    "diagnostics_disabled_in_installed_release": true
+  }
+}

@@ -11,30 +11,21 @@ const TEAL: Color32 = Color32::from_rgb(103, 217, 198);
 /// The hover card starts deliberately small. Extra world-generation layers are opt-in.
 #[derive(Clone, Debug, Serialize, Deserialize)]
 #[serde(default)]
+#[derive(Default)]
 pub struct TooltipPrefs {
     pub height: bool,
     pub geology: bool,
+    pub ground: bool,
     pub forest: bool,
     pub trees: bool,
     pub region: bool,
-}
-
-impl Default for TooltipPrefs {
-    fn default() -> Self {
-        Self {
-            height: false,
-            geology: false,
-            forest: false,
-            trees: false,
-            region: false,
-        }
-    }
 }
 
 impl TooltipPrefs {
     pub fn show_preferences(&mut self, ui: &mut egui::Ui) {
         ui.checkbox(&mut self.height, "Elevation");
         ui.checkbox(&mut self.geology, "Rock layers");
+        ui.checkbox(&mut self.ground, "Ground material");
         ui.checkbox(&mut self.forest, "Forest density");
         ui.checkbox(&mut self.trees, "Tree estimates");
         ui.checkbox(&mut self.region, "Region details");
@@ -104,6 +95,7 @@ pub fn show_probe(
     region_summary: Option<(f64, bool)>,
     continent_scale: bool,
     dimension: crate::dimension::Dimension,
+    layer: crate::atlas::Layer,
     slice_y: i32,
     prefs: &TooltipPrefs,
 ) {
@@ -120,8 +112,16 @@ pub fn show_probe(
                         dimension.label().to_ascii_uppercase()
                     } else if dimension == crate::dimension::Dimension::Beneath {
                         "BENEATH".to_owned()
+                    } else if probe.surface_magma.is_some() {
+                        "MAGMA".to_owned()
+                    } else if probe.surface_lava.is_some() {
+                        "LAVA".to_owned()
+                    } else if probe.surface_water_y.is_some() {
+                        "WATER".to_owned()
                     } else if probe.ocean {
                         "SEA".to_owned()
+                    } else if probe.surface_water {
+                        "WATER".to_owned()
                     } else {
                         "LAND".to_owned()
                     })
@@ -152,7 +152,7 @@ pub fn show_probe(
                 ui.add_space(5.0);
                 let (base, top) = dimension.band(slice_y);
                 metric(ui, "SLICE", format!("{base}–{top}"));
-            } else if !probe.ocean {
+            } else if !probe.is_bare_surface() {
                 ui.add_space(7.0);
                 ui.horizontal(|ui| {
                     metric(ui, "TEMP", format!("{:.1}°C", probe.climate.temperature));
@@ -161,13 +161,37 @@ pub fn show_probe(
                 });
             }
 
+            if dimension == crate::dimension::Dimension::Overworld
+                && (prefs.ground || layer == crate::atlas::Layer::Ground)
+                && let Some(block) = probe.ground_block.as_deref()
+            {
+                ui.add_space(6.0);
+                let row = ui.horizontal(|ui| {
+                    metric(ui, "GROUND", display_marker_name(block));
+                    if let Some(y) = probe.ground_y {
+                        ui.add_space(8.0);
+                        metric(ui, "Y", y.to_string());
+                    }
+                });
+                let source = if probe.ground_saved {
+                    "Read from saved blocks"
+                } else {
+                    "Estimated from TFG surface rules"
+                };
+                row.response.on_hover_text(format!("{block} · {source}"));
+            }
+
             if (dimension == crate::dimension::Dimension::Overworld || dimension.is_planetary())
                 && prefs.height
+                && let Some(height) = probe
+                    .surface_lava
+                    .or(probe.surface_magma)
+                    .or(probe.surface_water_y)
+                    .map(f64::from)
+                    .or(probe.height)
             {
-                if let Some(height) = probe.height {
-                    ui.add_space(6.0);
-                    metric(ui, "Y", format!("{height:.0}"));
-                }
+                ui.add_space(6.0);
+                metric(ui, "Y", format!("{height:.0}"));
             }
             if dimension == crate::dimension::Dimension::Overworld
                 && prefs.geology
@@ -186,7 +210,10 @@ pub fn show_probe(
                         .join(" · "),
                 );
             }
-            if dimension == crate::dimension::Dimension::Overworld && prefs.forest && !probe.ocean {
+            if dimension == crate::dimension::Dimension::Overworld
+                && prefs.forest
+                && !probe.is_bare_surface()
+            {
                 ui.add_space(6.0);
                 value_row(
                     ui,
@@ -194,7 +221,10 @@ pub fn show_probe(
                     crate::search::forest_name(probe.forest).to_owned(),
                 );
             }
-            if dimension == crate::dimension::Dimension::Overworld && prefs.region && !probe.ocean {
+            if dimension == crate::dimension::Dimension::Overworld
+                && prefs.region
+                && !probe.is_bare_surface()
+            {
                 ui.add_space(6.0);
                 if let Some((area_km2, clipped)) = region_summary {
                     let level = if continent_scale {
@@ -212,7 +242,10 @@ pub fn show_probe(
                     );
                 }
             }
-            if dimension == crate::dimension::Dimension::Overworld && prefs.trees && !probe.ocean {
+            if dimension == crate::dimension::Dimension::Overworld
+                && prefs.trees
+                && !probe.is_bare_surface()
+            {
                 ui.add_space(6.0);
                 if let Some(trees) = trees {
                     value_row(
@@ -264,10 +297,10 @@ pub fn show_marker(ui: &mut egui::Ui, marker: &Marker) {
             if let Some(y) = marker.y {
                 value_row(ui, "NATIVE Y", format!("{y:.0}"));
             }
-            if let (Some(low), Some(high)) = (marker.min_y, marker.max_y) {
-                if low != high {
-                    value_row(ui, "Y RANGE", format!("{low:.0}–{high:.0}"));
-                }
+            if let (Some(low), Some(high)) = (marker.min_y, marker.max_y)
+                && low != high
+            {
+                value_row(ui, "Y RANGE", format!("{low:.0}–{high:.0}"));
             }
             if !marker.detail.is_empty() {
                 ui.add_space(4.0);
@@ -333,4 +366,10 @@ pub fn display_marker_name(name: &str) -> String {
         .map(clean_biome_name)
         .collect::<Vec<_>>()
         .join(" · ")
+}
+
+pub fn marker_name(marker: &Marker) -> String {
+    crate::structure_loot::display_name(&marker.id)
+        .map(str::to_owned)
+        .unwrap_or_else(|| display_marker_name(&marker.label))
 }

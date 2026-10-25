@@ -1,0 +1,795 @@
+{
+  "carvers": {
+    "canyon": {
+      "type": "tfc:canyon",
+      "config": {
+        "shape": {
+          "width_smoothness": 3,
+          "thickness": {
+            "type": "trapezoid",
+            "value": {
+              "min": 0,
+              "max": 6,
+              "plateau": 2
+            }
+          },
+          "distance_factor": {
+            "type": "uniform",
+            "value": {
+              "min_inclusive": 0.75,
+              "max_exclusive": 1
+            }
+          },
+          "horizontal_radius_factor": {
+            "type": "uniform",
+            "value": {
+              "min_inclusive": 0.75,
+              "max_exclusive": 1
+            }
+          },
+          "vertical_radius_default_factor": 1,
+          "vertical_radius_center_factor": 0
+        },
+        "probability": 0.005,
+        "replaceable": "#tfc:can_carve",
+        "vertical_rotation": {
+          "type": "uniform",
+          "value": {
+            "min_inclusive": -0.125,
+            "max_exclusive": 0.125
+          }
+        },
+        "y": {
+          "min_inclusive": {
+            "absolute": 10
+          },
+          "max_inclusive": {
+            "absolute": 67
+          },
+          "type": "uniform"
+        },
+        "yScale": 3,
+        "lava_level": {
+          "above_bottom": 8
+        },
+        "aquifers_enabled": true
+      }
+    },
+    "cave": {
+      "type": "tfc:cave",
+      "config": {
+        "probability": 0.01,
+        "replaceable": "#tfc:can_carve",
+        "y": {
+          "min_inclusive": {
+            "absolute": -56
+          },
+          "max_inclusive": {
+            "absolute": 126
+          },
+          "type": "uniform"
+        },
+        "yScale": {
+          "type": "uniform",
+          "value": {
+            "min_inclusive": 0.1,
+            "max_exclusive": 0.9
+          }
+        },
+        "lava_level": {
+          "above_bottom": 8
+        },
+        "aquifers_enabled": true,
+        "horizontal_radius_multiplier": {
+          "type": "uniform",
+          "value": {
+            "min_inclusive": 1,
+            "max_exclusive": 2.5
+          }
+        },
+        "floor_level": {
+          "type": "uniform",
+          "value": {
+            "min_inclusive": -1,
+            "max_exclusive": 0.3
+          }
+        },
+        "vertical_radius_multiplier": {
+          "type": "uniform",
+          "value": {
+            "min_inclusive": 1,
+            "max_exclusive": 2.5
+          }
+        }
+      }
+    },
+    "deep_caves": {
+      "type": "tfc:cave",
+      "config": {
+        "debug_settings": {
+          "water_state": {
+            "Name": "minecraft:water"
+          },
+          "barrier_state": {
+            "Name": "minecraft:calcite"
+          },
+          "debug_mode": true,
+          "lava_state": {
+            "Name": "beneath:crackrack"
+          },
+          "air_state": {
+            "Name": "minecraft:cave_air"
+          }
+        },
+        "probability": 0.15,
+        "replaceable": "#tfc:can_carve",
+        "y": {
+          "min_inclusive": {
+            "absolute": -80
+          },
+          "max_inclusive": {
+            "absolute": -32
+          },
+          "type": "uniform"
+        },
+        "yScale": {
+          "type": "uniform",
+          "value": {
+            "min_inclusive": 0.1,
+            "max_exclusive": 0.9
+          }
+        },
+        "lava_level": {
+          "above_bottom": 0
+        },
+        "aquifers_enabled": false,
+        "horizontal_radius_multiplier": {
+          "type": "uniform",
+          "value": {
+            "min_inclusive": 2,
+            "max_exclusive": 2.5
+          }
+        },
+        "floor_level": {
+          "type": "uniform",
+          "value": {
+            "min_inclusive": -1,
+            "max_exclusive": 0.3
+          }
+        },
+        "vertical_radius_multiplier": {
+          "type": "uniform",
+          "value": {
+            "min_inclusive": 2,
+            "max_exclusive": 2.5
+          }
+        }
+      }
+    },
+    "karst_caves": {
+      "type": "tfc:cave",
+      "config": {
+        "probability": 0.07,
+        "replaceable": "#tfg:karst_cave_carver_replaceable",
+        "y": {
+          "min_inclusive": {
+            "absolute": -20
+          },
+          "max_inclusive": {
+            "absolute": 70
+          },
+          "type": "uniform"
+        },
+        "yScale": {
+          "type": "uniform",
+          "value": {
+            "min_inclusive": 0.1,
+            "max_exclusive": 0.9
+          }
+        },
+        "lava_level": {
+          "above_bottom": 8
+        },
+        "aquifers_enabled": true,
+        "horizontal_radius_multiplier": {
+          "type": "uniform",
+          "value": {
+            "min_inclusive": 1,
+            "max_exclusive": 3.1
+          }
+        },
+        "floor_level": {
+          "type": "uniform",
+          "value": {
+            "min_inclusive": -1,
+            "max_exclusive": 0.2
+          }
+        },
+        "vertical_radius_multiplier": {
+          "type": "uniform",
+          "value": {
+            "min_inclusive": 1,
+            "max_exclusive": 3.1
+          }
+        }
+      }
+    }
+  },
+  "biomes": {
+    "active_shield_volcano": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "ancient_shield_volcano": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "badlands": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "burren_badlands": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves",
+      "tfc:karst_caves"
+    ],
+    "burren_badlands_tall": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves",
+      "tfc:karst_caves"
+    ],
+    "burren_plains": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves",
+      "tfc:karst_caves"
+    ],
+    "burren_plateau": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves",
+      "tfc:karst_caves"
+    ],
+    "burren_roche_moutonee": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves",
+      "tfc:karst_caves"
+    ],
+    "buttes": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "canyons": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "cenote_canyons": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves",
+      "tfc:karst_caves"
+    ],
+    "cenote_highlands": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves",
+      "tfc:karst_caves"
+    ],
+    "cenote_hills": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves",
+      "tfc:karst_caves"
+    ],
+    "cenote_plains": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves",
+      "tfc:karst_caves"
+    ],
+    "cenote_plateau": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves",
+      "tfc:karst_caves"
+    ],
+    "cenote_rolling_hills": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves",
+      "tfc:karst_caves"
+    ],
+    "coastal_dunes": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "deep_ocean": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "deep_ocean_trench": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "doline_canyons": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves",
+      "tfc:karst_caves"
+    ],
+    "doline_highlands": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves",
+      "tfc:karst_caves"
+    ],
+    "doline_hills": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves",
+      "tfc:karst_caves"
+    ],
+    "doline_plains": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves",
+      "tfc:karst_caves"
+    ],
+    "doline_plateau": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves",
+      "tfc:karst_caves"
+    ],
+    "doline_rolling_hills": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves",
+      "tfc:karst_caves"
+    ],
+    "dormant_shield_volcano": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "drumlins": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "dune_sea": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "embayments": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "extinct_shield_volcano": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "extreme_doline_mountains": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves",
+      "tfc:karst_caves"
+    ],
+    "extreme_doline_plateau": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves",
+      "tfc:karst_caves"
+    ],
+    "glacially_carved_mountains": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "glacially_carved_oceanic_mountains": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "glaciated_mountains": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "glaciated_oceanic_mountains": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "glaciated_shield_volcano": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "grassy_dunes": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "guano_island": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "highlands": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "hills": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "hoodoos": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "ice_sheet": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "ice_sheet_edge": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "ice_sheet_mountains": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "ice_sheet_mountains_edge": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "ice_sheet_oceanic": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "ice_sheet_oceanic_mountains": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "ice_sheet_oceanic_mountains_edge": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "ice_sheet_shield_volcano": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "ice_sheet_shore": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "ice_sheet_tuyas": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "ice_sheet_tuyas_edge": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "inverted_patterned_ground": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "knob_and_kettle": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "lake": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "low_canyons": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "lowlands": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "meltwater_lake": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "mesas": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "mountain_lake": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "mountains": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "mud_flats": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "ocean": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "ocean_reef": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "oceanic_mountain_lake": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "oceanic_mountains": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "old_mountain_lake": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "old_mountains": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "old_shield_volcano_shore": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "patterned_ground": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "plains": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "plateau": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "plateau_lake": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "plateau_wide": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "river": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "rocky_plateau": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "rocky_shores": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "rolling_hills": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "salt_flats": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "salt_marsh": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "sea_stacks": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "setback_cliffs": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "shield_volcano_shore": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "shilin_canyons": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves",
+      "tfc:karst_caves"
+    ],
+    "shilin_highlands": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves",
+      "tfc:karst_caves"
+    ],
+    "shilin_hills": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves",
+      "tfc:karst_caves"
+    ],
+    "shilin_plains": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves",
+      "tfc:karst_caves"
+    ],
+    "shilin_plateau": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves",
+      "tfc:karst_caves"
+    ],
+    "shore": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "stair_step_canyons": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "stone_circles": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "subglacial_lake": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "sunken_shield_volcano": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "terrace_lower": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "terrace_upper": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "tidal_flats": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "tower_karst_bay": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves",
+      "tfc:karst_caves"
+    ],
+    "tower_karst_canyons": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves",
+      "tfc:karst_caves"
+    ],
+    "tower_karst_highlands": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves",
+      "tfc:karst_caves"
+    ],
+    "tower_karst_hills": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves",
+      "tfc:karst_caves"
+    ],
+    "tower_karst_lake": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves",
+      "tfc:karst_caves"
+    ],
+    "tower_karst_plains": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves",
+      "tfc:karst_caves"
+    ],
+    "tuyas": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "volcanic_mountain_lake": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "volcanic_mountains": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "volcanic_oceanic_mountain_lake": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "volcanic_oceanic_mountains": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ],
+    "whorled_canyons": [
+      "tfc:cave",
+      "tfc:canyon",
+      "tfc:deep_caves"
+    ]
+  }
+}

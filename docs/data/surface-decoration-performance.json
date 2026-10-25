@@ -1,0 +1,99 @@
+{
+  "schema": 1,
+  "seed": 0,
+  "saved_world": true,
+  "scope": "Release child engine, cold tile then layer switch; complete RGBA/biome/water payload SHA-256; excludes native GPU presentation",
+  "results": [
+    {
+      "case": "ground-block-save",
+      "layer": "Ground",
+      "seconds": 0.701469,
+      "sha256": "5fc8334a23fe6d056f71f0a9f8eb2c8bc37d93b09a4d527daac3aa50335dfa9f",
+      "bulk_bytes": 462864
+    },
+    {
+      "case": "ground-medium-seed",
+      "layer": "Ground",
+      "seconds": 1.85071,
+      "sha256": "e794904a7f65c8844d44f8421aaf445c467a354ab60cd9f98e01ffee483ac42f",
+      "bulk_bytes": 462864
+    },
+    {
+      "case": "ground-medium-save",
+      "layer": "Ground",
+      "seconds": 1.749275,
+      "sha256": "53a63550538391ccdb06f83269bc17eada851101170c7058b30433016e4e7437",
+      "bulk_bytes": 462864
+    },
+    {
+      "case": "ground-far-seed",
+      "layer": "Ground",
+      "seconds": 1.364866,
+      "sha256": "817e8faf49c6fb99c8e6e73398bb7c9835b957909cb6f8f8cd567c6eadabf10e",
+      "bulk_bytes": 29712
+    },
+    {
+      "case": "ground-far-save",
+      "layer": "Ground",
+      "seconds": 1.359315,
+      "sha256": "817e8faf49c6fb99c8e6e73398bb7c9835b957909cb6f8f8cd567c6eadabf10e",
+      "bulk_bytes": 29712
+    }
+  ],
+  "local_feature_results": [
+    {
+      "case": "ground-local-features-seed",
+      "layer": "Ground",
+      "seconds": 0.267084,
+      "sha256": "88e3698c745ad3ab1f678b857f4416a8ae647e2bc092114f6d83cb7078b2b152",
+      "bulk_bytes": 462864
+    },
+    {
+      "case": "ground-detail-features-seed",
+      "layer": "Ground",
+      "seconds": 2.201357,
+      "sha256": "ed5985aac1416f44a2d9eb84c9c6132e047e0d6dcecbe4ca5e7b3d392898f203",
+      "bulk_bytes": 462864
+    },
+    {
+      "case": "ground-relief-features-seed",
+      "layer": "Ground",
+      "seconds": 0.470867,
+      "sha256": "b28435f6f3d67a82276e93ab027a834edf03ca5eccf29fbb46fbc31cc7c9e6c2",
+      "bulk_bytes": 462864
+    }
+  ],
+  "local_feature_sites": {
+    "ground-local-features-seed": {
+      "tile": [
+        -6,
+        9
+      ],
+      "zoom": 0,
+      "detail": true
+    },
+    "ground-detail-features-seed": {
+      "tile": [
+        -2,
+        2
+      ],
+      "zoom": 2,
+      "detail": true
+    },
+    "ground-relief-features-seed": {
+      "tile": [
+        -6,
+        9
+      ],
+      "zoom": 0,
+      "detail": true,
+      "height_shading": true,
+      "contours": true
+    }
+  },
+  "notes": [
+    "Features are enabled only at four blocks per pixel or closer; medium and far cases skip decoration enumeration.",
+    "Timings are cold engine tile generation with two Rayon threads, not UI frame rate.",
+    "Concurrent validation work can affect timings."
+  ]
+}

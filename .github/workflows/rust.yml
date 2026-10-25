@@ -25,16 +25,6 @@ jobs:
       - run: cargo check --release --locked --no-default-features --lib
       - run: cargo check --release --locked --features diagnostics --all-targets
       - name: Production binary (diagnostics disabled)
+        env:
+          TERRALENS_OFFICIAL_BUILD: "1"
         run: cargo build --release --locked
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
-        with:
-          name: terralens-linux-x86_64
-          path: |
-            native/terralens-rs/target/release/terralens
-            LICENSE
-            NOTICE.md
-            licenses/
-            native/terralens-rs/assets/export-font-source.txt
-            native/terralens-rs/assets/ore-icons/README.md
-            native/terralens-rs/assets/structure-icons/README.md
-            native/terralens-rs/assets/structure-icons/cubiomes/provenance.json

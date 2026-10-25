@@ -8,7 +8,7 @@ use crate::model::{Marker, MarkerKind, Point, Settings, WorldInfo, WorldLocation
 use flate2::read::{DeflateDecoder, GzDecoder, ZlibDecoder};
 use rayon::prelude::*;
 use serde::Deserialize;
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use std::fs;
 use std::io::Read;
 use std::path::{Path, PathBuf};
@@ -34,6 +34,34 @@ pub struct StructureScan {
     pub markers: Vec<Marker>,
     pub chunks: usize,
     pub errors: Vec<String>,
+    #[serde(default)]
+    pub completed: Vec<ChunkCoverage>,
+}
+
+/// Generated chunk slots whose `Status` and `structures.starts` were validated while
+/// the existing structure scan decoded each Anvil region. Bits use `local_z * 32 + local_x`.
+#[derive(Clone, Debug, Default, Eq, PartialEq, serde::Serialize, serde::Deserialize)]
+pub struct ChunkCoverage {
+    pub region_x: i32,
+    pub region_z: i32,
+    #[serde(default)]
+    pub slots: [u64; 16],
+}
+
+impl ChunkCoverage {
+    fn mark(&mut self, chunk_x: i32, chunk_z: i32) {
+        let slot = (chunk_z.rem_euclid(32) * 32 + chunk_x.rem_euclid(32)) as usize;
+        self.slots[slot / 64] |= 1u64 << (slot % 64);
+    }
+
+    /// True only if this exact chunk passed the saved-chunk completion checks.
+    pub fn contains(&self, chunk_x: i32, chunk_z: i32) -> bool {
+        if chunk_x.div_euclid(32) != self.region_x || chunk_z.div_euclid(32) != self.region_z {
+            return false;
+        }
+        let slot = (chunk_z.rem_euclid(32) * 32 + chunk_x.rem_euclid(32)) as usize;
+        self.slots[slot / 64] & (1u64 << (slot % 64)) != 0
+    }
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -362,10 +390,10 @@ pub(crate) fn load_world(path: &Path) -> Result<WorldInfo, String> {
         ));
     }
     let world = read_world(path);
-    if let Some(warning) = &world.warning {
-        if warning.starts_with("Could not read level.dat:") {
-            return Err(warning.clone());
-        }
+    if let Some(warning) = &world.warning
+        && warning.starts_with("Could not read level.dat:")
+    {
+        return Err(warning.clone());
     }
     Ok(world)
 }
@@ -391,21 +419,21 @@ fn discover_dimensions(
             }
             if let Ok(paths) = fs::read_dir(ns.path()) {
                 for dim in paths.flatten() {
-                    if dim.path().is_dir() {
-                        if let Ok(rel) = dim.path().strip_prefix(&dimension_root) {
-                            let path = rel
-                                .components()
-                                .filter_map(|p| match p {
-                                    std::path::Component::Normal(v) => {
-                                        Some(v.to_string_lossy().to_string())
-                                    }
-                                    _ => None,
-                                })
-                                .collect::<Vec<_>>()
-                                .join("/");
-                            if path.contains('/') {
-                                ids.push(path.replace('/', ":"));
-                            }
+                    if dim.path().is_dir()
+                        && let Ok(rel) = dim.path().strip_prefix(&dimension_root)
+                    {
+                        let path = rel
+                            .components()
+                            .filter_map(|p| match p {
+                                std::path::Component::Normal(v) => {
+                                    Some(v.to_string_lossy().to_string())
+                                }
+                                _ => None,
+                            })
+                            .collect::<Vec<_>>()
+                            .join("/");
+                        if path.contains('/') {
+                            ids.push(path.replace('/', ":"));
                         }
                     }
                 }
@@ -541,10 +569,10 @@ fn read_settings(node: Option<&Nbt>) -> Settings {
         ("continentalness", &mut s.continentalness),
         ("grass_density", &mut s.grass_density),
     ] {
-        if let Some(v) = n.get(key).and_then(Nbt::f64) {
-            if v.is_finite() {
-                *out = v;
-            }
+        if let Some(v) = n.get(key).and_then(Nbt::f64)
+            && v.is_finite()
+        {
+            *out = v;
         }
     }
     s
@@ -588,20 +616,19 @@ fn read_world_locations(world: &Path, data: &Nbt, embedded: Option<&Nbt>) -> Vec
         data.get("SpawnX").and_then(Nbt::f64),
         data.get("SpawnY").and_then(Nbt::f64),
         data.get("SpawnZ").and_then(Nbt::f64),
-    ) {
-        if valid_marker_position(x, y, z) {
-            locations.push(location_marker(
-                "minecraft:world_spawn".into(),
-                "World spawn".into(),
-                MarkerKind::Spawn,
-                "minecraft:overworld".into(),
-                x,
-                y,
-                z,
-                "Saved world spawn position".into(),
-                [97, 190, 115],
-            ));
-        }
+    ) && valid_marker_position(x, y, z)
+    {
+        locations.push(location_marker(
+            "minecraft:world_spawn".into(),
+            "World spawn".into(),
+            MarkerKind::Spawn,
+            "minecraft:overworld".into(),
+            x,
+            y,
+            z,
+            "Saved world spawn position".into(),
+            [97, 190, 115],
+        ));
     }
     let names = read_player_names(world);
     let mut players =
@@ -740,21 +767,21 @@ fn location_marker(
 }
 
 fn player_uuid(player: &Nbt) -> Option<String> {
-    if let Some(values) = player.get("UUID").and_then(Nbt::int_array) {
-        if values.len() == 4 {
-            let mut hex = String::with_capacity(32);
-            for value in values {
-                hex.push_str(&format!("{:08x}", *value as u32));
-            }
-            return Some(format!(
-                "{}-{}-{}-{}-{}",
-                &hex[0..8],
-                &hex[8..12],
-                &hex[12..16],
-                &hex[16..20],
-                &hex[20..32]
-            ));
+    if let Some(values) = player.get("UUID").and_then(Nbt::int_array)
+        && values.len() == 4
+    {
+        let mut hex = String::with_capacity(32);
+        for value in values {
+            hex.push_str(&format!("{:08x}", *value as u32));
         }
+        return Some(format!(
+            "{}-{}-{}-{}-{}",
+            &hex[0..8],
+            &hex[8..12],
+            &hex[12..16],
+            &hex[16..20],
+            &hex[20..32]
+        ));
     }
     let most = player.get("UUIDMost").and_then(Nbt::i64)? as u64;
     let least = player.get("UUIDLeast").and_then(Nbt::i64)? as u64;
@@ -826,7 +853,7 @@ fn read_player_names(world: &Path) -> HashMap<String, String> {
 }
 
 #[derive(Clone, Debug)]
-enum Nbt {
+pub(crate) enum Nbt {
     Number(f64),
     Long(i64),
     String(String),
@@ -837,47 +864,862 @@ enum Nbt {
     Other,
 }
 impl Nbt {
-    fn get(&self, k: &str) -> Option<&Nbt> {
+    pub(crate) fn get(&self, k: &str) -> Option<&Nbt> {
         if let Self::Compound(m) = self {
             m.get(k)
         } else {
             None
         }
     }
-    fn string(&self) -> Option<&str> {
+    pub(crate) fn string(&self) -> Option<&str> {
         if let Self::String(s) = self {
             Some(s)
         } else {
             None
         }
     }
-    fn list(&self) -> Option<&[Nbt]> {
+    pub(crate) fn list(&self) -> Option<&[Nbt]> {
         if let Self::List(v) = self {
             Some(v)
         } else {
             None
         }
     }
-    fn int_array(&self) -> Option<&[i32]> {
+    pub(crate) fn int_array(&self) -> Option<&[i32]> {
         if let Self::IntArray(v) = self {
             Some(v)
         } else {
             None
         }
     }
-    fn f64(&self) -> Option<f64> {
+    pub(crate) fn f64(&self) -> Option<f64> {
         match self {
             Self::Number(v) => Some(*v),
             Self::Long(v) => Some(*v as f64),
             _ => None,
         }
     }
-    fn i64(&self) -> Option<i64> {
+    pub(crate) fn i64(&self) -> Option<i64> {
         match self {
             Self::Long(v) => Some(*v),
             Self::Number(v) if v.is_finite() => Some(*v as i64),
             _ => None,
         }
+    }
+    pub(crate) fn uuid_string(&self) -> Option<String> {
+        nbt_uuid(self)
+    }
+}
+
+/// Extract the geometry and block-entity inventory for one confirmed saved structure.
+/// This function is called by the background engine, never by the UI event loop.
+pub(crate) fn read_saved_structure_preview(
+    world_path: &Path,
+    marker: &Marker,
+    cancel: &impl Fn() -> bool,
+) -> Result<Option<crate::structure_preview::StructurePreview>, String> {
+    use crate::structure_preview::{
+        BlockPos, Container, Piece, PreviewSource, ShapeBlock, StructurePreview,
+    };
+    if marker.kind != MarkerKind::Structure || !marker.confirmed {
+        return Ok(None);
+    }
+    let start_cx = (marker.x.floor() as i32).div_euclid(16);
+    let start_cz = (marker.z.floor() as i32).div_euclid(16);
+    let Some(start_chunk) = surface::read_chunk_nbt(world_path, start_cx, start_cz)? else {
+        return Ok(None);
+    };
+    let starts = start_chunk
+        .get("structures")
+        .and_then(|s| s.get("starts"))
+        .and_then(Nbt::compound);
+    let Some((start_id, start)) = starts.and_then(|starts| {
+        starts.iter().find(|(sid, tag)| {
+            tag.get("id").and_then(Nbt::string).unwrap_or(sid.as_str()) == marker.id
+        })
+    }) else {
+        return Ok(None);
+    };
+
+    let mut preview = StructurePreview::empty(&marker.id, PreviewSource::Saved);
+    preview.bounds = structure_bounds(start).or(marker.bounds);
+    if let Some(children) = start.get("Children").and_then(Nbt::list) {
+        for child in children {
+            let Some(bounds) = child.get("BB").and_then(parse_structure_box) else {
+                preview.complete = false;
+                continue;
+            };
+            let template = child
+                .get("pool_element")
+                .and_then(|element| element.get("location"))
+                .and_then(nbt_resource_location)
+                .or_else(|| child.get("Template").and_then(nbt_resource_location))
+                .or_else(|| child.get("template").and_then(nbt_resource_location));
+            preview.pieces.push(Piece { template, bounds });
+        }
+    }
+    if preview.pieces.is_empty() {
+        if let Some(bounds) = preview.bounds {
+            preview.pieces.push(Piece {
+                template: None,
+                bounds,
+            });
+            preview
+                .notes
+                .push("Saved start has aggregate bounds only".into());
+        } else {
+            return Ok(None);
+        }
+    }
+    let Some(bounds) = preview.bounds else {
+        return Ok(None);
+    };
+    const MAX_CHUNKS: usize = 1024;
+    const MAX_BLOCKS: usize = 160_000;
+    let min_cx = bounds.min_x.div_euclid(16);
+    let max_cx = bounds.max_x.div_euclid(16);
+    let min_cz = bounds.min_z.div_euclid(16);
+    let max_cz = bounds.max_z.div_euclid(16);
+    let total = ((max_cx as i64 - min_cx as i64 + 1).max(0) as usize)
+        .saturating_mul((max_cz as i64 - min_cz as i64 + 1).max(0) as usize);
+    let mut chunks = Vec::with_capacity(total.min(MAX_CHUNKS));
+    if total <= MAX_CHUNKS {
+        for cz in min_cz..=max_cz {
+            for cx in min_cx..=max_cx {
+                chunks.push((cx, cz));
+            }
+        }
+    } else {
+        let center = bounds.center();
+        let center_x = (center.x.floor() as i32)
+            .div_euclid(16)
+            .clamp(min_cx, max_cx);
+        let center_z = (center.z.floor() as i32)
+            .div_euclid(16)
+            .clamp(min_cz, max_cz);
+        let mut radius = 0i32;
+        while chunks.len() < MAX_CHUNKS {
+            for dz in -radius..=radius {
+                for dx in -radius..=radius {
+                    if radius > 0 && dx.abs() != radius && dz.abs() != radius {
+                        continue;
+                    }
+                    let cx = center_x.saturating_add(dx);
+                    let cz = center_z.saturating_add(dz);
+                    if (min_cx..=max_cx).contains(&cx) && (min_cz..=max_cz).contains(&cz) {
+                        chunks.push((cx, cz));
+                        if chunks.len() == MAX_CHUNKS {
+                            break;
+                        }
+                    }
+                }
+                if chunks.len() == MAX_CHUNKS {
+                    break;
+                }
+            }
+            radius = radius.saturating_add(1);
+        }
+        preview.complete = false;
+        preview.notes.push(format!(
+            "Structure spans {total} chunks; preview limited to {MAX_CHUNKS} nearest chunks"
+        ));
+    }
+
+    let mut missing_chunks = 0usize;
+    for (chunk_x, chunk_z) in chunks {
+        if cancel() {
+            return Err("Inspection cancelled".into());
+        }
+        let Some(root) = surface::read_chunk_nbt(world_path, chunk_x, chunk_z)? else {
+            preview.complete = false;
+            missing_chunks += 1;
+            continue;
+        };
+        let data = root.get("Level").unwrap_or(&root);
+        if !matches!(
+            data.get("Status").and_then(Nbt::string),
+            Some("minecraft:full" | "full")
+        ) {
+            preview.complete = false;
+            missing_chunks += 1;
+            continue;
+        }
+        let chunk_min_x = chunk_x.saturating_mul(16);
+        let chunk_min_z = chunk_z.saturating_mul(16);
+        let local_pieces = preview
+            .pieces
+            .iter()
+            .filter(|piece| {
+                piece.bounds.max_x >= chunk_min_x
+                    && piece.bounds.min_x <= chunk_min_x.saturating_add(15)
+                    && piece.bounds.max_z >= chunk_min_z
+                    && piece.bounds.min_z <= chunk_min_z.saturating_add(15)
+            })
+            .collect::<Vec<_>>();
+        let mut block_names = HashMap::<BlockPos, String>::new();
+        let sections = data
+            .get("sections")
+            .or_else(|| data.get("Sections"))
+            .and_then(Nbt::list);
+        if let Some(sections) = sections {
+            for section in sections {
+                if cancel() {
+                    return Err("Inspection cancelled".into());
+                }
+                let Some(section_y) = section.get("Y").and_then(Nbt::i64).map(|n| n as i32) else {
+                    continue;
+                };
+                let section_base_y = section_y.saturating_mul(16);
+                if section_base_y > bounds.max_y || section_base_y.saturating_add(15) < bounds.min_y
+                {
+                    continue;
+                }
+                let (palette, packed) = if let Some(states) = section.get("block_states") {
+                    (
+                        states.get("palette").and_then(Nbt::list),
+                        states.get("data").and_then(Nbt::long_array),
+                    )
+                } else {
+                    (
+                        section.get("Palette").and_then(Nbt::list),
+                        section.get("BlockStates").and_then(Nbt::long_array),
+                    )
+                };
+                let Some(palette) = palette else { continue };
+                let names = palette
+                    .iter()
+                    .filter_map(|p| p.get("Name").and_then(Nbt::string).map(str::to_owned))
+                    .collect::<Vec<_>>();
+                if names.len() != palette.len() || names.is_empty() {
+                    continue;
+                }
+                let bits =
+                    (usize::BITS - (names.len().saturating_sub(1)).leading_zeros()).max(4) as usize;
+                let per_long = 64 / bits;
+                let mask = (1u64 << bits) - 1;
+                if names.len() > 1 && packed.is_none_or(|v| v.len() < 4096usize.div_ceil(per_long))
+                {
+                    preview.complete = false;
+                    continue;
+                }
+                for index in 0..4096usize {
+                    let palette_index = if names.len() == 1 {
+                        0
+                    } else {
+                        let data = packed.unwrap();
+                        ((data[index / per_long] as u64 >> ((index % per_long) * bits)) & mask)
+                            as usize
+                    };
+                    let Some(name) = names.get(palette_index) else {
+                        continue;
+                    };
+                    if is_air_block(name) {
+                        continue;
+                    }
+                    let x = chunk_x.saturating_mul(16) + (index % 16) as i32;
+                    let z = chunk_z.saturating_mul(16) + ((index / 16) % 16) as i32;
+                    let y = section_base_y.saturating_add((index / 256) as i32);
+                    if !local_pieces.iter().any(|piece| {
+                        piece.bounds.contains_column(x, z)
+                            && (piece.bounds.min_y..=piece.bounds.max_y).contains(&y)
+                    }) {
+                        continue;
+                    }
+                    let pos = BlockPos { x, y, z };
+                    if is_container(name, "") {
+                        block_names.insert(pos, name.clone());
+                    }
+                    if preview.blocks.len() >= MAX_BLOCKS {
+                        preview.complete = false;
+                        continue;
+                    }
+                    preview.blocks.push(ShapeBlock {
+                        pos,
+                        block: name.clone(),
+                        color: preview_tint(name),
+                    });
+                }
+            }
+        }
+        let mut known_container_positions = HashSet::new();
+        let Some(block_entities) = data
+            .get("block_entities")
+            .or_else(|| data.get("TileEntities"))
+            .and_then(Nbt::list)
+        else {
+            for (pos, block) in block_names {
+                let mut container = Container::new(pos, block);
+                container
+                    .notes
+                    .push("No saved block entity data; contents are unknown.".into());
+                container.dimension = Some(storage_dimension_id(world_path));
+                preview.containers.push(container);
+            }
+            continue;
+        };
+        for be in block_entities {
+            let pos = if let Some(a) = be
+                .get("Pos")
+                .and_then(Nbt::int_array)
+                .filter(|a| a.len() == 3)
+            {
+                BlockPos {
+                    x: a[0],
+                    y: a[1],
+                    z: a[2],
+                }
+            } else if let (Some(x), Some(y), Some(z)) = (
+                be.get("x")
+                    .and_then(Nbt::i64)
+                    .and_then(|n| n.try_into().ok()),
+                be.get("y")
+                    .and_then(Nbt::i64)
+                    .and_then(|n| n.try_into().ok()),
+                be.get("z")
+                    .and_then(Nbt::i64)
+                    .and_then(|n| n.try_into().ok()),
+            ) {
+                BlockPos { x, y, z }
+            } else {
+                continue;
+            };
+            if !local_pieces.iter().any(|piece| {
+                piece.bounds.contains_column(pos.x, pos.z)
+                    && (piece.bounds.min_y..=piece.bounds.max_y).contains(&pos.y)
+            }) {
+                continue;
+            }
+            let be_id = be.get("id").and_then(Nbt::string).unwrap_or("");
+            let block = block_names
+                .get(&pos)
+                .cloned()
+                .unwrap_or_else(|| be_id.to_owned());
+            if !is_container(&block, be_id) {
+                continue;
+            }
+            known_container_positions.insert(pos);
+            let mut container = Container::new(pos, block.clone());
+            container.dimension = Some(storage_dimension_id(world_path));
+            container.lootr = block.starts_with("lootr:") || be_id.starts_with("lootr:");
+            container.lootr_id = ["tileId", "TileId", "tile_id", "LootrId", "lootrId"]
+                .iter()
+                .find_map(|key| be.get(key).and_then(nbt_uuid));
+            container.loot_table = be
+                .get("LootTable")
+                .or_else(|| be.get("lootrLootTable"))
+                .or_else(|| be.get("specialLootChest_table"))
+                .and_then(Nbt::string)
+                .map(str::to_owned);
+            container.loot_seed = be
+                .get("LootTableSeed")
+                .or_else(|| be.get("specialLootChest_seed"))
+                .and_then(Nbt::i64);
+            let inventory = be.get("inventory").or_else(|| be.get("Inventory"));
+            if let Some(items) = be
+                .get("Items")
+                .or_else(|| inventory.and_then(|i| i.get("Items")))
+                .and_then(Nbt::list)
+            {
+                container.items = items.iter().filter_map(preview_item).collect();
+                container.contents_known = container.loot_table.is_none() && !container.lootr;
+            } else if container.loot_table.is_none() && !container.lootr {
+                // A known empty vanilla inventory is distinct from an ungenerated table.
+                container.contents_known = true;
+            }
+            preview.containers.push(container);
+        }
+        for (pos, block) in block_names {
+            if known_container_positions.contains(&pos) {
+                continue;
+            }
+            let mut container = Container::new(pos, block);
+            container.dimension = Some(storage_dimension_id(world_path));
+            container
+                .notes
+                .push("No saved block entity data; contents are unknown.".into());
+            preview.containers.push(container);
+        }
+    }
+    preview
+        .blocks
+        .sort_unstable_by_key(|b| (b.pos.y, b.pos.z, b.pos.x));
+    preview
+        .containers
+        .sort_unstable_by_key(|c| (c.pos.y, c.pos.z, c.pos.x));
+    if preview.blocks.len() >= MAX_BLOCKS {
+        preview.complete = false;
+        preview
+            .notes
+            .push(format!("Shape limited to {MAX_BLOCKS} visible blocks"));
+    }
+    if missing_chunks > 0 {
+        preview.notes.push(format!(
+            "{missing_chunks} structure chunks are not fully generated in this save"
+        ));
+    }
+    let _ = start_id;
+    Ok(Some(preview))
+}
+
+fn nbt_resource_location(node: &Nbt) -> Option<String> {
+    node.string()
+        .or_else(|| node.get("id").and_then(Nbt::string))
+        .or_else(|| node.get("Name").and_then(Nbt::string))
+        .filter(|id| id.contains(':') || id.contains('/'))
+        .map(str::to_owned)
+}
+
+fn parse_structure_box(node: &Nbt) -> Option<crate::model::StructureBounds> {
+    let values: [i32; 6] = if let Some(values) = node.int_array() {
+        if values.len() != 6 {
+            return None;
+        }
+        values.try_into().ok()?
+    } else {
+        let values = node.list()?;
+        if values.len() != 6 {
+            return None;
+        }
+        [
+            values[0].i64()?.try_into().ok()?,
+            values[1].i64()?.try_into().ok()?,
+            values[2].i64()?.try_into().ok()?,
+            values[3].i64()?.try_into().ok()?,
+            values[4].i64()?.try_into().ok()?,
+            values[5].i64()?.try_into().ok()?,
+        ]
+    };
+    (values[0] <= values[3] && values[1] <= values[4] && values[2] <= values[5]).then_some(
+        crate::model::StructureBounds {
+            min_x: values[0],
+            min_y: values[1],
+            min_z: values[2],
+            max_x: values[3],
+            max_y: values[4],
+            max_z: values[5],
+        },
+    )
+}
+
+fn is_air_block(name: &str) -> bool {
+    matches!(
+        name.rsplit(':').next().unwrap_or(name),
+        "air" | "cave_air" | "void_air"
+    )
+}
+
+fn is_container(block: &str, be_id: &str) -> bool {
+    let tokens = format!("{block} {be_id}")
+        .to_ascii_lowercase()
+        .split(|c: char| !c.is_ascii_alphanumeric())
+        .filter(|part| !part.is_empty())
+        .map(str::to_owned)
+        .collect::<Vec<_>>();
+    [
+        "chest",
+        "barrel",
+        "vessel",
+        "vase",
+        "urn",
+        "jar",
+        "crate",
+        "shulker",
+        "pot",
+        "basket",
+        "cabinet",
+        "coffer",
+        "sarcophagus",
+    ]
+    .iter()
+    .any(|needle| tokens.iter().any(|part| part == needle))
+        || tokens
+            .windows(2)
+            .any(|pair| pair == ["suspicious", "sand"] || pair == ["suspicious", "gravel"])
+}
+
+pub(crate) fn preview_item(tag: &Nbt) -> Option<crate::structure_preview::ItemStack> {
+    let id = tag.get("id")?.string()?.to_owned();
+    let count = u32::try_from(tag.get("Count").or_else(|| tag.get("count"))?.i64()?).ok()?;
+    if count == 0 {
+        return None;
+    }
+    let slot = tag
+        .get("Slot")
+        .and_then(Nbt::i64)
+        .and_then(|n| u16::try_from(n).ok());
+    Some(crate::structure_preview::ItemStack {
+        id,
+        count,
+        slot,
+        description: item_metadata_description(tag),
+    })
+}
+
+fn item_metadata_description(item: &Nbt) -> String {
+    let mut parts = Vec::<String>::new();
+    let legacy = item.get("tag");
+    let components = item.get("components");
+    let display_name = legacy
+        .and_then(|tag| tag.get("display"))
+        .and_then(|display| display.get("Name"))
+        .and_then(Nbt::string)
+        .or_else(|| {
+            components
+                .and_then(|c| c.get("minecraft:custom_name"))
+                .and_then(Nbt::string)
+        })
+        .or_else(|| {
+            components
+                .and_then(|c| c.get("custom_name"))
+                .and_then(Nbt::string)
+        })
+        .map(parse_display_name)
+        .filter(|name| !name.is_empty());
+    if let Some(name) = display_name {
+        push_item_note(&mut parts, format!("Name: {name}"));
+    }
+
+    if let Some(botarium) = find_named(item, "BotariumData")
+        && let Some(fluids) = botarium.get("StoredFluids")
+    {
+        append_stored_fluids(&mut parts, fluids);
+    }
+    // Botarium has used both direct item NBT and component custom-data storage.
+    if !parts.iter().any(|note| note.contains("mB ")) {
+        for key in ["StoredFluids", "botarium:stored_fluids"] {
+            if let Some(fluids) = find_named(item, key) {
+                append_stored_fluids(&mut parts, fluids);
+                if parts.iter().any(|note| note.contains("mB ")) {
+                    break;
+                }
+            }
+        }
+    }
+
+    let damage = item
+        .get("Damage")
+        .and_then(Nbt::i64)
+        .or_else(|| legacy.and_then(|tag| tag.get("Damage")).and_then(Nbt::i64))
+        .or_else(|| {
+            components
+                .and_then(|c| c.get("minecraft:damage"))
+                .and_then(Nbt::i64)
+        });
+    if let Some(damage) = damage.filter(|v| *v > 0) {
+        push_item_note(&mut parts, format!("Damage: {damage}"));
+    }
+    append_enchantments(&mut parts, legacy.and_then(|t| t.get("Enchantments")));
+    append_enchantments(&mut parts, legacy.and_then(|t| t.get("StoredEnchantments")));
+    if let Some(enchantments) = components.and_then(|c| c.get("minecraft:enchantments")) {
+        append_component_enchantments(&mut parts, enchantments);
+    }
+    if let Some(enchantments) = components.and_then(|c| c.get("minecraft:stored_enchantments")) {
+        append_component_enchantments(&mut parts, enchantments);
+    }
+    append_tfc_traits(&mut parts, item);
+
+    let joined = parts.join(" · ");
+    joined.chars().take(512).collect()
+}
+
+fn parse_display_name(raw: &str) -> String {
+    fn flatten(value: &serde_json::Value, out: &mut String, depth: u8) {
+        if depth > 8 || out.len() >= 120 {
+            return;
+        }
+        match value {
+            serde_json::Value::String(s) => out.push_str(s),
+            serde_json::Value::Array(items) => {
+                for item in items.iter().take(16) {
+                    flatten(item, out, depth + 1);
+                }
+            }
+            serde_json::Value::Object(fields) => {
+                if let Some(text) = fields.get("text") {
+                    flatten(text, out, depth + 1);
+                }
+                if let Some(translate) = fields.get("translate").and_then(serde_json::Value::as_str)
+                    && out.is_empty()
+                {
+                    out.push_str(translate);
+                }
+                if let Some(extra) = fields.get("extra") {
+                    flatten(extra, out, depth + 1);
+                }
+            }
+            _ => {}
+        }
+    }
+    let mut name = String::new();
+    if let Ok(json) = serde_json::from_str::<serde_json::Value>(raw) {
+        flatten(&json, &mut name, 0);
+    }
+    if name.is_empty() {
+        name.push_str(raw);
+    }
+    name.chars()
+        .filter(|ch| !ch.is_control())
+        .take(120)
+        .collect::<String>()
+        .trim()
+        .to_owned()
+}
+
+fn push_item_note(parts: &mut Vec<String>, note: String) {
+    if parts.len() >= 12 || note.is_empty() {
+        return;
+    }
+    let remaining =
+        512usize.saturating_sub(parts.iter().map(String::len).sum::<usize>() + 3 * parts.len());
+    let clipped = note.chars().take(remaining.min(160)).collect::<String>();
+    if !clipped.is_empty() {
+        parts.push(clipped);
+    }
+}
+
+/// Find an exact NBT key in a shallow, bounded subtree. This is used only for known
+/// metadata fields, never to serialize arbitrary item NBT into the UI.
+fn find_named<'a>(root: &'a Nbt, wanted: &str) -> Option<&'a Nbt> {
+    fn visit<'a>(node: &'a Nbt, key: &str, depth: u8, budget: &mut usize) -> Option<&'a Nbt> {
+        if depth > 8 || *budget == 0 {
+            return None;
+        }
+        *budget -= 1;
+        match node {
+            Nbt::Compound(fields) => {
+                if let Some(value) = fields.get(key) {
+                    return Some(value);
+                }
+                let mut keys = fields.keys().collect::<Vec<_>>();
+                keys.sort_unstable();
+                for name in keys.into_iter().take(128) {
+                    if let Some(value) = fields
+                        .get(name)
+                        .and_then(|child| visit(child, key, depth + 1, budget))
+                    {
+                        return Some(value);
+                    }
+                }
+                None
+            }
+            Nbt::List(items) => items
+                .iter()
+                .take(64)
+                .find_map(|child| visit(child, key, depth + 1, budget)),
+            _ => None,
+        }
+    }
+    visit(root, wanted, 0, &mut 1024)
+}
+
+fn append_stored_fluids(parts: &mut Vec<String>, fluids: &Nbt) {
+    fn add(parts: &mut Vec<String>, entry: &Nbt) {
+        let fluid = entry.get("Fluid").or_else(|| entry.get("fluid"));
+        let id = fluid
+            .and_then(Nbt::string)
+            .or_else(|| fluid.and_then(|f| f.get("id")).and_then(Nbt::string))
+            .or_else(|| fluid.and_then(|f| f.get("Name")).and_then(Nbt::string))
+            .or_else(|| entry.get("FluidName").and_then(Nbt::string));
+        let amount = entry
+            .get("Amount")
+            .or_else(|| entry.get("amount"))
+            .and_then(Nbt::i64);
+        if let (Some(id), Some(amount)) = (id, amount.filter(|amount| *amount > 0)) {
+            push_item_note(parts, format!("Fluid: {amount} mB {id}"));
+        }
+    }
+    if let Some(entries) = fluids.list() {
+        for entry in entries.iter().take(8) {
+            add(parts, entry);
+        }
+    } else if let Some(entries) = fluids.compound() {
+        let mut keys = entries.keys().collect::<Vec<_>>();
+        keys.sort_unstable();
+        for key in keys.into_iter().take(8) {
+            if let Some(entry) = entries.get(key) {
+                add(parts, entry);
+            }
+        }
+    } else {
+        add(parts, fluids);
+    }
+}
+
+fn append_enchantments(parts: &mut Vec<String>, node: Option<&Nbt>) {
+    let Some(entries) = node.and_then(Nbt::list) else {
+        return;
+    };
+    for enchant in entries.iter().take(8) {
+        let id = enchant.get("id").and_then(Nbt::string).unwrap_or("");
+        let level = enchant
+            .get("lvl")
+            .or_else(|| enchant.get("level"))
+            .and_then(Nbt::i64);
+        if !id.is_empty()
+            && let Some(level) = level
+        {
+            push_item_note(
+                parts,
+                format!(
+                    "Enchantment: {} {level}",
+                    id.rsplit(':').next().unwrap_or(id)
+                ),
+            );
+        }
+    }
+}
+
+fn append_component_enchantments(parts: &mut Vec<String>, component: &Nbt) {
+    let Some(levels) = component
+        .get("levels")
+        .or_else(|| component.get("Levels"))
+        .and_then(Nbt::compound)
+    else {
+        return;
+    };
+    let mut keys = levels.keys().collect::<Vec<_>>();
+    keys.sort_unstable();
+    for id in keys.into_iter().take(8) {
+        if let Some(level) = levels.get(id).and_then(Nbt::i64) {
+            push_item_note(
+                parts,
+                format!(
+                    "Enchantment: {} {level}",
+                    id.rsplit(':').next().unwrap_or(id)
+                ),
+            );
+        }
+    }
+}
+
+fn append_tfc_traits(parts: &mut Vec<String>, item: &Nbt) {
+    const KEYS: &[&str] = &[
+        "food",
+        "nutrients",
+        "rot",
+        "rotProgress",
+        "rot_progress",
+        "freshness",
+        "purity",
+        "work",
+        "metal",
+        "temperature",
+        "heat",
+        "protein",
+        "carbohydrate",
+        "lipid",
+        "grain",
+        "fruit",
+        "vegetable",
+        "vegetables",
+        "dairy",
+        "meat",
+        "saturation",
+        "rotDate",
+        "creationDate",
+    ];
+    fn visit(node: &Nbt, depth: u8, budget: &mut usize, parts: &mut Vec<String>) {
+        if depth > 7 || *budget == 0 || parts.len() >= 12 {
+            return;
+        }
+        *budget -= 1;
+        if let Some(fields) = node.compound() {
+            let mut keys = fields.keys().collect::<Vec<_>>();
+            keys.sort_unstable();
+            for key in keys.into_iter().take(96) {
+                let Some(value) = fields.get(key) else {
+                    continue;
+                };
+                if KEYS.iter().any(|known| key.eq_ignore_ascii_case(known)) {
+                    if let Some(number) = value.f64().filter(|n| n.is_finite()) {
+                        push_item_note(parts, format!("{}: {:.2}", key, number));
+                    } else if let Some(text) = value.string() {
+                        push_item_note(
+                            parts,
+                            format!("{}: {}", key, text.chars().take(64).collect::<String>()),
+                        );
+                    }
+                }
+                if depth < 7 {
+                    visit(value, depth + 1, budget, parts);
+                }
+            }
+        } else if let Some(items) = node.list() {
+            for child in items.iter().take(32) {
+                visit(child, depth + 1, budget, parts);
+            }
+        }
+    }
+    visit(item, 0, &mut 1024, parts);
+}
+
+fn nbt_uuid(tag: &Nbt) -> Option<String> {
+    if let Some(s) = tag.string() {
+        return valid_uuid(s).then(|| normalized_uuid(s));
+    }
+    let values = tag.int_array()?;
+    if values.len() != 4 {
+        return None;
+    }
+    let mut bytes = [0u8; 16];
+    for (i, value) in values.iter().enumerate() {
+        bytes[i * 4..i * 4 + 4].copy_from_slice(&value.to_be_bytes());
+    }
+    let tail = bytes[10..16]
+        .iter()
+        .fold(0u64, |n, byte| (n << 8) | *byte as u64);
+    Some(format!(
+        "{:08x}-{:04x}-{:04x}-{:04x}-{:012x}",
+        u32::from_be_bytes(bytes[0..4].try_into().ok()?),
+        u16::from_be_bytes(bytes[4..6].try_into().ok()?),
+        u16::from_be_bytes(bytes[6..8].try_into().ok()?),
+        u16::from_be_bytes(bytes[8..10].try_into().ok()?),
+        tail
+    ))
+}
+
+fn preview_tint(block: &str) -> [u8; 3] {
+    let path = block.rsplit_once(':').map_or(block, |(_, p)| p);
+    let name = path.rsplit('/').next().unwrap_or(path);
+    if name.contains("wood") || name.contains("log") || name.contains("plank") {
+        [132, 96, 62]
+    } else if name.contains("mud") || name.contains("dirt") || name.contains("soil") {
+        [126, 93, 67]
+    } else if name.contains("sand") || name.contains("gravel") {
+        [194, 177, 128]
+    } else if name.contains("water") || name.contains("ice") {
+        [76, 137, 176]
+    } else if name.contains("leaf") || name.contains("grass") {
+        [99, 145, 67]
+    } else if name.contains("brick") || name.contains("stone") || name.contains("rock") {
+        [119, 116, 109]
+    } else {
+        [133, 128, 113]
+    }
+}
+
+fn storage_dimension_id(path: &Path) -> String {
+    let components = path
+        .components()
+        .map(|c| c.as_os_str().to_string_lossy())
+        .collect::<Vec<_>>();
+    if components
+        .windows(2)
+        .any(|w| w[0] == "dimensions" && w[1] == "ad_astra")
+    {
+        if components.iter().any(|c| c == "moon") {
+            "ad_astra:moon".into()
+        } else if components.iter().any(|c| c == "mars") {
+            "ad_astra:mars".into()
+        } else {
+            "minecraft:overworld".into()
+        }
+    } else if components.iter().any(|c| c == "DIM-1") {
+        "minecraft:the_nether".into()
+    } else if components.iter().any(|c| c == "DIM1") {
+        "minecraft:the_end".into()
+    } else {
+        "minecraft:overworld".into()
     }
 }
 struct Reader<'a> {
@@ -928,7 +1770,7 @@ impl<'a> Reader<'a> {
             9 => {
                 let kind = self.u8()?;
                 let n = self.i32()?;
-                if n < 0 || n > 2_000_000 || (kind == 0 && n > 0) {
+                if !(0..=2_000_000).contains(&n) || (kind == 0 && n > 0) {
                     return Err("Invalid NBT list".into());
                 }
                 let mut v = Vec::with_capacity(n.min(65536) as usize);
@@ -991,8 +1833,8 @@ impl<'a> Reader<'a> {
 
 mod surface;
 pub use surface::{
-    SurfaceChunk, SurfaceColumn, clip_surface_chunk, read_biome_chunk, read_surface_band,
-    read_surface_slice, read_surface_tile,
+    GroundChunk, GroundColumn, SurfaceChunk, SurfaceColumn, clip_surface_chunk, read_biome_chunk,
+    read_ground_tile, read_surface_band, read_surface_slice, read_surface_tile,
 };
 fn decode_nbt(bytes: &[u8]) -> Result<Nbt, String> {
     decode_nbt_mode(bytes, false)
@@ -1011,7 +1853,7 @@ fn decode_nbt_mode(bytes: &[u8], read_long_arrays: bool) -> Result<Nbt, String> 
     }
     .root()
 }
-fn read_nbt_file(path: &Path) -> Result<Nbt, String> {
+pub(crate) fn read_nbt_file(path: &Path) -> Result<Nbt, String> {
     let raw = fs::read(path).map_err(|e| format!("{}: {e}", path.display()))?;
     let mut decoded = Vec::new();
     GzDecoder::new(raw.as_slice())
@@ -1043,17 +1885,20 @@ pub fn scan_structures(world: &Path) -> Result<StructureScan, String> {
         })
         .collect::<Vec<_>>();
     let cache = SCAN_CACHE.get_or_init(|| Mutex::new(HashMap::new()));
-    if let Some(c) = cache.lock().unwrap().get(world) {
-        if c.stamps == stamps {
-            return Ok(c.scan.clone());
-        }
+    if let Some(c) = cache.lock().unwrap().get(world)
+        && c.stamps == stamps
+    {
+        return Ok(c.scan.clone());
     }
     let results = paths.par_iter().map(|p| scan_region(p)).collect::<Vec<_>>();
     let mut scan = StructureScan::default();
-    for (mut markers, chunks, errors) in results {
+    for (mut markers, chunks, errors, completed) in results {
         scan.markers.append(&mut markers);
         scan.chunks += chunks;
         scan.errors.extend(errors);
+        if let Some(completed) = completed {
+            scan.completed.push(completed);
+        }
     }
     scan.markers.sort_by(|a, b| {
         a.z.total_cmp(&b.z)
@@ -1070,22 +1915,30 @@ pub fn scan_structures(world: &Path) -> Result<StructureScan, String> {
     Ok(scan)
 }
 
-fn scan_region(path: &Path) -> (Vec<Marker>, usize, Vec<String>) {
+fn scan_region(path: &Path) -> (Vec<Marker>, usize, Vec<String>, Option<ChunkCoverage>) {
     let mut markers = Vec::new();
     let mut chunks = 0;
     let mut errors = Vec::new();
+    let (region_x, region_z) = region_coords(path).unwrap_or((0, 0));
+    let known_region = region_coords(path).is_some();
+    let mut coverage = known_region.then_some(ChunkCoverage {
+        region_x,
+        region_z,
+        slots: [0; 16],
+    });
     let data = match fs::read(path) {
         Ok(v) => v,
-        Err(e) => return (markers, 0, vec![format!("{}: {e}", path.display())]),
+        Err(e) => return (markers, 0, vec![format!("{}: {e}", path.display())], None),
     };
     if data.is_empty() {
-        return (markers, 0, errors);
+        return (markers, 0, errors, None);
     }
     if data.len() < 4096 {
         return (
             markers,
             0,
             vec![format!("{}: short Anvil header", path.display())],
+            None,
         );
     }
     for i in 0..1024 {
@@ -1126,11 +1979,56 @@ fn scan_region(path: &Path) -> (Vec<Marker>, usize, Vec<String>) {
             Ok(nbt) => {
                 chunks += 1;
                 markers.extend(chunk_markers(&nbt));
+                if let Some(bitmap) = coverage.as_mut()
+                    && chunk_has_complete_structure_metadata(&nbt, region_x, region_z, i)
+                {
+                    bitmap.mark(
+                        region_x * 32 + (i % 32) as i32,
+                        region_z * 32 + (i / 32) as i32,
+                    );
+                }
             }
             Err(e) => errors.push(format!("{} slot {i}: {e}", path.display())),
         }
     }
-    (markers, chunks, errors)
+    let coverage = coverage.filter(|entry| entry.slots.iter().any(|word| *word != 0));
+    (markers, chunks, errors, coverage)
+}
+
+fn region_coords(path: &Path) -> Option<(i32, i32)> {
+    let stem = path.file_stem()?.to_str()?.strip_prefix("r.")?;
+    let (x, z) = stem.split_once('.')?;
+    Some((x.parse().ok()?, z.parse().ok()?))
+}
+
+fn chunk_has_complete_structure_metadata(
+    root: &Nbt,
+    region_x: i32,
+    region_z: i32,
+    slot: usize,
+) -> bool {
+    let expected_x = (region_x as i64) * 32 + (slot % 32) as i64;
+    let expected_z = (region_z as i64) * 32 + (slot / 32) as i64;
+    if expected_x < i32::MIN as i64
+        || expected_x > i32::MAX as i64
+        || expected_z < i32::MIN as i64
+        || expected_z > i32::MAX as i64
+    {
+        return false;
+    }
+    let data = root.get("Level").unwrap_or(root);
+    let full = matches!(
+        data.get("Status").and_then(Nbt::string),
+        Some("minecraft:full" | "full")
+    );
+    let coordinates_match = data.get("xPos").and_then(Nbt::i64) == Some(expected_x)
+        && data.get("zPos").and_then(Nbt::i64) == Some(expected_z);
+    let starts_present = data
+        .get("structures")
+        .and_then(|structures| structures.get("starts"))
+        .and_then(Nbt::compound)
+        .is_some();
+    full && coordinates_match && starts_present
 }
 fn chunk_markers(root: &Nbt) -> Vec<Marker> {
     let Some(starts) = root
@@ -1146,7 +2044,7 @@ fn chunk_markers(root: &Nbt) -> Vec<Marker> {
         .collect()
 }
 impl Nbt {
-    fn compound(&self) -> Option<&HashMap<String, Nbt>> {
+    pub(crate) fn compound(&self) -> Option<&HashMap<String, Nbt>> {
         if let Self::Compound(v) = self {
             Some(v)
         } else {
@@ -1439,6 +2337,29 @@ mod tests {
         gz.write_all(bytes).unwrap();
         fs::write(path, gz.finish().unwrap()).unwrap();
     }
+    fn write_region_records(path: &Path, records: &[(usize, Vec<u8>, u8)]) {
+        let mut region = vec![0u8; 8192];
+        let mut next_sector = 2u32;
+        for (slot, raw, compression) in records {
+            let mut gzip = GzEncoder::new(Vec::new(), Compression::default());
+            gzip.write_all(raw).unwrap();
+            let compressed = gzip.finish().unwrap();
+            let length = compressed.len() + 1;
+            let sector_count = (length + 4).div_ceil(4096);
+            let header_offset = slot * 4;
+            region[header_offset] = (next_sector >> 16) as u8;
+            region[header_offset + 1] = (next_sector >> 8) as u8;
+            region[header_offset + 2] = next_sector as u8;
+            region[header_offset + 3] = sector_count as u8;
+            let base = next_sector as usize * 4096;
+            region.resize((next_sector as usize + sector_count) * 4096, 0);
+            region[base..base + 4].copy_from_slice(&(length as u32).to_be_bytes());
+            region[base + 4] = *compression;
+            region[base + 5..base + 5 + compressed.len()].copy_from_slice(&compressed);
+            next_sector += sector_count as u32;
+        }
+        fs::write(path, region).unwrap();
+    }
     #[test]
     fn exact_long_seed_survives() {
         let seed = 7_787_531_943_268_589_495i64;
@@ -1682,7 +2603,11 @@ mod tests {
             );
             let starts = compound("starts", start);
             let structures = compound("structures", starts);
-            let raw = compound("", structures);
+            let mut chunk = string_tag("Status", "minecraft:full");
+            chunk.extend(int_tag("xPos", 0));
+            chunk.extend(int_tag("zPos", 0));
+            chunk.extend(structures);
+            let raw = compound("", chunk);
             let mut gz = GzEncoder::new(Vec::new(), Compression::default());
             gz.write_all(&raw).unwrap();
             let compressed = gz.finish().unwrap();
@@ -1709,10 +2634,94 @@ mod tests {
         assert_eq!(over.markers.len(), 1);
         assert_eq!(over.markers[0].id, "mod_a:overworld_site");
         assert_eq!(over.markers[0].bounds.unwrap().min_x, -3);
+        assert!(
+            over.completed
+                .iter()
+                .any(|coverage| coverage.contains(0, 0))
+        );
         assert_eq!(nether.markers.len(), 1);
         assert_eq!(nether.markers[0].id, "mod_b:beneath_site");
         assert_eq!(nether.markers[0].bounds.unwrap().max_y, 90);
+        assert!(
+            nether
+                .completed
+                .iter()
+                .any(|coverage| coverage.contains(0, 0))
+        );
         fs::remove_dir_all(base).unwrap();
+    }
+
+    #[test]
+    fn chunk_completion_bitmap_requires_full_matching_chunk_and_starts_metadata() {
+        let nonce = SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .unwrap()
+            .as_nanos();
+        let root =
+            std::env::temp_dir().join(format!("terralens-coverage-{}-{nonce}", std::process::id()));
+        let region_dir = root.join("region");
+        fs::create_dir_all(&region_dir).unwrap();
+
+        let valid_negative = {
+            let mut body = string_tag("Status", "minecraft:full");
+            body.extend(int_tag("xPos", -1));
+            body.extend(int_tag("zPos", -1));
+            body.extend(compound("structures", compound("starts", Vec::new())));
+            compound("", body)
+        };
+        write_region_records(
+            &region_dir.join("r.-1.-1.mca"),
+            &[(1023, valid_negative, 1)],
+        );
+
+        let chunk = |x, z, status: &str, has_starts: bool| {
+            let mut body = string_tag("Status", status);
+            body.extend(int_tag("xPos", x));
+            body.extend(int_tag("zPos", z));
+            if has_starts {
+                body.extend(compound("structures", compound("starts", Vec::new())));
+            }
+            compound("", body)
+        };
+        write_region_records(
+            &region_dir.join("r.0.0.mca"),
+            &[
+                // Full bit is required; a partial chunk remains unknown.
+                (0, chunk(0, 0, "minecraft:features", true), 1),
+                // A full chunk in header slot 1 but reporting xPos 2 is corrupt/mismatched.
+                (1, chunk(2, 0, "minecraft:full", true), 1),
+                // Correct coordinates and status, but no starts compound.
+                (2, chunk(2, 0, "minecraft:full", false), 1),
+                // A present but undecodable record is not authoritative.
+                (3, chunk(3, 0, "minecraft:full", true), 9),
+                // Slot 4 has no header record at all.
+            ],
+        );
+
+        let scan = scan_structures(&root).unwrap();
+        assert_eq!(
+            scan.completed.len(),
+            1,
+            "only the negative region has a valid bit"
+        );
+        let coverage = &scan.completed[0];
+        assert_eq!((coverage.region_x, coverage.region_z), (-1, -1));
+        assert!(
+            coverage.contains(-1, -1),
+            "region slot 1023 uses local z*32+x"
+        );
+        assert!(!coverage.contains(0, 0));
+        assert!(!coverage.contains(-2, -1));
+        assert!(!coverage.contains(1, 0));
+        assert!(!coverage.contains(2, 0));
+        assert!(!coverage.contains(3, 0));
+        assert!(!coverage.contains(4, 0));
+        assert!(
+            scan.errors
+                .iter()
+                .any(|error| error.contains("unknown chunk compression"))
+        );
+        fs::remove_dir_all(root).unwrap();
     }
 
     #[test]

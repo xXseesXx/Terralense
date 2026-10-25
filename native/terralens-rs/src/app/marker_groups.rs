@@ -22,6 +22,7 @@ pub(super) fn groups(markers: &[&Marker], bpp: f64, selected: Option<&Marker>) -
     let mut pinned = Vec::new();
     for (index, marker) in markers.iter().enumerate() {
         if matches!(marker.kind, MarkerKind::Spawn | MarkerKind::Player)
+            || marker.kind == MarkerKind::Volcano && bpp <= 4.
             || (marker.kind == MarkerKind::Structure && marker.bounds.is_some() && bpp <= 8.)
             || selected.is_some_and(|pin| pin.id == marker.id && pin.point() == marker.point())
         {
@@ -74,6 +75,23 @@ mod tests {
             bounds: None,
         }
     }
+    #[test]
+    fn nearby_volcanic_centers_keep_their_positions_at_close_zoom() {
+        let mut values = [marker(-2660., 3951.), marker(-2640., 3958.)];
+        for value in &mut values {
+            value.kind = MarkerKind::Volcano;
+        }
+        let markers: Vec<_> = values.iter().collect();
+        for bpp in [0.125, 1., 2., 4.] {
+            let groups = groups(&markers, bpp, None);
+            assert_eq!(groups.len(), 2);
+            for (index, group) in groups.iter().enumerate() {
+                assert_eq!(group, &[index]);
+                assert_eq!(center(&markers, group), markers[index].point());
+            }
+        }
+    }
+
     #[test]
     fn bounded_structures_keep_their_own_box_centers_at_footprint_zoom() {
         let mut values = [marker(8., 8.), marker(8., 8.)];

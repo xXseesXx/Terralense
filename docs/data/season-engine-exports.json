@@ -1,0 +1,266 @@
+[
+  {
+    "path": "/tmp/terralens-season-final-average.png",
+    "season": null,
+    "seconds": 0.23351921399989806,
+    "sha256": "ad18d91f4855c9c3929f4bb9b8d081c4b8a399ee1b5a571d74024662a82e2a94",
+    "reply": {
+      "Export": [
+        1,
+        1,
+        {
+          "Ok": {
+            "path": "/tmp/terralens-season-final-average.png",
+            "note": "64 \u00d7 64 \u00b7 Biomes",
+            "data": null
+          }
+        }
+      ]
+    },
+    "surface_probe": {
+      "point": {
+        "x": -2767.0,
+        "z": 4513.0
+      },
+      "biome": "tfg:earth/active_shield_volcano",
+      "ocean": false,
+      "surface_water": false,
+      "ground_block": "tfg:grass/mollisol",
+      "ground_y": 97,
+      "ground_saved": true,
+      "climate": {
+        "temperature": 17.311460494995117,
+        "rainfall": 207.32833862304688
+      },
+      "height": 97.0,
+      "forest": 3,
+      "rocks": [
+        "dacite",
+        "rhyolite",
+        "gabbro"
+      ],
+      "hotspot": 0.2641166925430298,
+      "hotspot_age": 1.0
+    }
+  },
+  {
+    "path": "/tmp/terralens-season-final-january.png",
+    "season": 0.0,
+    "seconds": 0.0687756299994362,
+    "sha256": "3d5fd60e930560407037baa06b64e0a2692dd037cc13e23d059ea5ceed075d6f",
+    "reply": {
+      "Export": [
+        2,
+        2,
+        {
+          "Ok": {
+            "path": "/tmp/terralens-season-final-january.png",
+            "note": "64 \u00d7 64 \u00b7 Biomes",
+            "data": null
+          }
+        }
+      ]
+    },
+    "surface_probe": {
+      "point": {
+        "x": -2767.0,
+        "z": 4513.0
+      },
+      "biome": "tfg:earth/active_shield_volcano",
+      "ocean": false,
+      "surface_water": false,
+      "ground_block": "tfg:grass/mollisol",
+      "ground_y": 97,
+      "ground_saved": true,
+      "climate": {
+        "temperature": 17.311460494995117,
+        "rainfall": 207.32833862304688
+      },
+      "height": 97.0,
+      "forest": 3,
+      "rocks": [
+        "dacite",
+        "rhyolite",
+        "gabbro"
+      ],
+      "hotspot": 0.2641166925430298,
+      "hotspot_age": 1.0
+    }
+  },
+  {
+    "path": "/tmp/terralens-season-final-april.png",
+    "season": 0.25,
+    "seconds": 0.06880020599965064,
+    "sha256": "c63dd45dc4fb721a9a0c517d66b47d1fb0dc9cf888b07b2885baa440c7cf513c",
+    "reply": {
+      "Export": [
+        3,
+        3,
+        {
+          "Ok": {
+            "path": "/tmp/terralens-season-final-april.png",
+            "note": "64 \u00d7 64 \u00b7 Biomes",
+            "data": null
+          }
+        }
+      ]
+    },
+    "surface_probe": {
+      "point": {
+        "x": -2767.0,
+        "z": 4513.0
+      },
+      "biome": "tfg:earth/active_shield_volcano",
+      "ocean": false,
+      "surface_water": false,
+      "ground_block": "tfg:grass/mollisol",
+      "ground_y": 97,
+      "ground_saved": true,
+      "climate": {
+        "temperature": 17.311460494995117,
+        "rainfall": 207.32833862304688
+      },
+      "height": 97.0,
+      "forest": 3,
+      "rocks": [
+        "dacite",
+        "rhyolite",
+        "gabbro"
+      ],
+      "hotspot": 0.2641166925430298,
+      "hotspot_age": 1.0
+    }
+  },
+  {
+    "path": "/tmp/terralens-season-final-july.png",
+    "season": 0.5,
+    "seconds": 0.06863017499927082,
+    "sha256": "c209c81f12602f14b4dd2055e9950d5c624f2ccb8a753e2d0702230ddc33ae8c",
+    "reply": {
+      "Export": [
+        4,
+        4,
+        {
+          "Ok": {
+            "path": "/tmp/terralens-season-final-july.png",
+            "note": "64 \u00d7 64 \u00b7 Biomes",
+            "data": null
+          }
+        }
+      ]
+    },
+    "surface_probe": {
+      "point": {
+        "x": -2767.0,
+        "z": 4513.0
+      },
+      "biome": "tfg:earth/active_shield_volcano",
+      "ocean": false,
+      "surface_water": false,
+      "ground_block": "tfg:grass/mollisol",
+      "ground_y": 97,
+      "ground_saved": true,
+      "climate": {
+        "temperature": 17.311460494995117,
+        "rainfall": 207.32833862304688
+      },
+      "height": 97.0,
+      "forest": 3,
+      "rocks": [
+        "dacite",
+        "rhyolite",
+        "gabbro"
+      ],
+      "hotspot": 0.2641166925430298,
+      "hotspot_age": 1.0
+    }
+  },
+  {
+    "path": "/tmp/terralens-season-final-october.png",
+    "season": 0.8,
+    "seconds": 0.0048204110007645795,
+    "sha256": "5ca372dbd59306b419e674fc24ad79ae51d3d59c79d1d009136b90057cf29095",
+    "reply": {
+      "Export": [
+        5,
+        5,
+        {
+          "Ok": {
+            "path": "/tmp/terralens-season-final-october.png",
+            "note": "64 \u00d7 64 \u00b7 Biomes",
+            "data": null
+          }
+        }
+      ]
+    },
+    "surface_probe": {
+      "point": {
+        "x": -2767.0,
+        "z": 4513.0
+      },
+      "biome": "tfg:earth/active_shield_volcano",
+      "ocean": false,
+      "surface_water": false,
+      "ground_block": "tfg:grass/mollisol",
+      "ground_y": 97,
+      "ground_saved": true,
+      "climate": {
+        "temperature": 17.311460494995117,
+        "rainfall": 207.32833862304688
+      },
+      "height": 97.0,
+      "forest": 3,
+      "rocks": [
+        "dacite",
+        "rhyolite",
+        "gabbro"
+      ],
+      "hotspot": 0.2641166925430298,
+      "hotspot_age": 1.0
+    }
+  },
+  {
+    "path": "/tmp/terralens-season-final-average-reset.png",
+    "season": null,
+    "seconds": 0.0044346939994284185,
+    "sha256": "ad18d91f4855c9c3929f4bb9b8d081c4b8a399ee1b5a571d74024662a82e2a94",
+    "reply": {
+      "Export": [
+        6,
+        6,
+        {
+          "Ok": {
+            "path": "/tmp/terralens-season-final-average-reset.png",
+            "note": "64 \u00d7 64 \u00b7 Biomes",
+            "data": null
+          }
+        }
+      ]
+    },
+    "surface_probe": {
+      "point": {
+        "x": -2767.0,
+        "z": 4513.0
+      },
+      "biome": "tfg:earth/active_shield_volcano",
+      "ocean": false,
+      "surface_water": false,
+      "ground_block": "tfg:grass/mollisol",
+      "ground_y": 97,
+      "ground_saved": true,
+      "climate": {
+        "temperature": 17.311460494995117,
+        "rainfall": 207.32833862304688
+      },
+      "height": 97.0,
+      "forest": 3,
+      "rocks": [
+        "dacite",
+        "rhyolite",
+        "gabbro"
+      ],
+      "hotspot": 0.2641166925430298,
+      "hotspot_age": 1.0
+    }
+  }
+]

@@ -49,6 +49,7 @@ impl Bounds {
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub enum MarkerKind {
     Structure,
+    Volcano,
     Spawn,
     Player,
     Ore,
@@ -117,10 +118,10 @@ impl Marker {
     /// The map/search destination. Structure markers use their footprint center while
     /// `point()` retains the original saved start position for identity and provenance.
     pub fn map_point(&self) -> Point {
-        if self.kind == MarkerKind::Structure {
-            if let Some(bounds) = self.bounds {
-                return bounds.center();
-            }
+        if self.kind == MarkerKind::Structure
+            && let Some(bounds) = self.bounds
+        {
+            return bounds.center();
         }
         self.point()
     }
@@ -240,12 +241,51 @@ pub struct Probe {
     pub point: Point,
     pub biome: String,
     pub ocean: bool,
+    /// Visible surface fluid, independent of the biome's ocean classification.
+    #[serde(default)]
+    pub surface_water: bool,
+    /// Modeled top block of exposed volcanic lava; distinct from terrain-noise height.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub surface_lava: Option<i32>,
+    /// Top of an above-sea-level caldera or a saved water column.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub surface_water_y: Option<i32>,
+    /// Exposed solid magma, never classified as a fluid.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub surface_magma: Option<i32>,
+    /// Terrain substrate, independent of overlying foliage and decorative plants.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ground_block: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ground_y: Option<i32>,
+    #[serde(default)]
+    pub ground_saved: bool,
     pub climate: Climate,
     pub height: Option<f64>,
     pub forest: u8,
     pub rocks: [String; 3],
     pub hotspot: f64,
     pub hotspot_age: f64,
+}
+impl Probe {
+    pub fn is_water(&self) -> bool {
+        self.surface_lava.is_none()
+            && self.surface_magma.is_none()
+            && (self.ocean || self.surface_water)
+    }
+    pub fn is_fluid(&self) -> bool {
+        self.surface_lava.is_some() || self.is_water()
+    }
+    pub fn is_bare_surface(&self) -> bool {
+        self.is_fluid() || self.surface_magma.is_some()
+    }
+    pub fn volcanic_surface(&self) -> Option<crate::volcanic_lava::Surface> {
+        use crate::volcanic_lava::Surface;
+        self.surface_lava
+            .map(Surface::Lava)
+            .or_else(|| self.surface_magma.map(Surface::Magma))
+            .or_else(|| self.surface_water_y.map(Surface::Water))
+    }
 }
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct WorldInfo {

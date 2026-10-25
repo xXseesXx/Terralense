@@ -1,5 +1,6 @@
 //! Native accuracy gates. Saved observations are independent Minecraft data; the separate
-//! TypeScript snapshot checks conversion parity and is explicitly not a new native oracle.
+//! TypeScript snapshot checks conversion parity and is explicitly not a new native oracle. Its
+//! pre-volcano heights are stale after the direct TFG surface-model correction.
 use serde_json::Value;
 use terralens::{
     biome::ids,
@@ -177,7 +178,7 @@ fn three_seed_biome_climate_forest_conversion_matches_reference() {
 }
 
 #[test]
-fn three_seed_height_rocks_hotspots_match_reference() {
+fn three_seed_rocks_and_hotspots_match_reference() {
     let data = reference();
     let mut mismatches = Mismatches::default();
     let mut total = 0;
@@ -196,14 +197,7 @@ fn three_seed_height_rocks_hotspots_match_reference() {
                     ));
                 }
             }
-            if let Some(expected) = point["height"].as_f64() {
-                if actual.height != Some(expected) {
-                    mismatches.add(format!(
-                        "seed {world_seed} height ({x}, {z}): expected {expected}, actual {:?}",
-                        actual.height
-                    ));
-                }
-            } else if actual.height.is_some() {
+            if point["height"].is_null() && actual.height.is_some() {
                 mismatches.add(format!("seed {world_seed} height ({x}, {z}): reference unavailable, native fabricated {:?}", actual.height));
             }
             let expected_intensity = point["hotspot"]["intensity"].as_f64().unwrap();
@@ -217,10 +211,12 @@ fn three_seed_height_rocks_hotspots_match_reference() {
                     actual.hotspot_age
                 ));
             }
-            total += 6;
+            // Three rock bands, hotspot intensity and age. Stored height belongs to the old
+            // TypeScript model; TFG Java vectors and generated saved columns cover height.
+            total += 5;
         }
     }
-    mismatches.assert_empty("height/geology/hotspot conversion", total);
+    mismatches.assert_empty("geology/hotspot conversion", total);
 }
 
 #[test]

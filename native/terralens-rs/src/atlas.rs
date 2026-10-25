@@ -1,13 +1,19 @@
 //! Responsive native atlas. Generation and save scans run in a separate Rust process.
 //! The UI only schedules work, consumes bounded results and displays cached textures.
+mod composition;
 mod engine;
+mod sampling;
 mod streaming;
 mod surface;
 use streaming::{TileScheduler, TileTask};
 pub use surface::SurfaceSource;
 
 use crate::dimension::Dimension;
-use crate::{analysis, display::DisplayPrefs, exports};
+use crate::{
+    analysis,
+    display::{DisplayPrefs, LoadingFilter, MapDetail, TerrainDetailOptions},
+    exports,
+};
 use crate::{
     biome, features,
     model::{Bounds, Marker, MarkerKind, Point, Probe, Settings, StructureBounds, TreeEstimate},
@@ -21,7 +27,7 @@ use std::{
     collections::{HashMap, HashSet, VecDeque},
     path::PathBuf,
     sync::{
-        Arc,
+        Arc, Mutex, OnceLock,
         atomic::{AtomicU64, Ordering},
     },
     time::{Duration, Instant},
@@ -51,9 +57,10 @@ pub enum Layer {
     Geology,
     Forest,
     Hotspots,
+    Ground,
 }
 impl Layer {
-    pub const ALL: [Self; 8] = [
+    pub const ALL: [Self; 9] = [
         Self::Biomes,
         Self::Temperature,
         Self::Rainfall,
@@ -62,6 +69,7 @@ impl Layer {
         Self::Geology,
         Self::Forest,
         Self::Hotspots,
+        Self::Ground,
     ];
     pub fn label(self) -> &'static str {
         match self {
@@ -73,6 +81,7 @@ impl Layer {
             Self::Geology => "Geology",
             Self::Forest => "Forests",
             Self::Hotspots => "Hotspots",
+            Self::Ground => "Ground blocks",
         }
     }
 }
@@ -241,14 +250,9 @@ pub fn layer_scale(layer: Layer, palette: crate::display::Palette) -> Option<Lay
         ),
         _ => return None,
     };
-    if palette == crate::display::Palette::Colorblind {
-        match layer {
-            Layer::Temperature => {
-                min = -30.0;
-                max = 30.0;
-            }
-            _ => {}
-        }
+    if palette == crate::display::Palette::Colorblind && layer == Layer::Temperature {
+        min = -30.0;
+        max = 30.0;
     }
     Some(LayerScale {
         min,
@@ -275,6 +279,20 @@ struct Spec {
     dimension: Dimension,
     #[serde(default = "default_slice_y")]
     slice_y: i32,
+    #[serde(default)]
+    world_path: Option<PathBuf>,
+    #[serde(default)]
+    source_revision: u64,
+}
+impl Spec {
+    fn same_world(&self, other: &Self) -> bool {
+        self.seed == other.seed
+            && self.settings == other.settings
+            && self.dimension == other.dimension
+            && self.slice_y == other.slice_y
+            && self.world_path == other.world_path
+            && self.source_revision == other.source_revision
+    }
 }
 fn default_slice_y() -> i32 {
     96
@@ -287,6 +305,105 @@ struct TileKey {
     layer: Layer,
     detail: bool,
 }
+#[derive(Clone, Copy, Debug, Hash, PartialEq, Eq)]
+struct HeightGridKey {
+    seed: i64,
+    settings: [u64; 6],
+    dimension: Dimension,
+    slice_y: i32,
+    x: i32,
+    z: i32,
+    zoom: i32,
+    detail: bool,
+    source: u64,
+    sampling: u16,
+}
+impl HeightGridKey {
+    fn new(world: &World, tile: TileKey) -> Self {
+        let settings = &world.region.settings;
+        Self {
+            seed: world.seed,
+            settings: [
+                settings.temperature_scale.to_bits(),
+                settings.temperature_constant.to_bits(),
+                settings.rainfall_scale.to_bits(),
+                settings.rainfall_constant.to_bits(),
+                settings.continentalness.to_bits(),
+                settings.grass_density.to_bits(),
+            ],
+            dimension: world.dimension,
+            slice_y: world.slice_y,
+            x: tile.x,
+            z: tile.z,
+            zoom: tile.zoom,
+            detail: tile.detail,
+            source: world.surface_source_id(),
+            sampling: 0,
+        }
+    }
+
+    fn with_terrain(mut self, detail: &TerrainDetailOptions) -> Self {
+        self.sampling = [
+            detail.physical_surface,
+            detail.caves,
+            detail.rivers_lakes,
+            detail.volcanoes,
+            detail.springs,
+            detail.exposed_dikes,
+            detail.large_rocks_special_soils,
+            detail.precise_biome_boundaries,
+        ]
+        .into_iter()
+        .enumerate()
+        .fold(0, |bits, (i, on)| bits | ((on as u16) << i));
+        self
+    }
+
+    fn with_biomes(mut self, precise: bool) -> Self {
+        self.sampling = precise as u16;
+        self
+    }
+}
+type HeightGrid = Arc<Vec<Option<f64>>>;
+/// Completed immutable grids are shared across engine workers. Only cache lookup
+/// and publication hold this lock; terrain generation and cancellation never do.
+struct RasterCache<V> {
+    capacity: usize,
+    entries: OnceLock<Mutex<LruCache<HeightGridKey, V>>>,
+}
+impl<V> RasterCache<V> {
+    const fn new(capacity: usize) -> Self {
+        Self {
+            capacity,
+            entries: OnceLock::new(),
+        }
+    }
+    fn access<R>(&self, action: impl FnOnce(&mut LruCache<HeightGridKey, V>) -> R) -> R {
+        let entries = self.entries.get_or_init(|| {
+            Mutex::new(LruCache::new(
+                std::num::NonZeroUsize::new(self.capacity).unwrap(),
+            ))
+        });
+        action(
+            &mut entries
+                .lock()
+                .unwrap_or_else(std::sync::PoisonError::into_inner),
+        )
+    }
+}
+// Global limits replace four separate copies of every worker's caches. 32 full
+// height grids retain the previous four-worker budget while layers can reuse any
+// worker's result. Source identity and revision remain in every key.
+static HEIGHT_GRID_CACHE: RasterCache<HeightGrid> = RasterCache::new(32);
+// Share finished physical relief across worker threads and layer switches.
+// Material relief includes saved substrate/boulders; ordinary relief does not.
+static TERRAIN_RELIEF_CACHE: RasterCache<HeightGrid> = RasterCache::new(16);
+static MATERIAL_RELIEF_CACHE: RasterCache<HeightGrid> = RasterCache::new(16);
+
+static WATER_MASK_CACHE: RasterCache<Arc<Vec<bool>>> = RasterCache::new(96);
+static VOLCANIC_SURFACE_CACHE: RasterCache<Arc<Vec<Option<crate::volcanic_lava::Surface>>>> =
+    RasterCache::new(96);
+static BIOME_GRID_CACHE: RasterCache<Arc<Vec<u16>>> = RasterCache::new(96);
 impl TileKey {
     fn span(self) -> f64 {
         TILE_POINTS * 2f64.powi(self.zoom)
@@ -299,6 +416,20 @@ impl TileKey {
         }
     }
 }
+/// Keep close detail rasters at one stored sample per world block. Below one block per
+/// screen point, the atlas cannot reveal finer-than-block world data, so reusing the zoom-zero
+/// raster avoids repeated samples of the same block at fractional world coordinates.
+fn tile_zoom_for_bpp(bpp: f64) -> i32 {
+    if bpp <= 2.0 {
+        0
+    } else {
+        bpp.log2().round() as i32
+    }
+}
+
+fn tile_zoom_for_detail(bpp: f64, detail: MapDetail) -> i32 {
+    tile_zoom_for_bpp(bpp).max(detail.min_tile_zoom())
+}
 #[derive(serde::Serialize, serde::Deserialize)]
 struct CpuTile {
     key: TileKey,
@@ -307,11 +438,19 @@ struct CpuTile {
     pixels: Vec<Color32>,
     #[serde(skip)]
     biomes: Vec<u16>,
+    /// Surface water classification for the interior semantic raster. Kept separate
+    /// from biome IDs so flooded land remains identifiable in legends.
+    #[serde(skip)]
+    surface_water: Vec<bool>,
 }
 struct GpuTile {
     texture: TextureHandle,
+    /// egui updates sampler options with an image delta. Retain one gutter pixel
+    /// so changing the filter needs only an identical 1x1 upload, not a new map.
+    corner: Color32,
     resolution: usize,
     biomes: Vec<u16>,
+    surface_water: Vec<bool>,
 }
 #[derive(serde::Serialize, serde::Deserialize)]
 enum Job {
@@ -319,6 +458,7 @@ enum Job {
     Probe(Spec, Point, bool, u64),
     Trees(Spec, Vec<Point>, f64, u64),
     Features(Spec, FeatureTileKey, u64),
+    InspectStructure(Spec, Option<PathBuf>, Marker, u64),
     Surface(
         Spec,
         Option<PathBuf>,
@@ -338,6 +478,11 @@ enum Reply {
     Probe(u64, u64, Probe),
     Trees(u64, u64, TreeEstimate),
     Features(u64, u64, FeatureTileKey, Vec<Marker>, bool),
+    StructurePreview(
+        u64,
+        u64,
+        Result<crate::structure_preview::StructurePreview, String>,
+    ),
     Surface(
         u64,
         u64,
@@ -351,6 +496,25 @@ enum Reply {
     Analysis(u64, u64, Result<analysis::Report, String>),
     Locate(u64, u64, Result<analysis::LocationResults, String>),
     Export(u64, u64, Result<exports::Outcome, String>),
+}
+
+/// A structure instance retains its inspection across map pans, zoom and layer changes.
+#[derive(Clone, Debug, Hash, PartialEq, Eq)]
+struct PreviewKey {
+    id: String,
+    x: u64,
+    z: u64,
+    saved: bool,
+}
+impl PreviewKey {
+    fn new(marker: &Marker) -> Self {
+        Self {
+            id: marker.id.clone(),
+            x: marker.x.to_bits(),
+            z: marker.z.to_bits(),
+            saved: marker.confirmed,
+        }
+    }
 }
 
 struct RegionCache {
@@ -623,6 +787,8 @@ fn next_uncovered_feature_tile(
 struct MarkerIndex {
     cells: HashMap<(i64, i64), Vec<usize>>,
     structure_start_cells: HashMap<(i64, i64), Vec<usize>>,
+    structure_bounds_cells: HashMap<(i64, i64), Vec<usize>>,
+    oversized_structure_bounds: Vec<usize>,
 }
 
 impl MarkerIndex {
@@ -643,6 +809,35 @@ impl MarkerIndex {
                         .push(i);
                 }
             }
+            // The old footprint query did not depend on the saved structure-start
+            // coordinates when a complete bounding box was present.
+            if marker.kind == MarkerKind::Structure
+                && let Some(bounds) = marker.bounds
+            {
+                let (min_x, min_z) = Self::cell(Point {
+                    x: bounds.min_x as f64,
+                    z: bounds.min_z as f64,
+                });
+                let (max_x, max_z) = Self::cell(Point {
+                    x: bounds.max_x as f64 + 1.,
+                    z: bounds.max_z as f64 + 1.,
+                });
+                let columns = (max_x as i128 - min_x as i128 + 1).max(0) as u128;
+                let rows = (max_z as i128 - min_z as i128 + 1).max(0) as u128;
+                if columns.saturating_mul(rows) > 64 {
+                    index.oversized_structure_bounds.push(i);
+                } else {
+                    for x in min_x..=max_x {
+                        for z in min_z..=max_z {
+                            index
+                                .structure_bounds_cells
+                                .entry((x, z))
+                                .or_default()
+                                .push(i);
+                        }
+                    }
+                }
+            }
         }
         index
     }
@@ -658,18 +853,59 @@ impl MarkerIndex {
         let (cx, cz) = Self::cell(marker.point());
         for x in cx - 1..=cx + 1 {
             for z in cz - 1..=cz + 1 {
-                if let Some(indices) = self.structure_start_cells.get(&(x, z)) {
-                    if indices.iter().any(|&i| {
+                if let Some(indices) = self.structure_start_cells.get(&(x, z))
+                    && indices.iter().any(|&i| {
                         let saved = &markers[i];
                         saved.namespace == marker.namespace
                             && saved.point().distance(marker.point()) < 32.
-                    }) {
-                        return true;
-                    }
+                    })
+                {
+                    return true;
                 }
             }
         }
         false
+    }
+
+    fn structures_intersecting(&self, bounds: Bounds) -> Vec<usize> {
+        if bounds.min_x > bounds.max_x
+            || bounds.min_z > bounds.max_z
+            || !bounds.min_x.is_finite()
+            || !bounds.max_x.is_finite()
+            || !bounds.min_z.is_finite()
+            || !bounds.max_z.is_finite()
+        {
+            return Vec::new();
+        }
+        let (min_x, min_z) = Self::cell(Point {
+            x: bounds.min_x,
+            z: bounds.min_z,
+        });
+        let (max_x, max_z) = Self::cell(Point {
+            x: bounds.max_x,
+            z: bounds.max_z,
+        });
+        let columns = (max_x as i128 - min_x as i128 + 1).max(0) as u128;
+        let rows = (max_z as i128 - min_z as i128 + 1).max(0) as u128;
+        let mut indices = self.oversized_structure_bounds.clone();
+        if columns.saturating_mul(rows) <= 32_768 {
+            for x in min_x..=max_x {
+                for z in min_z..=max_z {
+                    if let Some(found) = self.structure_bounds_cells.get(&(x, z)) {
+                        indices.extend_from_slice(found);
+                    }
+                }
+            }
+        } else {
+            for (&(x, z), found) in &self.structure_bounds_cells {
+                if x >= min_x && x <= max_x && z >= min_z && z <= max_z {
+                    indices.extend_from_slice(found);
+                }
+            }
+        }
+        indices.sort_unstable();
+        indices.dedup();
+        indices
     }
 
     fn visible<'a>(
@@ -705,7 +941,7 @@ impl MarkerIndex {
                     let marker = &markers[i];
                     let shown = match &marker.kind {
                         MarkerKind::Ore => ores,
-                        MarkerKind::Structure => structures,
+                        MarkerKind::Structure | MarkerKind::Volcano => structures,
                         MarkerKind::Spawn | MarkerKind::Player => true,
                         _ => false,
                     };
@@ -725,7 +961,7 @@ impl MarkerIndex {
                 }
             }
         } else {
-            for (&(x, z), _) in &self.cells {
+            for &(x, z) in self.cells.keys() {
                 if x >= min_x && x <= max_x && z >= min_z && z <= max_z {
                     push_cell((x, z));
                 }
@@ -745,6 +981,11 @@ pub struct Atlas {
     engine_error: Option<String>,
     save_path: Option<PathBuf>,
     surface: surface::SurfaceView,
+    structure_previews:
+        LruCache<PreviewKey, Result<crate::structure_preview::StructurePreview, String>>,
+    preview_pending: Option<(PreviewKey, u64)>,
+    preview_serial: u64,
+    preview_revision: u64,
     #[cfg(test)]
     out: Sender<Reply>,
     replies: Receiver<Reply>,
@@ -753,12 +994,15 @@ pub struct Atlas {
     opened_source: Option<(u64, Result<crate::world_files::OpenedSource, String>)>,
     tiles: LruCache<TileKey, GpuTile>,
     pending: HashMap<TileKey, (u64, u64)>,
+    // Avoid rebuilding and serializing the identical plan on every egui frame.
+    last_tile_plan: Option<(u64, HashSet<TileKey>, Vec<(TileKey, u64)>)>,
     uploads: VecDeque<CpuTile>,
     markers: Vec<Marker>,
     predicted: Vec<Marker>,
     saved: Vec<Marker>,
     world_locations: Vec<crate::model::WorldLocation>,
     saved_index: MarkerIndex,
+    completed_structure_chunks: HashMap<(i32, i32), prism::ChunkCoverage>,
     marker_index: MarkerIndex,
     ores: bool,
     structures: bool,
@@ -771,10 +1015,13 @@ pub struct Atlas {
     feature_plan_key: Option<(u8, i64, i64, i64, i64, bool, bool)>,
     feature_serial: u64,
     feature_pending: bool,
+    feature_markers_dirty: bool,
     hover_point: Option<Point>,
     hover_requested: Option<Point>,
     hover_since: Instant,
     probe: Option<Probe>,
+    destination_probe: Option<Probe>,
+    destination_request: Option<(Point, u64)>,
     probe_serial: u64,
     trees: Option<TreeEstimate>,
     probe_height: bool,
@@ -847,6 +1094,8 @@ impl Atlas {
                 display: DisplayPrefs::default(),
                 dimension: Dimension::Overworld,
                 slice_y: default_slice_y(),
+                world_path: None,
+                source_revision: 0,
             },
             epoch,
             view,
@@ -856,18 +1105,24 @@ impl Atlas {
             engine_error: None,
             save_path: None,
             surface: surface::SurfaceView::default(),
+            structure_previews: LruCache::new(std::num::NonZeroUsize::new(16).unwrap()),
+            preview_pending: None,
+            preview_serial: 0,
+            preview_revision: 0,
             replies,
             discovered_worlds: None,
             open_source_pending: None,
             opened_source: None,
             tiles: LruCache::new(std::num::NonZeroUsize::new(TILE_CACHE).unwrap()),
             pending: HashMap::new(),
+            last_tile_plan: None,
             uploads: VecDeque::new(),
             markers: vec![],
             predicted: vec![],
             saved: vec![],
             world_locations: vec![],
             saved_index: MarkerIndex::default(),
+            completed_structure_chunks: HashMap::new(),
             marker_index: MarkerIndex::default(),
             ores: true,
             structures: true,
@@ -880,10 +1135,13 @@ impl Atlas {
             feature_plan_key: None,
             feature_serial: 0,
             feature_pending: false,
+            feature_markers_dirty: false,
             hover_point: None,
             hover_requested: None,
             hover_since: Instant::now(),
             probe: None,
+            destination_probe: None,
+            destination_request: None,
             probe_serial: 0,
             trees: None,
             probe_height: false,
@@ -960,6 +1218,11 @@ impl Atlas {
         save: Option<PathBuf>,
         preserve_saved: bool,
     ) {
+        self.preview_pending = None;
+        if !preserve_saved {
+            self.structure_previews.clear();
+            self.preview_revision = self.preview_revision.wrapping_add(1);
+        }
         self.surface.invalidate(true);
         self.surface
             .set_dimension(self.spec.dimension, self.spec.slice_y);
@@ -976,11 +1239,22 @@ impl Atlas {
             display: self.spec.display.clone(),
             dimension: self.spec.dimension,
             slice_y: self.spec.slice_y,
+            world_path: save.clone(),
+            source_revision: if preserve_saved {
+                self.spec.source_revision
+            } else {
+                self.spec.source_revision.wrapping_add(1)
+            },
         };
+        self.surface.set_season(
+            self.spec.display.simulated_season(),
+            self.spec.settings.temperature_scale,
+        );
         self.view.fetch_add(1, Ordering::Relaxed);
 
         self.tiles.clear();
         self.pending.clear();
+        self.last_tile_plan = None;
         self.uploads.clear();
         self.markers.clear();
         // A Beneath slice changes the terrain raster, not seed-derived placement positions.
@@ -989,6 +1263,7 @@ impl Atlas {
             self.predicted.clear();
             self.saved.clear();
             self.saved_index = MarkerIndex::default();
+            self.completed_structure_chunks.clear();
             self.scan_epoch = self.spec.epoch;
         }
         self.marker_index = MarkerIndex::default();
@@ -1003,6 +1278,8 @@ impl Atlas {
         self.feature_plan_key = None;
         self.feature_pending = false;
         self.probe = None;
+        self.destination_probe = None;
+        self.destination_request = None;
         self.hover_requested = None;
         self.trees = None;
         self.region_overlay = None;
@@ -1098,26 +1375,126 @@ impl Atlas {
     pub fn set_structure_inspection(&mut self, bounds: Option<StructureBounds>) {
         self.surface.set_structure_inspection(bounds);
     }
+    /// Queue one on-demand inspection in the engine. No filesystem reads or template
+    /// assembly happen on the event thread. The same instance is reused at every zoom.
+    pub fn inspect_structure(&mut self, marker: &Marker) {
+        self.poll();
+        if marker.kind != MarkerKind::Structure {
+            return;
+        }
+        let key = PreviewKey::new(marker);
+        if self.structure_previews.get(&key).is_some()
+            || self
+                .preview_pending
+                .as_ref()
+                .is_some_and(|(pending, _)| *pending == key)
+        {
+            return;
+        }
+        if let Some(error) = &self.engine_error {
+            self.structure_previews.put(key, Err(error.clone()));
+            return;
+        }
+        self.preview_serial = self.preview_serial.wrapping_add(1);
+        let path = self
+            .save_path
+            .as_deref()
+            .map(|p| self.spec.dimension.storage(p));
+        if self.engine.high(Job::InspectStructure(
+            self.spec.clone(),
+            path,
+            marker.clone(),
+            self.preview_serial,
+        )) {
+            self.preview_pending = Some((key, self.preview_serial));
+        }
+    }
+    pub fn structure_preview(
+        &self,
+        marker: &Marker,
+    ) -> Option<&crate::structure_preview::StructurePreview> {
+        self.structure_previews
+            .peek(&PreviewKey::new(marker))
+            .and_then(|r| r.as_ref().ok())
+    }
+    pub fn structure_preview_error(&self, marker: &Marker) -> Option<&str> {
+        self.structure_previews
+            .peek(&PreviewKey::new(marker))
+            .and_then(|r| r.as_ref().err())
+            .map(String::as_str)
+    }
+    pub fn structure_preview_pending(&self, marker: &Marker) -> bool {
+        self.preview_pending
+            .as_ref()
+            .is_some_and(|(key, _)| *key == PreviewKey::new(marker))
+    }
+    pub fn structure_preview_revision(&self) -> u64 {
+        self.preview_revision
+    }
+    pub fn reload_structure_preview(&mut self, marker: &Marker) {
+        let key = PreviewKey::new(marker);
+        self.structure_previews.pop(&key);
+        if self
+            .preview_pending
+            .as_ref()
+            .is_some_and(|(pending, _)| *pending == key)
+        {
+            self.preview_pending = None;
+        }
+        self.inspect_structure(marker);
+    }
     pub fn surface_probe(&mut self, point: Point) -> Option<&prism::SurfaceColumn> {
-        if !self.surface.visible_at(
-            self.view_key.is_some_and(|key| key.5 == Layer::Biomes),
-            self.bpp,
-        ) {
+        if !self.surface_visible(self.view_key.is_some_and(|key| key.5 == Layer::Biomes)) {
             return None;
         }
         self.surface.probe(point)
     }
     pub fn surface_source(&mut self, point: Point) -> Option<surface::SurfaceSource> {
-        if !self.surface.visible_at(
-            self.view_key.is_some_and(|key| key.5 == Layer::Biomes),
-            self.bpp,
-        ) {
+        if !self.surface_visible(self.view_key.is_some_and(|key| key.5 == Layer::Biomes)) {
             return None;
         }
         self.surface.source(point)
     }
     pub fn surface_status(&self) -> &str {
         self.surface.status()
+    }
+    fn surface_visible(&self, biomes: bool) -> bool {
+        let display = &self.spec.display;
+        let opaque_biomes = display.layer_stack.as_ref().is_none_or(|_| {
+            let layers = display.active_layers(Layer::Biomes, self.spec.dimension);
+            let mut visible = layers
+                .iter()
+                .filter(|blend| blend.opacity.is_finite() && blend.opacity > 0.);
+            matches!((visible.next(), visible.next()),
+                (Some(blend), None) if blend.layer == Layer::Biomes && blend.opacity >= 1.)
+        });
+        let earth = self.spec.dimension == Dimension::Overworld;
+        let terrain_style = self.spec.dimension != Dimension::Beneath
+            && ((display.height_shading && display.hillshade_strength > 0.)
+                || display.contours.is_active());
+        let highlights = !display.highlighted_biomes.is_empty()
+            || (earth
+                && (!display.highlighted_rocks.is_empty()
+                    || display.temperature_enabled
+                    || display.rainfall_enabled));
+        let grass = earth && display.grass_colors && display.grass_opacity > 0.;
+        let trees = earth && display.trees && display.tree_opacity > 0.;
+        self.spec.display.terrain.physical_surface
+            && self.spec.display.terrain.caves
+            && self.spec.display.terrain.rivers_lakes
+            && self.spec.display.terrain.volcanoes
+            && self.spec.display.terrain.springs
+            && self.spec.display.terrain.exposed_dikes
+            && self.spec.display.terrain.large_rocks_special_soils
+            && self.spec.display.terrain.precise_biome_boundaries
+            && self.spec.display.max_detail == MapDetail::Block
+            && opaque_biomes
+            && !grass
+            && !trees
+            && display.palette == crate::display::Palette::Natural
+            && !terrain_style
+            && !highlights
+            && self.surface.visible_at(biomes, self.bpp)
     }
     pub fn restart_engine(&mut self) {
         self.engine = engine::Client::new(&self.ctx);
@@ -1177,7 +1554,8 @@ impl Atlas {
             .marker_index
             .visible(&self.markers, bounds, ores, structures);
         if structures {
-            for marker in &self.markers {
+            for index in self.marker_index.structures_intersecting(bounds) {
+                let marker = &self.markers[index];
                 let point = marker.map_point();
                 if marker.kind != MarkerKind::Structure || bounds.contains(point.x, point.z) {
                     continue;
@@ -1197,8 +1575,70 @@ impl Atlas {
     pub fn saved_structures(&self) -> &[Marker] {
         &self.saved
     }
+    /// A completed chunk with intact start metadata is stronger evidence than a
+    /// placement candidate. Unknown and incomplete chunks never supply a veto.
+    pub fn structure_candidate_absent(&self, marker: &Marker) -> bool {
+        if marker.kind != MarkerKind::Structure
+            || marker.confirmed
+            || !marker.x.is_finite()
+            || !marker.z.is_finite()
+        {
+            return false;
+        }
+        let cx = (marker.x.floor() as i32).div_euclid(16);
+        let cz = (marker.z.floor() as i32).div_euclid(16);
+        self.completed_structure_chunks
+            .get(&(cx.div_euclid(32), cz.div_euclid(32)))
+            .is_some_and(|coverage| coverage.contains(cx, cz))
+    }
     pub fn probe(&self) -> Option<&Probe> {
         self.probe.as_ref()
+    }
+    /// Actions need the destination block, not the nearby probe tolerated by
+    /// hover display at distant zoom levels. This never samples on the UI thread.
+    pub fn probe_at(&self, point: Point) -> Option<&Probe> {
+        self.destination_probe
+            .as_ref()
+            .filter(|probe| {
+                point.x.is_finite()
+                    && point.z.is_finite()
+                    && probe.point.x.floor() == point.x.floor()
+                    && probe.point.z.floor() == point.z.floor()
+            })
+            .or_else(|| {
+                self.probe.as_ref().filter(|probe| {
+                    point.x.is_finite()
+                        && point.z.is_finite()
+                        && probe.point.x.floor() == point.x.floor()
+                        && probe.point.z.floor() == point.z.floor()
+                })
+            })
+    }
+    /// Resolve a context-menu destination in the engine, even while the pointer
+    /// moves off the map. Planetary copies also need height with its tooltip off.
+    pub fn request_destination_probe(&mut self, point: Point) {
+        if !point.x.is_finite() || !point.z.is_finite() || self.engine_error.is_some() {
+            return;
+        }
+        if self.probe_at(point).is_some_and(|probe| {
+            probe.height.is_some()
+                || probe.ground_y.is_some()
+                || probe.surface_water_y.is_some()
+                || probe.surface_lava.is_some()
+        }) || self.destination_request.is_some_and(|(pending, _)| {
+            pending.x.floor() == point.x.floor() && pending.z.floor() == point.z.floor()
+        }) {
+            return;
+        }
+        self.probe_serial = self.probe_serial.wrapping_add(1);
+        if self.engine.high(Job::Probe(
+            self.spec.clone(),
+            point,
+            true,
+            self.probe_serial,
+        )) {
+            self.destination_request = Some((point, self.probe_serial));
+        }
     }
     pub fn tree_estimate(&self) -> Option<&TreeEstimate> {
         self.trees.as_ref()
@@ -1239,7 +1679,7 @@ impl Atlas {
         if due {
             let bounds = self.bounds;
             let dimension = self.spec.dimension;
-            let zoom = self.bpp.log2().round() as i32;
+            let zoom = tile_zoom_for_detail(self.bpp, self.spec.display.max_detail);
             let mut counts = HashMap::<u16, u32>::new();
             let sampled = SIDE * SIDE;
             let mut loaded = 0usize;
@@ -1361,10 +1801,33 @@ impl Atlas {
         self.task_busy
     }
     pub fn set_display_options(&mut self, prefs: &DisplayPrefs) {
+        self.surface.set_season(
+            prefs.simulated_season(),
+            self.spec.settings.temperature_scale,
+        );
         if self.spec.display.same_raster(prefs) {
+            if self.spec.display.loading_filter != prefs.loading_filter {
+                for (key, tile) in self.tiles.iter_mut() {
+                    tile.texture.set_partial(
+                        [0, 0],
+                        ColorImage::new([1, 1], vec![tile.corner]),
+                        tile_texture_options(*key, prefs.loading_filter),
+                    );
+                }
+            }
+            if self.spec.display.max_detail != prefs.max_detail {
+                self.view_key = None;
+                self.legend_signature = None;
+                self.region_cache = None;
+                self.region_overlay = None;
+            }
             self.spec.display = prefs.clone();
+            self.ctx.request_repaint();
             return;
         }
+        let mut previous_without_calendar = self.spec.display.clone();
+        previous_without_calendar.season = prefs.season;
+        let calendar_only = previous_without_calendar == *prefs;
         let pending_search = self.search_pending.then(|| self.search.clone()).flatten();
         self.cancel_tasks();
         self.spec.display = prefs.clone();
@@ -1373,16 +1836,18 @@ impl Atlas {
         self.view.fetch_add(1, Ordering::Relaxed);
         self.tiles.clear();
         self.pending.clear();
+        self.last_tile_plan = None;
         self.uploads.clear();
         self.view_key = None;
-        self.feature_tiles.clear();
-        self.feature_splits.clear();
-        self.feature_truncated.clear();
-        self.feature_lru.clear();
-        self.feature_visible_keys.clear();
+        // Complete feature scans depend on the world, not raster/style detail.
+        // Pending jobs are canceled by epoch; completed structure/ore tiles stay reusable.
         self.feature_plan_key = None;
         self.feature_pending = false;
-        self.probe = None;
+        if !calendar_only {
+            self.probe = None;
+            self.destination_probe = None;
+        }
+        self.destination_request = None;
         self.trees = None;
         self.tree_serial = self.tree_serial.wrapping_add(1);
         self.probe_serial = self.probe_serial.wrapping_add(1);
@@ -1413,10 +1878,8 @@ impl Atlas {
         self.pending.keys().any(|key| self.tile_visible(*key))
             || self.uploads.iter().any(|tile| self.tile_visible(tile.key))
             || self.feature_pending
-            || self.surface.visible_at(
-                self.view_key.is_some_and(|key| key.5 == Layer::Biomes),
-                self.bpp,
-            ) && self.surface.is_pending()
+            || self.surface_visible(self.view_key.is_some_and(|key| key.5 == Layer::Biomes))
+                && self.surface.is_pending()
             || self.loading_scan
             || self.search_pending
     }
@@ -1426,7 +1889,7 @@ impl Atlas {
         let Some((_, _, _, _, _, layer)) = self.view_key else {
             return TileStreamProgress::default();
         };
-        let zoom = self.bpp.log2().round() as i32;
+        let zoom = tile_zoom_for_detail(self.bpp, self.spec.display.max_detail);
         let span = TILE_POINTS * 2f64.powi(zoom);
         let min_x = (self.bounds.min_x / span).floor() as i32;
         let max_x = (self.bounds.max_x / span).floor() as i32;
@@ -1495,7 +1958,7 @@ impl Atlas {
                 return true;
             }
         }
-        if depth >= 2 {
+        if depth >= 2 || key.zoom <= self.spec.display.max_detail.min_tile_zoom() {
             return false;
         }
         let child_zoom = key.zoom - 1;
@@ -1522,7 +1985,12 @@ impl Atlas {
         let Some(view) = self.view_key else {
             return false;
         };
-        tile_intersects_view(key, self.bounds, self.bpp.log2().round() as i32, view.5)
+        tile_intersects_view(
+            key,
+            self.bounds,
+            tile_zoom_for_detail(self.bpp, self.spec.display.max_detail),
+            view.5,
+        )
     }
     pub fn hover(&mut self, point: Option<Point>, regions: bool) {
         self.regions = regions;
@@ -1628,6 +2096,7 @@ impl Atlas {
                 m.kind != MarkerKind::Structure
                     || !self.saved_index.has_structure_near(&self.saved, m)
             })
+            .filter(|m| !self.structure_candidate_absent(m))
             .cloned()
             .collect();
         let locations = self
@@ -1684,14 +2153,25 @@ impl Atlas {
         for m in &self.predicted {
             let visible = match m.kind {
                 MarkerKind::Ore => self.ores && query_matches(m, &self.ore_filter.to_lowercase()),
-                MarkerKind::Structure => self.structures,
+                MarkerKind::Structure | MarkerKind::Volcano => self.structures,
                 _ => false,
             };
             if visible
+                && !self.structure_candidate_absent(m)
                 && !(m.kind == MarkerKind::Structure
                     && self.saved_index.has_structure_near(&self.saved, m))
             {
                 self.markers.push(m.clone());
+            }
+        }
+        for marker in &mut self.markers {
+            if marker.kind == MarkerKind::Structure
+                && marker.bounds.is_none()
+                && let Some(Ok(preview)) = self.structure_previews.peek(&PreviewKey::new(marker))
+                && preview.complete
+                && preview.source != crate::structure_preview::PreviewSource::TemplateLayout
+            {
+                marker.bounds = preview.bounds;
             }
         }
         self.marker_index = MarkerIndex::build(&self.markers);
@@ -1713,6 +2193,7 @@ impl Atlas {
         self.predicted = markers;
         self.feature_limited = incomplete;
         self.rebuild_markers();
+        self.feature_markers_dirty = false;
     }
 
     fn feature_key_is_visible(&self, key: FeatureTileKey) -> bool {
@@ -1781,7 +2262,9 @@ impl Atlas {
                 offscreen -= 1;
             }
         }
-        self.refresh_visible_features();
+        // A poll can drain several feature replies at once. Defer the expensive
+        // all-cache merge and marker-index rebuild until that batch is accepted.
+        self.feature_markers_dirty = true;
     }
 
     fn update_feature_stream(&mut self, settled: bool, coarse_ready: bool) {
@@ -1861,8 +2344,9 @@ impl Atlas {
             max_x: center.x + half_w,
             max_z: center.z + half_h,
         };
-        // Nearest LOD keeps tile size near 256 screen points without oversampling 2x.
-        let zoom = self.bpp.log2().round() as i32;
+        // Close detail tiles keep one texel per world block through two screen points per
+        // block. Farther out, nearest LOD keeps tile size near 256 screen points.
+        let zoom = tile_zoom_for_detail(self.bpp, self.spec.display.max_detail);
         let span = TILE_POINTS * 2f64.powi(zoom);
         let key = (
             (self.bpp.log2() * 1_000_000.).round() as i32,
@@ -1936,7 +2420,7 @@ impl Atlas {
                 ));
             }
         }
-        if layer == Layer::Biomes && self.bpp <= 2.0 {
+        if self.surface_visible(layer == Layer::Biomes) {
             self.surface.paint(ui, rect, self.bounds, self.bpp);
             if self.engine_error.is_none()
                 && let Some((path, chunks, serial, structure_bounds)) =
@@ -2045,7 +2529,7 @@ impl Atlas {
                 "  ·  locating visible features"
             });
         }
-        if self.surface.visible_at(layer == Layer::Biomes, self.bpp) {
+        if self.surface_visible(layer == Layer::Biomes) {
             if !self.status.is_empty() {
                 self.status.push_str("  ·  ");
             }
@@ -2057,31 +2541,46 @@ impl Atlas {
             ui.ctx().request_repaint_after(Duration::from_millis(100));
         }
     }
-    fn schedule_tiles(&mut self, wanted: HashSet<TileKey>, requested: Vec<TileKey>) {
+    fn schedule_tiles(&mut self, wanted: HashSet<TileKey>, requested: Vec<TileKey>) -> bool {
         let epoch = self.spec.epoch;
         let revision = self.view.load(Ordering::Relaxed);
         self.pending
             .retain(|key, (e, _)| *e == epoch && wanted.contains(key));
-        let mut tasks = Vec::new();
+        let mut task_keys = Vec::with_capacity(requested.len());
         for key in requested {
             if self.uploads.iter().any(|t| t.key == key) {
                 continue;
             }
             let pair = *self.pending.entry(key).or_insert((epoch, revision));
-            tasks.push(TileTask {
-                spec: self.spec.clone(),
-                key,
-                revision: pair.1,
-            });
+            task_keys.push((key, pair.1));
         }
         if self.engine_error.is_none() {
+            if self
+                .last_tile_plan
+                .as_ref()
+                .is_some_and(|last| last.0 == epoch && last.1 == wanted && last.2 == task_keys)
+            {
+                return false;
+            }
+            let tasks = task_keys
+                .iter()
+                .map(|&(key, revision)| TileTask {
+                    spec: self.spec.clone(),
+                    key,
+                    revision,
+                })
+                .collect();
+            self.last_tile_plan = Some((epoch, wanted.clone(), task_keys));
             self.engine.plan(epoch, wanted, tasks);
+            true
         } else {
             self.pending.clear();
+            self.last_tile_plan = None;
+            false
         }
     }
     fn request_probe(&mut self) {
-        if self.engine_error.is_some() {
+        if self.engine_error.is_some() || self.destination_request.is_some() {
             return;
         }
         let Some(p) = self.hover_point else {
@@ -2114,13 +2613,31 @@ impl Atlas {
                         // Tile content is independent of the viewport that requested it.
                         self.pending.remove(&tile.key);
                         self.uploads.push_back(tile);
+                        // The upload queue is capped below; an accepted tile can be
+                        // discarded there when a burst exceeds capacity. Reopening the
+                        // plan lets any tile still missing from the GPU cache be retried.
+                        self.last_tile_plan = None;
                     }
                 }
                 Reply::Skipped(epoch, revision, key) => {
                     self.engine.complete(epoch, key);
                     remove_pending_if_current(&mut self.pending, key, epoch, revision);
+                    // The queue may have discarded this active job's replacement
+                    // while its old revision was still running. Force the unchanged
+                    // viewport to publish that tile again on its next schedule pass.
+                    if epoch == self.spec.epoch {
+                        self.last_tile_plan = None;
+                    }
                 }
                 Reply::Probe(epoch, serial, probe) => {
+                    if epoch == self.spec.epoch
+                        && self
+                            .destination_request
+                            .is_some_and(|(_, pending)| pending == serial)
+                    {
+                        self.destination_probe = Some(probe.clone());
+                        self.destination_request = None;
+                    }
                     if epoch == self.spec.epoch
                         && serial == self.probe_serial
                         && self
@@ -2144,6 +2661,19 @@ impl Atlas {
                 Reply::Surface(epoch, serial, chunks) => {
                     if epoch == self.spec.epoch {
                         self.surface.receive(serial, chunks);
+                    }
+                }
+                Reply::StructurePreview(epoch, serial, result) => {
+                    if epoch == self.spec.epoch
+                        && self
+                            .preview_pending
+                            .as_ref()
+                            .is_some_and(|(_, current)| *current == serial)
+                        && let Some((key, _)) = self.preview_pending.take()
+                    {
+                        self.structure_previews.put(key, result);
+                        self.preview_revision = self.preview_revision.wrapping_add(1);
+                        self.rebuild_markers();
                     }
                 }
                 Reply::Search(epoch, serial, markers, truncated, note) => {
@@ -2201,6 +2731,9 @@ impl Atlas {
                 Reply::EngineError(error) => {
                     self.surface.invalidate(false);
                     self.engine_error = Some(error.clone());
+                    if let Some((key, _)) = self.preview_pending.take() {
+                        self.structure_previews.put(key, Err(error.clone()));
+                    }
                     self.discovered_worlds
                         .get_or_insert_with(|| Err(error.clone()));
                     self.pending.clear();
@@ -2228,6 +2761,13 @@ impl Atlas {
                                     }
                                 );
                                 self.saved = scan.markers;
+                                self.completed_structure_chunks = scan
+                                    .completed
+                                    .into_iter()
+                                    .map(|coverage| {
+                                        ((coverage.region_x, coverage.region_z), coverage)
+                                    })
+                                    .collect();
                                 self.saved_index = MarkerIndex::build(&self.saved);
                                 self.rebuild_markers();
                                 self.update_search(false);
@@ -2240,6 +2780,9 @@ impl Atlas {
             if delivery_start.elapsed() >= Duration::from_millis(2) {
                 break;
             }
+        }
+        if self.feature_markers_dirty {
+            self.refresh_visible_features();
         }
         // New visible coverage uploads before completed offscreen cache work.
         let center = self.center;
@@ -2277,11 +2820,12 @@ impl Atlas {
                 continue;
             }
             let side = tile.resolution + 2;
+            let corner = tile.pixels[0];
             let image = ColorImage::new([side, side], tile.pixels);
             let texture = self.ctx.load_texture(
                 format!("tile-{:?}", tile.key),
                 image,
-                TextureOptions::LINEAR,
+                tile_texture_options(tile.key, self.spec.display.loading_filter),
             );
             if tile.key.detail {
                 self.tiles.pop(&TileKey {
@@ -2293,8 +2837,10 @@ impl Atlas {
                 tile.key,
                 GpuTile {
                     texture,
+                    corner,
                     resolution: tile.resolution,
                     biomes: tile.biomes,
+                    surface_water: tile.surface_water,
                 },
             );
             self.tile_revision = self.tile_revision.wrapping_add(1);
@@ -2314,6 +2860,9 @@ impl Atlas {
     fn paint_children(&mut self, ui: &Ui, clip: Rect, key: TileKey) {
         let painter = ui.painter().with_clip_rect(clip);
         for level in 1..=2 {
+            if key.zoom - level < self.spec.display.max_detail.min_tile_zoom() {
+                break;
+            }
             let count = 1 << level;
             for z in 0..count {
                 for x in 0..count {
@@ -2383,6 +2932,12 @@ impl Atlas {
         }
     }
     fn biome_at_cached(&self, p: Point, zoom: i32, layer: Layer) -> Option<u16> {
+        self.semantic_sample_at_cached(p, zoom, layer)
+            .map(|sample| sample.0)
+    }
+    /// Returns original biome ID and visible surface-water classification from the
+    /// same tile/fallback that supplies the current semantic pixels.
+    fn semantic_sample_at_cached(&self, p: Point, zoom: i32, layer: Layer) -> Option<(u16, bool)> {
         let key_at = |zoom| {
             let span = TILE_POINTS * 2f64.powi(zoom);
             TileKey {
@@ -2403,36 +2958,40 @@ impl Atlas {
             let iz = ((p.z - origin.z) / span * tile.resolution as f64)
                 .floor()
                 .clamp(0., (tile.resolution - 1) as f64) as usize;
-            tile.biomes.get(iz * tile.resolution + ix).copied()
+            let index = iz * tile.resolution + ix;
+            Some((*tile.biomes.get(index)?, *tile.surface_water.get(index)?))
         };
         let exact = key_at(zoom);
-        if let Some(id) = value(
+        if let Some(sample) = value(
             TileKey {
                 detail: true,
                 ..exact
             },
             &self.tiles,
         ) {
-            return Some(id);
+            return Some(sample);
         }
         // `paint_children` overlays up to two finer zooms over the coarse tile.
-        for level in 1..=2 {
+        for level in (1..=2).rev() {
+            if zoom - level < self.spec.display.max_detail.min_tile_zoom() {
+                continue;
+            }
             let key = key_at(zoom - level);
             for detail in [true, false] {
-                if let Some(id) = value(TileKey { detail, ..key }, &self.tiles) {
-                    return Some(id);
+                if let Some(sample) = value(TileKey { detail, ..key }, &self.tiles) {
+                    return Some(sample);
                 }
             }
         }
-        if let Some(id) = value(exact, &self.tiles) {
-            return Some(id);
+        if let Some(sample) = value(exact, &self.tiles) {
+            return Some(sample);
         }
         // `paint_parent` uses the nearest available parent through eight zoom levels.
         for level in 1..=8 {
             let key = key_at(zoom + level);
             for detail in [true, false] {
-                if let Some(id) = value(TileKey { detail, ..key }, &self.tiles) {
-                    return Some(id);
+                if let Some(sample) = value(TileKey { detail, ..key }, &self.tiles) {
+                    return Some(sample);
                 }
             }
         }
@@ -2449,8 +3008,8 @@ impl Atlas {
         if cols == 0 || rows == 0 {
             return;
         }
-        let px = ((p.x - self.bounds.min_x) / self.bpp / cell as f64).floor() as i32;
-        let pz = ((p.z - self.bounds.min_z) / self.bpp / cell as f64).floor() as i32;
+        let px = ((p.x - self.bounds.min_x) / self.bpp / cell).floor() as i32;
+        let pz = ((p.z - self.bounds.min_z) / self.bpp / cell).floor() as i32;
         let continent = self.spec.dimension == Dimension::Overworld && self.bpp >= 32.;
         if px < 0 || pz < 0 || px >= cols as i32 || pz >= rows as i32 {
             self.selection_summary = None;
@@ -2465,14 +3024,16 @@ impl Atlas {
             let mut values = vec![None; cols * rows];
             for z in 0..rows {
                 for x in 0..cols {
-                    values[z * cols + x] = self.biome_at_cached(
-                        Point {
-                            x: self.bounds.min_x + (x as f64 + 0.5) * cell as f64 * self.bpp,
-                            z: self.bounds.min_z + (z as f64 + 0.5) * cell as f64 * self.bpp,
-                        },
-                        zoom,
-                        layer,
-                    );
+                    values[z * cols + x] = self
+                        .semantic_sample_at_cached(
+                            Point {
+                                x: self.bounds.min_x + (x as f64 + 0.5) * cell * self.bpp,
+                                z: self.bounds.min_z + (z as f64 + 0.5) * cell * self.bpp,
+                            },
+                            zoom,
+                            layer,
+                        )
+                        .and_then(region_biome_value);
                 }
             }
             let (biome_labels, biome_sizes, biome_edges) =
@@ -2660,6 +3221,12 @@ fn semantic_cache_valid(
     cache.revision == revision && cache.view == view && cache.cols == cols && cache.rows == rows
 }
 
+/// Preserve the source biome for legends, but omit every surface-water sample from
+/// connected-region topology. Flooded land otherwise creates false continent bridges.
+fn region_biome_value(sample: (u16, bool)) -> Option<u16> {
+    (!sample.1).then_some(sample.0)
+}
+
 fn region_grid(width: f32, height: f32) -> (f64, usize, usize) {
     let width = width.max(1.) as f64;
     let height = height.max(1.) as f64;
@@ -2767,11 +3334,43 @@ fn component_labels(
     (labels, sizes, edges)
 }
 
+#[cfg(test)]
 fn sample_layer(w: &World, x: i32, z: i32, id: u16, layer: Layer) -> Probe {
+    sample_layer_with_water(
+        w,
+        x,
+        z,
+        id,
+        layer,
+        None,
+        None,
+        None,
+        true,
+        &TerrainDetailOptions::full(),
+    )
+}
+
+fn sample_layer_with_water(
+    w: &World,
+    x: i32,
+    z: i32,
+    id: u16,
+    layer: Layer,
+    water: Option<bool>,
+    volcanic_surface: Option<Option<crate::volcanic_lava::Surface>>,
+    terrain: Option<Option<f64>>,
+    use_saved_ground: bool,
+    options: &TerrainDetailOptions,
+) -> Probe {
     if w.dimension != Dimension::Overworld {
-        return w.sample(x, z, layer == Layer::Height);
+        let mut sample = w.sample(x, z, layer == Layer::Height);
+        sample.biome = map_biome_name(w.dimension, id).to_owned();
+        return sample;
     }
-    let ocean = biome::is_ocean(id);
+    // Terrain generation uses the stored quart source. Fuzzy display boundaries
+    // must not move water onto a dry block or change generation conditions.
+    let source_id = w.biome_id(x, z);
+    let ocean = biome::is_ocean(source_id);
     let mut p = Probe {
         point: Point {
             x: x as f64,
@@ -2781,13 +3380,104 @@ fn sample_layer(w: &World, x: i32, z: i32, id: u16, layer: Layer) -> Probe {
         ocean,
         ..Probe::default()
     };
-    if ocean {
+    if layer == Layer::Ground {
+        p.climate = w.region.climate(x, z);
+        crate::ground_view::populate_at_scale_with_options(
+            w,
+            x,
+            z,
+            &mut p,
+            use_saved_ground,
+            use_saved_ground,
+            options,
+        );
+        if p.ground_saved {
+            return p;
+        }
+    }
+    let surface = volcanic_surface.unwrap_or_else(|| {
+        if options.volcanoes || options.springs {
+            w.volcanic_surface_with_options(x, z, options)
+        } else {
+            None
+        }
+    });
+    match surface {
+        Some(crate::volcanic_lava::Surface::Lava(y)) => p.surface_lava = Some(y),
+        Some(crate::volcanic_lava::Surface::Magma(y)) => p.surface_magma = Some(y),
+        Some(crate::volcanic_lava::Surface::Water(y)) => {
+            p.surface_water = true;
+            p.surface_water_y = Some(y);
+        }
+        None => {}
+    }
+    let terrain_height = if layer == Layer::Height
+        || options.rivers_lakes && water.is_none() && !ocean && surface.is_none()
+    {
+        terrain.unwrap_or_else(|| w.height(x, z))
+    } else {
+        None
+    };
+    p.surface_water = p.surface_lava.is_none()
+        && p.surface_magma.is_none()
+        && (p.surface_water_y.is_some()
+            || ocean
+            || water.unwrap_or_else(|| {
+                if options.rivers_lakes {
+                    crate::surface_water::is_surface_water(source_id, terrain_height)
+                } else {
+                    crate::surface_water::is_inland_water_biome(source_id)
+                }
+            }));
+    if layer == Layer::Height {
+        p.height = terrain_height;
+    }
+    if use_saved_ground && options.physical_surface && options.caves && surface.is_none() {
+        if water.is_none() || layer == Layer::Height {
+            crate::caves::populate_with_options(w, x, z, &mut p, options);
+        } else if !p.surface_water {
+            // A shared local mask already contains the physical fluid test.
+            p.ocean = false;
+        }
+    }
+
+    // River/lake biome borders may cross dry terrain. At close zoom saved ground
+    // also preserves actual elevated water, rather than inferring it from a label.
+    if options.rivers_lakes
+        && (crate::surface_water::is_inland_water_biome(source_id)
+            || crate::surface_water::is_inland_water_biome(id))
+        && (matches!(layer, Layer::Biomes | Layer::Ground)
+            || use_saved_ground && w.surface_source_id() != 0)
+    {
+        if layer == Layer::Biomes && p.biome.ends_with("lake") {
+            if use_saved_ground {
+                crate::ground_view::populate_saved(w, x, z, &mut p);
+            }
+        } else {
+            crate::ground_view::populate_at_scale_with_options(
+                w,
+                x,
+                z,
+                &mut p,
+                use_saved_ground,
+                use_saved_ground,
+                options,
+            );
+        }
+        if !p.is_bare_surface()
+            && p.ground_block.is_some()
+            && matches!(layer, Layer::Biomes | Layer::Ground)
+        {
+            p.climate = w.region.climate(x, z);
+        }
+    }
+    if p.is_bare_surface() {
         return p;
     }
     match layer {
-        Layer::Biomes | Layer::Water => {}
+        Layer::Biomes | Layer::Water | Layer::Ground => {}
         Layer::Temperature | Layer::Rainfall => p.climate = w.region.climate(x, z),
-        Layer::Height => p.height = w.height(x, z),
+        Layer::Height => {}
         Layer::Geology => p.rocks = crate::geology::rock_stack(w.region.rock_point_at(x, z)),
         Layer::Forest => p.forest = w.region.forest_type(x >> 4, z >> 4),
         Layer::Hotspots => {
@@ -2799,25 +3489,117 @@ fn sample_layer(w: &World, x: i32, z: i32, id: u16, layer: Layer) -> Probe {
     p
 }
 
-fn sample_probe(w: &World, x: i32, z: i32, height: bool) -> Probe {
-    let id = w.biome_id(x, z);
-    if biome::is_ocean(id) {
-        return Probe {
-            point: Point {
-                x: x as f64,
-                z: z as f64,
-            },
-            biome: biome::biome_name(id).to_owned(),
-            ocean: true,
-            ..Probe::default()
-        };
+fn map_biome_name(dimension: Dimension, id: u16) -> &'static str {
+    match dimension {
+        Dimension::Beneath => crate::beneath::biome_name(id),
+        Dimension::Moon | Dimension::Mars => crate::planetary::biome_name(id),
+        Dimension::Overworld => biome::biome_name(id),
     }
-    w.sample(x, z, height)
+}
+
+/// Sample the displayed biome at the visible surface, or the selected Beneath
+/// band. Keep this separate from World::biome_id, which drives world generation.
+fn map_biome_id(w: &World, x: i32, z: i32) -> u16 {
+    map_biome_id_with_height(w, x, z, None)
+}
+
+fn map_biome_id_with_height(w: &World, x: i32, z: i32, terrain: Option<Option<f64>>) -> u16 {
+    if w.dimension == Dimension::Overworld {
+        // A Y-independent source has only four distinct surrounding biomes. In
+        // uniform interiors every fuzzy corner agrees, so avoid height/noise
+        // sampling there (especially on large, unshaded ocean tiles).
+        let (qx, qz) = (x.wrapping_sub(2) >> 2, z.wrapping_sub(2) >> 2);
+        let id = w.earth_biome_at_quart(qx, qz);
+        if [(qx + 1, qz), (qx, qz + 1), (qx + 1, qz + 1)]
+            .into_iter()
+            .all(|(sx, sz)| w.earth_biome_at_quart(sx, sz) == id)
+        {
+            return id;
+        }
+    }
+    let y = if w.dimension == Dimension::Beneath {
+        w.dimension.band(w.slice_y).0 + 8
+    } else {
+        let height = terrain.unwrap_or_else(|| w.height(x, z)).unwrap_or(63.0);
+        if w.dimension == Dimension::Overworld {
+            (height.trunc() as i32 + 1).max(crate::surface_water::SEA_SURFACE_BLOCK_Y)
+        } else {
+            height.floor() as i32
+        }
+    };
+    w.block_biome_id(x, y, z)
+}
+
+fn surface_climate(world: &World, chunk_x: i32, chunk_z: i32) -> Vec<[f32; 2]> {
+    if world.dimension != Dimension::Overworld {
+        return Vec::new();
+    }
+    (0..256)
+        .map(|index| {
+            let x = chunk_x.wrapping_mul(16).wrapping_add(index % 16);
+            let z = chunk_z.wrapping_mul(16).wrapping_add(index / 16);
+            let climate = world.region.climate(x, z);
+            [climate.temperature as f32, climate.rainfall as f32]
+        })
+        .collect()
+}
+
+fn sample_probe(w: &World, x: i32, z: i32, height: bool) -> Probe {
+    let mut sample = w.sample(x, z, height);
+    sample.biome = map_biome_name(w.dimension, map_biome_id(w, x, z)).to_owned();
+    if w.dimension == Dimension::Overworld {
+        crate::caves::populate(w, x, z, &mut sample);
+        crate::ground_view::populate(w, x, z, &mut sample, true);
+    }
+    sample
+}
+
+fn sample_probe_with_display(
+    w: &World,
+    x: i32,
+    z: i32,
+    height: bool,
+    display: &DisplayPrefs,
+) -> Probe {
+    // Explicit elevation/ground tooltips and teleport copies request actual
+    // terrain. A basic hover must not restart cave and decoration generation.
+    if height
+        || display.terrain != TerrainDetailOptions::fast()
+        || w.dimension != Dimension::Overworld
+    {
+        return sample_probe(w, x, z, height);
+    }
+    let id = w.biome_id(x, z);
+    let (hotspot, age) = w.region.hotspot_at(x, z);
+    Probe {
+        point: Point {
+            x: x as f64,
+            z: z as f64,
+        },
+        biome: biome::biome_name(id).to_owned(),
+        ocean: biome::is_ocean(id),
+        surface_water: biome::is_ocean(id) || crate::surface_water::is_inland_water_biome(id),
+        climate: w.climate(x, z),
+        rocks: crate::geology::rock_stack(w.region.rock_point_at(x, z)),
+        forest: w.region.forest_type(x >> 4, z >> 4),
+        hotspot,
+        hotspot_age: age as f64,
+        ..Probe::default()
+    }
 }
 
 /// Shared optimized raster sampling path for the GUI and headless renderer.
 pub fn raster_color(world: &World, layer: Layer, x: i32, z: i32) -> [u8; 4] {
-    raster_color_with_display(world, layer, x, z, &DisplayPrefs::default())
+    raster_color_with_display(
+        world,
+        layer,
+        x,
+        z,
+        &DisplayPrefs {
+            terrain: TerrainDetailOptions::full(),
+            ..Default::default()
+        },
+    )
 }
 
 pub fn raster_color_with_display(
@@ -2827,10 +3609,187 @@ pub fn raster_color_with_display(
     z: i32,
     display: &DisplayPrefs,
 ) -> [u8; 4] {
-    let id = world.biome_id(x, z);
-    let p = sample_layer(world, x, z, id, layer);
-    let pixel = display_color(world, layer, id, &p, display, x, z);
-    [pixel.r(), pixel.g(), pixel.b(), pixel.a()]
+    raster_color_with_display_step(world, layer, x, z, display, 1.0)
+}
+
+/// Raster color with an explicit world-block interval between adjacent output pixels.
+/// Exporters use the same terrain shading neighbours as atlas tiles.
+pub fn raster_color_with_display_step(
+    world: &World,
+    layer: Layer,
+    x: i32,
+    z: i32,
+    display: &DisplayPrefs,
+    step: f64,
+) -> [u8; 4] {
+    raster_color_with_display_spacing(world, layer, x, z, display, [step, step])
+}
+
+/// Color and terrain overlays at the output raster's horizontal and vertical spacing.
+pub fn raster_color_with_display_spacing(
+    world: &World,
+    layer: Layer,
+    x: i32,
+    z: i32,
+    display: &DisplayPrefs,
+    spacing: [f64; 2],
+) -> [u8; 4] {
+    RasterSampler::new(world, layer, display, spacing).color(x, z, &|| false)
+}
+
+/// Reuse one composition/sampling plan across an export's pixels.
+pub struct RasterSampler<'a> {
+    world: &'a World,
+    layer: Layer,
+    display: &'a DisplayPrefs,
+    spacing: [f64; 2],
+    composition: Option<composition::Composition>,
+    material_relief: bool,
+    fast_biomes: Option<sampling::FastBiomes>,
+}
+
+impl<'a> RasterSampler<'a> {
+    pub fn new(
+        world: &'a World,
+        layer: Layer,
+        display: &'a DisplayPrefs,
+        spacing: [f64; 2],
+    ) -> Self {
+        let step = spacing[0].max(spacing[1]);
+        let fast_biomes = sampling::FastBiomes::new(world, layer, display);
+        let composition = composition::Composition::new(display, layer, world.dimension, step);
+        let material_relief = world.dimension == Dimension::Overworld
+            && step <= 4.
+            && composition
+                .as_ref()
+                .is_some_and(|plan| plan.uses_ground_material());
+        Self {
+            world,
+            layer,
+            display,
+            spacing,
+            composition,
+            material_relief,
+            fast_biomes,
+        }
+    }
+
+    fn relief_height(&self, x: i32, z: i32) -> Option<f64> {
+        let terrain = relief_solid_top(self.world, self.world.height(x, z));
+        if self.material_relief {
+            crate::ground_view::relief_height_with_options(
+                self.world,
+                x,
+                z,
+                terrain,
+                &self.display.terrain,
+            )
+        } else if self.world.dimension == Dimension::Overworld
+            && self.spacing[0].max(self.spacing[1]) <= 4.
+        {
+            crate::ground_view::spring_relief_height_with_options(
+                self.world,
+                x,
+                z,
+                terrain,
+                &self.display.terrain,
+            )
+        } else {
+            terrain
+        }
+    }
+
+    pub fn color(&self, x: i32, z: i32, cancelled: &impl Fn() -> bool) -> [u8; 4] {
+        let (world, layer, display, spacing) = (self.world, self.layer, self.display, self.spacing);
+        if let Some(palette) = &self.fast_biomes {
+            return palette.color(palette.id(world, x, z)).to_array();
+        }
+        let id = if display.terrain.precise_biome_boundaries {
+            map_biome_id(world, x, z)
+        } else {
+            world.biome_id(x, z)
+        };
+        let p = if let Some(composition) = &self.composition {
+            composition.sample(world, x, z, id, None, None, None)
+        } else {
+            sample_layer_with_water(
+                world,
+                x,
+                z,
+                id,
+                layer,
+                None,
+                None,
+                None,
+                spacing[0].max(spacing[1]) <= 4.,
+                &display.terrain,
+            )
+        };
+        let mut pixel = if let Some(composition) = &self.composition {
+            composition.color(world, id, &p, display, x, z)
+        } else {
+            display_color(world, layer, id, &p, display, x, z)
+        };
+        pixel = sampling::overlay_litter(
+            world,
+            pixel,
+            x,
+            z,
+            spacing[0].max(spacing[1]),
+            display,
+            p.is_bare_surface(),
+            cancelled,
+        );
+        if display.height_shading
+            && display.hillshade_strength > 0.0
+            && world.dimension != Dimension::Beneath
+            && p.surface_lava.is_none()
+            && p.surface_magma.is_none()
+        {
+            let step = spacing[0].max(spacing[1]).round().max(1.0);
+            let dx = spacing[0].round().max(1.0) as i32;
+            let dz = spacing[1].round().max(1.0) as i32;
+            let heights = [
+                self.relief_height(x, z),
+                self.relief_height(x, z.saturating_sub(dz)),
+                self.relief_height(x.saturating_sub(dx), z.saturating_sub(dz)),
+            ];
+            pixel = apply_hillshade(pixel, heights, step, display.hillshade_strength);
+        }
+        if display.contours.is_active()
+            && world.dimension != Dimension::Beneath
+            && p.surface_lava.is_none()
+            && p.surface_magma.is_none()
+            && (display.contours.underwater || !p.is_water())
+        {
+            let dx = spacing[0].round().max(1.0) as i32;
+            let dz = spacing[1].round().max(1.0) as i32;
+            let heights = std::array::from_fn(|i| {
+                self.relief_height(
+                    x.saturating_add((i as i32 % 3 - 1).saturating_mul(dx)),
+                    z.saturating_add((i as i32 / 3 - 1).saturating_mul(dz)),
+                )
+            });
+            pixel = apply_contours(pixel, heights, &display.contours);
+        }
+        if let Some(composition) = &self.composition {
+            let surface = p.volcanic_surface().or_else(|| {
+                p.is_water().then_some(crate::volcanic_lava::Surface::Water(
+                    crate::surface_water::SEA_SURFACE_BLOCK_Y,
+                ))
+            });
+            pixel = composition.overlay_trees(
+                world,
+                pixel,
+                x,
+                z,
+                surface,
+                spacing[0].max(spacing[1]),
+                cancelled,
+            );
+        }
+        [pixel.r(), pixel.g(), pixel.b(), pixel.a()]
+    }
 }
 
 fn combine_tree_estimates(
@@ -2910,12 +3869,152 @@ fn tile_sample(key: TileKey, resolution: usize, x: i32, z: i32) -> (i32, i32) {
         (o.z + (z as f64 + 0.5) * step).floor() as i32,
     )
 }
+fn apply_hillshade(pixel: Color32, heights: [Option<f64>; 3], step: f64, strength: f32) -> Color32 {
+    let [Some(center), Some(north), Some(northwest)] = heights else {
+        return pixel;
+    };
+    let rgb = crate::hillshade::shade_rgb_xaero(
+        [pixel.r(), pixel.g(), pixel.b()],
+        center,
+        north,
+        northwest,
+        step,
+        strength,
+    );
+    Color32::from_rgba_unmultiplied(rgb[0], rgb[1], rgb[2], pixel.a())
+}
+
+/// Keep the generator's raw height grid immutable: water/biome calculations
+/// consume that noise height, whereas lighting and contours use solid cells.
+fn relief_solid_top(world: &World, terrain: Option<f64>) -> Option<f64> {
+    if world.dimension == Dimension::Overworld {
+        terrain
+            .and_then(crate::surface_water::ordinary_solid_top)
+            .map(f64::from)
+    } else {
+        terrain
+    }
+}
+
+fn apply_contours(
+    pixel: Color32,
+    heights: [Option<f64>; 9],
+    prefs: &crate::contours::ContourPrefs,
+) -> Color32 {
+    let rgb = crate::contours::shade_rgb([pixel.r(), pixel.g(), pixel.b()], heights, prefs);
+    Color32::from_rgba_unmultiplied(rgb[0], rgb[1], rgb[2], pixel.a())
+}
+
+fn contour_tile_pixel(
+    pixel: Color32,
+    heights: &[Option<f64>],
+    grid_side: usize,
+    x: usize,
+    z: usize,
+    prefs: &crate::contours::ContourPrefs,
+) -> Color32 {
+    let neighborhood = std::array::from_fn(|i| heights[(z + i / 3) * grid_side + x + i % 3]);
+    apply_contours(pixel, neighborhood, prefs)
+}
+
+fn height_grid_for_tile(
+    world: &World,
+    key: TileKey,
+    resolution: usize,
+    cancelled: impl Fn() -> bool,
+) -> Option<HeightGrid> {
+    if world.dimension == Dimension::Beneath {
+        return None;
+    }
+    let cache_key = HeightGridKey::new(world, key);
+    if let Some(grid) = HEIGHT_GRID_CACHE.access(|cache| cache.get(&cache_key).cloned()) {
+        return Some(grid);
+    }
+
+    // Interior plus two texels of terrain padding on every side. The first padding layer
+    // shades the displayed gutter; the outer one supplies its surrounding terrain samples.
+    let side = resolution + 4;
+    let mut grid = vec![None; side * side];
+    let mut samples = 0usize;
+    let mut store = |gx: usize, gz: usize, sx: i32, sz: i32| {
+        if samples.is_multiple_of(32) && cancelled() {
+            return false;
+        }
+        let (bx, bz) = tile_sample(key, resolution, sx, sz);
+        grid[gz * side + gx] = world.height(bx, bz);
+        samples += 1;
+        true
+    };
+    // The main raster plus its visible gutter is visited in the same local Morton order as
+    // color samples, keeping region-cache reuse high when zoomed across many cells.
+    for &(x, z) in tile_sample_order(key.detail) {
+        if !store(x + 1, z + 1, x as i32 - 1, z as i32 - 1) {
+            return None;
+        }
+    }
+    // Both hillshade and contours reuse this grid; contours also need diagonal neighbours.
+    for z in 1..side - 1 {
+        if !store(0, z, -2, z as i32 - 2)
+            || !store(side - 1, z, resolution as i32 + 1, z as i32 - 2)
+        {
+            return None;
+        }
+    }
+    for x in 1..side - 1 {
+        if !store(x, 0, x as i32 - 2, -2)
+            || !store(x, side - 1, x as i32 - 2, resolution as i32 + 1)
+        {
+            return None;
+        }
+    }
+    for (gx, gz) in [(0, 0), (side - 1, 0), (0, side - 1), (side - 1, side - 1)] {
+        if !store(gx, gz, gx as i32 - 2, gz as i32 - 2) {
+            return None;
+        }
+    }
+    if cancelled() {
+        return None;
+    }
+    let grid = Arc::new(grid);
+    HEIGHT_GRID_CACHE.access(|cache| {
+        cache.put(cache_key, grid.clone());
+    });
+    Some(grid)
+}
+
+fn shade_tile_pixel(
+    pixel: Color32,
+    heights: &[Option<f64>],
+    grid_side: usize,
+    x: usize,
+    z: usize,
+    step: f64,
+    strength: f32,
+) -> Color32 {
+    let index = |gx: usize, gz: usize| heights[gz * grid_side + gx];
+    apply_hillshade(
+        pixel,
+        [index(x + 1, z + 1), index(x + 1, z), index(x, z)],
+        step,
+        strength,
+    )
+}
+
 fn tile_uv(resolution: usize) -> Rect {
     let border = 1. / (resolution + 2) as f32;
     Rect::from_min_max(
         Pos2::new(border, border),
         Pos2::new(1. - border, 1. - border),
     )
+}
+fn tile_texture_options(key: TileKey, filter: LoadingFilter) -> TextureOptions {
+    // Final block samples stay crisp; the preference controls magnified previews
+    // and coarser tiles while the requested resolution loads.
+    if key.detail && key.zoom == 0 || filter == LoadingFilter::Nearest {
+        TextureOptions::NEAREST
+    } else {
+        TextureOptions::LINEAR
+    }
 }
 fn tile_screen_rect(rect: Rect, center: Point, bpp: f64, origin: Point, span: f64) -> Rect {
     let project = |x: f64, z: f64| {
@@ -2963,10 +4062,56 @@ fn render_tile(
     display: &DisplayPrefs,
     cancelled: impl Fn() -> bool,
 ) -> Option<CpuTile> {
+    if let Some(palette) = sampling::FastBiomes::new(w, key.layer, display) {
+        return sampling::render_fast_biomes(w, key, &palette, &cancelled);
+    }
     let resolution = if key.detail { DETAIL } else { COARSE };
     let side = resolution + 2;
+    let composition = composition::Composition::new(
+        display,
+        key.layer,
+        w.dimension,
+        key.span() / resolution as f64,
+    );
+    // Saved ground corrects local fluid coverage for material/grass maps. Those
+    // overrides belong to this composition, not to the shared seed-surface masks
+    // reused by every layer. Never let layer-switch order change a cached map.
+    let share_surface_masks = w.surface_source_id() == 0
+        || !composition
+            .as_ref()
+            .is_some_and(|plan| plan.uses_saved_ground());
+    let local_relief = w.dimension == Dimension::Overworld && key.span() / resolution as f64 <= 4.;
+    let material_relief = local_relief
+        && composition
+            .as_ref()
+            .is_some_and(|plan| plan.uses_ground_material());
+    let shaded = display.height_shading && display.hillshade_strength > 0.0;
+    let contoured = display.contours.is_active();
+    // Build completed relief heights once and use them for fuzzy biomes and water
+    // as well. Basin sampling cannot evict these immutable samples mid-tile.
+    let heights =
+        if (shaded || contoured || composition.as_ref().is_some_and(|plan| plan.needs_height()))
+            && w.dimension != Dimension::Beneath
+        {
+            Some(height_grid_for_tile(w, key, resolution, &cancelled)?)
+        } else {
+            None
+        };
     let mut pixels = vec![Color32::TRANSPARENT; side * side];
+    let mut water_pixels = vec![false; side * side];
+    let mut volcanic_surface_pixels = vec![None; side * side];
     let mut biomes = vec![0; resolution * resolution];
+    let mask_key = HeightGridKey::new(w, key).with_terrain(&display.terrain);
+    let biome_key =
+        HeightGridKey::new(w, key).with_biomes(display.terrain.precise_biome_boundaries);
+    let cached_water = (w.dimension == Dimension::Overworld)
+        .then(|| WATER_MASK_CACHE.access(|cache| cache.get(&mask_key).cloned()))
+        .flatten();
+    let cached_surface = (w.dimension == Dimension::Overworld)
+        .then(|| VOLCANIC_SURFACE_CACHE.access(|cache| cache.get(&mask_key).cloned()))
+        .flatten();
+    let cached_biomes = BIOME_GRID_CACHE.access(|cache| cache.get(&biome_key).cloned());
+    let mut biome_grid = cached_biomes.is_none().then(|| vec![0; side * side]);
     // Visit spatial neighbours together at every zoom. A long full-width row can
     // evict an entire working set of expensive regions before the next row reuses it.
     for (index, &(x, z)) in tile_sample_order(key.detail).iter().enumerate() {
@@ -2974,11 +4119,185 @@ fn render_tile(
             return None;
         }
         let (bx, bz) = tile_sample(key, resolution, x as i32 - 1, z as i32 - 1);
-        let id = w.biome_id(bx, bz);
-        let sample = sample_layer(w, bx, bz, id, key.layer);
-        pixels[z * side + x] = display_color(w, key.layer, id, &sample, display, bx, bz);
+        let terrain = heights
+            .as_ref()
+            .map(|grid| grid[(z + 1) * (resolution + 4) + x + 1]);
+        let id = cached_biomes.as_ref().map_or_else(
+            || {
+                if display.terrain.precise_biome_boundaries {
+                    map_biome_id_with_height(w, bx, bz, terrain)
+                } else {
+                    w.biome_id(bx, bz)
+                }
+            },
+            |grid| grid[z * side + x],
+        );
+        if let Some(grid) = &mut biome_grid {
+            grid[z * side + x] = id;
+        }
+        let water = cached_water.as_ref().map(|mask| mask[z * side + x]);
+        let surface = cached_surface
+            .as_ref()
+            .map(|mask| mask.get(z * side + x).copied().flatten());
+        let sample = if let Some(composition) = &composition {
+            composition.sample(w, bx, bz, id, water, surface, terrain)
+        } else {
+            sample_layer_with_water(
+                w,
+                bx,
+                bz,
+                id,
+                key.layer,
+                water,
+                surface,
+                terrain,
+                key.span() / resolution as f64 <= 4.,
+                &display.terrain,
+            )
+        };
+        let mut pixel = if let Some(composition) = &composition {
+            composition.color(w, id, &sample, display, bx, bz)
+        } else {
+            display_color(w, key.layer, id, &sample, display, bx, bz)
+        };
+        pixel = sampling::overlay_litter(
+            w,
+            pixel,
+            bx,
+            bz,
+            key.span() / resolution as f64,
+            display,
+            sample.is_bare_surface(),
+            &cancelled,
+        );
+        pixels[z * side + x] = pixel;
+        water_pixels[z * side + x] = sample.is_water();
+        volcanic_surface_pixels[z * side + x] = sample.volcanic_surface();
         if (1..=resolution).contains(&x) && (1..=resolution).contains(&z) {
             biomes[(z - 1) * resolution + x - 1] = id;
+        }
+    }
+    if let Some(grid) = biome_grid {
+        if cancelled() {
+            return None;
+        }
+        BIOME_GRID_CACHE.access(|cache| cache.put(biome_key, Arc::new(grid)));
+    }
+    if share_surface_masks && w.dimension == Dimension::Overworld && cached_water.is_none() {
+        if cancelled() {
+            return None;
+        }
+        WATER_MASK_CACHE.access(|cache| cache.put(mask_key, Arc::new(water_pixels.clone())));
+    }
+    if share_surface_masks && w.dimension == Dimension::Overworld && cached_surface.is_none() {
+        if cancelled() {
+            return None;
+        }
+        let mask = if volcanic_surface_pixels.iter().any(Option::is_some) {
+            volcanic_surface_pixels.clone()
+        } else {
+            Vec::new()
+        };
+        VOLCANIC_SURFACE_CACHE.access(|cache| cache.put(mask_key, Arc::new(mask)));
+    }
+    if let Some(grid) = heights {
+        let grid_side = resolution + 4;
+        let grid = if w.dimension == Dimension::Overworld {
+            let cache = if material_relief {
+                &MATERIAL_RELIEF_CACHE
+            } else {
+                &TERRAIN_RELIEF_CACHE
+            };
+            if let Some(physical) = cache.access(|cache| cache.get(&mask_key).cloned()) {
+                physical
+            } else {
+                let mut material = (*grid).clone();
+                for gz in 0..grid_side {
+                    if cancelled() {
+                        return None;
+                    }
+                    for gx in 0..grid_side {
+                        let (x, z) = tile_sample(key, resolution, gx as i32 - 2, gz as i32 - 2);
+                        let index = gz * grid_side + gx;
+                        material[index] = relief_solid_top(w, material[index]);
+                        material[index] = if material_relief {
+                            crate::ground_view::relief_height_with_options(
+                                w,
+                                x,
+                                z,
+                                material[index],
+                                &display.terrain,
+                            )
+                        } else if local_relief {
+                            crate::ground_view::spring_relief_height_with_options(
+                                w,
+                                x,
+                                z,
+                                material[index],
+                                &display.terrain,
+                            )
+                        } else {
+                            material[index]
+                        };
+                    }
+                }
+                if cancelled() {
+                    return None;
+                }
+                let physical = Arc::new(material);
+                cache.access(|cache| cache.put(mask_key, physical.clone()));
+                physical
+            }
+        } else {
+            grid
+        };
+        for (sample_index, &(x, z)) in tile_sample_order(key.detail).iter().enumerate() {
+            if sample_index % 32 == 0 && cancelled() {
+                return None;
+            }
+            let index = z * side + x;
+            // Hot volcanic surfaces stay legible above buried terrain and contours.
+            if volcanic_surface_pixels[index].is_some_and(|surface| surface.is_hot()) {
+                continue;
+            }
+            if shaded {
+                pixels[index] = shade_tile_pixel(
+                    pixels[index],
+                    &grid,
+                    grid_side,
+                    x,
+                    z,
+                    key.span() / resolution as f64,
+                    display.hillshade_strength,
+                );
+            }
+            if contoured && (display.contours.underwater || !water_pixels[index]) {
+                pixels[index] =
+                    contour_tile_pixel(pixels[index], &grid, grid_side, x, z, &display.contours);
+            }
+        }
+    }
+    if let Some(composition) = composition.as_ref().filter(|plan| plan.uses_trees()) {
+        let step = key.span() / resolution as f64;
+        for (index, &(x, z)) in tile_sample_order(key.detail).iter().enumerate() {
+            if index % 32 == 0 && cancelled() {
+                return None;
+            }
+            let offset = z * side + x;
+            let surface = volcanic_surface_pixels[offset].or_else(|| {
+                water_pixels[offset].then_some(crate::volcanic_lava::Surface::Water(
+                    crate::surface_water::SEA_SURFACE_BLOCK_Y,
+                ))
+            });
+            let (bx, bz) = tile_sample(key, resolution, x as i32 - 1, z as i32 - 1);
+            pixels[offset] =
+                composition.overlay_trees(w, pixels[offset], bx, bz, surface, step, &cancelled);
+        }
+    }
+    let mut surface_water = Vec::with_capacity(resolution * resolution);
+    for z in 1..=resolution {
+        for x in 1..=resolution {
+            surface_water.push(water_pixels[z * side + x]);
         }
     }
     Some(CpuTile {
@@ -2986,6 +4305,7 @@ fn render_tile(
         resolution,
         pixels,
         biomes,
+        surface_water,
     })
 }
 
@@ -3009,7 +4329,7 @@ fn worker(
     search_revision: Arc<AtomicU64>,
     task_revision: Arc<AtomicU64>,
 ) {
-    let mut world: Option<(u64, World)> = None;
+    let mut world: Option<(Spec, World)> = None;
     let mut tiles_since_request = 0;
     loop {
         let job = match high.try_recv() {
@@ -3039,6 +4359,7 @@ fn worker(
             | Job::Probe(s, ..)
             | Job::Trees(s, ..)
             | Job::Features(s, ..)
+            | Job::InspectStructure(s, ..)
             | Job::Surface(s, ..)
             | Job::Search(s, ..)
             | Job::Analyze(s, ..)
@@ -3051,15 +4372,21 @@ fn worker(
             }
             continue;
         }
-        if world.as_ref().is_none_or(|(e, _)| *e != spec.epoch) {
+        // Color/style revisions cancel stale jobs, while generator state stays
+        // reusable across season changes. Save reloads have their own revision.
+        if world
+            .as_ref()
+            .is_none_or(|(active, _)| !active.same_world(spec))
+        {
             world = Some((
-                spec.epoch,
+                spec.clone(),
                 World::for_dimension(
                     spec.seed,
                     spec.settings.clone(),
                     spec.dimension,
                     spec.slice_y,
-                ),
+                )
+                .with_surface_source(spec.world_path.clone(), spec.source_revision),
             ));
         }
         let w = &mut world.as_mut().unwrap().1;
@@ -3080,7 +4407,13 @@ fn worker(
                 let _ = out.send(Reply::Probe(
                     spec.epoch,
                     serial,
-                    sample_probe(w, p.x.floor() as i32, p.z.floor() as i32, height),
+                    sample_probe_with_display(
+                        w,
+                        p.x.floor() as i32,
+                        p.z.floor() as i32,
+                        height,
+                        &spec.display,
+                    ),
                 ));
             }
             Job::Trees(spec, points, area_each, serial) => {
@@ -3138,72 +4471,107 @@ fn worker(
                     batch.coverage.truncated,
                 ));
             }
+            Job::InspectStructure(spec, path, marker, serial) => {
+                let result =
+                    crate::structure_preview::inspect(w, &marker, path.as_deref(), &|| {
+                        spec.epoch != epoch.load(Ordering::Relaxed)
+                    });
+                let _ = out.send(Reply::StructurePreview(spec.epoch, serial, result));
+            }
             Job::Surface(spec, path, coordinates, serial, structure_bounds) => {
-                let chunks = coordinates
-                    .into_iter()
-                    .map(|(x, z)| {
-                        let predicted = || surface::SurfaceData {
-                            chunk: crate::vegetation::generate_surface(w, x, z, &|| {
-                                spec.epoch != epoch.load(Ordering::Relaxed)
-                            }),
-                            source: surface::SurfaceSource::Predicted,
-                        };
-                        let result = match path.as_deref() {
-                            Some(path) => {
-                                let saved = if let Some(bounds) = structure_bounds {
-                                    let (min_y, max_y) = if spec.dimension == Dimension::Beneath {
-                                        let (band_min, band_max) =
-                                            spec.dimension.band(spec.slice_y);
-                                        (bounds.min_y.max(band_min), bounds.max_y.min(band_max))
-                                    } else {
-                                        (bounds.min_y, bounds.max_y)
-                                    };
-                                    if min_y <= max_y {
-                                        prism::read_surface_band(path, x, z, min_y, max_y).map(
-                                            |chunk| {
-                                                chunk.map(|chunk| {
-                                                    prism::clip_surface_chunk(chunk, bounds)
-                                                })
-                                            },
-                                        )
-                                    } else {
-                                        Ok(None)
-                                    }
-                                } else if spec.dimension == Dimension::Beneath {
-                                    let (min_y, max_y) = spec.dimension.band(spec.slice_y);
-                                    prism::read_surface_band(path, x, z, min_y, max_y)
+                let mut chunks = Vec::with_capacity(coordinates.len());
+                for (x, z) in coordinates {
+                    if spec.epoch != epoch.load(Ordering::Relaxed) {
+                        break;
+                    }
+                    let predicted = || surface::SurfaceData {
+                        chunk: crate::vegetation::generate_surface(w, x, z, &|| {
+                            spec.epoch != epoch.load(Ordering::Relaxed)
+                        }),
+                        source: surface::SurfaceSource::Predicted,
+                        climate: surface_climate(w, x, z),
+                    };
+                    let result = match path.as_deref() {
+                        Some(path) => {
+                            let saved = if let Some(bounds) = structure_bounds {
+                                let (min_y, max_y) = if spec.dimension == Dimension::Beneath {
+                                    let (band_min, band_max) = spec.dimension.band(spec.slice_y);
+                                    (bounds.min_y.max(band_min), bounds.max_y.min(band_max))
                                 } else {
-                                    prism::read_surface_tile(path, x, z)
+                                    (bounds.min_y, bounds.max_y)
                                 };
-                                match saved {
-                                    Ok(Some(chunk)) => Ok(Some(surface::SurfaceData {
-                                        chunk,
-                                        source: surface::SurfaceSource::Saved,
-                                    })),
-                                    Ok(None) if structure_bounds.is_some() => Ok(None),
-                                    Ok(None) => {
-                                        if spec.dimension == Dimension::Overworld {
-                                            Ok(Some(predicted()))
-                                        } else {
-                                            Ok(None)
-                                        }
-                                    }
-                                    Err(error) => Err(error),
-                                }
-                            }
-                            None if structure_bounds.is_some() => Ok(None),
-                            None => {
-                                if spec.dimension == Dimension::Overworld {
-                                    Ok(Some(predicted()))
+                                if min_y <= max_y {
+                                    prism::read_surface_band(path, x, z, min_y, max_y).map(
+                                        |chunk| {
+                                            chunk.map(|chunk| {
+                                                prism::clip_surface_chunk(chunk, bounds)
+                                            })
+                                        },
+                                    )
                                 } else {
                                     Ok(None)
                                 }
+                            } else if spec.dimension == Dimension::Beneath {
+                                let (min_y, max_y) = spec.dimension.band(spec.slice_y);
+                                prism::read_surface_band(path, x, z, min_y, max_y)
+                            } else {
+                                prism::read_surface_tile(path, x, z)
+                            };
+                            match saved {
+                                Ok(Some(mut chunk)) => {
+                                    if spec.dimension == Dimension::Overworld {
+                                        for (index, column) in chunk.columns.iter_mut().enumerate()
+                                        {
+                                            if crate::ground_palette::is_grass_soil(&column.block) {
+                                                let bx = x * 16 + (index % 16) as i32;
+                                                let bz = z * 16 + (index / 16) as i32;
+                                                let climate = w.region.climate(bx, bz);
+                                                column.color = crate::ground_palette::multiply_tint(
+                                                    crate::ground_palette::grass_tint_overlay()
+                                                        .unwrap_or([255; 3]),
+                                                    crate::map_colors::grass(
+                                                        climate.temperature,
+                                                        climate.rainfall,
+                                                        column.y,
+                                                    ),
+                                                );
+                                            }
+                                        }
+                                    }
+                                    Ok(Some(surface::SurfaceData {
+                                        chunk,
+                                        source: surface::SurfaceSource::Saved,
+                                        climate: surface_climate(w, x, z),
+                                    }))
+                                }
+                                Ok(None) if structure_bounds.is_some() => Ok(None),
+                                Ok(None) => {
+                                    if spec.dimension == Dimension::Overworld {
+                                        Ok(Some(predicted()))
+                                    } else {
+                                        Ok(None)
+                                    }
+                                }
+                                Err(error) => Err(error),
                             }
-                        };
-                        (x, z, result)
-                    })
-                    .collect();
-                let _ = out.send(Reply::Surface(spec.epoch, serial, chunks));
+                        }
+                        None if structure_bounds.is_some() => Ok(None),
+                        None => {
+                            if spec.dimension == Dimension::Overworld {
+                                Ok(Some(predicted()))
+                            } else {
+                                Ok(None)
+                            }
+                        }
+                    };
+                    if spec.epoch != epoch.load(Ordering::Relaxed) {
+                        break;
+                    }
+                    chunks.push((x, z, result));
+                }
+                if spec.epoch == epoch.load(Ordering::Relaxed) {
+                    let _ = out.send(Reply::Surface(spec.epoch, serial, chunks));
+                }
             }
             Job::Search(spec, search) => {
                 if search.serial != search_revision.load(Ordering::Relaxed) {
@@ -3277,7 +4645,702 @@ pub fn run_engine() -> Result<(), String> {
 
 #[cfg(test)]
 mod tests {
+    fn accurate_display() -> crate::display::DisplayPrefs {
+        crate::display::DisplayPrefs {
+            terrain: crate::display::TerrainDetailOptions {
+                surface_litter: false,
+                ..crate::display::TerrainDetailOptions::full()
+            },
+            ..crate::display::DisplayPrefs::default()
+        }
+    }
+
     use super::*;
+
+    #[test]
+    fn calendar_revisions_reuse_world_inputs_but_never_save_revisions() {
+        let atlas = Atlas::new(&egui::Context::default(), 0, Settings::default());
+        let base = atlas.spec.clone();
+        let mut calendar = base.clone();
+        calendar.epoch += 1;
+        calendar.display.season = Some(0.8);
+        assert!(base.same_world(&calendar));
+        let mut reload = calendar.clone();
+        reload.source_revision += 1;
+        assert!(!base.same_world(&reload));
+        let mut seed = calendar.clone();
+        seed.seed += 1;
+        assert!(!base.same_world(&seed));
+        let mut settings = calendar.clone();
+        settings.settings.temperature_scale += 100.;
+        assert!(!base.same_world(&settings));
+        let mut dimension = calendar.clone();
+        dimension.dimension = Dimension::Moon;
+        assert!(!base.same_world(&dimension));
+        let mut source = calendar.clone();
+        source.world_path = Some(PathBuf::from("different-world"));
+        assert!(!base.same_world(&source));
+    }
+
+    #[test]
+    fn calendar_changes_preserve_completed_feature_scans_and_destination_heights() {
+        let mut atlas = Atlas::new(&egui::Context::default(), 0, Settings::default());
+        let key = FeatureTileKey {
+            x: 0,
+            z: 0,
+            tier: 0,
+            scale: 0,
+            ores: true,
+            structures: true,
+        };
+        let pin = marker(1, MarkerKind::Structure, 12., 14., "tfg");
+        atlas.cache_feature_result(key, vec![pin.clone()], false);
+        atlas.destination_probe = Some(Probe {
+            point: Point { x: 12., z: 14. },
+            ground_y: Some(70),
+            ..Default::default()
+        });
+        let mut prefs = atlas.spec.display.clone();
+        prefs.season = Some(0.8);
+        atlas.set_display_options(&prefs);
+        assert_eq!(atlas.feature_tiles.get(&key).unwrap().markers[0].id, pin.id);
+        assert_eq!(
+            atlas.probe_at(Point { x: 12., z: 14. }).unwrap().ground_y,
+            Some(70)
+        );
+    }
+
+    #[test]
+    fn destination_height_reply_survives_pointer_movement_and_is_cleared_on_world_change() {
+        let mut atlas = Atlas::new(&egui::Context::default(), 0, Settings::default());
+        let target = Point { x: -0.2, z: 7.9 };
+        atlas.destination_request = Some((target, 42));
+        atlas.hover_point = Some(Point { x: 500., z: 500. });
+        atlas
+            .out
+            .send(Reply::Probe(
+                atlas.spec.epoch,
+                42,
+                Probe {
+                    point: Point { x: -1., z: 7. },
+                    ground_y: Some(119),
+                    ..Default::default()
+                },
+            ))
+            .unwrap();
+        atlas.poll();
+        assert_eq!(atlas.probe_at(target).and_then(|p| p.ground_y), Some(119));
+        assert!(atlas.destination_request.is_none());
+        assert!(atlas.probe_at(Point { x: 0., z: 7. }).is_none());
+        atlas.set_world(1, Settings::default(), None);
+        assert!(atlas.probe_at(target).is_none());
+    }
+
+    #[test]
+    fn dry_inland_biome_columns_keep_land_colors_and_layer_values() {
+        use biome::ids::id;
+        let world = World::new(0, Settings::default());
+        for (x, z, expected_id, expected_height) in [
+            (10880, -16000, id::RIVER, 146.),
+            (10752, -15616, id::OLD_MOUNTAIN_LAKE, 85.),
+            (12800, -15232, id::LAKE, 68.),
+        ] {
+            assert_eq!(world.biome_id(x, z), expected_id);
+            assert_eq!(world.height(x, z), Some(expected_height));
+            assert!(!world.probe(x, z).is_water());
+            assert!(!world.sample(x, z, false).is_water());
+            assert!(!world.is_surface_water(x, z));
+            assert!(!world.is_surface_fluid(x, z));
+            let display_id = map_biome_id(&world, x, z);
+            assert!(crate::surface_water::is_inland_water_biome(display_id));
+            for layer in Layer::ALL {
+                let sample = sample_layer(&world, x, z, display_id, layer);
+                assert!(!sample.is_bare_surface(), "{layer:?} at {x},{z}");
+                assert_eq!(
+                    sample.biome,
+                    biome::biome_name(display_id),
+                    "retain biome identity"
+                );
+                let rgb = raster_color(&world, layer, x, z);
+                assert_ne!(
+                    rgb,
+                    [71, 157, 178, 255],
+                    "dry {layer:?} cannot have the river-water color"
+                );
+                assert_ne!(
+                    rgb,
+                    [43, 105, 133, 255],
+                    "dry {layer:?} cannot have the water color"
+                );
+            }
+            assert_ne!(
+                raster_color(&world, Layer::Biomes, x, z),
+                raster_color(&world, Layer::Ground, x, z)
+            );
+            assert_eq!(
+                raster_color(&world, Layer::Water, x, z),
+                [185, 188, 158, 255]
+            );
+            let stacked = DisplayPrefs {
+                layer_stack: Some(vec![
+                    crate::display::LayerBlend {
+                        layer: Layer::Height,
+                        opacity: 1.,
+                    },
+                    crate::display::LayerBlend {
+                        layer: Layer::Water,
+                        opacity: 1.,
+                    },
+                ]),
+                ..accurate_display()
+            };
+            assert_eq!(
+                raster_color_with_display(&world, Layer::Biomes, x, z, &stacked),
+                raster_color(&world, Layer::Height, x, z),
+                "dry water overlay must leave terrain visible"
+            );
+        }
+        for (x, z) in [(-50, 80), (8780, 10992), (8827, 11107)] {
+            assert!(world.probe(x, z).is_water(), "saved wet control at {x},{z}");
+            let rgb = raster_color(&world, Layer::Water, x, z);
+            assert!(rgb[2] > rgb[0] && rgb[1] > rgb[0]);
+        }
+    }
+
+    #[test]
+    fn covered_inland_water_is_dark_blue_without_enabling_ground_colors() {
+        let world = World::new(0, Settings::default());
+        for (x, z) in [(10880, -16000), (10752, -15616), (12800, -15232)] {
+            let id = map_biome_id(&world, x, z);
+            let sample = sample_layer(&world, x, z, id, Layer::Biomes);
+            assert!(!sample.is_fluid(), "the overlying mountain remains solid");
+            let plain = DisplayPrefs {
+                height_shading: false,
+                ..accurate_display()
+            };
+            let expected = [
+                UNDERGROUND_WATER_COLOR[0],
+                UNDERGROUND_WATER_COLOR[1],
+                UNDERGROUND_WATER_COLOR[2],
+                255,
+            ];
+            assert_eq!(
+                raster_color_with_display(&world, Layer::Biomes, x, z, &plain),
+                expected
+            );
+            let stack = DisplayPrefs {
+                layer_stack: Some(vec![crate::display::LayerBlend {
+                    layer: Layer::Biomes,
+                    opacity: 1.,
+                }]),
+                ..plain.clone()
+            };
+            assert_eq!(
+                raster_color_with_display(&world, Layer::Biomes, x, z, &stack),
+                expected
+            );
+            let ground = raster_color_with_display(&world, Layer::Ground, x, z, &plain);
+            assert_ne!(expected, ground);
+            let grass = DisplayPrefs {
+                grass_colors: true,
+                grass_opacity: 1.,
+                ..stack.clone()
+            };
+            assert_ne!(
+                raster_color_with_display(&world, Layer::Biomes, x, z, &grass),
+                expected
+            );
+            let accessible = DisplayPrefs {
+                palette: crate::display::Palette::Colorblind,
+                ..stack
+            };
+            assert_eq!(
+                raster_color_with_display(&world, Layer::Biomes, x, z, &accessible),
+                expected
+            );
+            assert!(!world.is_surface_water(x, z));
+        }
+        // The saved dry low river bank must not turn into an underground river.
+        assert!(!crate::surface_water::is_underground_river(
+            &world, 8833, 11107, 62
+        ));
+    }
+
+    #[test]
+    fn dry_inland_palette_fallback_never_uses_a_water_biome_swatch() {
+        for id in [
+            biome::ids::id::RIVER,
+            biome::ids::id::LAKE,
+            biome::ids::id::MOUNTAIN_LAKE,
+        ] {
+            let sample = Probe {
+                biome: biome::biome_name(id).into(),
+                height: Some(100.),
+                ..Default::default()
+            };
+            for layer in [Layer::Biomes, Layer::Ground, Layer::Water] {
+                assert_eq!(color(layer, id, &sample), Color32::from_rgb(185, 188, 158));
+                let wet = Probe {
+                    surface_water: true,
+                    ..sample.clone()
+                };
+                assert_eq!(color(layer, id, &wet), Color32::from_rgb(71, 157, 178));
+            }
+        }
+    }
+
+    #[test]
+    fn inland_dry_land_masks_and_export_colors_agree_after_switching_layers() {
+        let world = World::new(0, Settings::default());
+        let key = TileKey {
+            zoom: 0,
+            x: 42,
+            z: -63,
+            layer: Layer::Biomes,
+            detail: false,
+        };
+        for display in [
+            accurate_display(),
+            DisplayPrefs {
+                layer_stack: Some(vec![
+                    crate::display::LayerBlend {
+                        layer: Layer::Height,
+                        opacity: 1.,
+                    },
+                    crate::display::LayerBlend {
+                        layer: Layer::Water,
+                        opacity: 1.,
+                    },
+                ]),
+                ..accurate_display()
+            },
+        ] {
+            let tile = render_tile(&world, key, &display, || false).unwrap();
+            let step = key.span() / COARSE as f64;
+            let raster = RasterSampler::new(&world, key.layer, &display, [step, step]);
+            let mut checked = 0;
+            for z in 0..COARSE {
+                for x in 0..COARSE {
+                    let index = z * COARSE + x;
+                    if !crate::surface_water::is_inland_water_biome(tile.biomes[index]) {
+                        continue;
+                    }
+                    let (wx, wz) = tile_sample(key, COARSE, x as i32, z as i32);
+                    if world.height(wx, wz).is_none_or(|height| height <= 63.)
+                        || world.volcanic_surface(wx, wz).is_some()
+                    {
+                        continue;
+                    }
+                    assert!(
+                        !tile.surface_water[index],
+                        "dry river/lake tile cell at {wx},{wz}"
+                    );
+                    if checked < 16 {
+                        assert_eq!(
+                            tile.pixels[(z + 1) * (COARSE + 2) + x + 1].to_array(),
+                            raster.color(wx, wz, &|| false)
+                        );
+                    }
+                    checked += 1;
+                }
+            }
+            assert!(
+                checked > 0,
+                "tile must cover actual inland-biome land above sea level"
+            );
+        }
+    }
+
+    #[test]
+    fn observed_seed_zero_lowland_is_water_on_every_layer_without_raising_the_ground() {
+        let fixture: serde_json::Value = serde_json::from_str(include_str!(
+            "../tests/fixtures/flooded-lowlands/seed0-991-990.json"
+        ))
+        .unwrap();
+        let x = fixture["requested_point"]["x"].as_i64().unwrap() as i32;
+        let z = fixture["requested_point"]["z"].as_i64().unwrap() as i32;
+        let world = World::new(0, Settings::default());
+        assert_eq!(world.height(x, z), Some(59.));
+        let probe = world.probe(x, z);
+        assert_eq!(probe.biome, "tfg:earth/lowlands");
+        assert!(!probe.ocean);
+        assert!(probe.is_water());
+        assert_eq!(
+            probe.height,
+            Some(59.),
+            "flooding must not turn the terrain model into a flat sea surface"
+        );
+        let mut display = DisplayPrefs {
+            height_shading: true,
+            hillshade_strength: 1.,
+            temperature_enabled: true,
+            temperature_min: -50.,
+            temperature_max: -40.,
+            ..accurate_display()
+        };
+        for palette in [
+            crate::display::Palette::Natural,
+            crate::display::Palette::Colorblind,
+        ] {
+            display.palette = palette;
+            for layer in Layer::ALL {
+                let shaded = raster_color_with_display(&world, layer, x, z, &display);
+                assert!(shaded[2] > shaded[0], "water hue remains blue in {layer:?}");
+                let mut flat_display = display.clone();
+                flat_display.height_shading = false;
+                assert_eq!(
+                    raster_color_with_display(&world, layer, x, z, &flat_display),
+                    [43, 105, 133, 255],
+                    "land climate highlights must not recolor lowland water"
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn reported_floodplain_shelf_stays_land_while_adjacent_riverbed_stays_water_on_every_layer() {
+        let world = World::new(0, Settings::default());
+        let bank = world.probe(8833, 11107);
+        assert_eq!(bank.biome, "tfg:earth/plains");
+        assert_eq!(bank.height, Some(61.));
+        assert!(
+            !bank.is_water(),
+            "the observed dry grass block at Y62 must not be painted as water"
+        );
+        let bed = world.probe(8827, 11107);
+        assert_eq!(bed.height, Some(60.));
+        assert!(
+            bed.is_water(),
+            "observed water at Y62 must still cover the neighboring bed"
+        );
+        for layer in Layer::ALL {
+            assert_ne!(
+                raster_color(&world, layer, 8833, 11107),
+                [43, 105, 133, 255],
+                "dry bank in {layer:?}"
+            );
+            let mut display = accurate_display();
+            display.height_shading = false;
+            assert_eq!(
+                raster_color_with_display(&world, layer, 8827, 11107, &display),
+                [43, 105, 133, 255],
+                "unshaded wet bed in {layer:?}"
+            );
+        }
+    }
+
+    #[test]
+    fn close_biome_tiles_resolve_a_dry_boundary_inside_one_quart_cell() {
+        let world = World::new(0, Settings::default());
+        let key = TileKey {
+            layer: Layer::Biomes,
+            ..test_key(1, -1, 0, true)
+        };
+        let tile = render_tile(&world, key, &accurate_display(), || false).unwrap();
+        for dz in 0..4 {
+            for dx in 0..4 {
+                let (x, z) = (380 + dx, -248 + dz);
+                assert_eq!(world.biome_id(x, z), biome::ids::id::HILLS);
+                let expected = if dx == 0 && dz >= 2 {
+                    biome::ids::id::SHORE
+                } else {
+                    biome::ids::id::HILLS
+                };
+                let index = (z + 256) as usize * DETAIL + (x - 256) as usize;
+                assert_eq!(tile.biomes[index], expected, "block {x},{z}");
+                assert!(
+                    !tile.surface_water[index],
+                    "biome display must not move the shoreline water mask"
+                );
+                assert_eq!(
+                    sample_probe(&world, x, z, false).biome,
+                    biome::biome_name(expected)
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn water_coverage_is_reused_across_layers_and_cancelled_tiles_do_not_publish_masks() {
+        WATER_MASK_CACHE.access(|cache| cache.clear());
+        BIOME_GRID_CACHE.access(|cache| cache.clear());
+        let world = World::new(0, Settings::default());
+        let key = TileKey {
+            zoom: 0,
+            x: 61,
+            z: 61,
+            layer: Layer::Biomes,
+            detail: false,
+        };
+        let cache_key = HeightGridKey::new(&world, key).with_terrain(&accurate_display().terrain);
+        let biome_key = HeightGridKey::new(&world, key).with_biomes(true);
+        assert!(render_tile(&world, key, &accurate_display(), || true).is_none());
+        assert!(WATER_MASK_CACHE.access(|cache| !cache.contains(&cache_key)));
+        assert!(BIOME_GRID_CACHE.access(|cache| !cache.contains(&biome_key)));
+        let start = Instant::now();
+        let first = render_tile(&world, key, &accurate_display(), || false).unwrap();
+        let cold = start.elapsed();
+        let mask = WATER_MASK_CACHE
+            .access(|cache| cache.peek(&cache_key).cloned())
+            .unwrap();
+        let biome_grid = BIOME_GRID_CACHE
+            .access(|cache| cache.peek(&biome_key).cloned())
+            .unwrap();
+        assert!(mask.iter().any(|water| *water));
+        let start = Instant::now();
+        let second = render_tile(
+            &world,
+            TileKey {
+                layer: Layer::Rainfall,
+                ..key
+            },
+            &accurate_display(),
+            || false,
+        )
+        .unwrap();
+        let reused = WATER_MASK_CACHE
+            .access(|cache| cache.peek(&cache_key).cloned())
+            .unwrap();
+        assert!(Arc::ptr_eq(&mask, &reused));
+        let reused_biomes = BIOME_GRID_CACHE
+            .access(|cache| cache.peek(&biome_key).cloned())
+            .unwrap();
+        assert!(Arc::ptr_eq(&biome_grid, &reused_biomes));
+        assert_eq!(first.biomes, second.biomes);
+        assert_eq!(first.surface_water, second.surface_water);
+        for (index, water) in mask.iter().enumerate() {
+            if *water {
+                assert_eq!(first.pixels[index], second.pixels[index]);
+            }
+        }
+        eprintln!(
+            "water tile cold={cold:?}; cached layer={:?}",
+            start.elapsed()
+        );
+    }
+
+    #[test]
+    fn completed_surface_grids_are_reused_by_a_different_engine_worker() {
+        let key = TileKey {
+            zoom: 0,
+            x: 241,
+            z: -463,
+            layer: Layer::Biomes,
+            detail: false,
+        };
+        let sample = move |layer| {
+            std::thread::spawn(move || {
+                let world = World::new(834_759, Settings::default());
+                let tile_key = TileKey { layer, ..key };
+                let raw_key = HeightGridKey::new(&world, tile_key);
+                let biome_key = raw_key.with_biomes(true);
+                let cache_key = raw_key.with_terrain(&accurate_display().terrain);
+                let display = DisplayPrefs {
+                    height_shading: true,
+                    ..accurate_display()
+                };
+                let tile = render_tile(&world, tile_key, &display, || false).unwrap();
+                let biomes = BIOME_GRID_CACHE
+                    .access(|cache| cache.get(&biome_key).cloned())
+                    .unwrap();
+                let water = WATER_MASK_CACHE
+                    .access(|cache| cache.get(&cache_key).cloned())
+                    .unwrap();
+                let volcanic = VOLCANIC_SURFACE_CACHE
+                    .access(|cache| cache.get(&cache_key).cloned())
+                    .unwrap();
+                let heights = HEIGHT_GRID_CACHE
+                    .access(|cache| cache.get(&raw_key).cloned())
+                    .unwrap();
+                (tile, biomes, water, volcanic, heights)
+            })
+            .join()
+            .unwrap()
+        };
+        let (first, b1, w1, v1, h1) = sample(Layer::Biomes);
+        let (second, b2, w2, v2, h2) = sample(Layer::Rainfall);
+        assert!(Arc::ptr_eq(&b1, &b2));
+        assert!(Arc::ptr_eq(&w1, &w2));
+        assert!(Arc::ptr_eq(&v1, &v2));
+        assert!(Arc::ptr_eq(&h1, &h2));
+        assert_eq!(first.biomes, second.biomes);
+        assert_eq!(first.surface_water, second.surface_water);
+    }
+
+    #[test]
+    fn complete_saved_chunks_remove_false_candidates_from_map_and_search_only() {
+        let mut atlas = Atlas::new(&egui::Context::default(), 0, Settings::default());
+        let mut absent = marker(1, MarkerKind::Structure, 15864., 15848., "tfg");
+        absent.id = "tfg:illagers/malay_village_living@991,990".into();
+        let unknown = marker(2, MarkerKind::Structure, 15880., 15848., "tfg");
+        let mut saved = absent.clone();
+        saved.confirmed = true;
+        saved.id = "actual:saved_start".into();
+        saved.namespace = "actual".into();
+        let ore = marker(3, MarkerKind::Ore, 15864., 15848., "tfg");
+        let mut volcano = marker(4, MarkerKind::Volcano, 15864., 15848., "tfg");
+        volcano.id = "terralens:volcano/cinder_cone@15864,15848".into();
+        atlas.predicted = vec![
+            absent.clone(),
+            unknown.clone(),
+            ore.clone(),
+            volcano.clone(),
+        ];
+        atlas.rebuild_markers();
+        assert!(atlas.markers.iter().any(|m| m.id == absent.id));
+        let mut coverage = prism::ChunkCoverage {
+            region_x: 30,
+            region_z: 30,
+            slots: [0; 16],
+        };
+        let slot = 30 * 32 + 31;
+        coverage.slots[slot / 64] |= 1_u64 << (slot % 64);
+        atlas
+            .out
+            .send(Reply::Structures(
+                atlas.scan_epoch,
+                Ok(prism::StructureScan {
+                    markers: vec![saved.clone()],
+                    completed: vec![coverage],
+                    ..Default::default()
+                }),
+            ))
+            .unwrap();
+        atlas.poll();
+        assert!(atlas.structure_candidate_absent(&absent));
+        assert!(!atlas.structure_candidate_absent(&unknown));
+        assert!(!atlas.structure_candidate_absent(&saved));
+        assert!(!atlas.structure_candidate_absent(&ore));
+        assert!(!atlas.structure_candidate_absent(&volcano));
+        assert!(atlas.markers.iter().any(|m| m.id == volcano.id));
+        assert!(
+            atlas
+                .visible_markers(
+                    Bounds {
+                        min_x: 15860.,
+                        max_x: 15870.,
+                        min_z: 15840.,
+                        max_z: 15855.
+                    },
+                    false,
+                    true
+                )
+                .iter()
+                .any(|m| m.id == volcano.id)
+        );
+        assert!(
+            atlas
+                .visible_markers(
+                    Bounds {
+                        min_x: 15860.,
+                        max_x: 15870.,
+                        min_z: 15840.,
+                        max_z: 15855.
+                    },
+                    true,
+                    false
+                )
+                .iter()
+                .all(|m| m.id != volcano.id)
+        );
+        let revision = atlas.structure_preview_revision();
+        atlas.inspect_structure(&volcano);
+        assert_eq!(atlas.structure_preview_revision(), revision);
+        assert!(!atlas.structure_preview_pending(&volcano));
+        assert!(!atlas.markers.iter().any(|m| m.id == absent.id));
+        assert!(atlas.markers.iter().any(|m| m.id == unknown.id));
+        assert!(atlas.markers.iter().any(|m| m.id == saved.id));
+        atlas.search = Some(Search {
+            origin: absent.point(),
+            radius: 1000.,
+            query: String::new(),
+            predictions: true,
+            scope: crate::search::Scope::All,
+            serial: 1,
+        });
+        atlas.search_candidates = vec![absent.clone(), unknown.clone(), ore, volcano.clone()];
+        atlas.update_search(false);
+        assert!(!atlas.search_results.iter().any(|m| m.id == absent.id));
+        assert!(atlas.search_results.iter().any(|m| m.id == unknown.id));
+        assert!(atlas.search_results.iter().any(|m| m.id == saved.id));
+        assert!(atlas.search_results.iter().any(|m| m.id == volcano.id));
+        atlas.set_dimension(Dimension::Moon, 64);
+        assert!(
+            !atlas.structure_candidate_absent(&absent),
+            "completion evidence must not cross dimensions"
+        );
+    }
+
+    #[test]
+    fn structure_inspection_keeps_instance_cache_across_zoom_and_rejects_stale_results() {
+        use crate::structure_preview::{PreviewSource, StructurePreview};
+        let mut atlas = Atlas::new(&egui::Context::default(), 0, Settings::default());
+        let instance = marker(1, MarkerKind::Structure, -24., 8., "test");
+        let key = PreviewKey::new(&instance);
+        atlas.preview_pending = Some((key.clone(), 9));
+        atlas
+            .out
+            .send(Reply::StructurePreview(
+                atlas.spec.epoch,
+                8,
+                Err("stale inspection".into()),
+            ))
+            .unwrap();
+        atlas.poll();
+        assert!(atlas.structure_preview_pending(&instance));
+        assert!(atlas.structure_preview_error(&instance).is_none());
+        atlas
+            .out
+            .send(Reply::StructurePreview(
+                atlas.spec.epoch,
+                9,
+                Ok(StructurePreview::empty(&instance.id, PreviewSource::Saved)),
+            ))
+            .unwrap();
+        atlas.poll();
+        assert!(!atlas.structure_preview_pending(&instance));
+        assert!(atlas.structure_preview(&instance).is_some());
+        let revision = atlas.structure_preview_revision();
+        for bpp in [0.125, 4., 512., 1.] {
+            atlas.bpp = bpp;
+            atlas.center = Point {
+                x: 100_000.,
+                z: -200_000.,
+            };
+            atlas.inspect_structure(&instance);
+            assert!(atlas.structure_preview(&instance).is_some());
+            assert_eq!(atlas.structure_preview_revision(), revision);
+            assert_eq!(atlas.preview_serial, 0, "cached pan/zoom must never rescan");
+        }
+        atlas.set_dimension(Dimension::Moon, 64);
+        assert!(atlas.structure_preview(&instance).is_none());
+        atlas
+            .out
+            .send(Reply::StructurePreview(
+                atlas.spec.epoch - 1,
+                9,
+                Ok(StructurePreview::empty(&instance.id, PreviewSource::Saved)),
+            ))
+            .unwrap();
+        atlas.poll();
+        assert!(atlas.structure_preview(&instance).is_none());
+    }
+
+    #[test]
+    fn structure_inspection_cache_survives_beneath_bands_but_not_a_new_world() {
+        use crate::structure_preview::{PreviewSource, StructurePreview};
+        let mut atlas = Atlas::new(&egui::Context::default(), 0, Settings::default());
+        atlas.set_dimension(Dimension::Beneath, 95);
+        let instance = marker(1, MarkerKind::Structure, 8., 8., "test");
+        atlas.structure_previews.put(
+            PreviewKey::new(&instance),
+            Ok(StructurePreview::empty(&instance.id, PreviewSource::Saved)),
+        );
+        atlas.set_dimension(Dimension::Beneath, 159);
+        assert!(atlas.structure_preview(&instance).is_some());
+        atlas.set_world(4, Settings::default(), None);
+        assert!(atlas.structure_preview(&instance).is_none());
+    }
 
     #[test]
     fn legend_sampling_and_percentages_are_bounded_and_use_loaded_denominator() {
@@ -3298,7 +5361,7 @@ mod tests {
         let base = Color32::from_rgb(40, 80, 120);
         let display = DisplayPrefs {
             highlighted_biomes: vec![biome::ids::id::PLAINS],
-            ..Default::default()
+            ..accurate_display()
         };
         assert_eq!(
             highlighted_biome_color(base, biome::ids::id::OCEAN, &display, true),
@@ -3316,7 +5379,7 @@ mod tests {
 
     #[test]
     fn biome_swatch_uses_overworld_and_beneath_palettes() {
-        let display = DisplayPrefs::default();
+        let display = accurate_display();
         assert_ne!(
             biome_legend_color(1000, Dimension::Beneath, &display),
             biome_legend_color(0, Dimension::Overworld, &display)
@@ -3339,7 +5402,7 @@ mod tests {
             ] {
                 let display = DisplayPrefs {
                     palette,
-                    ..Default::default()
+                    ..accurate_display()
                 };
                 let pixel = display_color(&world, Layer::Biomes, id, &probe, &display, 338, 514);
                 assert_eq!(
@@ -3396,7 +5459,7 @@ mod tests {
                 },
                 &DisplayPrefs {
                     palette: crate::display::Palette::Colorblind,
-                    ..DisplayPrefs::default()
+                    ..accurate_display()
                 },
                 0,
                 0,
@@ -3464,6 +5527,7 @@ mod tests {
         let mut pin = marker(1, MarkerKind::Structure, 8., 8., "tfg");
         pin.id = "tfg:beneath/tower@0,0".into();
         atlas.cache_feature_result(key, vec![pin], false);
+        atlas.refresh_visible_features();
         let bounds = Bounds {
             min_x: 0.,
             min_z: 0.,
@@ -4004,7 +6068,7 @@ mod tests {
         );
         atlas.refresh_visible_features();
         assert_eq!(atlas.predicted.len(), 1);
-        let prefs = DisplayPrefs::default();
+        let prefs = accurate_display();
         assert!(!prefs.marker_visible(&atlas.predicted[0], 4096.));
         assert!(prefs.marker_visible(&atlas.predicted[0], 0.5));
 
@@ -4327,11 +6391,634 @@ mod tests {
     }
 
     #[test]
+    fn close_detail_tiles_keep_one_texel_per_block_and_seamless_gutters() {
+        for bpp in [0.125, 0.5, 1.0, 1.414, 1.999, 2.0] {
+            let zoom = tile_zoom_for_bpp(bpp);
+            assert_eq!(zoom, 0, "close zoom bpp={bpp}");
+            let key = test_key(-7, -13, zoom, true);
+            assert_eq!(key.span() / DETAIL as f64, 1.0);
+            for i in -1..=DETAIL as i32 {
+                let east = TileKey {
+                    x: key.x + 1,
+                    ..key
+                };
+                let south = TileKey {
+                    z: key.z + 1,
+                    ..key
+                };
+                assert_eq!(
+                    tile_sample(key, DETAIL, DETAIL as i32 - 1, i),
+                    tile_sample(east, DETAIL, -1, i)
+                );
+                assert_eq!(
+                    tile_sample(key, DETAIL, i, DETAIL as i32 - 1),
+                    tile_sample(south, DETAIL, i, -1)
+                );
+            }
+        }
+        assert_eq!(tile_zoom_for_bpp(2.001), 1);
+        assert_eq!(tile_zoom_for_bpp(4.0), 2);
+    }
+
+    #[test]
+    fn tile_filter_defaults_to_nearest_and_can_smooth_loading_previews() {
+        let close = test_key(0, 0, 0, true);
+        let coarse = TileKey {
+            detail: false,
+            ..close
+        };
+        let broad = test_key(0, 0, 2, true);
+        for key in [close, coarse, broad] {
+            assert_eq!(
+                tile_texture_options(key, LoadingFilter::default()),
+                TextureOptions::NEAREST
+            );
+        }
+        assert_eq!(
+            tile_texture_options(close, LoadingFilter::Smooth),
+            TextureOptions::NEAREST
+        );
+        assert_eq!(
+            tile_texture_options(coarse, LoadingFilter::Smooth),
+            TextureOptions::LINEAR
+        );
+        assert_eq!(
+            tile_texture_options(broad, LoadingFilter::Smooth),
+            TextureOptions::LINEAR
+        );
+    }
+
+    #[test]
+    fn detail_limit_caps_sampling_without_limiting_zoom() {
+        for detail in MapDetail::ALL {
+            for bpp in [0.125, 0.5, 1., 2., 2.001, 4., 7.99, 32., 4096.] {
+                let zoom = tile_zoom_for_detail(bpp, detail);
+                let spacing = test_key(0, 0, zoom, true).span() / DETAIL as f64;
+                let limit = 2_f64.powi(detail.min_tile_zoom());
+                assert!(spacing >= limit);
+                if bpp <= 2. {
+                    assert_eq!(spacing, limit);
+                }
+                assert!(zoom >= tile_zoom_for_bpp(bpp));
+            }
+        }
+    }
+
+    #[test]
+    fn filter_and_detail_changes_keep_tiles_and_feature_placements() {
+        let ctx = egui::Context::default();
+        let mut atlas = Atlas::new(&ctx, 0, Settings::default());
+        let key = test_key(0, 0, 0, false);
+        let corner = Color32::from_rgb(20, 50, 80);
+        let texture = ctx.load_texture(
+            "test-cached-map",
+            ColorImage::new([2, 2], vec![corner; 4]),
+            TextureOptions::NEAREST,
+        );
+        let id = texture.id();
+        atlas.tiles.put(
+            key,
+            GpuTile {
+                texture,
+                corner,
+                resolution: 0,
+                biomes: vec![],
+                surface_water: vec![],
+            },
+        );
+        let _ = ctx.tex_manager().write().take_delta();
+        let epoch = atlas.spec.epoch;
+        let feature_serial = atlas.feature_serial;
+        let search_serial = atlas.search_revision.load(Ordering::Relaxed);
+        let mut prefs = atlas.spec.display.clone();
+        prefs.loading_filter = LoadingFilter::Smooth;
+        prefs.max_detail = MapDetail::FourBlocks;
+        atlas.set_display_options(&prefs);
+        assert_eq!(atlas.spec.epoch, epoch);
+        assert_eq!(atlas.feature_serial, feature_serial);
+        assert_eq!(atlas.search_revision.load(Ordering::Relaxed), search_serial);
+        assert_eq!(atlas.tiles.peek(&key).unwrap().texture.id(), id);
+        let delta = ctx.tex_manager().write().take_delta();
+        assert_eq!(delta.set.len(), 1);
+        assert_eq!(delta.set[0].0, id);
+        assert_eq!(delta.set[0].1.pos, Some([0, 0]));
+        assert_eq!(delta.set[0].1.image.size(), [1, 1]);
+        assert_eq!(delta.set[0].1.options, TextureOptions::LINEAR);
+        assert_eq!(atlas.spec.display, prefs);
+    }
+
+    #[test]
+    fn detail_limit_excludes_finer_cached_tiles_from_semantics_and_coverage() {
+        let ctx = egui::Context::default();
+        let mut atlas = Atlas::new(&ctx, 0, Settings::default());
+        let key = TileKey {
+            layer: Layer::Biomes,
+            ..test_key(0, 0, 2, true)
+        };
+        let corner = Color32::WHITE;
+        for z in 0..2 {
+            for x in 0..2 {
+                let child = TileKey {
+                    zoom: 1,
+                    x,
+                    z,
+                    ..key
+                };
+                atlas.tiles.put(
+                    child,
+                    GpuTile {
+                        texture: ctx.load_texture(
+                            "cached-child",
+                            ColorImage::new([3, 3], vec![corner; 9]),
+                            TextureOptions::NEAREST,
+                        ),
+                        corner,
+                        resolution: 1,
+                        biomes: vec![biome::ids::id::PLAINS],
+                        surface_water: vec![false],
+                    },
+                );
+            }
+        }
+        let point = Point { x: 1., z: 1. };
+        assert!(
+            atlas
+                .semantic_sample_at_cached(point, 2, Layer::Biomes)
+                .is_some()
+        );
+        assert!(atlas.tile_has_coverage(key, 0));
+        atlas.spec.display.max_detail = MapDetail::FourBlocks;
+        assert_eq!(
+            atlas.semantic_sample_at_cached(point, 2, Layer::Biomes),
+            None
+        );
+        assert!(!atlas.tile_has_coverage(key, 0));
+    }
+
+    #[test]
+    fn hillshade_shades_ocean_terrain_and_leaves_missing_height_unchanged() {
+        let ocean = Color32::from_rgb(31, 77, 104);
+        let slope = [Some(20.), Some(10.), Some(0.)];
+        let shaded_ocean = apply_hillshade(ocean, slope, 1.0, 0.8);
+        assert_ne!(shaded_ocean, ocean, "underwater relief changes brightness");
+        assert!(
+            shaded_ocean.b() > shaded_ocean.r(),
+            "underwater relief retains a blue water hue"
+        );
+        let land = Color32::from_rgb(140, 130, 120);
+        assert_eq!(
+            apply_hillshade(land, [Some(0.), None, Some(0.)], 1.0, 0.8),
+            land,
+            "missing height leaves the source pixel unchanged"
+        );
+    }
+
+    #[test]
+    fn shaded_adjacent_tile_gutters_have_identical_shared_texels() {
+        let resolution = DETAIL;
+        let key = test_key(-3, -5, 0, true);
+        let east = TileKey {
+            x: key.x + 1,
+            ..key
+        };
+        let south = TileKey {
+            z: key.z + 1,
+            ..key
+        };
+        let make_height_grid = |key: TileKey| {
+            let side = resolution + 4;
+            (0..side * side)
+                .map(|index| {
+                    let x = index % side;
+                    let z = index / side;
+                    let (wx, wz) = tile_sample(key, resolution, x as i32 - 2, z as i32 - 2);
+                    Some(wx as f64 * 0.07 + wz as f64 * 0.11)
+                })
+                .collect::<Vec<_>>()
+        };
+        let left_heights = make_height_grid(key);
+        let right_heights = make_height_grid(east);
+        let north_heights = make_height_grid(key);
+        let south_heights = make_height_grid(south);
+        let base = Color32::from_rgb(130, 145, 110);
+        for i in 0..=resolution + 1 {
+            let water = Color32::from_rgb(43, 105, 133);
+            let right = shade_tile_pixel(water, &right_heights, resolution + 4, 0, i, 1.0, 0.6);
+            let left_water = shade_tile_pixel(
+                water,
+                &left_heights,
+                resolution + 4,
+                resolution + 1,
+                i,
+                1.0,
+                0.6,
+            );
+            assert_eq!(
+                left_water, right,
+                "water shades continuously across east edge"
+            );
+            let north_water = shade_tile_pixel(
+                water,
+                &north_heights,
+                resolution + 4,
+                i,
+                resolution + 1,
+                1.0,
+                0.6,
+            );
+            let south_water =
+                shade_tile_pixel(water, &south_heights, resolution + 4, i, 0, 1.0, 0.6);
+            assert_eq!(
+                north_water, south_water,
+                "water shades continuously across south edge"
+            );
+            let top = shade_tile_pixel(
+                base,
+                &north_heights,
+                resolution + 4,
+                i,
+                resolution,
+                1.0,
+                0.6,
+            );
+            let bottom = shade_tile_pixel(base, &south_heights, resolution + 4, i, 0, 1.0, 0.6);
+            assert_eq!(top, bottom, "north/south seam at padded texel {i}");
+        }
+    }
+
+    #[test]
+    fn contours_join_at_shared_tile_samples_in_both_axes() {
+        let prefs = crate::contours::ContourPrefs {
+            enabled: true,
+            interval: 5,
+            ..Default::default()
+        };
+        let base = Color32::from_rgb(130, 145, 110);
+        let mut line_samples = 0;
+        let mut clear_samples = 0;
+        for (zoom, detail) in [(0, true), (3, false)] {
+            let resolution = if detail { DETAIL } else { COARSE };
+            let side = resolution + 4;
+            let key = test_key(-3, -5, zoom, detail);
+            let east = TileKey {
+                x: key.x + 1,
+                ..key
+            };
+            let south = TileKey {
+                z: key.z + 1,
+                ..key
+            };
+            let make_grid = |key| {
+                (0..side * side)
+                    .map(|index| {
+                        let (x, z) = tile_sample(
+                            key,
+                            resolution,
+                            (index % side) as i32 - 2,
+                            (index / side) as i32 - 2,
+                        );
+                        Some(70. + 8. * (x as f64 * 0.005).sin() + 4. * (z as f64 * 0.007).cos())
+                    })
+                    .collect::<Vec<_>>()
+            };
+            let grid = make_grid(key);
+            let east_grid = make_grid(east);
+            let south_grid = make_grid(south);
+            for i in 0..resolution + 2 {
+                for gutter in 0..=1 {
+                    let left_x = resolution + gutter;
+                    assert_eq!(
+                        tile_sample(key, resolution, left_x as i32 - 1, i as i32 - 1),
+                        tile_sample(east, resolution, gutter as i32 - 1, i as i32 - 1),
+                    );
+                    let left = contour_tile_pixel(base, &grid, side, left_x, i, &prefs);
+                    let right = contour_tile_pixel(base, &east_grid, side, gutter, i, &prefs);
+                    assert_eq!(left, right, "east/west contour seam at {i},{gutter}");
+                    let top = contour_tile_pixel(base, &grid, side, i, left_x, &prefs);
+                    let bottom = contour_tile_pixel(base, &south_grid, side, i, gutter, &prefs);
+                    assert_eq!(top, bottom, "north/south contour seam at {i},{gutter}");
+                    line_samples += usize::from(left != base) + usize::from(top != base);
+                    clear_samples += usize::from(left == base) + usize::from(top == base);
+                }
+            }
+        }
+        assert!(
+            line_samples > 0,
+            "exercise visible contours at tile boundaries"
+        );
+        assert!(
+            clear_samples > 0,
+            "contours must leave terrain between lines clear"
+        );
+    }
+
+    #[test]
+    fn contour_tiles_and_export_pixels_agree_and_respect_underwater_visibility() {
+        let world = World::new(0, Settings::default());
+        let key = test_key(-3, 4, 2, false);
+        let mut prefs = DisplayPrefs {
+            height_shading: true,
+            ..accurate_display()
+        };
+        let plain = render_tile(&world, key, &prefs, || false).unwrap();
+        prefs.contours.enabled = true;
+        prefs.contours.interval = 5;
+        let land = render_tile(&world, key, &prefs, || false).unwrap();
+        prefs.contours.underwater = true;
+        let all = render_tile(&world, key, &prefs, || false).unwrap();
+        assert_eq!(plain.biomes, all.biomes);
+        assert_eq!(plain.surface_water, all.surface_water);
+        let resolution = COARSE;
+        let side = resolution + 2;
+        let mut changed_land = 0;
+        let mut changed_water = 0;
+        for z in 1..=resolution {
+            for x in 1..=resolution {
+                let index = z * side + x;
+                if plain.surface_water[(z - 1) * resolution + x - 1] {
+                    assert_eq!(land.pixels[index], plain.pixels[index]);
+                    changed_water += usize::from(all.pixels[index] != plain.pixels[index]);
+                } else {
+                    changed_land += usize::from(land.pixels[index] != plain.pixels[index]);
+                }
+                if index.is_multiple_of(37) {
+                    let (bx, bz) = tile_sample(key, resolution, x as i32 - 1, z as i32 - 1);
+                    let exported = raster_color_with_display_step(
+                        &world,
+                        key.layer,
+                        bx,
+                        bz,
+                        &prefs,
+                        key.span() / resolution as f64,
+                    );
+                    let pixel = all.pixels[index];
+                    assert_eq!(exported, [pixel.r(), pixel.g(), pixel.b(), pixel.a()]);
+                }
+            }
+        }
+        assert!(
+            changed_land > 0,
+            "land contours must be visible without changing biomes"
+        );
+        assert!(
+            changed_water > 0,
+            "underwater toggle must expose seafloor contours"
+        );
+    }
+
+    #[test]
+    fn seed_zero_ocean_surface_uses_underwater_relief() {
+        let world = World::new(0, Settings::default());
+        let (x, z) = (-2345, -678);
+        assert!(world.probe(x, z).is_water());
+        assert!(world.height(x, z).unwrap() < 63.);
+        let mut shaded = accurate_display();
+        shaded.height_shading = true;
+        shaded.hillshade_strength = 0.8;
+        let mut flat = shaded.clone();
+        flat.height_shading = false;
+        for layer in Layer::ALL {
+            let under_relief = raster_color_with_display_step(&world, layer, x, z, &shaded, 16.);
+            let water_base = raster_color_with_display_step(&world, layer, x, z, &flat, 16.);
+            assert_ne!(
+                under_relief, water_base,
+                "underwater ground is shaded for {layer:?}"
+            );
+            assert!(
+                under_relief[2] > under_relief[0],
+                "water hue remains blue for {layer:?}"
+            );
+        }
+    }
+
+    #[test]
+    fn natural_hot_spring_water_is_part_of_every_map_layer() {
+        let world = World::new(0, Settings::default());
+        let (x, z) = (14386, 13643);
+        let spring = crate::hot_springs::sample(&world, x, z).expect("seed-0 active spring");
+        assert_eq!(spring.block.as_ref(), "tfc:fluid/spring_water");
+        assert_eq!(spring.y, 96);
+        assert_eq!(
+            world.volcanic_surface(x, z),
+            Some(crate::volcanic_lava::Surface::Water(96))
+        );
+        let probe = world.probe(x, z);
+        assert!(probe.is_water() && probe.is_fluid());
+        assert_eq!(probe.surface_water_y, Some(96));
+        let bed = crate::ground::pre_forest_sample(&world, x, z).unwrap();
+        assert_eq!(
+            bed.y, 95,
+            "forest origins use the pool bed, not the later surface-water plane"
+        );
+        assert!(bed.block.starts_with("tfc:rock/gravel/"));
+        let display = accurate_display();
+        for layer in Layer::ALL {
+            assert_eq!(
+                raster_color_with_display(&world, layer, x, z, &display),
+                [43, 105, 133, 255],
+                "natural spring water on {layer:?}"
+            );
+        }
+    }
+
+    #[test]
+    fn dry_spring_basins_affect_materials_and_relief_without_a_marker() {
+        let world = World::new(0, Settings::default());
+        let (x, z) = (-319245_i32, 16110_i32);
+        let surface = crate::ground::sample(&world, x, z).expect("seed-0 dry spring basin");
+        assert!(surface.block.starts_with("tfc:rock/gravel/"));
+        assert_eq!(surface.y, 84);
+        assert!(
+            crate::hot_springs::sample_before_forest(&world, x, z).is_none(),
+            "later dry springs must not change forest eligibility"
+        );
+        let mut display = DisplayPrefs {
+            height_shading: true,
+            ..accurate_display()
+        };
+        display.contours.enabled = true;
+        display.contours.interval = 1;
+        let key = TileKey {
+            zoom: 0,
+            x: x.div_euclid(256),
+            z: z.div_euclid(256),
+            layer: Layer::Biomes,
+            detail: true,
+        };
+        let tile = render_tile(&world, key, &display, || false).unwrap();
+        let raster = RasterSampler::new(&world, key.layer, &display, [1., 1.]);
+        assert_eq!(raster.relief_height(x, z), Some(84.));
+        assert!(
+            world.height(x, z).unwrap() > 84.,
+            "excavation must lower the terrain surface"
+        );
+        for (wx, wz) in [(x, z), (x - 1, z), (x + 1, z + 1)] {
+            let lx = wx.rem_euclid(256) as usize;
+            let lz = wz.rem_euclid(256) as usize;
+            assert_eq!(
+                tile.pixels[(lz + 1) * (DETAIL + 2) + lx + 1].to_array(),
+                raster.color(wx, wz, &|| false)
+            );
+        }
+    }
+
+    #[test]
+    fn volcanic_lava_keeps_its_surface_color_on_every_layer_and_overlay() {
+        let world = World::new(0, Settings::default());
+        let (x, z) = (5511, -6368);
+        let probe = world.probe(x, z);
+        assert_eq!(probe.surface_lava, Some(92));
+        assert!(!probe.is_water() && probe.is_fluid());
+        assert_eq!(probe.height, Some(91.));
+        let mut prefs = DisplayPrefs {
+            height_shading: true,
+            hillshade_strength: 1.,
+            palette: crate::display::Palette::Colorblind,
+            temperature_enabled: true,
+            temperature_min: -30.,
+            temperature_max: -29.,
+            ..accurate_display()
+        };
+        prefs.contours.enabled = true;
+        prefs.contours.interval = 1;
+        prefs.contours.underwater = true;
+        for layer in Layer::ALL {
+            let rgb = crate::volcanic_lava::COLOR;
+            assert_eq!(
+                raster_color_with_display(&world, layer, x, z, &prefs),
+                [rgb[0], rgb[1], rgb[2], 255],
+                "lava must stay visible on {layer:?}, including highlighted/colorblind layers",
+            );
+        }
+        assert_eq!(world.tree_estimate(&probe, 10_000.).total, 0.);
+        assert!(world.is_surface_fluid(x, z));
+        assert!(!world.is_surface_water(x, z));
+        for dimension in [Dimension::Moon, Dimension::Mars, Dimension::Beneath] {
+            assert!(
+                World::for_dimension(0, Settings::default(), dimension, 96)
+                    .surface_lava_y(x, z)
+                    .is_none()
+            );
+        }
+    }
+
+    #[test]
+    fn volcanic_lava_tile_masks_are_reused_across_layers_and_not_published_on_cancel() {
+        let world = World::new(0, Settings::default());
+        let key = test_key(21, -25, 0, false);
+        let cache_key = HeightGridKey::new(&world, key).with_terrain(&accurate_display().terrain);
+        VOLCANIC_SURFACE_CACHE.access(|cache| {
+            cache.pop(&cache_key);
+        });
+        assert!(render_tile(&world, key, &accurate_display(), || true).is_none());
+        assert!(VOLCANIC_SURFACE_CACHE.access(|cache| !cache.contains(&cache_key)));
+        let mut prefs = DisplayPrefs {
+            height_shading: true,
+            ..accurate_display()
+        };
+        prefs.contours.enabled = true;
+        prefs.contours.interval = 1;
+        let first = render_tile(&world, key, &prefs, || false).unwrap();
+        let mask = VOLCANIC_SURFACE_CACHE
+            .access(|cache| cache.get(&cache_key).cloned())
+            .unwrap();
+        assert!(
+            mask.iter().any(Option::is_some),
+            "the tile must exercise a caldera"
+        );
+        let other = render_tile(
+            &world,
+            TileKey {
+                layer: Layer::Rainfall,
+                ..key
+            },
+            &prefs,
+            || false,
+        )
+        .unwrap();
+        let reused = VOLCANIC_SURFACE_CACHE
+            .access(|cache| cache.get(&cache_key).cloned())
+            .unwrap();
+        assert!(Arc::ptr_eq(&mask, &reused));
+        for (index, y) in mask.iter().enumerate() {
+            if matches!(y, Some(crate::volcanic_lava::Surface::Lava(_))) {
+                let expected = color_from_rgb(crate::volcanic_lava::COLOR);
+                assert_eq!(first.pixels[index], expected);
+                assert_eq!(other.pixels[index], expected);
+            }
+        }
+    }
+
+    #[test]
+    fn height_grid_cache_key_reuses_layers_but_separates_world_inputs() {
+        let world = World::for_dimension(
+            17,
+            Settings::default(),
+            Dimension::Overworld,
+            Dimension::Overworld.default_y(),
+        );
+        let tile = test_key(-2, 5, 0, true);
+        let mut other_layer = TileKey {
+            layer: Layer::Temperature,
+            ..tile
+        };
+        let key = HeightGridKey::new(&world, tile);
+        assert_eq!(key, HeightGridKey::new(&world, other_layer));
+        let opened = World::new(17, Settings::default())
+            .with_surface_source(Some(PathBuf::from("/virtual/world-0")), 1);
+        let reloaded = World::new(17, Settings::default())
+            .with_surface_source(Some(PathBuf::from("/virtual/world-0")), 2);
+        let other_save = World::new(17, Settings::default())
+            .with_surface_source(Some(PathBuf::from("/virtual/another-world")), 1);
+        assert_ne!(key, HeightGridKey::new(&opened, tile));
+        assert_ne!(
+            HeightGridKey::new(&opened, tile),
+            HeightGridKey::new(&reloaded, tile)
+        );
+        assert_ne!(
+            HeightGridKey::new(&opened, tile),
+            HeightGridKey::new(&other_save, tile)
+        );
+        other_layer.detail = false;
+        assert_ne!(key, HeightGridKey::new(&world, other_layer));
+
+        let other_seed = World::for_dimension(
+            18,
+            Settings::default(),
+            Dimension::Overworld,
+            Dimension::Overworld.default_y(),
+        );
+        assert_ne!(key, HeightGridKey::new(&other_seed, tile));
+        let other_dimension = World::for_dimension(
+            17,
+            Settings::default(),
+            Dimension::Moon,
+            Dimension::Moon.default_y(),
+        );
+        assert_ne!(key, HeightGridKey::new(&other_dimension, tile));
+        let mut changed_settings = Settings::default();
+        changed_settings.continentalness += 0.01;
+        let other_settings = World::for_dimension(
+            17,
+            changed_settings,
+            Dimension::Overworld,
+            Dimension::Overworld.default_y(),
+        );
+        assert_ne!(key, HeightGridKey::new(&other_settings, tile));
+        let low_band = World::for_dimension(17, Settings::default(), Dimension::Beneath, 15);
+        let high_band = World::for_dimension(17, Settings::default(), Dimension::Beneath, 95);
+        assert_ne!(
+            HeightGridKey::new(&low_band, tile),
+            HeightGridKey::new(&high_band, tile)
+        );
+    }
+
+    #[test]
     fn adjoining_rasters_share_edge_texels_and_keep_semantic_interior_unpadded() {
         let world = World::new(7787531943268589495, Settings::default());
         for detail in [false, true] {
             let key = test_key(-1, -2, 4, detail);
-            let display = DisplayPrefs::default();
+            let display = accurate_display();
             let left = render_tile(&world, key, &display, || false).unwrap();
             let right = render_tile(&world, TileKey { x: 0, ..key }, &display, || false).unwrap();
             let n = left.resolution;
@@ -4396,6 +7083,7 @@ mod tests {
                         resolution: n,
                         pixels: vec![Color32::BLACK; (n + 2) * (n + 2)],
                         biomes: vec![0; n * n],
+                        surface_water: vec![false; n * n],
                     },
                 ))
                 .unwrap();
@@ -4434,6 +7122,81 @@ mod tests {
         assert_eq!(pending.get(&key), Some(&(9, 21)));
         remove_pending_if_current(&mut pending, key, 9, 21);
         assert!(!pending.contains_key(&key));
+    }
+
+    #[test]
+    fn skipped_tile_invalidates_an_identical_plan_so_the_same_view_retries_it() {
+        let mut atlas = Atlas::new(&egui::Context::default(), 0, Settings::default());
+        let key = TileKey {
+            zoom: 1,
+            x: -2,
+            z: 3,
+            layer: Layer::Biomes,
+            detail: false,
+        };
+        let wanted = HashSet::from([key]);
+        assert!(atlas.schedule_tiles(wanted.clone(), vec![key]));
+        assert!(
+            !atlas.schedule_tiles(wanted.clone(), vec![key]),
+            "the unchanged viewport should not republish a plan each frame"
+        );
+        let (epoch, revision) = atlas.pending[&key];
+        atlas
+            .out
+            .send(Reply::Skipped(epoch, revision, key))
+            .unwrap();
+        atlas.poll();
+        assert!(atlas.last_tile_plan.is_none());
+        assert!(
+            atlas.schedule_tiles(wanted, vec![key]),
+            "an unchanged viewport must republish its skipped tile"
+        );
+    }
+
+    #[test]
+    fn accepted_tile_dropped_from_full_upload_queue_is_requested_again() {
+        let mut atlas = Atlas::new(&egui::Context::default(), 0, Settings::default());
+        let key = TileKey {
+            zoom: 0,
+            x: 5000,
+            z: -5000,
+            layer: Layer::Biomes,
+            detail: false,
+        };
+        let wanted = HashSet::from([key]);
+        assert!(atlas.schedule_tiles(wanted.clone(), vec![key]));
+        let (epoch, revision) = atlas.pending[&key];
+        for x in 0..TILE_CACHE as i32 {
+            atlas.uploads.push_back(CpuTile {
+                key: TileKey { x, z: 0, ..key },
+                resolution: 1,
+                pixels: vec![Color32::BLACK; 9],
+                biomes: vec![0],
+                surface_water: vec![false],
+            });
+        }
+        atlas
+            .out
+            .send(Reply::Tile(
+                epoch,
+                revision,
+                CpuTile {
+                    key,
+                    resolution: 1,
+                    pixels: vec![Color32::BLACK; 9],
+                    biomes: vec![0],
+                    surface_water: vec![false],
+                },
+            ))
+            .unwrap();
+        atlas.poll();
+        assert!(!atlas.tiles.contains(&key));
+        assert!(!atlas.uploads.iter().any(|tile| tile.key == key));
+        assert!(atlas.last_tile_plan.is_none());
+        assert!(
+            atlas.schedule_tiles(wanted, vec![key]),
+            "a tile lost to upload backpressure must be enqueued again"
+        );
     }
 
     #[test]
@@ -4521,6 +7284,30 @@ mod tests {
         assert_eq!(sizes.len(), 2);
         assert_eq!(sizes.values().copied().collect::<Vec<_>>(), [2, 2]);
     }
+
+    #[test]
+    fn flooded_land_keeps_its_biome_but_splits_continent_selection() {
+        let plains = crate::biome::ids::id::PLAINS;
+        let source_sample = (plains, true);
+        // The legend can still count the true generated biome ID.
+        assert_eq!(source_sample.0, plains);
+        // Region topology uses the independent water bit, just as ocean channels
+        // are excluded, even if the generated biome itself is ordinary land.
+        let values = [
+            Some((plains, false)),
+            Some((plains, true)),
+            Some((plains, false)),
+        ]
+        .map(|sample| sample.and_then(region_biome_value));
+        let (labels, sizes, _) = component_labels(&values, 3, 1, true);
+        assert_ne!(labels[0], labels[2]);
+        assert_eq!(labels[1], 0);
+        assert_eq!(sizes.len(), 2);
+        assert_eq!(
+            biome::biome_name(source_sample.0),
+            biome::biome_name(plains)
+        );
+    }
 }
 
 fn blend(a: [u8; 3], b: [u8; 3], t: f64) -> Color32 {
@@ -4537,6 +7324,17 @@ fn ramp(t: f64, colors: &[[u8; 3]]) -> Color32 {
     blend(colors[i], colors[i + 1], p - i as f64)
 }
 fn color(layer: Layer, id: u16, p: &Probe) -> Color32 {
+    if p.surface_magma.is_some() {
+        return color_from_rgb(crate::volcanic_lava::MAGMA_COLOR);
+    }
+    if p.surface_lava.is_some() {
+        return color_from_rgb(crate::volcanic_lava::COLOR);
+    }
+    if p.surface_water_y
+        .is_some_and(|y| y > crate::surface_water::SEA_SURFACE_BLOCK_Y)
+    {
+        return Color32::from_rgb(43, 105, 133);
+    }
     if p.ocean {
         return match p.biome.rsplit('/').next().unwrap_or("") {
             "deep_ocean_trench" => Color32::from_rgb(21, 49, 72),
@@ -4546,8 +7344,18 @@ fn color(layer: Layer, id: u16, p: &Probe) -> Color32 {
             _ => Color32::from_rgb(33, 80, 106),
         };
     }
+    if p.surface_water {
+        return if p.biome.ends_with("river") || p.biome.ends_with("lake") {
+            Color32::from_rgb(71, 157, 178)
+        } else {
+            Color32::from_rgb(43, 105, 133)
+        };
+    }
     match layer {
-        Layer::Biomes => biome_color(id, &p.biome),
+        Layer::Biomes => land_biome_color(id, p),
+        Layer::Ground => crate::ground_view::probe_color(p)
+            .map(color_from_rgb)
+            .unwrap_or_else(|| land_biome_color(id, p)),
         Layer::Temperature => ramp(
             (p.climate.temperature + 25.) / 60.,
             &[
@@ -4578,13 +7386,7 @@ fn color(layer: Layer, id: u16, p: &Probe) -> Color32 {
                 [220, 226, 222],
             ],
         ),
-        Layer::Water => {
-            if p.biome.ends_with("river") || p.biome.ends_with("lake") {
-                Color32::from_rgb(71, 157, 178)
-            } else {
-                Color32::from_rgb(185, 188, 158)
-            }
-        }
+        Layer::Water => Color32::from_rgb(185, 188, 158),
         Layer::Geology => color_from_rgb(rock_legend_color(
             &p.rocks[0],
             crate::display::Palette::Natural,
@@ -4639,8 +7441,50 @@ fn display_color(
         let base = beneath_biome_color(id, display.palette);
         return highlighted_biome_color(base, id, display, false);
     }
-    let mut base = color(layer, id, sample);
-    if display.palette == crate::display::Palette::Colorblind && !sample.ocean {
+    // A covered lake retains its biome identity without implicitly enabling the
+    // Ground layer. Its dark swatch describes the water biome below solid land.
+    let underground_water = layer == Layer::Biomes
+        && !sample.is_bare_surface()
+        && (sample.biome.ends_with("lake")
+            || sample.biome.ends_with("river")
+                && crate::surface_water::is_underground_river(
+                    world,
+                    x,
+                    z,
+                    sample
+                        .ground_y
+                        .unwrap_or_else(|| world.height(x, z).unwrap_or(63.) as i32),
+                ));
+    let mut base = if underground_water {
+        color_from_rgb(UNDERGROUND_WATER_COLOR)
+    } else if let Some(season) = display.simulated_season().filter(|_| sample.is_water()) {
+        let climate = world.region.climate(x, z);
+        color_from_rgb(crate::map_colors::water_at(
+            climate.temperature,
+            climate.rainfall,
+            z,
+            world.region.settings.temperature_scale,
+            Some(season),
+        ))
+    } else if display.simulated_season().is_some()
+        && (layer == Layer::Ground
+            || layer == Layer::Biomes && crate::surface_water::is_inland_water_biome(id))
+        && !sample.is_bare_surface()
+    {
+        crate::ground_view::probe_color_at(
+            sample,
+            world.region.settings.temperature_scale,
+            display.simulated_season(),
+        )
+        .map(color_from_rgb)
+        .unwrap_or_else(|| color(layer, id, sample))
+    } else {
+        color(layer, id, sample)
+    };
+    if display.palette == crate::display::Palette::Colorblind
+        && !sample.is_bare_surface()
+        && !underground_water
+    {
         // Distinct high-contrast categories and sequential blue/yellow scales,
         // rather than simulating a color-vision deficiency on the existing map.
         base = match layer {
@@ -4688,7 +7532,7 @@ fn display_color(
             _ => base,
         };
     }
-    if !display.has_highlight_filter() || sample.ocean {
+    if !display.has_highlight_filter() || sample.is_bare_surface() {
         return base;
     }
     let climate = if display.temperature_enabled || display.rainfall_enabled {
@@ -4844,6 +7688,21 @@ fn mix_color(a: Color32, b: Color32, t: f32) -> Color32 {
         (a.g() as f32 * (1. - t) + b.g() as f32 * t) as u8,
         (a.b() as f32 * (1. - t) + b.b() as f32 * t) as u8,
     )
+}
+
+// Slightly darker than the exposed river swatch [71,157,178].
+const UNDERGROUND_WATER_COLOR: [u8; 3] = [48, 115, 140];
+
+// Biome palettes describe water bodies, but a dry column still needs a land
+// material color. Keep biome identity intact for hover, search and highlighting.
+fn land_biome_color(id: u16, sample: &Probe) -> Color32 {
+    if crate::surface_water::is_inland_water_biome(id) {
+        crate::ground_view::probe_color(sample)
+            .map(color_from_rgb)
+            .unwrap_or(Color32::from_rgb(185, 188, 158))
+    } else {
+        biome_color(id, &sample.biome)
+    }
 }
 
 fn biome_color(_id: u16, name: &str) -> Color32 {

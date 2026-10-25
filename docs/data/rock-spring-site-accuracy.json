@@ -1,0 +1,1036 @@
+{
+  "columns": 2304,
+  "controls": [
+    {
+      "height": 87.0,
+      "host_at_predicted_y": "chert",
+      "host_at_saved_forgecaps_y": "chert",
+      "host_at_saved_y": "chert",
+      "host_at_y0": "quartzite",
+      "predicted": "tfc:grass/loam",
+      "predicted_y": 87,
+      "saved": "tfc:grass/loam",
+      "saved_surface_height": 87,
+      "saved_y": 87,
+      "x": -319262,
+      "z": 16107
+    },
+    {
+      "height": 86.0,
+      "host_at_predicted_y": "chert",
+      "host_at_saved_forgecaps_y": "chert",
+      "host_at_saved_y": "chert",
+      "host_at_y0": "quartzite",
+      "predicted": "tfc:rock/hardened/quartzite",
+      "predicted_y": 86,
+      "saved": "tfc:rock/hardened/quartzite",
+      "saved_surface_height": 86,
+      "saved_y": 86,
+      "x": -319246,
+      "z": 16110
+    },
+    {
+      "height": 85.0,
+      "host_at_predicted_y": "chert",
+      "host_at_saved_forgecaps_y": "chert",
+      "host_at_saved_y": "chert",
+      "host_at_y0": "quartzite",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 84,
+      "saved": "tfc:rock/gravel/quartzite",
+      "saved_surface_height": 85,
+      "saved_y": 84,
+      "x": -319245,
+      "z": 16110
+    },
+    {
+      "height": 85.0,
+      "host_at_predicted_y": "chert",
+      "host_at_saved_forgecaps_y": "chert",
+      "host_at_saved_y": "chert",
+      "host_at_y0": "quartzite",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 84,
+      "saved": "tfc:rock/gravel/quartzite",
+      "saved_surface_height": 85,
+      "saved_y": 84,
+      "x": -319244,
+      "z": 16110
+    }
+  ],
+  "divergences": [
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319252,
+      "z": 16098
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319251,
+      "z": 16098
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319254,
+      "z": 16099
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319253,
+      "z": 16099
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319252,
+      "z": 16099
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319251,
+      "z": 16099
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319250,
+      "z": 16099
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319249,
+      "z": 16099
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/hardened/quartzite",
+      "predicted_y": 87,
+      "saved": "tfc:rock/gravel/quartzite",
+      "saved_y": 86,
+      "x": -319255,
+      "z": 16100
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319254,
+      "z": 16100
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319253,
+      "z": 16100
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319252,
+      "z": 16100
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319251,
+      "z": 16100
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319250,
+      "z": 16100
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319249,
+      "z": 16100
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319254,
+      "z": 16101
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319253,
+      "z": 16101
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319252,
+      "z": 16101
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319251,
+      "z": 16101
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319250,
+      "z": 16101
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319249,
+      "z": 16101
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319255,
+      "z": 16102
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319254,
+      "z": 16102
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319253,
+      "z": 16102
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319252,
+      "z": 16102
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319251,
+      "z": 16102
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319250,
+      "z": 16102
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319249,
+      "z": 16102
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319255,
+      "z": 16103
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319254,
+      "z": 16103
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319253,
+      "z": 16103
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319252,
+      "z": 16103
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319251,
+      "z": 16103
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319250,
+      "z": 16103
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319249,
+      "z": 16103
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319255,
+      "z": 16104
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319254,
+      "z": 16104
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319253,
+      "z": 16104
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319252,
+      "z": 16104
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319251,
+      "z": 16104
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319250,
+      "z": 16104
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319249,
+      "z": 16104
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319255,
+      "z": 16105
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319254,
+      "z": 16105
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319253,
+      "z": 16105
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319252,
+      "z": 16105
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319251,
+      "z": 16105
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319250,
+      "z": 16105
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319249,
+      "z": 16105
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319256,
+      "z": 16106
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319255,
+      "z": 16106
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319254,
+      "z": 16106
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319253,
+      "z": 16106
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319252,
+      "z": 16106
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319251,
+      "z": 16106
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319250,
+      "z": 16106
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319249,
+      "z": 16106
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319256,
+      "z": 16107
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319255,
+      "z": 16107
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319254,
+      "z": 16107
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319253,
+      "z": 16107
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319252,
+      "z": 16107
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319251,
+      "z": 16107
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319250,
+      "z": 16107
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319249,
+      "z": 16107
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319255,
+      "z": 16108
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319254,
+      "z": 16108
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319253,
+      "z": 16108
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319252,
+      "z": 16108
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319251,
+      "z": 16108
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319250,
+      "z": 16108
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319249,
+      "z": 16108
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319255,
+      "z": 16109
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319254,
+      "z": 16109
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319253,
+      "z": 16109
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319252,
+      "z": 16109
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319251,
+      "z": 16109
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319250,
+      "z": 16109
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319249,
+      "z": 16109
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319255,
+      "z": 16110
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319254,
+      "z": 16110
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319253,
+      "z": 16110
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319252,
+      "z": 16110
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319251,
+      "z": 16110
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319250,
+      "z": 16110
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319249,
+      "z": 16110
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319255,
+      "z": 16111
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319254,
+      "z": 16111
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319253,
+      "z": 16111
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319252,
+      "z": 16111
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319251,
+      "z": 16111
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319250,
+      "z": 16111
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319249,
+      "z": 16111
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319248,
+      "z": 16099
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319248,
+      "z": 16100
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319247,
+      "z": 16100
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319246,
+      "z": 16100
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319248,
+      "z": 16101
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319247,
+      "z": 16101
+    },
+    {
+      "host_rock": "chert",
+      "predicted": "tfc:rock/gravel/quartzite",
+      "predicted_y": 85,
+      "saved": "minecraft:water",
+      "saved_y": 86,
+      "x": -319246,
+      "z": 16101
+    }
+  ],
+  "exact_exposed_rock_materials": 159,
+  "exact_surface_block_and_height": 2144,
+  "exact_surface_heights": 2144,
+  "exact_surface_materials": 2144,
+  "exposed_rock_accuracy": 0.9754601226993865,
+  "exposed_rock_columns": 163,
+  "mismatch_pairs": {
+    "minecraft:water -> tfc:rock/gravel/quartzite": 156,
+    "tfc:rock/gravel/quartzite -> tfc:rock/hardened/quartzite": 1,
+    "tfc:rock/hardened/quartzite -> tfc:dirt/loam": 3
+  },
+  "reference": {
+    "center": [
+      -319262,
+      16107
+    ],
+    "chunks": [
+      [
+        -19955,
+        1005
+      ],
+      [
+        -19954,
+        1005
+      ],
+      [
+        -19953,
+        1005
+      ],
+      [
+        -19955,
+        1006
+      ],
+      [
+        -19954,
+        1006
+      ],
+      [
+        -19953,
+        1006
+      ],
+      [
+        -19955,
+        1007
+      ],
+      [
+        -19954,
+        1007
+      ],
+      [
+        -19953,
+        1007
+      ]
+    ],
+    "dimension": "minecraft:overworld",
+    "kind": "independent_python_read_only_anvil_nbt",
+    "notes": [
+      "Nine complete saved chunks around the user's stone-lens report.",
+      "Columns include highest natural substrate and surface height metadata.",
+      "No Minecraft launch, chunk generation, or save writes."
+    ],
+    "region_sha256": {
+      "r.-624.31.mca": "9d5eeba1c3d6cb7d7523d0811d4cf964324c3f880ae0a24613ccb336ac75874d"
+    },
+    "seed": 0,
+    "stable_during_extraction": true,
+    "world_alias": "0"
+  },
+  "seed": 0,
+  "surface_accuracy": 0.9305555555555556,
+  "water_columns": 156,
+  "water_false_positive": 0,
+  "water_true_positive": 0
+}

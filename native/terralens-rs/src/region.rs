@@ -346,11 +346,12 @@ fn annotate_distance_edge(r: &mut Region) {
                 let Some(next) = r.offset(last, dx, dz) else {
                     continue;
                 };
-                if let Some(p) = r.data[next].as_mut() {
-                    if p.distance_to_edge == 0 && !explored[next] {
-                        p.distance_to_edge = dist;
-                        queue.push_back(next);
-                    }
+                if let Some(p) = r.data[next].as_mut()
+                    && p.distance_to_edge == 0
+                    && !explored[next]
+                {
+                    p.distance_to_edge = dist;
+                    queue.push_back(next);
                 }
                 explored[next] = true;
             }
@@ -388,10 +389,11 @@ fn annotate_distance_ocean(r: &mut Region) {
                     .is_some_and(|p| p.land && p.distance_to_ocean == 0);
                 if qualifies {
                     let island = r.data[next].as_ref().is_some_and(|p| p.island);
-                    if !last_land && !island {
-                        if let Some(lp) = r.data[last].as_mut() {
-                            lp.distance_to_ocean = -2;
-                        }
+                    if !last_land
+                        && !island
+                        && let Some(lp) = r.data[last].as_mut()
+                    {
+                        lp.distance_to_ocean = -2;
                     }
                     if !explored[next] {
                         if let Some(p) = r.data[next].as_mut() {
@@ -458,18 +460,18 @@ fn annotate_base_land_height(r: &mut Region, rng: &mut Xoroshiro) {
     for x in 0..r.size_x {
         for z in 0..r.size_z {
             let i = x + r.size_x * z;
-            if let Some(p) = r.data[i].as_mut() {
-                if p.land {
-                    let mut h = p.distance_to_ocean as i32;
-                    if h > p.distance_to_edge as i32 {
-                        h = byte((0.3f32 * h as f32 + 0.7f32 * p.distance_to_edge as f32) as i32)
-                            as i32;
-                    }
-                    p.base_land_height = h as i8;
-                    p.base_ocean_depth = if p.island { 3 } else { 0 };
-                    explored[i] = true;
-                    if p.island { islands.push(i) } else { q.push(i) }
+            if let Some(p) = r.data[i].as_mut()
+                && p.land
+            {
+                let mut h = p.distance_to_ocean as i32;
+                if h > p.distance_to_edge as i32 {
+                    h = byte((0.3f32 * h as f32 + 0.7f32 * p.distance_to_edge as f32) as i32)
+                        as i32;
                 }
+                p.base_land_height = h as i8;
+                p.base_ocean_depth = if p.island { 3 } else { 0 };
+                explored[i] = true;
+                if p.island { islands.push(i) } else { q.push(i) }
             }
         }
     }
@@ -488,14 +490,16 @@ fn annotate_base_land_height(r: &mut Region, rng: &mut Xoroshiro) {
                 let source = r.data[last].unwrap().base_ocean_depth as i32;
                 let mut push_first = false;
                 let mut new_depth = byte(depth);
-                if let Some(p) = r.data[j].as_mut() {
-                    if !p.land && p.base_ocean_depth == 0 && !explored[j] {
-                        if rng.next_int_bound(15) == 0 {
-                            new_depth = byte(source);
-                            push_first = true;
-                        }
-                        p.base_ocean_depth = new_depth;
+                if let Some(p) = r.data[j].as_mut()
+                    && !p.land
+                    && p.base_ocean_depth == 0
+                    && !explored[j]
+                {
+                    if rng.next_int_bound(15) == 0 {
+                        new_depth = byte(source);
+                        push_first = true;
                     }
+                    p.base_ocean_depth = new_depth;
                 }
                 if r.data[j].is_some()
                     && !explored[j]
@@ -528,20 +532,19 @@ fn place_mountain_range(r: &Region, rng: &mut Xoroshiro, origin: usize) -> Vec<u
                 let Some(j) = r.offset(last, dx, dz) else {
                     continue;
                 };
-                if let Some(n) = r.data[j] {
-                    if n.land
-                        && n.base_land_height as i32 >= height - 1
-                        && n.base_land_height as i32 <= height + 1
-                        && (n.base_land_height > 2 || n.distance_to_ocean < 3)
-                        && !explored[j]
-                    {
-                        if p.base_land_height != n.base_land_height {
-                            q.push(j)
-                        } else {
-                            q.first(j)
-                        }
-                        range.push(j);
+                if let Some(n) = r.data[j]
+                    && n.land
+                    && n.base_land_height as i32 >= height - 1
+                    && n.base_land_height as i32 <= height + 1
+                    && (n.base_land_height > 2 || n.distance_to_ocean < 3)
+                    && !explored[j]
+                {
+                    if p.base_land_height != n.base_land_height {
+                        q.push(j)
+                    } else {
+                        q.first(j)
                     }
+                    range.push(j);
                 }
                 explored[j] = true;
             }
@@ -583,12 +586,13 @@ fn annotate_biome_altitude(r: &mut Region, rng: &mut Xoroshiro) {
     for x in 0..r.size_x {
         for z in 0..r.size_z {
             let i = x + r.size_x * z;
-            if let Some(p) = r.data[i].as_mut() {
-                if p.land && p.mountain {
-                    p.biome_altitude = 12;
-                    q.push(i);
-                    explored[i] = true;
-                }
+            if let Some(p) = r.data[i].as_mut()
+                && p.land
+                && p.mountain
+            {
+                p.biome_altitude = 12;
+                q.push(i);
+                explored[i] = true;
             }
         }
     }
@@ -603,15 +607,17 @@ fn annotate_biome_altitude(r: &mut Region, rng: &mut Xoroshiro) {
                 let Some(j) = r.offset(last, dx, dz) else {
                     continue;
                 };
-                if let Some(n) = r.data[j].as_mut() {
-                    if n.land && n.biome_altitude == 0 && !explored[j] {
-                        if rng.next_int_bound(13) == 0 && p.biome_altitude != 12 {
-                            n.biome_altitude = p.biome_altitude;
-                            q.first(j)
-                        } else {
-                            n.biome_altitude = byte(alt);
-                            q.push(j)
-                        }
+                if let Some(n) = r.data[j].as_mut()
+                    && n.land
+                    && n.biome_altitude == 0
+                    && !explored[j]
+                {
+                    if rng.next_int_bound(13) == 0 && p.biome_altitude != 12 {
+                        n.biome_altitude = p.biome_altitude;
+                        q.first(j)
+                    } else {
+                        n.biome_altitude = byte(alt);
+                        q.push(j)
                     }
                 }
                 explored[j] = true;
@@ -935,7 +941,7 @@ impl Generator {
         let region_gen_seed = random.next_long();
         let mut cell_noise = TfgCellular2D::new(random.next_long());
         cell_noise.spread((1.0f32 / 96.0f32) as f64);
-        let continent_min = (settings.continentalness as f32 * 10.0f32 - 2.5f32) as f32;
+        let continent_min = settings.continentalness as f32 * 10.0f32 - 2.5f32;
         let cbase_cell = cell_noise.clone();
         let continent_base: Noise2D = Rc::new(move |x, z| {
             let c = cbase_cell.cell(x, z);
@@ -955,7 +961,7 @@ impl Generator {
             }
         });
         let temp_scale = (2.0 * settings.temperature_scale) as f32;
-        let temp_frequency = (128.0f32 / temp_scale) as f32;
+        let temp_frequency = 128.0f32 / temp_scale;
         let temp_constant = settings.temperature_constant;
         let temp_enabled = settings.temperature_scale != 0.0;
         let temp_simplex_seed = random.next_int();
@@ -974,7 +980,7 @@ impl Generator {
             base * 25.0 + 5.0 + temp_simplex.sample(x, z)
         });
         let rain_scale = (2.0 * settings.rainfall_scale) as f32;
-        let rain_frequency = (128.0f32 / rain_scale) as f32;
+        let rain_frequency = 128.0f32 / rain_scale;
         let rain_constant = settings.rainfall_constant;
         let rain_enabled = settings.rainfall_scale != 0.0;
         let rain_simplex_seed = random.next_int();
@@ -1273,7 +1279,7 @@ impl Generator {
         for edge in self.rivers_at(gx, gz).iter() {
             if edge.width < 12
                 || !crate::rivers::river_maybe_intersects(
-                    &edge,
+                    edge,
                     ox as f64 / 128.0,
                     oz as f64 / 128.0,
                     0.3125,
@@ -1286,9 +1292,8 @@ impl Generator {
                 .into_iter()
                 .enumerate()
             {
-                let d =
-                    crate::rivers::river_distance_sq(&edge, cx as f64 / 128.0, cz as f64 / 128.0)
-                        as f32;
+                let d = crate::rivers::river_distance_sq(edge, cx as f64 / 128.0, cz as f64 / 128.0)
+                    as f32;
                 let influence = clamped_map(d, 0.0, 0.3125f32 * 0.3125f32, 1.0, 0.0);
                 rain[idx] = rain[idx].max(influence * width * 300.0f32);
             }

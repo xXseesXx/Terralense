@@ -1,0 +1,98 @@
+{
+  "scope": "Standalone Java source transcription, captured noise-height input; no preceding features, final fissures, fluid ticks or live Forge execution.",
+  "fixture_sha256": "37aa571e809371999544727658541e43c63e87466c7908075c61abc19a83c82e",
+  "java_sha256": "6f3517d603f18ca5346023e8c38c6bc4647437f2f1de499aa2a56be956d7cfd4",
+  "profile": "stage 8, index 30; source chunk -19954,1006; origin -319250,16107",
+  "continuation": "columns=320 nextInt1000=678",
+  "basin_columns": 320,
+  "saved_exposed_rock_columns": 163,
+  "matching_exposed_rock_materials": 159,
+  "mismatches": [
+    {
+      "saved": {
+        "x": 9,
+        "z": 4,
+        "top_y": 86,
+        "top_block": "tfc:rock/gravel/quartzite",
+        "top_properties": {},
+        "ground_y": 86,
+        "ground_block": "tfc:rock/gravel/quartzite",
+        "world_x": -319255,
+        "world_z": 16100,
+        "surface_height_forgecaps": 87
+      },
+      "java_basin": [
+        -319255,
+        16100,
+        87,
+        "hardened"
+      ]
+    },
+    {
+      "saved": {
+        "x": 2,
+        "z": 13,
+        "top_y": 86,
+        "top_block": "tfc:rock/hardened/quartzite",
+        "top_properties": {
+          "axis": "y"
+        },
+        "ground_y": 86,
+        "ground_block": "tfc:rock/hardened/quartzite",
+        "world_x": -319246,
+        "world_z": 16109,
+        "surface_height_forgecaps": 86
+      },
+      "java_basin": [
+        -319246,
+        16109,
+        85,
+        "hole"
+      ]
+    },
+    {
+      "saved": {
+        "x": 14,
+        "z": 4,
+        "top_y": 86,
+        "top_block": "tfc:rock/hardened/quartzite",
+        "top_properties": {
+          "axis": "y"
+        },
+        "ground_y": 86,
+        "ground_block": "tfc:rock/hardened/quartzite",
+        "world_x": -319250,
+        "world_z": 16116,
+        "surface_height_forgecaps": 86
+      },
+      "java_basin": [
+        -319250,
+        16116,
+        85,
+        "hole"
+      ]
+    },
+    {
+      "saved": {
+        "x": 0,
+        "z": 0,
+        "top_y": 86,
+        "top_block": "tfc:rock/hardened/quartzite",
+        "top_properties": {
+          "axis": "y"
+        },
+        "ground_y": 86,
+        "ground_block": "tfc:rock/hardened/quartzite",
+        "world_x": -319248,
+        "world_z": 16112,
+        "surface_height_forgecaps": 86
+      },
+      "java_basin": [
+        -319248,
+        16112,
+        85,
+        "hole"
+      ]
+    }
+  ]
+}

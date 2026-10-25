@@ -13,6 +13,7 @@ pub enum Scope {
     #[default]
     All,
     Structures,
+    Volcanoes,
     Ores,
     Biomes,
     Geology,
@@ -20,9 +21,10 @@ pub enum Scope {
     Trees,
 }
 impl Scope {
-    pub const ALL: [Self; 7] = [
+    pub const ALL: [Self; 8] = [
         Self::All,
         Self::Structures,
+        Self::Volcanoes,
         Self::Ores,
         Self::Biomes,
         Self::Geology,
@@ -33,6 +35,7 @@ impl Scope {
         match self {
             Self::All => "Everything",
             Self::Structures => "Structures",
+            Self::Volcanoes => "Volcanoes",
             Self::Ores => "Ores & minerals",
             Self::Biomes => "Biomes",
             Self::Geology => "Rock types",
@@ -45,6 +48,7 @@ impl Scope {
             || matches!(
                 (self, &marker.kind),
                 (Self::Structures, MarkerKind::Structure)
+                    | (Self::Volcanoes, MarkerKind::Volcano)
                     | (Self::Ores, MarkerKind::Ore)
                     | (Self::Biomes, MarkerKind::Biome)
                     | (Self::Geology, MarkerKind::Rock)
@@ -107,6 +111,13 @@ pub fn predict_cancelable(w: &World, q: &Query, cancelled: impl Fn() -> bool) ->
     let mut markers = Vec::new();
     let mut limited = false;
     let mut notes = Vec::new();
+    if q.scope == Scope::Volcanoes || q.scope == Scope::All && !q.text.trim().is_empty() {
+        let batch =
+            crate::volcano::candidates(w, bounds(q.origin, q.radius), &q.text, None, &cancelled);
+        limited |= batch.coverage.truncated;
+        markers.extend(batch.markers);
+        notes.push(format!("volcano ≤{:.1} km", q.radius / 1000.));
+    }
     if q.structures_predicted && matches!(q.scope, Scope::All | Scope::Structures) {
         let radius = q.radius.min(8192.);
         let b = bounds(q.origin, radius);
@@ -200,7 +211,9 @@ pub fn predict_cancelable(w: &World, q: &Query, cancelled: impl Fn() -> bool) ->
                         [189, 167, 140],
                     );
                 }
-                if matches!(q.scope, Scope::All | Scope::Forests | Scope::Trees) {
+                if matches!(q.scope, Scope::All | Scope::Forests | Scope::Trees)
+                    && !w.is_surface_water(bx, bz)
+                {
                     let forest = w.region.forest_type(bx >> 4, bz >> 4);
                     if matches!(q.scope, Scope::All | Scope::Forests) {
                         location(
@@ -451,8 +464,29 @@ fn bounds(p: Point, r: f64) -> Bounds {
     }
 }
 pub fn matches_query(m: &Marker, q: &str) -> bool {
+    let aliases = if m.kind == MarkerKind::Volcano {
+        "volcano volcanoes volcanos volcanic natural landmark"
+    } else if m.kind == MarkerKind::Structure
+        && m.id.split('@').next() == Some("tfg:illagers/norse_village_ruined")
+    {
+        "dead abandoned village"
+    } else {
+        ""
+    };
     features::text_matches(
-        &format!("{} {} {} {}", m.id, m.label, m.namespace, m.detail),
+        &format!(
+            "{} {} {} {} {} {}",
+            m.id,
+            m.label,
+            m.namespace,
+            m.detail,
+            aliases,
+            if m.kind == MarkerKind::Structure {
+                crate::structure_loot::search_terms(&m.id)
+            } else {
+                ""
+            }
+        ),
         q,
     )
 }
@@ -626,6 +660,65 @@ mod tests {
         assert!(rank(Point::default(), 50., [structure.clone()], 5).is_empty());
         assert!(rank(Point { x: 100., z: 0. }, 0.5, [structure], 5).len() == 1);
     }
+    #[test]
+    fn dead_village_aliases_find_recorded_and_seed_markers_without_matching_living_villages() {
+        let mut marker = Marker {
+            id: "tfg:illagers/norse_village_ruined@354,-419".into(),
+            label: "tfg:illagers/norse_village_ruined".into(),
+            namespace: "tfg".into(),
+            x: 5675.5,
+            z: -6704.,
+            y: None,
+            kind: MarkerKind::Structure,
+            confirmed: true,
+            min_y: None,
+            max_y: None,
+            bounds: None,
+            detail: String::new(),
+            color: [230, 173, 85],
+        };
+        for confirmed in [false, true] {
+            marker.confirmed = confirmed;
+            for query in [
+                "dead village",
+                "abandoned village",
+                "norse ruined",
+                "norse dead",
+            ] {
+                assert!(matches_query(&marker, query), "{query}");
+            }
+        }
+        marker.id = "tfg:illagers/norse_village_living@354,-419".into();
+        marker.label = "Norse living village".into();
+        assert!(!matches_query(&marker, "dead village"));
+        assert!(!matches_query(&marker, "abandoned village"));
+    }
+
+    #[test]
+    fn structure_container_search_finds_loot_vessels_from_the_saved_mudbrick_site() {
+        let marker = Marker {
+            id: "tfc_ruins:ruin_small@1231,-204".into(),
+            label: "Small ruined building".into(),
+            namespace: "tfc_ruins".into(),
+            x: 19700.,
+            z: -3260.5,
+            y: None,
+            kind: MarkerKind::Structure,
+            confirmed: true,
+            min_y: None,
+            max_y: None,
+            bounds: None,
+            detail: String::new(),
+            color: [230, 173, 85],
+        };
+        assert!(matches_query(&marker, "loot vessel"));
+        assert!(matches_query(&marker, "large vessel"));
+        let mut moai = marker;
+        moai.id = "tfg:ocean/ocean_moai_0@1231,-204".into();
+        moai.label = "Ocean moai".into();
+        assert!(!matches_query(&moai, "loot vessel"));
+    }
+
     #[test]
     fn supports_material_aliases_and_multiword_names() {
         assert!(features::text_matches("deep_galena silver lead", "silver"));

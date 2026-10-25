@@ -1,0 +1,67 @@
+{
+  "scope": "Cold release child engine, grass plus Ground; no GPU/UI FPS claim",
+  "before": [
+    {
+      "case": "exposed-diorite-dike",
+      "layer": "Biomes",
+      "seconds": 1.625338,
+      "sha256": "76188699a2b05d69382f785a158aaa5e1b95a247e7236ef76c2b3341ce85b622",
+      "bulk_bytes": 462864
+    },
+    {
+      "case": "exposed-diorite-dike",
+      "layer": "Ground",
+      "seconds": 0.917257,
+      "sha256": "76188699a2b05d69382f785a158aaa5e1b95a247e7236ef76c2b3341ce85b622",
+      "bulk_bytes": 462864
+    },
+    {
+      "case": "user-spring-site",
+      "layer": "Biomes",
+      "seconds": 1.865745,
+      "sha256": "4fff2aba7702459d2920a5a8b328ae27790ba753cd964f4d7b80f9ff92a05e1d",
+      "bulk_bytes": 462864
+    },
+    {
+      "case": "user-spring-site",
+      "layer": "Ground",
+      "seconds": 1.006892,
+      "sha256": "4fff2aba7702459d2920a5a8b328ae27790ba753cd964f4d7b80f9ff92a05e1d",
+      "bulk_bytes": 462864
+    }
+  ],
+  "after": [
+    {
+      "case": "exposed-diorite-dike",
+      "layer": "Biomes",
+      "seconds": 2.166439,
+      "sha256": "907cc41681284bf97cd53e6f07ef226810e49c97e3a74fcd184256ffef7a935b",
+      "bulk_bytes": 462864
+    },
+    {
+      "case": "exposed-diorite-dike",
+      "layer": "Ground",
+      "seconds": 0.917755,
+      "sha256": "907cc41681284bf97cd53e6f07ef226810e49c97e3a74fcd184256ffef7a935b",
+      "bulk_bytes": 462864
+    },
+    {
+      "case": "user-spring-site",
+      "layer": "Biomes",
+      "seconds": 1.908954,
+      "sha256": "9d66ceaba762970faab788ba9d55de2e74e5c98a355c864516e7ee9a0c2579e8",
+      "bulk_bytes": 462864
+    },
+    {
+      "case": "user-spring-site",
+      "layer": "Ground",
+      "seconds": 1.017093,
+      "sha256": "9d66ceaba762970faab788ba9d55de2e74e5c98a355c864516e7ee9a0c2579e8",
+      "bulk_bytes": 462864
+    }
+  ],
+  "before_label": "Calendar integration build before intrusive dikes and spring-order correction",
+  "after_label": "Shipping build with basal exclusions, bounded shared cache and verified RNG-tail trimming",
+  "before_binary_sha256": "2f08319ab7d1cc47b1de8cae02937729e1feec88f65c365b5fb94288a1eb960b",
+  "after_binary_sha256": "e81ea21f9fc58b1273bd6dc3e13072a5619cc1ce2a970355cd8b44b485fd2f72"
+}

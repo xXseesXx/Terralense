@@ -39,6 +39,11 @@ fn command(child: &mut Child, value: Value) {
     input.flush().unwrap();
 }
 fn reply(child: &mut Child) -> Value {
+    let (value, bulk) = reply_frame(child);
+    assert!(bulk.is_empty());
+    value
+}
+fn reply_frame(child: &mut Child) -> (Value, Vec<u8>) {
     // Timeout keeps failures reviewable even if the child stops delivering results.
     let mut output = child.stdout.take().unwrap();
     let (tx, rx) = std::sync::mpsc::channel();
@@ -46,14 +51,142 @@ fn reply(child: &mut Child) -> Value {
         let mut header = [0; 8];
         output.read_exact(&mut header).unwrap();
         let size = u32::from_le_bytes(header[..4].try_into().unwrap()) as usize;
-        assert_eq!(u32::from_le_bytes(header[4..].try_into().unwrap()), 0);
+        let bulk_size = u32::from_le_bytes(header[4..].try_into().unwrap()) as usize;
         assert!(size < 16 * 1024 * 1024);
         let mut bytes = vec![0; size];
         output.read_exact(&mut bytes).unwrap();
-        let _ = tx.send(serde_json::from_slice(&bytes).unwrap());
+        assert!(bulk_size < 8 * 1024 * 1024);
+        let mut bulk = vec![0; bulk_size];
+        output.read_exact(&mut bulk).unwrap();
+        let _ = tx.send((serde_json::from_slice(&bytes).unwrap(), bulk));
     });
     rx.recv_timeout(Duration::from_secs(15))
         .expect("engine reply timed out")
+}
+
+#[test]
+fn isolated_structure_inspection_reads_vessel_inventory_and_geometry_without_writing_save() {
+    use terralens::model::{Marker, MarkerKind};
+    fn int_tag(out: &mut Vec<u8>, name: &str, value: i32) {
+        out.push(3);
+        nbt_name(out, name);
+        out.extend_from_slice(&value.to_be_bytes());
+    }
+    fn bounds_tag(out: &mut Vec<u8>) {
+        out.push(11);
+        nbt_name(out, "BB");
+        out.extend_from_slice(&6_i32.to_be_bytes());
+        for n in [0_i32, 64, 0, 4, 68, 4] {
+            out.extend_from_slice(&n.to_be_bytes());
+        }
+    }
+    let save = std::env::temp_dir().join(format!(
+        "terralens-inspection-engine-{}",
+        std::process::id()
+    ));
+    let mut nbt = vec![10, 0, 0];
+    nbt_string_tag(&mut nbt, "Status", "minecraft:full");
+    for name in ["structures", "starts", "test:saved_house"] {
+        nbt.push(10);
+        nbt_name(&mut nbt, name);
+    }
+    nbt_string_tag(&mut nbt, "id", "test:saved_house");
+    bounds_tag(&mut nbt);
+    nbt.push(9);
+    nbt_name(&mut nbt, "Children");
+    nbt.push(10);
+    nbt.extend_from_slice(&1_i32.to_be_bytes());
+    nbt_string_tag(&mut nbt, "id", "minecraft:jigsaw");
+    bounds_tag(&mut nbt);
+    nbt.extend_from_slice(&[0, 0, 0, 0]);
+    nbt.push(9);
+    nbt_name(&mut nbt, "sections");
+    nbt.push(10);
+    nbt.extend_from_slice(&1_i32.to_be_bytes());
+    nbt.push(1);
+    nbt_name(&mut nbt, "Y");
+    nbt.push(4);
+    nbt.push(10);
+    nbt_name(&mut nbt, "block_states");
+    nbt.push(9);
+    nbt_name(&mut nbt, "palette");
+    nbt.push(10);
+    nbt.extend_from_slice(&1_i32.to_be_bytes());
+    nbt_string_tag(&mut nbt, "Name", "tfc:mud_bricks/silt");
+    nbt.extend_from_slice(&[0, 0, 0]);
+    nbt.push(9);
+    nbt_name(&mut nbt, "block_entities");
+    nbt.push(10);
+    nbt.extend_from_slice(&1_i32.to_be_bytes());
+    nbt_string_tag(&mut nbt, "id", "tfc:large_vessel");
+    for (name, n) in [("x", 2), ("y", 65), ("z", 3)] {
+        int_tag(&mut nbt, name, n);
+    }
+    nbt.push(10);
+    nbt_name(&mut nbt, "inventory");
+    nbt.push(9);
+    nbt_name(&mut nbt, "Items");
+    nbt.push(10);
+    nbt.extend_from_slice(&1_i32.to_be_bytes());
+    nbt_string_tag(&mut nbt, "id", "minecraft:clay_ball");
+    nbt.push(1);
+    nbt_name(&mut nbt, "Count");
+    nbt.push(18);
+    nbt.push(1);
+    nbt_name(&mut nbt, "Slot");
+    nbt.push(0);
+    nbt.extend_from_slice(&[0, 0, 0, 0]);
+    write_region(&save, &[(0, nbt)]);
+    let file = save.join("region/r.0.0.mca");
+    let before = fs::read(&file).unwrap();
+    let marker = Marker {
+        id: "test:saved_house".into(),
+        label: "test:saved_house".into(),
+        namespace: "test".into(),
+        x: 8.,
+        z: 8.,
+        y: None,
+        kind: MarkerKind::Structure,
+        confirmed: true,
+        min_y: None,
+        max_y: None,
+        detail: String::new(),
+        color: [0; 3],
+        bounds: None,
+    };
+    let mut engine = launch();
+    command(
+        &mut engine.0,
+        json!({"Reset":{"epoch":7,"search_revision":0}}),
+    );
+    command(
+        &mut engine.0,
+        json!({"High":{"InspectStructure":[
+            {"seed":0,"settings":Settings::default(),"epoch":7},save,marker,41
+        ]}}),
+    );
+    let (answer, bulk) = reply_frame(&mut engine.0);
+    assert_eq!(answer["StructurePreview"][0], 7);
+    assert_eq!(answer["StructurePreview"][1], 41);
+    let preview = &answer["StructurePreview"][2]["Ok"];
+    assert_eq!(preview["source"], "Saved");
+    assert_eq!(preview["containers"].as_array().unwrap().len(), 1);
+    let container = &preview["containers"][0];
+    assert_eq!(container["pos"], json!({"x":2,"y":65,"z":3}));
+    assert_eq!(container["items"][0]["id"], "minecraft:clay_ball");
+    assert_eq!(container["items"][0]["count"], 18);
+    assert_eq!(container["contents_known"], true);
+    assert_eq!(&bulk[..4], b"TSB1");
+    assert!(
+        bulk.len() > 100,
+        "real geometry must cross the process boundary"
+    );
+    assert_eq!(
+        fs::read(&file).unwrap(),
+        before,
+        "save inspection must be read-only"
+    );
+    fs::remove_dir_all(save).unwrap();
 }
 fn wait_exit(child: &mut Child) {
     let start = Instant::now();
@@ -444,11 +577,19 @@ fn isolated_beneath_probe_obeys_dimension_and_vertical_slice() {
         .take(2)
     {
         let mut engine = launch();
-        let (x, y, z) = (
-            sample["qx"].as_i64().unwrap() * 4,
-            sample["qy"].as_i64().unwrap() * 4,
-            sample["qz"].as_i64().unwrap() * 4,
+        let target = (
+            sample["qx"].as_i64().unwrap() as i32,
+            sample["qy"].as_i64().unwrap() as i32,
+            sample["qz"].as_i64().unwrap() as i32,
         );
+        let y = target.1 * 4;
+        // The save fixture records raw quart cells. Choose a nearby block whose
+        // vanilla fuzzy lookup selects that recorded cell at the band center.
+        let hashed_seed = terralens::biome::block::obfuscate_seed(seed);
+        let (x, z) = (-4..=8)
+            .flat_map(|dx| (-4..=8).map(move |dz| (target.0 * 4 + dx, target.2 * 4 + dz)))
+            .find(|&(x, z)| terralens::biome::block::nearest_quart(hashed_seed, x, y, z) == target)
+            .expect("recorded quart must own a block at its band center");
         command(
             &mut engine.0,
             json!({"High":{"Probe":[
@@ -462,6 +603,74 @@ fn isolated_beneath_probe_obeys_dimension_and_vertical_slice() {
         drop(engine.0.stdin.take());
         wait_exit(&mut engine.0);
     }
+}
+
+#[test]
+fn isolated_volcano_search_finds_seeded_vents_as_landmarks_sorted_by_distance() {
+    let mut engine = launch();
+    let world = World::new(0, Settings::default());
+    command(&mut engine.0, json!({"SearchRevision":{"serial":24}}));
+    command(
+        &mut engine.0,
+        json!({"Low":{"Search":[
+            {"seed":0,"settings":Settings::default(),"epoch":1},
+            {"origin":{"x":-2660,"z":3951},"radius":750.0,"query":"volcanos",
+             "predictions":false,"scope":"Volcanoes","serial":24}
+        ]}}),
+    );
+    let answer = reply(&mut engine.0);
+    assert_eq!(answer["Search"][0], 1);
+    assert_eq!(answer["Search"][1], 24);
+    assert_eq!(answer["Search"][3], false);
+    let markers = answer["Search"][2].as_array().unwrap();
+    assert!(!markers.is_empty());
+    assert_eq!(
+        markers[0]["id"],
+        "terralens:volcano/active_shield@-2660,3951"
+    );
+    let mut previous = 0.0;
+    for marker in markers {
+        assert_eq!(marker["kind"], "Volcano");
+        assert!(marker.get("bounds").is_none());
+        assert_eq!(
+            marker["y"].as_f64(),
+            world.height(
+                marker["x"].as_f64().unwrap() as i32,
+                marker["z"].as_f64().unwrap() as i32
+            ),
+            "volcano pins carry the modeled elevation at their own center"
+        );
+        let distance =
+            (marker["x"].as_f64().unwrap() + 2660.).hypot(marker["z"].as_f64().unwrap() - 3951.);
+        assert!(distance >= previous && distance <= 750.);
+        previous = distance;
+    }
+    drop(engine.0.stdin.take());
+    wait_exit(&mut engine.0);
+}
+
+#[test]
+fn isolated_map_probe_resolves_block_biomes_without_changing_generation_source() {
+    let world = World::new(0, Settings::default());
+    assert_eq!(world.biome(380, -246), "tfg:earth/hills");
+    let height = world
+        .height(380, -246)
+        .expect("surface height is available");
+    assert!(!world.is_surface_water(380, -246));
+    let mut engine = launch();
+    command(
+        &mut engine.0,
+        json!({"High":{"Probe":[
+            {"seed":0,"settings":Settings::default(),"epoch":1},
+            {"x":380,"z":-246},true,23
+        ]}}),
+    );
+    let answer = reply(&mut engine.0);
+    assert_eq!(answer["Probe"][2]["biome"], "tfg:earth/shore");
+    assert_eq!(answer["Probe"][2]["height"], height);
+    assert_eq!(answer["Probe"][2]["surface_water"], false);
+    drop(engine.0.stdin.take());
+    wait_exit(&mut engine.0);
 }
 
 #[test]

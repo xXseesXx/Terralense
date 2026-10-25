@@ -24,8 +24,10 @@ variants. Structure-set aliases are not counted as additional buildings.
 
 That leaves **30 Overworld registry types**. All five TFG village variants, the temperate
 house, both towerhouses and every supported church/monument variant are covered by explicit
-regressions. Ruined variants remain in the Ruins group and follow its user visibility setting;
-being hidden is distinct from being incompatible with worldgen.
+regressions. Compatibility is separate from loot-aware grouping: verified lootless remains
+belong in Ruins, loot-bearing or unresolved ruined buildings stay visible in Ruined buildings,
+and dead Norse villages stay with Villages. See the [container audit](STRUCTURE-LOOT.md) for
+the world-0 mudbrick example and the complete template/processor evidence.
 
 Other supported dimensions are reviewed separately:
 
@@ -45,7 +47,12 @@ weighted member. It found witnesses for all 37 reviewed compatible types: 30 Ove
 three Beneath and four Moon. These results validate the sampler; they do not define the
 compatibility list.
 
-A candidate passes implemented placement, weighted-member, biome and climate/forest gates.
+A candidate passes implemented placement, weighted-member, biome and climate/forest gates,
+plus the current pack's Lithostitched biome-grid and height conditions. Conditions are checked
+at the seed-selected, rotated jigsaw starting piece's generation-stub center; climate placement
+retains TFC's chunk-origin convention. The condition resources and their hashes are included
+in the applicability inventory. The expanded-world seed-zero
+[accuracy audit](STRUCTURE-ACCURACY.md) measures raw predictions against completed saved chunks.
 It is not proof of a successful Minecraft structure start: terrain checks and jigsaw assembly
 can still reject it. Unknown generation details must not be replaced with guessed positions.
 

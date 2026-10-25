@@ -72,6 +72,413 @@ pub(super) fn campfire() -> RgbaImage {
     im
 }
 
+pub(super) fn volcano_cinder_cone() -> RgbaImage {
+    let mut im = canvas();
+    let basalt_shadow = [35, 42, 43, 255];
+    let basalt = [65, 72, 70, 255];
+    let basalt_light = [108, 106, 93, 255];
+    let ash = [143, 130, 108, 255];
+    let ember_dark = [206, 65, 34, 255];
+    let lava = [246, 115, 38, 255];
+    let hot = [255, 200, 72, 255];
+    let smoke = [113, 121, 117, 255];
+    let smoke_light = [169, 171, 158, 255];
+
+    // Angular cone with a broad, chipped foot and a clearly open summit.
+    poly(
+        &mut im,
+        &[
+            (3, 27),
+            (7, 25),
+            (10, 19),
+            (13, 14),
+            (15, 10),
+            (18, 10),
+            (20, 15),
+            (23, 20),
+            (26, 25),
+            (29, 27),
+            (27, 30),
+            (6, 30),
+        ],
+        basalt_shadow,
+    );
+    poly(
+        &mut im,
+        &[
+            (5, 27),
+            (9, 24),
+            (12, 18),
+            (15, 12),
+            (18, 12),
+            (21, 18),
+            (24, 24),
+            (27, 27),
+            (25, 29),
+            (8, 29),
+        ],
+        basalt,
+    );
+    poly(
+        &mut im,
+        &[
+            (8, 25),
+            (11, 22),
+            (13, 17),
+            (16, 13),
+            (17, 14),
+            (15, 19),
+            (12, 25),
+            (9, 27),
+        ],
+        basalt_light,
+    );
+    // Basalt blocks and sparse ash chips keep the slope legible at map scale.
+    line(&mut im, (7, 27), (12, 27), basalt_shadow, 1);
+    line(&mut im, (19, 25), (25, 27), basalt_shadow, 1);
+    put(&mut im, 10, 23, ash);
+    put(&mut im, 14, 17, basalt_light);
+    put(&mut im, 20, 21, ash);
+    put(&mut im, 23, 24, basalt_light);
+    // Molten light is confined to the crater, so the icon reads as a volcanic vent.
+    poly(
+        &mut im,
+        &[(13, 12), (15, 9), (18, 9), (21, 12), (19, 14), (15, 14)],
+        ember_dark,
+    );
+    poly(
+        &mut im,
+        &[(14, 12), (16, 10), (18, 10), (20, 12), (18, 13), (15, 13)],
+        lava,
+    );
+    line(&mut im, (16, 11), (18, 11), hot, 0);
+
+    // Two small rising puffs sit above the crater and remain separate from the cone.
+    fill(&mut im, 15, 5, 2, 2, smoke);
+    put(&mut im, 14, 5, smoke_light);
+    fill(&mut im, 17, 2, 2, 2, smoke);
+    put(&mut im, 16, 3, smoke_light);
+    put(&mut im, 18, 1, [124, 130, 125, 205]);
+    im
+}
+
+pub(super) fn volcano_dormant_cone() -> RgbaImage {
+    let mut im = canvas();
+    let shadow = [49, 56, 55, 255];
+    let basalt = [84, 90, 84, 255];
+    let face = [120, 119, 103, 255];
+    let light = [162, 154, 128, 255];
+    let muted_crater = [46, 50, 48, 255];
+    let soil = [99, 103, 72, 255];
+    let grass = [124, 139, 77, 255];
+
+    poly(
+        &mut im,
+        &[
+            (3, 28),
+            (6, 25),
+            (9, 21),
+            (12, 16),
+            (15, 11),
+            (18, 11),
+            (21, 16),
+            (24, 21),
+            (27, 25),
+            (29, 28),
+            (27, 30),
+            (5, 30),
+        ],
+        shadow,
+    );
+    poly(
+        &mut im,
+        &[
+            (5, 27),
+            (9, 23),
+            (12, 18),
+            (15, 13),
+            (18, 13),
+            (21, 18),
+            (24, 23),
+            (27, 27),
+            (25, 29),
+            (8, 29),
+        ],
+        basalt,
+    );
+    poly(
+        &mut im,
+        &[
+            (7, 26),
+            (11, 22),
+            (13, 18),
+            (16, 14),
+            (16, 19),
+            (13, 24),
+            (10, 27),
+        ],
+        face,
+    );
+    line(&mut im, (8, 27), (12, 27), light, 0);
+    line(&mut im, (20, 25), (25, 27), shadow, 0);
+    // The gray crater has no fire or smoke; sparse grass only reaches its lower skirt.
+    poly(
+        &mut im,
+        &[(13, 13), (15, 10), (18, 10), (21, 13), (19, 15), (15, 15)],
+        face,
+    );
+    poly(
+        &mut im,
+        &[(15, 13), (16, 12), (18, 12), (19, 13), (18, 14), (16, 14)],
+        muted_crater,
+    );
+    put(&mut im, 7, 28, soil);
+    put(&mut im, 8, 27, grass);
+    put(&mut im, 24, 28, soil);
+    put(&mut im, 25, 27, grass);
+    im
+}
+
+pub(super) fn volcano_tuya() -> RgbaImage {
+    let mut im = canvas();
+    let shadow = [42, 54, 57, 255];
+    let basalt = [72, 85, 83, 255];
+    let face = [106, 112, 101, 255];
+    let light_face = [146, 144, 124, 255];
+    let plateau = [80, 93, 84, 255];
+    let plateau_light = [125, 142, 116, 255];
+
+    // A tuya's flattened volcanic plateau sits on steep, blocky subglacial sides.
+    poly(
+        &mut im,
+        &[
+            (4, 28),
+            (7, 25),
+            (10, 20),
+            (11, 14),
+            (13, 12),
+            (20, 12),
+            (22, 14),
+            (23, 20),
+            (26, 25),
+            (29, 28),
+            (27, 30),
+            (6, 30),
+        ],
+        shadow,
+    );
+    poly(
+        &mut im,
+        &[
+            (6, 27),
+            (9, 24),
+            (12, 19),
+            (13, 14),
+            (20, 14),
+            (21, 19),
+            (24, 24),
+            (27, 27),
+            (25, 29),
+            (8, 29),
+        ],
+        basalt,
+    );
+    poly(
+        &mut im,
+        &[
+            (7, 26),
+            (11, 22),
+            (13, 15),
+            (15, 15),
+            (14, 21),
+            (12, 26),
+            (9, 28),
+        ],
+        face,
+    );
+    line(&mut im, (8, 27), (12, 27), light_face, 0);
+    line(&mut im, (20, 22), (25, 27), shadow, 0);
+    // The crater lip is level and broken; the middle stays dark stone without lava.
+    poly(
+        &mut im,
+        &[
+            (10, 12),
+            (12, 8),
+            (15, 7),
+            (18, 7),
+            (21, 8),
+            (24, 12),
+            (22, 15),
+            (12, 15),
+        ],
+        shadow,
+    );
+    poly(
+        &mut im,
+        &[
+            (11, 11),
+            (13, 9),
+            (15, 9),
+            (16, 11),
+            (18, 9),
+            (21, 10),
+            (23, 12),
+            (21, 14),
+            (13, 14),
+        ],
+        plateau,
+    );
+    put(&mut im, 13, 10, plateau_light);
+    put(&mut im, 20, 11, plateau_light);
+    line(&mut im, (14, 13), (19, 13), shadow, 0);
+    put(&mut im, 10, 17, face);
+    put(&mut im, 22, 17, face);
+    im
+}
+
+pub(super) fn volcano_tuff_ring() -> RgbaImage {
+    let mut im = canvas();
+    let shadow = [55, 61, 58, 255];
+    let stone = [108, 111, 101, 255];
+    let light = [157, 153, 132, 255];
+    let ash = [128, 121, 104, 255];
+    let inside = [75, 80, 72, 255];
+
+    // Low circular tuff rim, shown in broken segments around a visible crater.
+    poly(
+        &mut im,
+        &[
+            (4, 18),
+            (7, 11),
+            (13, 7),
+            (20, 7),
+            (26, 12),
+            (29, 19),
+            (26, 25),
+            (20, 29),
+            (12, 29),
+            (6, 25),
+            (3, 20),
+        ],
+        shadow,
+    );
+    poly(
+        &mut im,
+        &[
+            (6, 18),
+            (9, 12),
+            (14, 9),
+            (20, 9),
+            (25, 13),
+            (27, 19),
+            (24, 24),
+            (19, 27),
+            (13, 27),
+            (8, 24),
+            (6, 20),
+        ],
+        stone,
+    );
+    // Remove the center to preserve the open rim silhouette at all render sizes.
+    for y in 14..23 {
+        for x in 11..23 {
+            let dx = x - 17;
+            let dy = y - 18;
+            if dx * dx + dy * dy <= 24 {
+                put(&mut im, x, y, CLEAR);
+            }
+        }
+    }
+    // Rim highlights, ash-colored ejecta, and a gap at the near edge.
+    line(&mut im, (11, 11), (16, 9), light, 0);
+    line(&mut im, (20, 10), (24, 14), light, 0);
+    line(&mut im, (26, 19), (23, 23), ash, 0);
+    line(&mut im, (13, 26), (10, 23), ash, 0);
+    put(&mut im, 5, 18, CLEAR);
+    put(&mut im, 6, 20, CLEAR);
+    put(&mut im, 25, 25, inside);
+    put(&mut im, 8, 13, inside);
+    im
+}
+
+pub(super) fn volcano_ice_cone() -> RgbaImage {
+    let mut im = canvas();
+    let shadow = [43, 58, 63, 255];
+    let basalt = [78, 99, 102, 255];
+    let blue_ice = [110, 165, 179, 255];
+    let ice = [175, 212, 213, 255];
+    let snow = [227, 239, 229, 255];
+    let crater = [62, 83, 91, 255];
+
+    poly(
+        &mut im,
+        &[
+            (3, 28),
+            (7, 25),
+            (10, 20),
+            (13, 15),
+            (15, 10),
+            (18, 10),
+            (21, 15),
+            (24, 20),
+            (27, 25),
+            (29, 28),
+            (27, 30),
+            (5, 30),
+        ],
+        shadow,
+    );
+    poly(
+        &mut im,
+        &[
+            (5, 27),
+            (9, 24),
+            (12, 19),
+            (15, 12),
+            (18, 12),
+            (21, 19),
+            (24, 24),
+            (27, 27),
+            (25, 29),
+            (8, 29),
+        ],
+        basalt,
+    );
+    // Glaciated tongues follow the flanks, with a snow cap around the crater.
+    poly(
+        &mut im,
+        &[
+            (10, 22),
+            (13, 17),
+            (16, 12),
+            (16, 18),
+            (14, 23),
+            (12, 27),
+            (9, 28),
+        ],
+        blue_ice,
+    );
+    poly(
+        &mut im,
+        &[(20, 21), (22, 21), (25, 26), (26, 28), (23, 27)],
+        ice,
+    );
+    poly(
+        &mut im,
+        &[(13, 13), (15, 9), (18, 9), (21, 13), (18, 15), (15, 14)],
+        snow,
+    );
+    poly(
+        &mut im,
+        &[(15, 12), (16, 11), (18, 11), (19, 12), (18, 13), (16, 13)],
+        crater,
+    );
+    put(&mut im, 15, 8, snow);
+    put(&mut im, 20, 15, ice);
+    put(&mut im, 11, 25, ice);
+    im
+}
+
 pub(super) fn village_head() -> RgbaImage {
     let mut im = canvas();
     let skin = [173, 139, 101, 255];
@@ -188,6 +595,54 @@ pub(super) fn cracked_limestone_brick() -> RgbaImage {
     put(&mut im, 6, 8, CLEAR);
     put(&mut im, 28, 8, CLEAR);
     put(&mut im, 4, 25, CLEAR);
+    im
+}
+
+/// Ruined building with a visible recovered chest, retaining the ruin's visual topic.
+pub(super) fn ruined_building_with_chest(topic: super::RuinTopic) -> RgbaImage {
+    let mut im = match topic {
+        super::RuinTopic::Masonry => cracked_limestone_brick(),
+        super::RuinTopic::Church => ruined_church(),
+        super::RuinTopic::Tower => ruined_tower(),
+        super::RuinTopic::Monument => ancient_monument_ruin(),
+    };
+    let outline = [54, 47, 39, 255];
+    let wood = [111, 69, 39, 255];
+    let wood_light = [163, 105, 55, 255];
+    let wood_shadow = [77, 53, 37, 255];
+    let iron = [170, 166, 148, 255];
+    let iron_light = [215, 207, 177, 255];
+    let lock = [225, 182, 76, 255];
+    // An open, irregular chest silhouette sits in front of the stonework.
+    poly(
+        &mut im,
+        &[(17, 20), (19, 17), (27, 17), (30, 20), (28, 23), (19, 23)],
+        outline,
+    );
+    poly(
+        &mut im,
+        &[(19, 20), (20, 18), (26, 18), (28, 20), (27, 22), (20, 22)],
+        wood_light,
+    );
+    line(&mut im, (20, 20), (27, 20), iron, 1);
+    // Low plank body, with a narrow iron strap and a warm latch highlight.
+    poly(
+        &mut im,
+        &[(18, 21), (28, 21), (28, 27), (26, 29), (19, 28), (17, 25)],
+        outline,
+    );
+    poly(
+        &mut im,
+        &[(19, 22), (27, 22), (27, 26), (25, 27), (20, 26), (19, 25)],
+        wood,
+    );
+    line(&mut im, (21, 22), (21, 26), wood_light, 1);
+    line(&mut im, (25, 22), (25, 26), wood_shadow, 1);
+    fill(&mut im, 18, 24, 10, 2, iron);
+    put(&mut im, 18, 24, iron_light);
+    put(&mut im, 23, 24, lock);
+    put(&mut im, 23, 25, [117, 83, 42, 255]);
+    put(&mut im, 27, 25, iron_light);
     im
 }
 
@@ -858,7 +1313,7 @@ fn poly(im: &mut RgbaImage, points: &[(i32, i32)], c: C) {
             }
         }
         xs.sort_unstable();
-        for pair in xs.chunks_exact(2) {
+        for pair in xs.as_chunks::<2>().0 {
             for x in pair[0]..=pair[1] {
                 put(im, x, y, c);
             }
@@ -875,6 +1330,7 @@ mod tests {
             campfire(),
             village_head(),
             cracked_limestone_brick(),
+            ruined_building_with_chest(super::super::RuinTopic::Masonry),
             church_cross(),
             mineshaft_arch(),
             moon_dome(),

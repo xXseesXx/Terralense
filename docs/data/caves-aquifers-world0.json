@@ -1,0 +1,3023 @@
+{
+  "accuracy": 0.9936433502670314,
+  "confusion": {
+    "air -> air": 4936,
+    "lava -> air": 1,
+    "lava -> lava": 19,
+    "solid -> air": 472,
+    "solid -> lava": 2,
+    "solid -> solid": 70855,
+    "solid -> water": 12,
+    "water -> air": 1,
+    "water -> water": 472
+  },
+  "correct_voxels": 76282,
+  "excluded_unknown_or_frozen_voxels": 0,
+  "mode": "seed-only without saved blocks",
+  "reference": {
+    "dimension": "minecraft:overworld",
+    "exclusions": {
+      "snow_ice_voxels": 31,
+      "unknown_voxels": 0
+    },
+    "interior_sampling": "local x,z in {2,6,10,14} on each 16x16 chunk",
+    "limitations": [
+      "Profiles are per-voxel references at a deterministic 4x4 lattice, not a connected cave/ravine instance census.",
+      "Columns touched by player/mod edits are not independently identified; classify surface material as natural-appearing only.",
+      "Missing section data is unknown, never inferred as air.",
+      "Already generated save chunks reflect player exploration bias."
+    ],
+    "minecraft_launched": false,
+    "profile_y_range": "-32 through min(saved ForgeCaps surfaceHeight, 128), inclusive",
+    "read_only": true,
+    "region_sha256": {
+      "r.-189.-44.mca": "ee25f81c4a8a860a258d54acd85bcbac26039ed5a871f0217c462874d754cc16",
+      "r.-195.-43.mca": "6215c2b7c02c22cf9dd0f3dbf3b1955c434a6a1dc7aa50fcdcf9ae59de4321e5",
+      "r.-198.-31.mca": "74f6cb5a60a195fd91bd739394f2a5944e6a60b211f77a36d65c023c2235a73a",
+      "r.-199.-28.mca": "7e8a01b3257e87982f5c9d6d75e2d7053d1af8b7ff24795c61a3aac74e118406",
+      "r.-202.-29.mca": "6570f86eb20fbdb5a903087369569daafcc9e4361030bb819ca0c7cc8d2cadfe",
+      "r.-203.-28.mca": "500b0ec3b8ca7e7cd04e62f1ea5112645d46b9e1751562f078d835207b409a5b",
+      "r.-220.-31.mca": "a1c165b3ebdb7557c61125c31045f04505edd36a4b6b6157485786742c541120",
+      "r.-242.5.mca": "8af97b2099310332d1ca738c3cdadde24d66697b2437e363958520f3f2a2dad0",
+      "r.-252.-37.mca": "506180c9eb9063b2398abf5c39b3d3e6f807956556e80ab4c35161cb6582389f",
+      "r.-252.-40.mca": "a9e916e517a3b1320c693e3705c0e36cf16583fc5c02feb11439c00694c87db6",
+      "r.-253.-43.mca": "2f62372b634d14321279dec6c9ee868c1602cf0cf8f730451bd5335f00137f2e",
+      "r.-254.-42.mca": "f5329109290b4e63d5fa30eb4fb6e7ec913971f9b99abd402e839a3b5de6c4e6",
+      "r.-254.-44.mca": "7e6d691504ea2580abe1903de6402e0aeb35f4f3872c621ba237b2dc2a7d58c7",
+      "r.-255.-46.mca": "6110bf6addfef330a8574d050bdc7fecda59cc9d4d8a8e216a4f54d9bf1d6ce0",
+      "r.-255.28.mca": "28427f91994d46f8122fbbf576ae001f15a4271ab52ee494c3b9c205342deb7e",
+      "r.-256.29.mca": "c8509ab980148bea81f32208c2aa349bdea57206a2febf1d9548ce4a42af0395",
+      "r.-295.20.mca": "358f6ecc018a25adf62ba8874acbbdfbcebfdf499309bb5f51e982c7a7e24266",
+      "r.-296.21.mca": "45160cf2fc5c440082e7f2d0976e7e250676ba293816ea507ead6c67763aeaae",
+      "r.-303.18.mca": "688d7e4a7b53bbb86649687be13466f5b078a3fee592cc1ec80bd44d77345516",
+      "r.-379.-45.mca": "d3e4fd53847c84aa22b8f1e64669e48d225143564eb6eec1ca07cd649fd6b650",
+      "r.-379.-48.mca": "1e49987a4203fb3e434d11fdbf8f5ed492a5abcdbf4e083943a373b004e16391",
+      "r.-384.-35.mca": "e921ad79ffa33fa41405c369cb71677e010f9a451ac32de3e5eade0b66465287",
+      "r.-390.-35.mca": "8520358305aa676002b8bace14d5fc3eb56ad7d19045375c7f0d743a5444b370",
+      "r.-391.-37.mca": "c6ab8397a71328532b4a5a7db6dcc3da89a78766e5a856a979867b551471771d",
+      "r.-392.-38.mca": "1304d04c85f62e76ef247ea53ea021713fbec39450139f19a98009f491df52f9",
+      "r.-4.10.mca": "b1a2c48bdff8b4d02701a6f7b206577b765c43749b0ca3cf0d9a38a26ed81806",
+      "r.-504.17.mca": "ba966992025ca0eed3b887026cb4c673d1497722d5dc72b8dcb10cfdbc889272",
+      "r.-506.16.mca": "10699c0e24136d5324ec021e874277dd660aa85b7c36fd8392821c7dc99585e2",
+      "r.-550.98.mca": "18f865108f235a6d0c9dbb8dabca21e595d9b4e341127dddb859708010db78ad",
+      "r.-552.94.mca": "c001cdd99423be786e6b3ab1971c0952032d9adc91b4789fde789277fc8b9ed2",
+      "r.17.50.mca": "7a670374d554e7dffbf8b1722dfb7b8db00633284c351d1732c8b6bcc003ddfb",
+      "r.27.34.mca": "ed0707a6ba0bb8ca8388f612f20806b468562dd6d729707a8f9665bad114a31e",
+      "r.28.28.mca": "a6cc04961aa5256dcc50433fb0efb032bce89e075e08be5ba95cf894b31eb45b",
+      "r.29.28.mca": "47137393bc5bce522828eb123d79bc859d6b3397769f9adea17db95feb98c9a7",
+      "r.3.1.mca": "ffcd0c595ffe3a8bf954303f33cb00a80de988e47335f5c57bfd222515b013b0",
+      "r.30.65.mca": "22c30672f8ff4eb2aa95091e90266275b22fd6ca239c515acc3995fd2d72cfa8",
+      "r.30.66.mca": "33487b3fab16a2e35aa4df6f948649c8b99fe8e0770262d90f394f54fc2a5ecf",
+      "r.31.31.mca": "caaf41e01fd372117235cc82c3f36d2ef383e108b5ef478dfbfd991b765dfb5d",
+      "r.34.31.mca": "12401cc26bb31af959968a51e77f922b1efaf769a5ffb8aae0e1d6c8753b9f87",
+      "r.38.-5.mca": "6478aaf7336ca74625b464e13e5b790448c45ab243727ff7e6e3b5f1ce41f410",
+      "r.40.30.mca": "8426d525cf89475a6361e0d793a00a70a6d764e9647f342e7a77989785799e22",
+      "r.41.26.mca": "5775d2a5d361c3525f3746250ce5be35a46f5b836bd560870c5c78add48e41e3",
+      "r.41.33.mca": "c146af8165558387a4ba71673a091efa82c1ff6e29d595e2286c3ddeb6c44393",
+      "r.67.14.mca": "6937b41335a2b56d01e8602a17bf9008d4c3454f9fc6e5346f253c216fd2aefb",
+      "r.92.32.mca": "ea41c497d6cf3e3d3a4b7ecb83eebe256b0a97116c2fa38578ea3e4c20c7351d",
+      "r.93.42.mca": "5f86ef42487f7cd8db474d30c057edeba799584f0f1576a0a105d3de77c639df"
+    },
+    "seed": 0,
+    "source_fixture": "world0-spread-48.json.gz",
+    "source_ranking": "terralens-world0-generated-chunk-rank-v1",
+    "surface_sampling": "all 256 columns per sampled chunk; highest natural substrate",
+    "voxel_classes": [
+      "solid",
+      "air",
+      "water",
+      "lava",
+      "excluded_snow_ice",
+      "unknown"
+    ],
+    "world_alias": "0"
+  },
+  "seconds": 1.678778522,
+  "seed": 0,
+  "sites": [
+    {
+      "chunk": [
+        -9447,
+        673
+      ],
+      "matches": 1435,
+      "surface_columns": 256,
+      "surface_exact_y_and_class": 256,
+      "surface_examples": [],
+      "voxel_examples": [
+        [
+          -151138,
+          -30,
+          10778,
+          "water",
+          "air"
+        ]
+      ],
+      "voxels": 1436
+    },
+    {
+      "chunk": [
+        994,
+        1020
+      ],
+      "matches": 1222,
+      "surface_columns": 256,
+      "surface_exact_y_and_class": 256,
+      "surface_examples": [],
+      "voxel_examples": [
+        [
+          15910,
+          -24,
+          16322,
+          "solid",
+          "air"
+        ],
+        [
+          15914,
+          -26,
+          16326,
+          "solid",
+          "air"
+        ],
+        [
+          15914,
+          -25,
+          16326,
+          "solid",
+          "air"
+        ],
+        [
+          15914,
+          -24,
+          16326,
+          "solid",
+          "air"
+        ],
+        [
+          15914,
+          -23,
+          16326,
+          "solid",
+          "air"
+        ],
+        [
+          15910,
+          -27,
+          16330,
+          "solid",
+          "air"
+        ],
+        [
+          15910,
+          -26,
+          16330,
+          "solid",
+          "air"
+        ]
+      ],
+      "voxels": 1229
+    },
+    {
+      "chunk": [
+        -16171,
+        523
+      ],
+      "matches": 1594,
+      "surface_columns": 256,
+      "surface_exact_y_and_class": 250,
+      "surface_examples": [
+        [
+          -258735,
+          8368,
+          69,
+          "tfc:rock/raw/shale",
+          "solid",
+          68,
+          "solid",
+          68
+        ],
+        [
+          -258734,
+          8368,
+          70,
+          "tfc:rock/raw/shale",
+          "solid",
+          68,
+          "solid",
+          68
+        ],
+        [
+          -258733,
+          8368,
+          70,
+          "tfc:rock/raw/shale",
+          "solid",
+          68,
+          "solid",
+          68
+        ],
+        [
+          -258732,
+          8368,
+          69,
+          "tfc:rock/raw/shale",
+          "solid",
+          68,
+          "solid",
+          68
+        ],
+        [
+          -258734,
+          8369,
+          69,
+          "tfc:rock/raw/shale",
+          "solid",
+          68,
+          "solid",
+          68
+        ],
+        [
+          -258733,
+          8369,
+          69,
+          "tfc:rock/raw/shale",
+          "solid",
+          68,
+          "solid",
+          68
+        ]
+      ],
+      "voxel_examples": [
+        [
+          -258734,
+          -24,
+          8382,
+          "solid",
+          "air"
+        ],
+        [
+          -258734,
+          -23,
+          8382,
+          "solid",
+          "air"
+        ]
+      ],
+      "voxels": 1596
+    },
+    {
+      "chunk": [
+        -6364,
+        -896
+      ],
+      "matches": 1620,
+      "surface_columns": 256,
+      "surface_exact_y_and_class": 249,
+      "surface_examples": [
+        [
+          -101821,
+          -14326,
+          62,
+          "tfc:sand/brown",
+          "solid",
+          64,
+          "solid",
+          64
+        ],
+        [
+          -101813,
+          -14326,
+          66,
+          "tfc:sand/brown",
+          "solid",
+          69,
+          "solid",
+          69
+        ],
+        [
+          -101816,
+          -14325,
+          62,
+          "tfc:fluid/salt_water",
+          "water",
+          68,
+          "solid",
+          68
+        ],
+        [
+          -101815,
+          -14325,
+          62,
+          "tfc:fluid/salt_water",
+          "water",
+          68,
+          "solid",
+          68
+        ],
+        [
+          -101814,
+          -14325,
+          62,
+          "tfc:fluid/salt_water",
+          "water",
+          68,
+          "solid",
+          68
+        ],
+        [
+          -101813,
+          -14325,
+          62,
+          "tfc:fluid/salt_water",
+          "water",
+          68,
+          "solid",
+          68
+        ]
+      ],
+      "voxel_examples": [
+        [
+          -101814,
+          65,
+          -14326,
+          "solid",
+          "air"
+        ]
+      ],
+      "voxels": 1621
+    },
+    {
+      "chunk": [
+        -16161,
+        512
+      ],
+      "matches": 1631,
+      "surface_columns": 256,
+      "surface_exact_y_and_class": 219,
+      "surface_examples": [
+        [
+          -258575,
+          8192,
+          69,
+          "tfc:rock/mossy_cobble/shale",
+          "solid",
+          68,
+          "solid",
+          68
+        ],
+        [
+          -258574,
+          8192,
+          70,
+          "tfc:rock/cobble/shale",
+          "solid",
+          68,
+          "solid",
+          68
+        ],
+        [
+          -258573,
+          8192,
+          71,
+          "tfc:rock/mossy_cobble/shale",
+          "solid",
+          68,
+          "solid",
+          68
+        ],
+        [
+          -258572,
+          8192,
+          71,
+          "tfc:rock/cobble/shale",
+          "solid",
+          68,
+          "solid",
+          68
+        ],
+        [
+          -258571,
+          8192,
+          71,
+          "tfc:rock/mossy_cobble/shale",
+          "solid",
+          68,
+          "solid",
+          68
+        ],
+        [
+          -258570,
+          8192,
+          71,
+          "tfc:rock/cobble/shale",
+          "solid",
+          68,
+          "solid",
+          68
+        ]
+      ],
+      "voxel_examples": [
+        [
+          -258570,
+          55,
+          8194,
+          "solid",
+          "water"
+        ],
+        [
+          -258574,
+          43,
+          8198,
+          "solid",
+          "air"
+        ],
+        [
+          -258574,
+          44,
+          8198,
+          "solid",
+          "air"
+        ],
+        [
+          -258574,
+          45,
+          8198,
+          "solid",
+          "air"
+        ],
+        [
+          -258574,
+          46,
+          8198,
+          "solid",
+          "air"
+        ],
+        [
+          -258574,
+          47,
+          8198,
+          "solid",
+          "air"
+        ],
+        [
+          -258570,
+          26,
+          8206,
+          "solid",
+          "air"
+        ],
+        [
+          -258570,
+          27,
+          8206,
+          "solid",
+          "air"
+        ]
+      ],
+      "voxels": 1643
+    },
+    {
+      "chunk": [
+        -6041,
+        -1384
+      ],
+      "matches": 1173,
+      "surface_columns": 256,
+      "surface_exact_y_and_class": 256,
+      "surface_examples": [],
+      "voxel_examples": [],
+      "voxels": 1173
+    },
+    {
+      "chunk": [
+        -8064,
+        -1266
+      ],
+      "matches": 1680,
+      "surface_columns": 256,
+      "surface_exact_y_and_class": 251,
+      "surface_examples": [
+        [
+          -129014,
+          -20250,
+          71,
+          "tfc:rock/cobble/conglomerate",
+          "solid",
+          70,
+          "solid",
+          70
+        ],
+        [
+          -129015,
+          -20249,
+          73,
+          "tfc:rock/raw/conglomerate",
+          "solid",
+          71,
+          "solid",
+          71
+        ],
+        [
+          -129014,
+          -20249,
+          71,
+          "tfc:rock/cobble/conglomerate",
+          "solid",
+          70,
+          "solid",
+          70
+        ],
+        [
+          -129013,
+          -20249,
+          71,
+          "tfc:rock/raw/conglomerate",
+          "solid",
+          70,
+          "solid",
+          70
+        ],
+        [
+          -129012,
+          -20248,
+          71,
+          "tfc:rock/raw/conglomerate",
+          "solid",
+          70,
+          "solid",
+          70
+        ]
+      ],
+      "voxel_examples": [
+        [
+          -129010,
+          -26,
+          -20242,
+          "solid",
+          "air"
+        ],
+        [
+          -129010,
+          -25,
+          -20242,
+          "solid",
+          "air"
+        ]
+      ],
+      "voxels": 1682
+    },
+    {
+      "chunk": [
+        -16100,
+        567
+      ],
+      "matches": 1531,
+      "surface_columns": 256,
+      "surface_exact_y_and_class": 256,
+      "surface_examples": [],
+      "voxel_examples": [
+        [
+          -257594,
+          -1,
+          9074,
+          "solid",
+          "air"
+        ],
+        [
+          -257594,
+          0,
+          9074,
+          "solid",
+          "air"
+        ],
+        [
+          -257594,
+          1,
+          9074,
+          "solid",
+          "air"
+        ],
+        [
+          -257598,
+          -1,
+          9078,
+          "solid",
+          "air"
+        ],
+        [
+          -257598,
+          0,
+          9078,
+          "solid",
+          "air"
+        ],
+        [
+          -257598,
+          1,
+          9078,
+          "solid",
+          "air"
+        ],
+        [
+          -257598,
+          28,
+          9078,
+          "solid",
+          "air"
+        ],
+        [
+          -257594,
+          -1,
+          9078,
+          "solid",
+          "air"
+        ]
+      ],
+      "voxels": 1556
+    },
+    {
+      "chunk": [
+        -6444,
+        -904
+      ],
+      "matches": 1234,
+      "surface_columns": 251,
+      "surface_exact_y_and_class": 251,
+      "surface_examples": [],
+      "voxel_examples": [],
+      "voxels": 1234
+    },
+    {
+      "chunk": [
+        -9419,
+        650
+      ],
+      "matches": 1582,
+      "surface_columns": 256,
+      "surface_exact_y_and_class": 256,
+      "surface_examples": [],
+      "voxel_examples": [
+        [
+          -150702,
+          -23,
+          10402,
+          "solid",
+          "air"
+        ],
+        [
+          -150702,
+          -22,
+          10402,
+          "solid",
+          "air"
+        ],
+        [
+          -150702,
+          -21,
+          10402,
+          "solid",
+          "air"
+        ],
+        [
+          -150702,
+          -20,
+          10402,
+          "solid",
+          "air"
+        ],
+        [
+          -150702,
+          -12,
+          10402,
+          "solid",
+          "air"
+        ],
+        [
+          -150702,
+          -11,
+          10402,
+          "solid",
+          "air"
+        ],
+        [
+          -150702,
+          17,
+          10402,
+          "solid",
+          "air"
+        ],
+        [
+          -150702,
+          18,
+          10402,
+          "solid",
+          "air"
+        ]
+      ],
+      "voxels": 1616
+    },
+    {
+      "chunk": [
+        -12463,
+        -1093
+      ],
+      "matches": 1576,
+      "surface_columns": 256,
+      "surface_exact_y_and_class": 252,
+      "surface_examples": [
+        [
+          -199408,
+          -17481,
+          67,
+          "tfc:rock/cobble/chert",
+          "solid",
+          65,
+          "solid",
+          65
+        ],
+        [
+          -199408,
+          -17480,
+          67,
+          "tfc:rock/raw/chert",
+          "solid",
+          64,
+          "solid",
+          64
+        ],
+        [
+          -199408,
+          -17479,
+          67,
+          "tfc:rock/cobble/chert",
+          "solid",
+          64,
+          "solid",
+          64
+        ],
+        [
+          -199408,
+          -17478,
+          66,
+          "tfc:rock/cobble/chert",
+          "solid",
+          65,
+          "solid",
+          65
+        ]
+      ],
+      "voxel_examples": [],
+      "voxels": 1576
+    },
+    {
+      "chunk": [
+        963,
+        2143
+      ],
+      "matches": 1251,
+      "surface_columns": 256,
+      "surface_exact_y_and_class": 256,
+      "surface_examples": [],
+      "voxel_examples": [
+        [
+          15410,
+          -16,
+          34294,
+          "solid",
+          "air"
+        ],
+        [
+          15410,
+          -15,
+          34294,
+          "solid",
+          "air"
+        ],
+        [
+          15410,
+          -17,
+          34302,
+          "solid",
+          "air"
+        ],
+        [
+          15410,
+          -16,
+          34302,
+          "solid",
+          "air"
+        ]
+      ],
+      "voxels": 1255
+    },
+    {
+      "chunk": [
+        -6469,
+        -884
+      ],
+      "matches": 1749,
+      "surface_columns": 256,
+      "surface_exact_y_and_class": 256,
+      "surface_examples": [],
+      "voxel_examples": [],
+      "voxels": 1749
+    },
+    {
+      "chunk": [
+        -17635,
+        3032
+      ],
+      "matches": 1769,
+      "surface_columns": 256,
+      "surface_exact_y_and_class": 256,
+      "surface_examples": [],
+      "voxel_examples": [
+        [
+          -282146,
+          6,
+          48522,
+          "solid",
+          "air"
+        ],
+        [
+          -282146,
+          7,
+          48522,
+          "solid",
+          "air"
+        ],
+        [
+          -282146,
+          8,
+          48522,
+          "solid",
+          "air"
+        ]
+      ],
+      "voxels": 1772
+    },
+    {
+      "chunk": [
+        -12526,
+        -1187
+      ],
+      "matches": 1560,
+      "surface_columns": 256,
+      "surface_exact_y_and_class": 256,
+      "surface_examples": [],
+      "voxel_examples": [
+        [
+          -200410,
+          -28,
+          -18990,
+          "solid",
+          "air"
+        ],
+        [
+          -200410,
+          -27,
+          -18990,
+          "solid",
+          "air"
+        ],
+        [
+          -200410,
+          -26,
+          -18990,
+          "solid",
+          "air"
+        ],
+        [
+          -200410,
+          -25,
+          -18990,
+          "solid",
+          "air"
+        ],
+        [
+          -200410,
+          -24,
+          -18990,
+          "solid",
+          "air"
+        ]
+      ],
+      "voxels": 1565
+    },
+    {
+      "chunk": [
+        -9434,
+        658
+      ],
+      "matches": 1555,
+      "surface_columns": 256,
+      "surface_exact_y_and_class": 256,
+      "surface_examples": [],
+      "voxel_examples": [
+        [
+          -150934,
+          46,
+          10530,
+          "solid",
+          "air"
+        ],
+        [
+          -150934,
+          47,
+          10530,
+          "solid",
+          "air"
+        ],
+        [
+          -150934,
+          48,
+          10530,
+          "solid",
+          "air"
+        ],
+        [
+          -150934,
+          49,
+          10530,
+          "solid",
+          "air"
+        ],
+        [
+          -150930,
+          9,
+          10530,
+          "solid",
+          "air"
+        ],
+        [
+          -150930,
+          10,
+          10530,
+          "solid",
+          "air"
+        ],
+        [
+          -150930,
+          11,
+          10530,
+          "solid",
+          "air"
+        ],
+        [
+          -150930,
+          12,
+          10530,
+          "solid",
+          "air"
+        ]
+      ],
+      "voxels": 1605
+    },
+    {
+      "chunk": [
+        -12128,
+        -1513
+      ],
+      "matches": 1230,
+      "surface_columns": 256,
+      "surface_exact_y_and_class": 256,
+      "surface_examples": [],
+      "voxel_examples": [
+        [
+          -194046,
+          -21,
+          -24202,
+          "solid",
+          "air"
+        ],
+        [
+          -194046,
+          -20,
+          -24202,
+          "solid",
+          "air"
+        ],
+        [
+          -194046,
+          -19,
+          -24202,
+          "solid",
+          "air"
+        ],
+        [
+          -194046,
+          -18,
+          -24202,
+          "solid",
+          "air"
+        ],
+        [
+          -194042,
+          -21,
+          -24202,
+          "solid",
+          "air"
+        ],
+        [
+          -194042,
+          -20,
+          -24202,
+          "solid",
+          "air"
+        ],
+        [
+          -194042,
+          -19,
+          -24202,
+          "solid",
+          "air"
+        ],
+        [
+          -194042,
+          -18,
+          -24202,
+          "solid",
+          "air"
+        ]
+      ],
+      "voxels": 1244
+    },
+    {
+      "chunk": [
+        2992,
+        1355
+      ],
+      "matches": 1645,
+      "surface_columns": 256,
+      "surface_exact_y_and_class": 247,
+      "surface_examples": [
+        [
+          47874,
+          21683,
+          71,
+          "tfc:rock/cobble/basalt",
+          "solid",
+          70,
+          "solid",
+          70
+        ],
+        [
+          47873,
+          21684,
+          71,
+          "tfc:rock/mossy_cobble/basalt",
+          "solid",
+          70,
+          "solid",
+          70
+        ],
+        [
+          47874,
+          21684,
+          72,
+          "tfc:rock/cobble/basalt",
+          "solid",
+          70,
+          "solid",
+          70
+        ],
+        [
+          47875,
+          21684,
+          71,
+          "tfc:rock/mossy_cobble/basalt",
+          "solid",
+          70,
+          "solid",
+          70
+        ],
+        [
+          47878,
+          21684,
+          71,
+          "tfc:rock/mossy_cobble/basalt",
+          "solid",
+          70,
+          "solid",
+          70
+        ],
+        [
+          47874,
+          21685,
+          71,
+          "tfc:rock/cobble/basalt",
+          "solid",
+          70,
+          "solid",
+          70
+        ]
+      ],
+      "voxel_examples": [
+        [
+          47886,
+          -15,
+          21682,
+          "solid",
+          "air"
+        ],
+        [
+          47886,
+          -14,
+          21682,
+          "solid",
+          "air"
+        ],
+        [
+          47886,
+          -13,
+          21682,
+          "solid",
+          "air"
+        ],
+        [
+          47886,
+          -12,
+          21682,
+          "solid",
+          "air"
+        ],
+        [
+          47874,
+          -7,
+          21694,
+          "solid",
+          "air"
+        ]
+      ],
+      "voxels": 1650
+    },
+    {
+      "chunk": [
+        -12273,
+        -1119
+      ],
+      "matches": 1723,
+      "surface_columns": 256,
+      "surface_exact_y_and_class": 253,
+      "surface_examples": [
+        [
+          -196353,
+          -17892,
+          70,
+          "tfg:duff/mollisol",
+          "solid",
+          73,
+          "solid",
+          73
+        ],
+        [
+          -196353,
+          -17891,
+          70,
+          "tfg:duff/mollisol",
+          "solid",
+          72,
+          "solid",
+          72
+        ],
+        [
+          -196353,
+          -17890,
+          70,
+          "tfg:duff/mollisol",
+          "solid",
+          71,
+          "solid",
+          71
+        ]
+      ],
+      "voxel_examples": [],
+      "voxels": 1723
+    },
+    {
+      "chunk": [
+        -12114,
+        -1423
+      ],
+      "matches": 1839,
+      "surface_columns": 256,
+      "surface_exact_y_and_class": 242,
+      "surface_examples": [
+        [
+          -193819,
+          -22754,
+          76,
+          "tfc:rock/raw/chalk",
+          "solid",
+          81,
+          "solid",
+          81
+        ],
+        [
+          -193817,
+          -22754,
+          77,
+          "tfc:rock/hardened/chalk",
+          "solid",
+          78,
+          "solid",
+          78
+        ],
+        [
+          -193816,
+          -22754,
+          74,
+          "tfc:rock/gravel/chalk",
+          "solid",
+          76,
+          "solid",
+          76
+        ],
+        [
+          -193815,
+          -22754,
+          73,
+          "tfc:rock/gravel/chalk",
+          "solid",
+          76,
+          "solid",
+          76
+        ],
+        [
+          -193814,
+          -22754,
+          74,
+          "tfc:rock/gravel/chalk",
+          "solid",
+          76,
+          "solid",
+          76
+        ],
+        [
+          -193813,
+          -22754,
+          74,
+          "tfc:rock/gravel/chalk",
+          "solid",
+          77,
+          "solid",
+          77
+        ]
+      ],
+      "voxel_examples": [
+        [
+          -193822,
+          44,
+          -22762,
+          "solid",
+          "air"
+        ],
+        [
+          -193822,
+          45,
+          -22762,
+          "solid",
+          "air"
+        ],
+        [
+          -193822,
+          46,
+          -22762,
+          "solid",
+          "air"
+        ],
+        [
+          -193818,
+          -31,
+          -22762,
+          "solid",
+          "air"
+        ],
+        [
+          -193818,
+          -30,
+          -22762,
+          "solid",
+          "air"
+        ],
+        [
+          -193818,
+          -29,
+          -22762,
+          "solid",
+          "air"
+        ],
+        [
+          -193822,
+          -26,
+          -22754,
+          "solid",
+          "air"
+        ],
+        [
+          -193822,
+          -25,
+          -22754,
+          "solid",
+          "air"
+        ]
+      ],
+      "voxels": 1850
+    },
+    {
+      "chunk": [
+        945,
+        924
+      ],
+      "matches": 1630,
+      "surface_columns": 256,
+      "surface_exact_y_and_class": 256,
+      "surface_examples": [],
+      "voxel_examples": [
+        [
+          15126,
+          -32,
+          14790,
+          "solid",
+          "air"
+        ]
+      ],
+      "voxels": 1631
+    },
+    {
+      "chunk": [
+        1297,
+        974
+      ],
+      "matches": 1926,
+      "surface_columns": 256,
+      "surface_exact_y_and_class": 256,
+      "surface_examples": [],
+      "voxel_examples": [
+        [
+          20758,
+          14,
+          15594,
+          "solid",
+          "air"
+        ],
+        [
+          20758,
+          15,
+          15594,
+          "solid",
+          "air"
+        ],
+        [
+          20758,
+          16,
+          15594,
+          "solid",
+          "air"
+        ],
+        [
+          20754,
+          8,
+          15598,
+          "solid",
+          "water"
+        ],
+        [
+          20758,
+          7,
+          15598,
+          "solid",
+          "air"
+        ],
+        [
+          20758,
+          8,
+          15598,
+          "solid",
+          "air"
+        ],
+        [
+          20758,
+          9,
+          15598,
+          "solid",
+          "air"
+        ],
+        [
+          20758,
+          10,
+          15598,
+          "solid",
+          "air"
+        ]
+      ],
+      "voxels": 1934
+    },
+    {
+      "chunk": [
+        -8119,
+        -1325
+      ],
+      "matches": 1472,
+      "surface_columns": 256,
+      "surface_exact_y_and_class": 254,
+      "surface_examples": [
+        [
+          -129897,
+          -21200,
+          59,
+          "tfc:rock/gravel/shale",
+          "solid",
+          62,
+          "solid",
+          62
+        ],
+        [
+          -129896,
+          -21199,
+          61,
+          "tfg:coarse_dirt/sandy_loam",
+          "solid",
+          62,
+          "solid",
+          62
+        ]
+      ],
+      "voxel_examples": [
+        [
+          -129902,
+          -13,
+          -21198,
+          "solid",
+          "air"
+        ],
+        [
+          -129902,
+          -12,
+          -21198,
+          "solid",
+          "air"
+        ],
+        [
+          -129898,
+          12,
+          -21194,
+          "solid",
+          "air"
+        ],
+        [
+          -129898,
+          13,
+          -21194,
+          "solid",
+          "air"
+        ],
+        [
+          -129898,
+          12,
+          -21190,
+          "solid",
+          "air"
+        ]
+      ],
+      "voxels": 1477
+    },
+    {
+      "chunk": [
+        553,
+        1609
+      ],
+      "matches": 1473,
+      "surface_columns": 230,
+      "surface_exact_y_and_class": 137,
+      "surface_examples": [
+        [
+          8861,
+          25744,
+          61,
+          "tfc:dirt/loam",
+          "solid",
+          62,
+          "water",
+          61
+        ],
+        [
+          8860,
+          25745,
+          61,
+          "tfc:rock/gravel/chalk",
+          "solid",
+          62,
+          "water",
+          61
+        ],
+        [
+          8862,
+          25745,
+          61,
+          "tfc:rock/gravel/chalk",
+          "solid",
+          62,
+          "water",
+          61
+        ],
+        [
+          8862,
+          25746,
+          61,
+          "tfc:rock/gravel/chalk",
+          "solid",
+          62,
+          "water",
+          61
+        ],
+        [
+          8860,
+          25747,
+          61,
+          "tfc:rock/gravel/chalk",
+          "solid",
+          62,
+          "water",
+          61
+        ],
+        [
+          8860,
+          25748,
+          61,
+          "tfc:rock/gravel/chalk",
+          "solid",
+          62,
+          "water",
+          61
+        ]
+      ],
+      "voxel_examples": [
+        [
+          8850,
+          -22,
+          25746,
+          "solid",
+          "lava"
+        ],
+        [
+          8858,
+          30,
+          25750,
+          "solid",
+          "air"
+        ],
+        [
+          8850,
+          -3,
+          25754,
+          "solid",
+          "air"
+        ],
+        [
+          8850,
+          -2,
+          25754,
+          "solid",
+          "air"
+        ],
+        [
+          8850,
+          -1,
+          25754,
+          "solid",
+          "air"
+        ],
+        [
+          8850,
+          0,
+          25754,
+          "solid",
+          "air"
+        ],
+        [
+          8850,
+          1,
+          25754,
+          "solid",
+          "air"
+        ],
+        [
+          8854,
+          -26,
+          25754,
+          "solid",
+          "air"
+        ]
+      ],
+      "voxels": 1490
+    },
+    {
+      "chunk": [
+        1324,
+        1077
+      ],
+      "matches": 1630,
+      "surface_columns": 256,
+      "surface_exact_y_and_class": 256,
+      "surface_examples": [],
+      "voxel_examples": [],
+      "voxels": 1630
+    },
+    {
+      "chunk": [
+        2151,
+        458
+      ],
+      "matches": 1603,
+      "surface_columns": 256,
+      "surface_exact_y_and_class": 256,
+      "surface_examples": [],
+      "voxel_examples": [
+        [
+          34418,
+          15,
+          7330,
+          "solid",
+          "air"
+        ],
+        [
+          34418,
+          16,
+          7330,
+          "solid",
+          "air"
+        ],
+        [
+          34418,
+          13,
+          7334,
+          "solid",
+          "air"
+        ],
+        [
+          34418,
+          14,
+          7334,
+          "solid",
+          "air"
+        ],
+        [
+          34418,
+          15,
+          7334,
+          "solid",
+          "air"
+        ],
+        [
+          34422,
+          14,
+          7338,
+          "solid",
+          "air"
+        ],
+        [
+          34418,
+          16,
+          7342,
+          "solid",
+          "air"
+        ],
+        [
+          34418,
+          17,
+          7342,
+          "solid",
+          "air"
+        ]
+      ],
+      "voxels": 1615
+    },
+    {
+      "chunk": [
+        2967,
+        1028
+      ],
+      "matches": 1444,
+      "surface_columns": 256,
+      "surface_exact_y_and_class": 256,
+      "surface_examples": [],
+      "voxel_examples": [
+        [
+          47474,
+          -15,
+          16450,
+          "solid",
+          "air"
+        ],
+        [
+          47474,
+          -14,
+          16450,
+          "solid",
+          "air"
+        ],
+        [
+          47474,
+          36,
+          16450,
+          "solid",
+          "water"
+        ],
+        [
+          47474,
+          53,
+          16450,
+          "solid",
+          "water"
+        ],
+        [
+          47486,
+          27,
+          16450,
+          "solid",
+          "air"
+        ],
+        [
+          47486,
+          28,
+          16450,
+          "solid",
+          "air"
+        ],
+        [
+          47486,
+          29,
+          16450,
+          "solid",
+          "air"
+        ],
+        [
+          47486,
+          30,
+          16450,
+          "solid",
+          "air"
+        ]
+      ],
+      "voxels": 1495
+    },
+    {
+      "chunk": [
+        873,
+        1098
+      ],
+      "matches": 1599,
+      "surface_columns": 256,
+      "surface_exact_y_and_class": 256,
+      "surface_examples": [],
+      "voxel_examples": [
+        [
+          13974,
+          10,
+          17570,
+          "solid",
+          "air"
+        ],
+        [
+          13974,
+          11,
+          17570,
+          "solid",
+          "air"
+        ],
+        [
+          13974,
+          12,
+          17570,
+          "solid",
+          "air"
+        ],
+        [
+          13978,
+          9,
+          17578,
+          "solid",
+          "air"
+        ],
+        [
+          13978,
+          10,
+          17578,
+          "solid",
+          "air"
+        ],
+        [
+          13982,
+          -16,
+          17578,
+          "solid",
+          "air"
+        ],
+        [
+          13982,
+          -15,
+          17578,
+          "solid",
+          "air"
+        ],
+        [
+          13982,
+          -14,
+          17578,
+          "solid",
+          "air"
+        ]
+      ],
+      "voxels": 1608
+    },
+    {
+      "chunk": [
+        -6218,
+        -1349
+      ],
+      "matches": 1539,
+      "surface_columns": 256,
+      "surface_exact_y_and_class": 255,
+      "surface_examples": [
+        [
+          -99488,
+          -21584,
+          66,
+          "tfc:sand/black",
+          "solid",
+          67,
+          "solid",
+          67
+        ]
+      ],
+      "voxel_examples": [
+        [
+          -99486,
+          -17,
+          -21582,
+          "solid",
+          "air"
+        ],
+        [
+          -99486,
+          -16,
+          -21582,
+          "solid",
+          "air"
+        ],
+        [
+          -99486,
+          -15,
+          -21582,
+          "solid",
+          "air"
+        ],
+        [
+          -99482,
+          -26,
+          -21582,
+          "solid",
+          "air"
+        ],
+        [
+          -99482,
+          -25,
+          -21582,
+          "solid",
+          "air"
+        ],
+        [
+          -99482,
+          -21,
+          -21582,
+          "solid",
+          "air"
+        ],
+        [
+          -99482,
+          -20,
+          -21582,
+          "solid",
+          "air"
+        ],
+        [
+          -99482,
+          -19,
+          -21582,
+          "solid",
+          "air"
+        ]
+      ],
+      "voxels": 1570
+    },
+    {
+      "chunk": [
+        -8059,
+        -1184
+      ],
+      "matches": 1719,
+      "surface_columns": 256,
+      "surface_exact_y_and_class": 256,
+      "surface_examples": [],
+      "voxel_examples": [
+        [
+          -128942,
+          6,
+          -18942,
+          "solid",
+          "air"
+        ],
+        [
+          -128942,
+          7,
+          -18942,
+          "solid",
+          "air"
+        ],
+        [
+          -128942,
+          8,
+          -18942,
+          "solid",
+          "air"
+        ],
+        [
+          -128942,
+          9,
+          -18942,
+          "solid",
+          "air"
+        ],
+        [
+          -128934,
+          15,
+          -18942,
+          "solid",
+          "air"
+        ],
+        [
+          -128934,
+          16,
+          -18942,
+          "solid",
+          "air"
+        ],
+        [
+          -128934,
+          17,
+          -18942,
+          "solid",
+          "air"
+        ],
+        [
+          -128930,
+          16,
+          -18938,
+          "solid",
+          "air"
+        ]
+      ],
+      "voxels": 1753
+    },
+    {
+      "chunk": [
+        -7032,
+        -972
+      ],
+      "matches": 2306,
+      "surface_columns": 256,
+      "surface_exact_y_and_class": 247,
+      "surface_examples": [
+        [
+          -112505,
+          -15548,
+          104,
+          "tfc:rock/raw/chert",
+          "solid",
+          105,
+          "solid",
+          105
+        ],
+        [
+          -112506,
+          -15547,
+          104,
+          "tfc:rock/raw/chert",
+          "solid",
+          105,
+          "solid",
+          105
+        ],
+        [
+          -112506,
+          -15546,
+          104,
+          "tfc:rock/raw/chert",
+          "solid",
+          106,
+          "solid",
+          106
+        ],
+        [
+          -112505,
+          -15546,
+          104,
+          "tfc:rock/raw/chert",
+          "solid",
+          107,
+          "solid",
+          107
+        ],
+        [
+          -112497,
+          -15546,
+          118,
+          "tfc:rock/raw/chert",
+          "solid",
+          119,
+          "solid",
+          119
+        ],
+        [
+          -112497,
+          -15545,
+          118,
+          "tfc:rock/raw/chert",
+          "solid",
+          120,
+          "solid",
+          120
+        ]
+      ],
+      "voxel_examples": [
+        [
+          -112502,
+          -32,
+          -15550,
+          "solid",
+          "air"
+        ],
+        [
+          -112502,
+          -31,
+          -15550,
+          "solid",
+          "air"
+        ],
+        [
+          -112502,
+          -30,
+          -15550,
+          "solid",
+          "air"
+        ],
+        [
+          -112502,
+          -29,
+          -15550,
+          "solid",
+          "air"
+        ],
+        [
+          -112498,
+          -30,
+          -15546,
+          "solid",
+          "air"
+        ],
+        [
+          -112498,
+          -29,
+          -15546,
+          "solid",
+          "air"
+        ],
+        [
+          -112498,
+          -28,
+          -15546,
+          "solid",
+          "air"
+        ],
+        [
+          -112498,
+          -27,
+          -15546,
+          "solid",
+          "air"
+        ]
+      ],
+      "voxels": 2318
+    },
+    {
+      "chunk": [
+        -8150,
+        -1447
+      ],
+      "matches": 1688,
+      "surface_columns": 256,
+      "surface_exact_y_and_class": 256,
+      "surface_examples": [],
+      "voxel_examples": [
+        [
+          -130398,
+          -1,
+          -23150,
+          "solid",
+          "air"
+        ],
+        [
+          -130398,
+          0,
+          -23150,
+          "solid",
+          "air"
+        ],
+        [
+          -130398,
+          1,
+          -23150,
+          "solid",
+          "air"
+        ],
+        [
+          -130390,
+          -8,
+          -23150,
+          "solid",
+          "air"
+        ],
+        [
+          -130390,
+          -7,
+          -23150,
+          "solid",
+          "air"
+        ],
+        [
+          -130390,
+          -6,
+          -23150,
+          "solid",
+          "air"
+        ],
+        [
+          -130390,
+          -32,
+          -23146,
+          "solid",
+          "air"
+        ],
+        [
+          -130390,
+          -31,
+          -23146,
+          "solid",
+          "air"
+        ]
+      ],
+      "voxels": 1709
+    },
+    {
+      "chunk": [
+        1241,
+        -139
+      ],
+      "matches": 1489,
+      "surface_columns": 256,
+      "surface_exact_y_and_class": 256,
+      "surface_examples": [],
+      "voxel_examples": [
+        [
+          19866,
+          -10,
+          -2222,
+          "solid",
+          "air"
+        ],
+        [
+          19866,
+          -9,
+          -2222,
+          "solid",
+          "air"
+        ],
+        [
+          19866,
+          -8,
+          -2222,
+          "solid",
+          "air"
+        ]
+      ],
+      "voxels": 1492
+    },
+    {
+      "chunk": [
+        982,
+        2080
+      ],
+      "matches": 1499,
+      "surface_columns": 256,
+      "surface_exact_y_and_class": 248,
+      "surface_examples": [
+        [
+          15726,
+          33290,
+          62,
+          "tfc:fluid/salt_water",
+          "water",
+          62,
+          "solid",
+          62
+        ],
+        [
+          15727,
+          33290,
+          62,
+          "tfc:fluid/salt_water",
+          "water",
+          62,
+          "solid",
+          62
+        ],
+        [
+          15725,
+          33291,
+          62,
+          "tfc:fluid/salt_water",
+          "water",
+          62,
+          "solid",
+          62
+        ],
+        [
+          15726,
+          33291,
+          62,
+          "tfc:fluid/salt_water",
+          "water",
+          62,
+          "solid",
+          62
+        ],
+        [
+          15724,
+          33292,
+          62,
+          "tfc:fluid/salt_water",
+          "water",
+          62,
+          "solid",
+          62
+        ],
+        [
+          15724,
+          33293,
+          62,
+          "tfc:fluid/salt_water",
+          "water",
+          62,
+          "solid",
+          62
+        ]
+      ],
+      "voxel_examples": [
+        [
+          15722,
+          -9,
+          33282,
+          "solid",
+          "air"
+        ],
+        [
+          15722,
+          -8,
+          33282,
+          "solid",
+          "air"
+        ],
+        [
+          15722,
+          -7,
+          33282,
+          "solid",
+          "air"
+        ],
+        [
+          15714,
+          -23,
+          33290,
+          "solid",
+          "air"
+        ],
+        [
+          15714,
+          -22,
+          33290,
+          "solid",
+          "air"
+        ]
+      ],
+      "voxels": 1504
+    },
+    {
+      "chunk": [
+        1088,
+        1000
+      ],
+      "matches": 1457,
+      "surface_columns": 256,
+      "surface_exact_y_and_class": 256,
+      "surface_examples": [],
+      "voxel_examples": [
+        [
+          17414,
+          9,
+          16002,
+          "solid",
+          "air"
+        ],
+        [
+          17414,
+          10,
+          16002,
+          "solid",
+          "air"
+        ],
+        [
+          17414,
+          11,
+          16002,
+          "solid",
+          "air"
+        ],
+        [
+          17414,
+          12,
+          16002,
+          "solid",
+          "air"
+        ],
+        [
+          17414,
+          13,
+          16002,
+          "solid",
+          "air"
+        ],
+        [
+          17418,
+          6,
+          16002,
+          "solid",
+          "air"
+        ],
+        [
+          17418,
+          7,
+          16002,
+          "solid",
+          "air"
+        ],
+        [
+          17418,
+          8,
+          16002,
+          "solid",
+          "air"
+        ]
+      ],
+      "voxels": 1478
+    },
+    {
+      "chunk": [
+        -7720,
+        191
+      ],
+      "matches": 1614,
+      "surface_columns": 256,
+      "surface_exact_y_and_class": 256,
+      "surface_examples": [],
+      "voxel_examples": [
+        [
+          -123506,
+          -9,
+          3058,
+          "solid",
+          "air"
+        ],
+        [
+          -123506,
+          -8,
+          3058,
+          "solid",
+          "air"
+        ],
+        [
+          -123518,
+          -13,
+          3062,
+          "solid",
+          "air"
+        ],
+        [
+          -123518,
+          -12,
+          3062,
+          "solid",
+          "air"
+        ],
+        [
+          -123518,
+          -11,
+          3062,
+          "solid",
+          "air"
+        ],
+        [
+          -123514,
+          63,
+          3062,
+          "solid",
+          "air"
+        ],
+        [
+          -123514,
+          -10,
+          3066,
+          "solid",
+          "air"
+        ],
+        [
+          -123514,
+          -9,
+          3066,
+          "solid",
+          "air"
+        ]
+      ],
+      "voxels": 1625
+    },
+    {
+      "chunk": [
+        -8144,
+        916
+      ],
+      "matches": 1680,
+      "surface_columns": 256,
+      "surface_exact_y_and_class": 256,
+      "surface_examples": [],
+      "voxel_examples": [
+        [
+          -130302,
+          52,
+          14666,
+          "solid",
+          "water"
+        ]
+      ],
+      "voxels": 1681
+    },
+    {
+      "chunk": [
+        -8182,
+        957
+      ],
+      "matches": 1496,
+      "surface_columns": 256,
+      "surface_exact_y_and_class": 254,
+      "surface_examples": [
+        [
+          -130906,
+          15323,
+          64,
+          "tfg:pile/volcanic_ash",
+          "solid",
+          63,
+          "solid",
+          63
+        ],
+        [
+          -130908,
+          15327,
+          64,
+          "tfg:pile/volcanic_ash",
+          "solid",
+          63,
+          "solid",
+          63
+        ]
+      ],
+      "voxel_examples": [
+        [
+          -130902,
+          16,
+          15314,
+          "solid",
+          "air"
+        ],
+        [
+          -130898,
+          -32,
+          15314,
+          "solid",
+          "air"
+        ],
+        [
+          -130898,
+          -31,
+          15314,
+          "solid",
+          "air"
+        ],
+        [
+          -130910,
+          -32,
+          15318,
+          "solid",
+          "air"
+        ],
+        [
+          -130910,
+          -31,
+          15318,
+          "solid",
+          "air"
+        ],
+        [
+          -130910,
+          -30,
+          15318,
+          "solid",
+          "air"
+        ],
+        [
+          -130898,
+          -31,
+          15322,
+          "solid",
+          "air"
+        ],
+        [
+          -130898,
+          -30,
+          15322,
+          "solid",
+          "air"
+        ]
+      ],
+      "voxels": 1507
+    },
+    {
+      "chunk": [
+        -9670,
+        589
+      ],
+      "matches": 1620,
+      "surface_columns": 256,
+      "surface_exact_y_and_class": 256,
+      "surface_examples": [],
+      "voxel_examples": [
+        [
+          -154718,
+          1,
+          9434,
+          "solid",
+          "air"
+        ],
+        [
+          -154718,
+          2,
+          9434,
+          "solid",
+          "air"
+        ],
+        [
+          -154714,
+          0,
+          9438,
+          "solid",
+          "air"
+        ]
+      ],
+      "voxels": 1623
+    },
+    {
+      "chunk": [
+        927,
+        904
+      ],
+      "matches": 1589,
+      "surface_columns": 256,
+      "surface_exact_y_and_class": 240,
+      "surface_examples": [
+        [
+          14832,
+          14464,
+          67,
+          "tfg:dirt/mollisol",
+          "solid",
+          68,
+          "solid",
+          68
+        ],
+        [
+          14833,
+          14464,
+          67,
+          "tfg:dirt/mollisol",
+          "solid",
+          68,
+          "solid",
+          68
+        ],
+        [
+          14832,
+          14465,
+          67,
+          "tfg:dirt/mollisol",
+          "solid",
+          68,
+          "solid",
+          68
+        ],
+        [
+          14833,
+          14465,
+          67,
+          "tfg:dirt/mollisol",
+          "solid",
+          68,
+          "solid",
+          68
+        ],
+        [
+          14832,
+          14466,
+          67,
+          "tfg:dirt/mollisol",
+          "solid",
+          69,
+          "solid",
+          69
+        ],
+        [
+          14833,
+          14466,
+          67,
+          "tfg:dirt/mollisol",
+          "solid",
+          68,
+          "solid",
+          68
+        ]
+      ],
+      "voxel_examples": [
+        [
+          14842,
+          39,
+          14478,
+          "solid",
+          "water"
+        ]
+      ],
+      "voxels": 1590
+    },
+    {
+      "chunk": [
+        -6331,
+        -969
+      ],
+      "matches": 1632,
+      "surface_columns": 256,
+      "surface_exact_y_and_class": 256,
+      "surface_examples": [],
+      "voxel_examples": [],
+      "voxels": 1632
+    },
+    {
+      "chunk": [
+        -17569,
+        3145
+      ],
+      "matches": 1522,
+      "surface_columns": 256,
+      "surface_exact_y_and_class": 256,
+      "surface_examples": [],
+      "voxel_examples": [
+        [
+          -281102,
+          -9,
+          50322,
+          "solid",
+          "air"
+        ],
+        [
+          -281102,
+          -8,
+          50322,
+          "solid",
+          "air"
+        ],
+        [
+          -281102,
+          -7,
+          50322,
+          "solid",
+          "air"
+        ],
+        [
+          -281090,
+          -23,
+          50322,
+          "solid",
+          "air"
+        ],
+        [
+          -281090,
+          -22,
+          50322,
+          "solid",
+          "air"
+        ],
+        [
+          -281090,
+          -21,
+          50322,
+          "solid",
+          "air"
+        ],
+        [
+          -281090,
+          -17,
+          50322,
+          "solid",
+          "air"
+        ],
+        [
+          -281090,
+          -16,
+          50322,
+          "solid",
+          "air"
+        ]
+      ],
+      "voxels": 1550
+    },
+    {
+      "chunk": [
+        -113,
+        327
+      ],
+      "matches": 2184,
+      "surface_columns": 256,
+      "surface_exact_y_and_class": 256,
+      "surface_examples": [],
+      "voxel_examples": [
+        [
+          -1794,
+          11,
+          5246,
+          "solid",
+          "air"
+        ],
+        [
+          -1794,
+          12,
+          5246,
+          "solid",
+          "air"
+        ],
+        [
+          -1794,
+          13,
+          5246,
+          "solid",
+          "air"
+        ]
+      ],
+      "voxels": 2187
+    },
+    {
+      "chunk": [
+        -12483,
+        -1163
+      ],
+      "matches": 1606,
+      "surface_columns": 256,
+      "surface_exact_y_and_class": 256,
+      "surface_examples": [],
+      "voxel_examples": [
+        [
+          -199714,
+          47,
+          -18606,
+          "solid",
+          "air"
+        ],
+        [
+          -199714,
+          48,
+          -18606,
+          "solid",
+          "air"
+        ]
+      ],
+      "voxels": 1608
+    },
+    {
+      "chunk": [
+        1335,
+        856
+      ],
+      "matches": 1618,
+      "surface_columns": 256,
+      "surface_exact_y_and_class": 256,
+      "surface_examples": [],
+      "voxel_examples": [
+        [
+          21366,
+          21,
+          13698,
+          "solid",
+          "air"
+        ],
+        [
+          21366,
+          22,
+          13698,
+          "solid",
+          "air"
+        ],
+        [
+          21366,
+          23,
+          13698,
+          "solid",
+          "air"
+        ],
+        [
+          21374,
+          4,
+          13698,
+          "solid",
+          "air"
+        ],
+        [
+          21374,
+          5,
+          13698,
+          "solid",
+          "air"
+        ],
+        [
+          21374,
+          6,
+          13698,
+          "solid",
+          "air"
+        ]
+      ],
+      "voxels": 1624
+    },
+    {
+      "chunk": [
+        -8127,
+        -1378
+      ],
+      "matches": 1463,
+      "surface_columns": 256,
+      "surface_exact_y_and_class": 256,
+      "surface_examples": [],
+      "voxel_examples": [
+        [
+          -130030,
+          -32,
+          -22034,
+          "solid",
+          "air"
+        ],
+        [
+          -130030,
+          -31,
+          -22034,
+          "solid",
+          "air"
+        ],
+        [
+          -130030,
+          -30,
+          -22034,
+          "solid",
+          "air"
+        ]
+      ],
+      "voxels": 1466
+    },
+    {
+      "chunk": [
+        -8089,
+        -1373
+      ],
+      "matches": 1561,
+      "surface_columns": 256,
+      "surface_exact_y_and_class": 256,
+      "surface_examples": [],
+      "voxel_examples": [
+        [
+          -129414,
+          -30,
+          -21966,
+          "solid",
+          "air"
+        ],
+        [
+          -129410,
+          -32,
+          -21966,
+          "solid",
+          "air"
+        ],
+        [
+          -129410,
+          -31,
+          -21966,
+          "solid",
+          "air"
+        ],
+        [
+          -129410,
+          -30,
+          -21966,
+          "solid",
+          "air"
+        ],
+        [
+          -129422,
+          42,
+          -21962,
+          "solid",
+          "air"
+        ],
+        [
+          -129422,
+          43,
+          -21962,
+          "solid",
+          "air"
+        ],
+        [
+          -129422,
+          44,
+          -21962,
+          "solid",
+          "air"
+        ],
+        [
+          -129418,
+          41,
+          -21962,
+          "solid",
+          "air"
+        ]
+      ],
+      "voxels": 1574
+    },
+    {
+      "chunk": [
+        110,
+        61
+      ],
+      "matches": 1624,
+      "surface_columns": 256,
+      "surface_exact_y_and_class": 254,
+      "surface_examples": [
+        [
+          1766,
+          982,
+          68,
+          "tfg:grass/alfisol",
+          "solid",
+          69,
+          "solid",
+          69
+        ],
+        [
+          1767,
+          982,
+          68,
+          "tfg:grass/alfisol",
+          "solid",
+          69,
+          "solid",
+          69
+        ]
+      ],
+      "voxel_examples": [],
+      "voxels": 1624
+    }
+  ],
+  "voxels": 76770
+}

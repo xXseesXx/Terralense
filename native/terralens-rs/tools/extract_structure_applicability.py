@@ -16,6 +16,7 @@ def rel_for(n, kind):
  m=re.match(r'data/([^/]+)/worldgen/'+kind+r'/(.+)\.json$',n)
  return (m.group(1)+':'+m.group(2) if m else None)
 sets={}; structures={}; biome_tags=collections.defaultdict(list); structure_tags=collections.defaultdict(list)
+spawn_modifiers={}
 for src,z in archives:
  for n in z.namelist():
   if not n.endswith('.json'): continue
@@ -24,6 +25,11 @@ for src,z in archives:
    if ident:
     try: dest[ident]=(json.loads(z.read(n)),src+'!/'+n)
     except Exception as e: print('BAD',src,n,e)
+  m=re.match(r'data/([^/]+)/lithostitched/worldgen_modifier/(.+)\.json$',n)
+  if m:
+   key=m.group(1)+':'+m.group(2)
+   try: spawn_modifiers[key]=(json.loads(z.read(n)),src+'!/'+n)
+   except Exception as e: print('BAD',src,n,e)
   m=re.match(r'data/([^/]+)/tags/worldgen/biome/(.+)\.json$',n)
   if m:
    key=m.group(1)+':'+m.group(2)
@@ -41,6 +47,12 @@ for kind,dest in [('structure_set',sets),('structure',structures)]:
   ns=p.relative_to(folder).parts[0]
   sub=p.relative_to(folder/ns/'worldgen'/kind).with_suffix('').as_posix()
   dest[ns+':'+sub]=(json.loads(p.read_text()),'KubeJS/'+p.relative_to(KUBE).as_posix())
+# KubeJS datapack resources override same-id jar resources, including Lithostitched
+# modifiers. Keep the registry identifier so overrides are deterministic and auditable.
+for p in (KUBE/'data').glob('*/lithostitched/worldgen_modifier/**/*.json'):
+ ns=p.relative_to(KUBE/'data').parts[0]
+ sub=p.relative_to(KUBE/'data'/ns/'lithostitched'/'worldgen_modifier').with_suffix('').as_posix()
+ spawn_modifiers[ns+':'+sub]=(json.loads(p.read_text()),'KubeJS/'+p.relative_to(KUBE).as_posix())
 for root,tagdest in [('biome',biome_tags),('structure',structure_tags)]:
  folder=KUBE/'data'
  for p in folder.glob('*/tags/worldgen/'+root+'/**/*.json'):
@@ -62,7 +74,7 @@ script_biome_ops=collections.defaultdict(list)
 script_add_biome=collections.defaultdict(list); script_remove_biome=collections.defaultdict(list)
 script_remove_all_biome=collections.defaultdict(list)
 script_add_struct=collections.defaultdict(list); script_remove_struct=collections.defaultdict(list)
-interesting_tag=lambda tag: ('has_structure' in tag or tag.startswith('minecraft:is_') or tag=='tfg:nether_biomes')
+interesting_tag=lambda tag: ('has_structure' in tag or tag.startswith('minecraft:is_') or tag.startswith('tfg:earth/is_') or tag=='tfg:nether_biomes')
 for p in sorted((KUBE/'server_scripts').rglob('*.js')):
  txt=p.read_text(errors='replace')
  rel=f'KubeJS/server_scripts/{p.relative_to(KUBE/"server_scripts").as_posix()}'
@@ -196,6 +208,46 @@ def resolve_struct_tag(tag,stack=()):
   elif isinstance(ref,str):out.add(ref)
  return out
 
+# Decode Lithostitched's current spawn-condition modifiers. set_structure_spawn_condition
+# defaults append=true, which ANDs each new rule with the existing one. append=false
+# replaces the current rule. Unsupported condition types remain explicit unknown entries.
+conditions_by_structure=collections.defaultdict(list)
+condition_sources=[]
+def normalize_spawn_condition(cond, src, ident):
+ if not isinstance(cond,dict):
+  return {'type':'unknown','raw':cond,'reason':'spawn_condition_not_object','source':src,'modifier':ident}
+ typ=cond.get('type','')
+ if typ=='lithostitched:grid':
+  inner=cond.get('condition',{})
+  if isinstance(inner,dict) and inner.get('type')=='lithostitched:in_biome':
+   ref=inner.get('biomes')
+   ids=sorted(resolve_biome_ref(ref)) if isinstance(ref,str) else []
+   if isinstance(ref,str) and ref.startswith('#'): ids=sorted(resolve_biome_tag(ref[1:]))
+   return {'type':'avoid_biomes','biomes':ids,'radius':cond.get('radius'),'step':cond.get('distance_between_points'),'allowedCount':cond.get('allowed_count'),'source':src,'modifier':ident,'raw_tag':ref}
+  return {'type':'unknown','raw':cond,'reason':'grid_inner_condition_unsupported','source':src,'modifier':ident}
+ if typ=='lithostitched:height_filter':
+  r=cond.get('permitted_range')
+  if isinstance(r,dict): lo=r.get('min_inclusive'); hi=r.get('max_inclusive')
+  elif isinstance(r,list) and len(r)>=2: lo,hi=r[0],r[1]
+  else: lo=hi=None
+  if lo is not None and hi is not None:
+   return {'type':'height','heightmap':cond.get('heightmap'),'min':lo,'max':hi,'range_type':cond.get('range_type'),'source':src,'modifier':ident}
+  return {'type':'unknown','raw':cond,'reason':'height_range_shape_unsupported','source':src,'modifier':ident}
+ return {'type':'unknown','raw':cond,'reason':'unsupported_lithostitched_condition_type:'+str(typ),'source':src,'modifier':ident}
+
+for ident,(mod,src) in sorted(spawn_modifiers.items()):
+ if mod.get('type')!='lithostitched:set_structure_spawn_condition': continue
+ append=mod.get('append',True)
+ refids=[]
+ for ref in mod.get('structures',[]):
+  if isinstance(ref,str) and ref.startswith('#'): refids.extend(sorted(resolve_struct_tag(ref[1:])))
+  elif isinstance(ref,str): refids.append(ref)
+ condition=normalize_spawn_condition(mod.get('spawn_condition'),src,ident)
+ for sid in refids:
+  if not append: conditions_by_structure[sid]=[]
+  conditions_by_structure[sid].append(condition)
+ condition_sources.append({'id':ident,'source':src,'append':append,'structures':sorted(set(refids)),'condition':condition})
+
 def biome_selector(st):
  sel=st.get('biomes')
  if sel is None:return {'raw':None,'biomes':None,'source':'no explicit biome selector'}
@@ -270,6 +322,20 @@ for _,(st,_) in structures.items():
  for ref in refs:
   if isinstance(ref,str) and ref.startswith('#'):used_gate_tags.add(ref[1:])
 used_gate_tags.update(['minecraft:is_nether','minecraft:is_overworld','minecraft:has_structure/nether_fortress','minecraft:has_structure/bastion_remnant','minecraft:has_structure/nether_fossil'])
+# Include biome tags recursively referenced by Lithostitched condition tags as well as
+# structure biome selectors; this exposes TFG earth/is_* category inputs in the audit.
+pending=list(used_gate_tags)
+for conds in conditions_by_structure.values():
+ for cond in conds:
+  tag=cond.get('raw_tag')
+  if isinstance(tag,str) and tag.startswith('#'): pending.append(tag[1:])
+seen=set()
+while pending:
+ tag=pending.pop()
+ if tag in seen: continue
+ seen.add(tag); used_gate_tags.add(tag)
+ for ref in merged_tag_values(tag,biome_tags):
+  if isinstance(ref,str) and ref.startswith('#') and ref[1:] not in seen: pending.append(ref[1:])
 gate_tag_report={}
 for tag in sorted(used_gate_tags):
  gate_tag_report[tag]={
@@ -310,7 +376,7 @@ for sid,(st,src) in sorted(structures.items()):
    'scanner_eligible':scanner_eligible,
    'reason':reason
   }
- structure_index[sid]={'id':sid,'sets':set_refs,'biomes':selector['raw'],'resolved_biomes':selector['biomes'],'type':st.get('type'),'dimensions':by_dimension,'source':src,'definition':st}
+ structure_index[sid]={'id':sid,'sets':set_refs,'biomes':selector['raw'],'resolved_biomes':selector['biomes'],'type':st.get('type'),'dimensions':by_dimension,'source':src,'definition':{**st,'conditions':conditions_by_structure.get(sid,[])}}
 structure_sets_raw=[]
 for sid,(sd,src) in sorted(sets.items()):
  structure_sets_raw.append({'id':sid,'source':src,'definition':sd})
@@ -318,15 +384,15 @@ for sid,(sd,src) in sorted(sets.items()):
 # Hash the Minecraft/mod archives that supplied structures, sets, biome tags or biome profiles, plus pack profile/tag scripts.
 source_files=set()
 for source,z in archives:
- relevant=any(('/worldgen/structure/' in n or '/worldgen/structure_set/' in n or '/tags/worldgen/biome/' in n or '/tags/worldgen/structure/' in n or '/worldgen/biome/' in n) and n.endswith('.json') for n in z.namelist())
+ relevant=any(('/worldgen/structure/' in n or '/worldgen/structure_set/' in n or '/tags/worldgen/biome/' in n or '/tags/worldgen/structure/' in n or '/worldgen/biome/' in n or '/lithostitched/worldgen_modifier/' in n) and n.endswith('.json') for n in z.namelist())
  if relevant:
   source_files.add(MC if source=='minecraft-1.20.1-client.jar' else MODS/source)
 for source in list(overworld_biome_definition_sources.values()):
  pass
-for path in list(KUBE.glob('data/*/worldgen/structure/**/*.json'))+list(KUBE.glob('data/*/worldgen/structure_set/**/*.json'))+list(KUBE.glob('data/*/tags/worldgen/biome/**/*.json'))+list(KUBE.glob('data/*/tags/worldgen/structure/**/*.json')):
+for path in list(KUBE.glob('data/*/worldgen/structure/**/*.json'))+list(KUBE.glob('data/*/worldgen/structure_set/**/*.json'))+list(KUBE.glob('data/*/tags/worldgen/biome/**/*.json'))+list(KUBE.glob('data/*/tags/worldgen/structure/**/*.json'))+list(KUBE.glob('data/*/lithostitched/worldgen_modifier/**/*.json')):
  source_files.add(path)
 for path in (KUBE/'server_scripts').rglob('*.js'):
- if re.search(r'has_structure|_BIOMES|nether_biomes',path.read_text(errors='ignore')):source_files.add(path)
+ if re.search(r'has_structure|_BIOMES|nether_biomes|tfg:earth/is_',path.read_text(errors='ignore')):source_files.add(path)
 for path in (KUBE/'data').glob('*/dimension/*.json'):source_files.add(path)
 source_hashes=[]
 for path in sorted(source_files,key=lambda p:p.name if p.suffix=='.jar' else p.relative_to(KUBE).as_posix()):
@@ -339,7 +405,7 @@ out={
  'provenance':{
   'instance':'Prism TerraFirmaGreg-Modern installed pack; Minecraft 1.20.1; TFG Core Modern 0.9.25; GTCEu 7.5.3',
   'reference':'Existing supplied level.dat WorldGenSettings plus installed mod jars and current KubeJS data/scripts; read-only audit; no Minecraft launch and no save writes.',
-  'resource_merge':'Structure/structure-set definitions use current KubeJS datapack entries over installed jar resources by identifier. Biome tags merge installed jar tag JSON and KubeJS datapack JSON, then replay statically readable KubeJS biome-tag event.add/remove/removeAll operations in sorted script-file and source order. Literal arrays and global.*_BIOMES.forEach loops are expanded; arbitrary JavaScript is not executed. The installed runtime snapshot independently cross-checks its 27 sets and 63 referenced structures against this broader resource inventory.',
+  'resource_merge':'Structure/structure-set definitions and Lithostitched modifiers use current KubeJS datapack entries over installed jar resources by resource identifier. Biome tags merge installed jar tag JSON and KubeJS datapack JSON, then replay statically readable KubeJS biome-tag event.add/remove/removeAll operations in sorted script-file and source order. Literal arrays and global.*_BIOMES.forEach loops are expanded; arbitrary JavaScript is not executed. Lithostitched set_structure_spawn_condition defaults append=true (confirmed from the installed 1.4.11 class bytecode), composing successive conditions with AND; append=false replaces. The runtime snapshot independently cross-checks its 27 sets and 63 referenced structures against this broader resource inventory.',
   'overworld_pool':'The saved world uses the custom tfc:overworld biome source. Source eligibility uses the 109 TFG Earth biome IDs registered by current TFG Core 0.9.25 TFGBiomes; the separate 139-ID TFG Earth plus legacy TFC registry-resource superset is retained for audit only. All IDs are raw registry identifiers; vanilla biome names are never aliased to TFC names.',
   'eligibility':'A biome intersection means source-level biome gating can succeed; it does not guarantee placement or terrain viability. `scanner_eligible_dimensions` additionally requires a placement type implemented by the current scanner. Scanner callers should also enforce per-type distance limits (the request is 100 km), frequency, height/terrain checks, and a concrete supported structure ID.',
   'source_version_note':'The older assets/data/tfg/structures.json is from TFG Core 0.9.21 and was not used; current structures and sets were reread from installed TFG Core 0.9.25 KubeJS data and all installed 1.20.1 mod resources.',
@@ -350,6 +416,8 @@ out={
  'overworld_biome_pools':{'current_sampler_biomes':profiles['minecraft:overworld'],'current_sampler_count':len(profiles['minecraft:overworld']),'current_sampler_basis':'TFG Earth biome definitions used by the current tfc:overworld sampler','registered_resource_biomes':overworld_registered_resource_biomes,'registered_count':len(overworld_registered_resource_biomes),'tfg_earth_resource_count':sum(b.startswith('tfg:earth/') for b in overworld_registered_resource_biomes),'tfc_resource_biomes':[b for b in overworld_registered_resource_biomes if b.startswith('tfc:')],'tfc_resource_count':sum(b.startswith('tfc:') for b in overworld_registered_resource_biomes),'basis':'registered 139-ID pool is preserved for completeness; source-level eligibility uses the current 109 TFG Earth sampler IDs'},
  'resource_counts':{'structure_sets':len(sets),'structure_definitions':len(structures),'biome_tags':len(biome_tags),'structure_tags':len(structure_tags)},
  'biome_gate_tags':gate_tag_report,
+ 'structure_condition_sources':condition_sources,
+ 'structure_condition_unknowns':[{'structure':sid,'condition':c} for sid,cs in sorted(conditions_by_structure.items()) for c in cs if c.get('type')=='unknown'],
  'sets':rows,
  'structure_sets':structure_sets_raw,
  'structures':list(structure_index.values()),

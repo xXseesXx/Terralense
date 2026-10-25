@@ -1,58 +1,20 @@
 # TerraLens
 
-A native Rust world atlas for **TerraFirmaGreg Modern**, inspired by Cubiomes Viewer and Amidst.
-Browse seeds, find a base, prospect for ores, and inspect structures without starting Minecraft.
-The interface stays focused on the map, and your saves are opened only for reading.
+TerraLens is a native Rust seed atlas for TerraFirmaGreg. Explore biomes, terrain, ores and structures, or inspect a save without launching Minecraft. Saves are read-only.
 
-Validated against Minecraft **1.20.1**, Forge **47.4.13**, TFG Core **0.9.25**, TFC **3.2.25** and
-Beneath **1.0.6**, with Ad Astra **1.15.21**. The supported dimensions are **Overworld**,
-**Beneath / Nether**, **Moon**, and **Mars**.
+![TerraLens full-detail map with structures and ores](docs/terralens-full-detail.png)
 
-![Temperature map with exported ore and structure markers](docs/native-qol-export.png)
+- Combine biome, climate, height, water, geology, vegetation and surface-detail layers. Choose Fast, Balanced or Full terrain sampling.
+- Search structures, ores, volcanoes, biomes and tree habitats with Ctrl+F; inspect structure bounds, previews, chests and vessels.
+- Explore the Overworld, 16-block Beneath bands, Moon and Mars. Export maps, markers and waypoints.
 
-## Features
+Terrain and feature locations are predictions, not a complete Minecraft chunk simulation. See [measured accuracy](docs/GENERATOR-ACCURACY.md), [map layers](docs/MAP-LAYERS.md), [structures and loot](docs/STRUCTURE-PREVIEWS.md) and [performance](docs/PERFORMANCE.md).
 
-- Overworld biome, temperature, rainfall, elevation, water/river, geology, forest and hotspot maps.
-  Oceans retain their own colors on land-themed maps.
-- Beneath biome maps with **16-block vertical bands** and saved-block cave cutaways.
-- Moon and Mars biome and elevation maps from the pack's custom generation profiles, plus a Mars
-  river-biome layer, separate ore and structure catalogs, biome search, and saved-block detail. Planetary views omit TFC's
-  Overworld climate, forest and geology controls.
-- Unified **Ctrl+F** search for structures, ores and vein contents, biomes, rocks, forests and tree
-  habitats. Results are ordered by distance from a configurable point. Enter / Shift+Enter visit
-  the next / previous result. The default radius is 10 km.
-- Interactive raw-ore artwork, Cubiomes Viewer structure icons and custom TFG sprites, recorded structure footprints, pin
-  details, and zoom-dependent visibility. Structure pins use the exact center of recorded bounds;
-  close views keep them separate instead of moving them into a cluster. Marker groups stay anchored
-  while you pan.
-- World-spawn and saved-player pins, with cached player names where available. They remain at
-  their recorded coordinates across zoom levels and appear in Everything search and exports.
-  Players are shown in their recorded dimension; these are last-saved positions, not live tracking.
-- Close-up block detail from generated chunks, including structures, trees and crops. Missing
-  Overworld chunks have a seed vegetation preview; missing chunks in other dimensions retain biome colors.
-  **View blocks** inspects a saved structure inside its bounding box; **Full terrain** exits it.
-- Searchable interactive biome/rock legends, palette and highlight controls, connected
-  biome/continent hover,
-  and configurable clean tooltips with optional tree-species estimates.
-- Named seed shortlists, saved spots and collections, sessions, navigation history, coordinate
-  jump, grids, a scale bar, a distance ruler, and fit-to-selection.
-- Land-area analysis and a sampled site finder combining climate, rock and nearby ore.
-  Selected results show the locations supporting their rock and ore conditions.
-- Composed PNG maps with marker artwork, footprints, coordinates, scale and a key; raster-only
-  PNG, marker CSV, analysis/session JSON and Xaero waypoint sharing.
+## Build
 
-The Rust window and background engine are separate processes. Generation, save scans, search,
-analysis and export run outside the UI; the map displays cached, progressively refined tiles.
-No browser, Node, Python service, Java process, or running Minecraft is required.
+Downloads: [Linux and Windows](https://github.com/xXseesXx/Terralense/releases). The validated pack profile is Minecraft 1.20.1 / Forge 47.4.13, TFG Core 0.9.25, TFC 3.2.25, Beneath 1.0.6 and Ad Astra 1.15.21; other versions need separate validation.
 
-## Build and run
-
-Linux is the tested platform. Install Rust **1.88 or newer** and the native graphics libraries.
-On Debian/Ubuntu, the build dependencies are:
-
-```sh
-sudo apt install build-essential pkg-config libwayland-dev libxkbcommon-dev libxkbcommon-x11-dev libx11-dev libxi-dev libxcursor-dev libgl1-mesa-dev
-```
+To build from source, install Rust 1.88+ and platform dependencies ([Linux and Windows notes](docs/RELEASING.md)), then:
 
 ```sh
 git clone https://github.com/xXseesXx/Terralense.git
@@ -61,133 +23,10 @@ cd Terralense
 ./launch.sh
 ```
 
-`./install.sh` adds a user-local launcher and a `terralens` command; it needs no root privileges.
-Fresh launch opens the seed viewer; there is no automatic Prism scan. Enter a signed 64-bit seed in
-the left dock, or open a world from the File menu. A source can also be opened from the command
-line:
+Enter a seed or use **File → Open world…** / **Open folder…** to select a save or Prism instance.
 
-```sh
-terralens --open /path/to/level.dat
-terralens /path/to/world-or-prism-folder
-```
+## Details
 
-The optional `TERRALENS_INSTANCE` environment variable opens the specified instance path at launch.
+[Validation](docs/NATIVE-VALIDATION.md) · [Terrain accuracy](docs/GENERATOR-ACCURACY.md) · [Vegetation](docs/VEGETATION-GENERATION.md) · [Beneath](docs/BENEATH-GENERATION.md) · [Moon and Mars](docs/PLANETARY-GENERATION.md) · [Release notes](CHANGELOG.md)
 
-## Opening worlds and using the desktop shell
-
-Use **File → Open world…** to choose a world's `level.dat`. **File → Open folder…** accepts a
-world folder, a Minecraft `saves` folder, or a Prism instance folder; TerraLens reads the selected
-path. Recent sources are available from **File → Recent worlds**. Saves are read-only.
-
-The resizable left control pane has **Search**, **Biomes**, and **Structures** tabs. Search contains
-the **Seeds** shortlist and location finder; Ctrl+F opens **Features** search. The right icon rail
-switches between structure and ore types. Its group and individual controls hide or show features,
-including related structures such as ruins, churches, towers, castles, villages and unfinished
-sloops. Ruined churches, towers, towerhouses, castles, ancient monuments, aqueducts, ocean moai
-and other ruined sites share one **Ruins** group across mods, with themed sprites for their building type.
-Ruins, Nether fossils, forest roaming, Moon cheese ores and rabbit houses start hidden. This
-quiet default is applied once to existing preferences; later individual or group toggles persist.
-Ores group by their configured primary mineral family, with individual vein types below.
-Right-click either kind of group to expand its variants; click a child icon to toggle just that
-variant. Shift-click isolates a type or group. This changes display visibility; marker placement remains
-spatially anchored as you pan, and zoom progressively hides common or less prominent markers
-before rare, important ones. The Structures tab lists visible-area or whole-save structures by
-distance and exports the filtered table. Biomes has editable area coordinates and **From visible**.
-Toggle the layer legend from **Map → Layer legend**; when hidden, its
-map-corner button opens it again. Beneath structure pins remain visible across every Y band,
-with completed placement data retained as you change layers; ore pins follow the selected band.
-
-Import seeds with **File → Import seed list…** (TXT, CSV, or JSON). The named shortlist is included
-in saved sessions; an imported seed list is added to the shortlist. **File → Export options…** opens
-the map-export window. Map images and visible markers use native save dialogs, so you choose each
-output path. **File → Export map image…** exports the current map directly. Session files use
-**Ctrl+S** and **Ctrl+O**; **File → Save session as…** selects a new session path.
-
-Marker discovery is spatially cached. Panning and zooming reuse marker positions already found;
-progressive zoom filtering changes which markers are drawn. Finer views may scan additional area or
-detail for features, while less frequent and more prominent markers remain visible longer. There is
-no claim of full Cubiomes multi-seed condition-search parity: the seed list supports comparing
-selected seeds, while TFG location analysis remains a sampled search for the active seed.
-
-Normal release builds exclude the diagnostic CLI and the responsiveness recorder. Unknown or
-maintenance-only command-line options are rejected before opening a window. `--help` and
-`--version` remain available.
-
-## Controls
-
-| Action | Control |
-| --- | --- |
-| Pan / zoom | Drag / scroll around the pointer |
-| Search features | Ctrl+F; Enter / Shift+Enter cycle results |
-| Jump to coordinates | Ctrl+G |
-| Back / forward | Alt+Left / Alt+Right |
-| Save a spot | Ctrl+D |
-| Save / load a session | Ctrl+S / Ctrl+O |
-| Save session as / open world / export map | Ctrl+Shift+S / Ctrl+Shift+O / Ctrl+E |
-| Change Overworld layer | 1–8, outside text fields |
-| Change Beneath band | Page Up / Page Down |
-| Measure / select and fit an area | Shift-drag / Alt-drag |
-| Copy coordinates, waypoint, or search here | Right-click the map |
-
-**Tools → Display and tooltip options…** contains **Block detail rendering** and **Detail at close
-zoom**. The first controls close-up block drawing and requests; the second toggles the surface
-detail overlay. Detail rendering and connected-region hover outlines start disabled; enable them
-from these options and **Map → Connected-region highlight**. Existing preferences receive these
-quieter defaults once; later choices are retained. Search origin, radius (10 km by default),
-and coverage are in Features' **…** menu.
-
-## Accuracy
-
-Biomes and climate are checked against stored Minecraft observations and separate conversion
-fixtures. Elevation is an estimate. Ore pins and outlined/unconfirmed structure pins are
-predictions; saved structure starts confirm recorded generation, not whether a structure has been
-looted or modified. Tree counts estimate generation attempts, and habitat search is sampled.
-
-Structure controls use a reviewed list for the installed TFG worldgen profile. TFG villages,
-the temperate house and all compatible TFC ruin variants stay available; vanilla villages,
-strongholds and other pack-incompatible structures are culled. The 100 km diagnostic scan does
-not decide availability. Saved starts remain independent evidence for imported/custom worlds.
-See the [structure review](docs/STRUCTURE-GENERATION.md).
-
-Structure bounds and block cutaways require saved structure data. Ungenerated jigsaw layouts are
-not simulated, so a structure without a recorded box keeps its placement location. Terrain-dependent placement,
-caves, aquifers and unseen structure blocks are not fully generated. Planetary ore starts use
-the installed vein settings; replacement host blocks are not checked throughout each vein.
-Other dimensions, Overworld worldgen v0, and incompatible/custom generation profiles are not supported. Different pack versions need
-separate validation.
-
-See [validation](docs/NATIVE-VALIDATION.md), [vegetation](docs/VEGETATION-GENERATION.md),
-[Beneath generation](docs/BENEATH-GENERATION.md), [Moon and Mars generation](docs/PLANETARY-GENERATION.md),
-and [reference research](docs/QOL-RESEARCH.md).
-
-## Development
-
-```sh
-cargo fmt --all --check --manifest-path native/terralens-rs/Cargo.toml
-cargo test --release --locked --manifest-path native/terralens-rs/Cargo.toml
-cargo check --release --locked --no-default-features --lib --manifest-path native/terralens-rs/Cargo.toml
-```
-
-Maintainer diagnostics require an explicit opt-in build:
-
-```sh
-cargo build --release --locked --features diagnostics --manifest-path native/terralens-rs/Cargo.toml
-native/terralens-rs/target/release/terralens --info
-```
-
-Use `./build.sh` again to restore the normal release. Developer examples also require
-`--features diagnostics`. Tests and their immutable fixtures stay in source control; they do not
-run during normal application startup. All required generation tables are vendored in the Rust
-crate; the retired prototypes and local upstream checkout are not part of the build.
-
-## License and attribution
-
-TerraLens's original source is **EUPL-1.2**. Builds containing the reused Cubiomes Viewer icons are
-distributed under **GPL-3.0** through EUPL's compatible-license clause. Its native generator derives from
-[OutCrop](https://github.com/PauAixala/outcropmap) by Pau Aixalà and the pinned TFC/TFG algorithms.
-See [LICENSE](LICENSE), [NOTICE](NOTICE.md), and the retained
-[upstream attribution](licenses/OUTCROP-NOTICE.md). Bundled ore art and fonts retain their upstream
-licenses. Cubiomes Viewer PNGs retain GPL-3.0; TFG firepit, village-head, cracked-brick, cross and
-mineshaft sprites are original artwork. Their [source and provenance](native/terralens-rs/assets/structure-icons/README.md)
-are included. TerraLens is an independent tool,
-not an official Minecraft, TerraFirmaCraft, TerraFirmaGreg, Cubiomes or Amidst project.
+Source license: [EUPL-1.2](LICENSE). Third-party assets and notices: [NOTICE](NOTICE.md) and [licenses](licenses/). TerraLens is independent of Minecraft, TerraFirmaCraft, TerraFirmaGreg, Cubiomes Viewer and Amidst.

@@ -82,8 +82,12 @@ pub fn predict_visible(
         };
     }
     let seed = world.seed;
+    let mut combined = if structures {
+        crate::volcano::candidates(world, bounds, "", Some(blocks_per_point), cancel)
+    } else {
+        FeatureBatch::default()
+    };
     let shared = RefCell::new(world);
-    let mut combined = FeatureBatch::default();
     if structures {
         let mut biome = |x, z| shared.borrow_mut().biome(x, z);
         let mut climate = |x, z| Some(shared.borrow_mut().climate(x, z));
@@ -525,13 +529,15 @@ fn candidate_near_set(
 /// Largest map scale at which an automatically predicted feature should remain visible.
 /// The cutoffs align exactly with [`lod_tier`], so cached viewport tiles cannot miss features.
 pub fn marker_max_blocks_per_point(marker: &Marker) -> f64 {
-    if marker.kind == MarkerKind::Structure
+    if marker.kind == MarkerKind::Volcano {
+        return crate::volcano::max_blocks_per_point(&marker.id);
+    }
+    if (marker.kind == MarkerKind::Structure
         || marker.id.starts_with("moon:")
-        || marker.id.starts_with("mars:")
+        || marker.id.starts_with("mars:"))
+        && let Some(max) = crate::planetary::features::marker_max_blocks_per_point(marker)
     {
-        if let Some(max) = crate::planetary::features::marker_max_blocks_per_point(marker) {
-            return max;
-        }
+        return max;
     }
     let (base, valuable) = match marker.kind {
         MarkerKind::Ore => ore_visibility(marker.id.split('@').next().unwrap_or("")),
@@ -719,7 +725,6 @@ enum CandidateCondition {
         allowed: i32,
     },
     Height {
-        world_surface: bool,
         min: i32,
         max: i32,
     },
@@ -799,7 +804,6 @@ fn parse_condition(c: &Value) -> CandidateCondition {
             allowed: c["allowedCount"].as_i64().unwrap_or(0) as i32,
         },
         "height" => CandidateCondition::Height {
-            world_surface: c["heightmap"].as_str() == Some("WORLD_SURFACE_WG"),
             min: c["min"].as_i64().unwrap_or(i32::MIN as i64) as i32,
             max: c["max"].as_i64().unwrap_or(i32::MAX as i64) as i32,
         },
@@ -997,8 +1001,8 @@ where
     )
 }
 
-/// Full native TFG structure gates. Climate, forest, biome and height probes are sampled at
-/// the candidate chunk's minimum corner, matching the existing seed generator's contract.
+/// Climate placement uses the chunk's minimum corner. Jigsaw biome selectors and
+/// spawn conditions use the selected, rotated start piece's GenerationStub instead.
 pub fn structure_candidates_with_world<B, C, F, H>(
     seed: i64,
     bounds: Bounds,
@@ -1063,13 +1067,13 @@ where
             truncated = true;
             break;
         }
-        if let Some(bpp) = visible_bpp {
-            if !set.structures.iter().any(|s| {
+        if let Some(bpp) = visible_bpp
+            && !set.structures.iter().any(|s| {
                 let (base, notable) = structure_visibility(&set.id, &s.id);
                 !s.biomes.is_empty() && bpp <= visibility_cutoff(base, notable)
-            }) {
-                continue;
-            }
+            })
+        {
+            continue;
         }
         let sx = set.spacing;
         let min_x = min_cx.div_euclid(sx);
@@ -1100,13 +1104,12 @@ where
                 break;
             }
             scanned_cells += 1;
-            let (chunk_x, chunk_z) = potential(seed, &set, cx, cz);
+            let (chunk_x, chunk_z) = potential(seed, set, cx, cz);
             let x = chunk_x as f64 * 16.0 + 8.0;
             let z = chunk_z as f64 * 16.0 + 8.0;
             if !bounds.contains(x, z) {
                 continue;
             }
-            let biome = biome_at(chunk_x * 16, chunk_z * 16);
             if set.climate_placement {
                 let Some(rule) = &set.climate else {
                     continue;
@@ -1133,14 +1136,16 @@ where
             let Some(entry) = weighted_order(seed, chunk_x, chunk_z, entries)
                 .into_iter()
                 .find(|s| {
-                    s.biomes.contains(&biome)
-                        && conditions_allow(
-                            &s.conditions,
-                            biome_at,
-                            surface_y,
-                            chunk_x * 16,
-                            chunk_z * 16,
+                    if s.biomes.is_empty() {
+                        return false;
+                    }
+                    let (check_x, check_z) =
+                        crate::structure_preview::templates::generation_stub_xz(
+                            seed, &s.id, chunk_x, chunk_z,
                         )
+                        .unwrap_or((chunk_x * 16, chunk_z * 16));
+                    s.biomes.contains(&biome_at(check_x, check_z))
+                        && conditions_allow(&s.conditions, biome_at, surface_y, check_x, check_z)
                 })
             else {
                 continue;
@@ -1217,20 +1222,13 @@ where
                     }
                 }
             }
-            CandidateCondition::Height {
-                world_surface,
-                min,
-                max,
-            } => {
+            CandidateCondition::Height { min, max } => {
                 let Some(ground) = surface_y(x, z) else {
                     return false;
                 };
-                let h = if *world_surface {
-                    ground.max(63)
-                } else {
-                    ground
-                };
-                if h < *min || h > *max {
+                // TFG's TFCChunkGenerator.getBaseHeight ignores Heightmap.Types:
+                // Lithostitched gets raw terrain height, including submerged ground.
+                if ground < *min || ground > *max {
                     return false;
                 }
             }
@@ -1246,12 +1244,12 @@ fn structure_large_feature_seed(seed: i64, x: i32, z: i32) -> i64 {
     let m = r.next_long();
     (x as i64).wrapping_mul(l) ^ (z as i64).wrapping_mul(m) ^ seed
 }
-fn weighted_order<'a>(
+fn weighted_order(
     seed: i64,
     x: i32,
     z: i32,
-    mut entries: Vec<&'a CandidateStructure>,
-) -> Vec<&'a CandidateStructure> {
+    mut entries: Vec<&CandidateStructure>,
+) -> Vec<&CandidateStructure> {
     if entries.len() <= 1 {
         return entries;
     }
@@ -1285,7 +1283,7 @@ fn valid_bounds(b: Bounds) -> bool {
         && b.min_z <= b.max_z
 }
 fn rock_name_from_key(key: &str) -> Option<String> {
-    let name = key.rsplit('/').next()?.split(':').last()?;
+    let name = key.rsplit('/').next()?.split(':').next_back()?;
     (!name.is_empty()).then(|| name.to_owned())
 }
 
@@ -1741,32 +1739,32 @@ where
                 let y = y0 + if project { surface.unwrap() } else { 0 };
                 let bottom = y - vertical_extent as i32;
                 let top = y + vertical_extent as i32;
-                if let Some(ground) = surface {
-                    if bottom > ground + 8 {
-                        continue;
-                    }
+                if let Some(ground) = surface
+                    && bottom > ground + 8
+                {
+                    continue;
                 }
-                if let Some(members) = &allowed {
-                    if !members.contains(biome_at(x, z).as_str()) {
-                        continue;
-                    }
+                if let Some(members) = &allowed
+                    && !members.contains(biome_at(x, z).as_str())
+                {
+                    continue;
                 }
                 if dikes.iter().any(|d| d.contains(mx, (bottom + top) / 2, mz)) {
                     continue;
                 }
-                if !host_rocks.is_empty() {
-                    if let Some(rock) = rock_at(mx, (bottom + top) / 2, mz) {
-                        let rock = rock.strip_prefix("raw_").unwrap_or(&rock);
-                        if !host_rocks.contains(rock) {
-                            continue;
-                        }
+                if !host_rocks.is_empty()
+                    && let Some(rock) = rock_at(mx, (bottom + top) / 2, mz)
+                {
+                    let rock = rock.strip_prefix("raw_").unwrap_or(&rock);
+                    if !host_rocks.contains(rock) {
+                        continue;
                     }
                 }
                 let px = mx as f64;
                 let pz = mz as f64;
                 out.push(Marker {
                     id: format!("{vein_id}@{cx},{cz}"),
-                    label: format!("{}", vein_id.replace('_', " ")),
+                    label: vein_id.replace('_', " ").to_string(),
                     namespace: "tfg".into(),
                     x: px,
                     z: pz,
@@ -1867,19 +1865,16 @@ where
                     let mut climate_ok = false;
                     'climate: for tz in z0..=z1 {
                         for tx in x0..=x1 {
-                            if let Some(c) = climate_at(tx * 16, tz * 16) {
-                                if c.temperature
+                            if let Some(c) = climate_at(tx * 16, tz * 16)
+                                && c.temperature
                                     >= placement["min_temperature"]
                                         .as_f64()
                                         .unwrap_or(f64::INFINITY)
-                                    && c.rainfall
-                                        >= placement["min_rainfall"]
-                                            .as_f64()
-                                            .unwrap_or(f64::INFINITY)
-                                {
-                                    climate_ok = true;
-                                    break 'climate;
-                                }
+                                && c.rainfall
+                                    >= placement["min_rainfall"].as_f64().unwrap_or(f64::INFINITY)
+                            {
+                                climate_ok = true;
+                                break 'climate;
                             }
                         }
                     }
@@ -1943,9 +1938,9 @@ fn triangle(rng: &mut Xoroshiro, delta: f64) -> f64 {
     (rng.next_double() - rng.next_double()) * delta
 }
 fn metaball_center_2d(rng: &mut Xoroshiro, size: i32) -> (f64, f64) {
-    let min = f32::from(0.1f32 * size as f32) as f64;
-    let max = f32::from(0.3f32 * size as f32) as f64;
-    let radius = f32::from(0.5f32 * size as f32) as f64;
+    let min = (0.1f32 * size as f32) as f64;
+    let max = (0.3f32 * size as f32) as f64;
+    let radius = (0.5f32 * size as f32) as f64;
     let count = 3 + rng.next_int_bound(5);
     let (mut total, mut x, mut z) = (0., 0., 0.);
     for _ in 0..count {
@@ -1964,8 +1959,8 @@ fn metaball_center_2d(rng: &mut Xoroshiro, size: i32) -> (f64, f64) {
     }
 }
 fn metaball_center_3d(rng: &mut Xoroshiro, size: i32) -> (f64, f64, f64) {
-    let max = f32::from(0.3f32 * size as f32) as f64;
-    let radius = f32::from(0.5f32 * size as f32) as f64;
+    let max = (0.3f32 * size as f32) as f64;
+    let radius = (0.5f32 * size as f32) as f64;
     let count = 5 + rng.next_int_bound(2);
     let (mut total, mut x, mut y, mut z) = (0., 0., 0., 0.);
     for _ in 0..count {
@@ -2114,6 +2109,114 @@ fn dikes_for(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn malay_village_veto_uses_current_pack_rules_and_rejects_the_observed_ocean_edge() {
+        let fixture: Value = serde_json::from_str(include_str!(
+            "../tests/fixtures/flooded-lowlands/seed0-991-990.json"
+        ))
+        .unwrap();
+        let world = World::new(0, crate::model::Settings::default());
+        let id = fixture["candidate"]["structure_id"].as_str().unwrap();
+        let entry = runtime_sets()
+            .iter()
+            .flat_map(|set| &set.structures)
+            .find(|entry| entry.id == id)
+            .unwrap();
+        assert_eq!(
+            entry.conditions.len(),
+            1,
+            "the current Lithostitched modifier must reach the actual scanner"
+        );
+        let (x, z) =
+            crate::structure_preview::templates::generation_stub_xz(0, id, 991, 990).unwrap();
+        assert_eq!((x, z), (15851, 15845));
+        assert!(entry.biomes.contains(&world.biome(x, z)));
+        assert!(!conditions_allow(
+            &entry.conditions,
+            &mut |x, z| world.biome(x, z),
+            &mut |x, z| world.height(x, z).map(|h| h as i32),
+            x,
+            z
+        ));
+        assert!(
+            conditions_allow(
+                &entry.conditions,
+                &mut |_, _| "tfg:earth/lowlands".into(),
+                &mut |_, _| Some(59),
+                x,
+                z
+            ),
+            "wet lowlands themselves remain eligible; the forbidden surrounding biomes cause this failure"
+        );
+        let batch = structure_candidates_with_world(
+            0,
+            Bounds {
+                min_x: 15856.,
+                max_x: 15872.,
+                min_z: 15840.,
+                max_z: 15856.,
+            },
+            |x, z| world.biome(x, z),
+            |x, z| Some(world.climate(x, z)),
+            |x, z| world.region.forest_type(x, z),
+            |x, z| world.height(x, z).map(|h| h as i32),
+        );
+        assert!(!batch.markers.iter().any(|marker| marker.label == id));
+    }
+
+    #[test]
+    fn current_pack_keeps_both_mineshaft_conditions_and_its_dimension_catalog() {
+        let entry = runtime_sets()
+            .iter()
+            .flat_map(|set| &set.structures)
+            .find(|entry| entry.id == "tfg:mineshaft/mineshaft")
+            .unwrap();
+        assert_eq!(entry.conditions.len(), 2);
+        assert!(entry.conditions.iter().any(|condition| matches!(
+            condition,
+            CandidateCondition::AvoidBiomes { radius: 105, .. }
+        )));
+        assert!(entry.conditions.iter().any(|condition| matches!(
+            condition,
+            CandidateCondition::Height { min: 63, max: 140 }
+        )));
+        for id in [
+            "tfg:illagers/malay_village_living",
+            "tfg:illagers/norse_village_ruined",
+            "tfg:illagers/yurts_village_living",
+        ] {
+            assert!(
+                runtime_sets()
+                    .iter()
+                    .flat_map(|set| &set.structures)
+                    .any(|entry| entry.id == id && !entry.biomes.is_empty())
+            );
+        }
+    }
+
+    #[test]
+    fn tfc_structure_height_conditions_do_not_raise_submerged_ground_to_water_level() {
+        let conditions = [CandidateCondition::Height { min: 63, max: 140 }];
+        for (height, allowed) in [
+            (59, false),
+            (62, false),
+            (63, true),
+            (140, true),
+            (141, false),
+        ] {
+            assert_eq!(
+                conditions_allow(
+                    &conditions,
+                    &mut |_, _| "tfg:earth/lowlands".into(),
+                    &mut |_, _| Some(height),
+                    0,
+                    0
+                ),
+                allowed
+            );
+        }
+    }
     #[test]
     fn installed_beneath_asset_has_all_native_ore_shapes_and_biome_tags() {
         let data = beneath_data();
@@ -2303,7 +2406,13 @@ mod tests {
         let predicted = make("same", 3., false);
         let confirmed = make("same", 3., true);
         let far = make("far", 8., true);
-        let got = nearest_structures(p, 5., &[predicted.clone(), far], &[confirmed.clone()], 10);
+        let got = nearest_structures(
+            p,
+            5.,
+            &[predicted.clone(), far],
+            std::slice::from_ref(&confirmed),
+            10,
+        );
         assert_eq!(got.len(), 1);
         assert!(got[0].confirmed);
     }

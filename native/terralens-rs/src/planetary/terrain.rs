@@ -230,10 +230,10 @@ impl Terrain {
 
     fn sample_cached(&self, node: &Node, x: f64, y: f64, z: f64, depth: u8) -> f64 {
         let key = (node as *const Node as usize, x as i32, y as i32, z as i32);
-        if let Ok(mut cache) = self.density_cache.lock() {
-            if let Some(v) = cache.get(&key) {
-                return *v;
-            }
+        if let Ok(mut cache) = self.density_cache.lock()
+            && let Some(v) = cache.get(&key)
+        {
+            return *v;
         }
         let value = node.sample(self, x, y, z, depth);
         if let Ok(mut cache) = self.density_cache.lock() {
@@ -584,9 +584,7 @@ fn build_blended(
     if let Some(o) = v.as_object() {
         if o.get("type").and_then(Value::as_str) == Some("minecraft:old_blended_noise") {
             let id = blend_key(v);
-            if !out.contains_key(&id) {
-                out.insert(id, BlendedNoise::new(seed, v));
-            }
+            out.entry(id).or_insert_with(|| BlendedNoise::new(seed, v));
         }
         for x in o.values() {
             build_blended(seed, x, defs, out)
@@ -654,27 +652,17 @@ impl BlendedNoise {
             let xx = wrap(sx * f);
             let yy = wrap(sy * f);
             let zz = wrap(sz * f);
-            if alpha < 1. {
-                if let Some(n) = &self.min[15 - i] {
-                    lo += n.sample_with_y_offset(
-                        xx,
-                        yy,
-                        zz,
-                        684.412 * self.y * self.smear * f,
-                        sy * f,
-                    ) / f;
-                }
+            if alpha < 1.
+                && let Some(n) = &self.min[15 - i]
+            {
+                lo += n.sample_with_y_offset(xx, yy, zz, 684.412 * self.y * self.smear * f, sy * f)
+                    / f;
             }
-            if alpha > 0. {
-                if let Some(n) = &self.max[15 - i] {
-                    hi += n.sample_with_y_offset(
-                        xx,
-                        yy,
-                        zz,
-                        684.412 * self.y * self.smear * f,
-                        sy * f,
-                    ) / f;
-                }
+            if alpha > 0.
+                && let Some(n) = &self.max[15 - i]
+            {
+                hi += n.sample_with_y_offset(xx, yy, zz, 684.412 * self.y * self.smear * f, sy * f)
+                    / f;
             }
             f *= 0.5;
         }

@@ -10,12 +10,14 @@ mod icons;
 mod legend;
 mod map_tools;
 mod marker_groups;
+mod menus;
 mod navigation;
 #[cfg(feature = "diagnostics")]
 mod responsiveness;
 mod seed_list;
 mod site_evidence;
 mod structure_bounds;
+mod structure_preview;
 mod tooltip;
 mod ui_shell;
 mod workspace;
@@ -60,6 +62,7 @@ fn marker_destination(marker: &Marker) -> Point {
 enum MapHit {
     Marker(Marker),
     Cluster(Point, usize),
+    Container(Marker, usize),
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -114,7 +117,7 @@ impl Default for Preferences {
     fn default() -> Self {
         Self {
             navigation: navigation::Navigation::default(),
-            defaults_version: 2,
+            defaults_version: 4,
             tools: map_tools::MapToolsPrefs::default(),
             display: crate::display::DisplayPrefs::default(),
             world_id: String::new(),
@@ -141,7 +144,7 @@ impl Default for Preferences {
             connected_highlight: false,
             surface_detail: false,
             allow_detail_rendering: false,
-            show_legend: true,
+            show_legend: false,
             tooltip: tooltip::TooltipPrefs::default(),
             seed_list: seed_list::SeedShortlist::default(),
         }
@@ -194,6 +197,11 @@ pub struct TerraLensApp {
     atlas: Option<Atlas>,
     prefs: Preferences,
     selected_marker: Option<Marker>,
+    structure_selection_key: Option<(String, Point, bool)>,
+    selected_container: Option<usize>,
+    show_structure_layout: bool,
+    structure_cut_y: Option<i32>,
+    structure_preview_ui: structure_preview::State,
     structure_inspection: Option<crate::model::StructureBounds>,
     pointer_world: Option<Point>,
     search_x: String,
@@ -241,10 +249,40 @@ impl Preferences {
             self.display.apply_structure_visibility_defaults();
             self.defaults_version = 2;
         }
+        if self.defaults_version < 3 {
+            // Clear hiding inherited from the former name-based Ruins group once.
+            self.display.restore_building_visibility();
+            self.defaults_version = 3;
+        }
+        if self.defaults_version < 4 {
+            self.show_legend = false;
+            self.defaults_version = 4;
+        }
     }
 }
 
 impl TerraLensApp {
+    fn sync_structure_selection(&mut self) {
+        if self.selected_marker.as_ref().is_some_and(|marker| {
+            self.atlas
+                .as_ref()
+                .is_some_and(|atlas| atlas.structure_candidate_absent(marker))
+        }) {
+            self.selected_marker = None;
+        }
+        let key = self
+            .selected_marker
+            .as_ref()
+            .filter(|marker| marker.kind == MarkerKind::Structure)
+            .map(|marker| (marker.id.clone(), marker.point(), marker.confirmed));
+        if key != self.structure_selection_key {
+            self.structure_selection_key = key.clone();
+            self.selected_container = None;
+            self.structure_cut_y = None;
+            self.show_structure_layout = key.is_some();
+        }
+    }
+
     fn is_monitoring(&self) -> bool {
         #[cfg(feature = "diagnostics")]
         {
@@ -319,12 +357,7 @@ impl TerraLensApp {
     }
 
     pub(super) fn layer_supported(dimension: Dimension, layer: Layer) -> bool {
-        match dimension {
-            Dimension::Overworld => true,
-            Dimension::Beneath => layer == Layer::Biomes,
-            Dimension::Moon => matches!(layer, Layer::Biomes | Layer::Height),
-            Dimension::Mars => matches!(layer, Layer::Biomes | Layer::Height | Layer::Water),
-        }
+        crate::display::DisplayPrefs::supports_layer(dimension, layer)
     }
 
     pub(super) fn area_analysis_supported(dimension: Dimension) -> bool {
@@ -451,10 +484,7 @@ impl TerraLensApp {
 
     fn new(cc: &eframe::CreationContext<'_>, config: RunConfig) -> Self {
         install_style(&cc.egui_ctx);
-        let mut prefs = cc
-            .storage
-            .and_then(|s| eframe::get_value::<Preferences>(s, "preferences"))
-            .unwrap_or_default();
+        let mut prefs = cc.storage.and_then(load_preferences).unwrap_or_default();
         prefs.upgrade_defaults();
         if let Some(seed) = config.initial_seed {
             prefs.seed_preview = Some(seed);
@@ -564,6 +594,11 @@ impl TerraLensApp {
             atlas: Some(atlas),
             prefs,
             selected_marker: None,
+            structure_selection_key: None,
+            selected_container: None,
+            show_structure_layout: false,
+            structure_cut_y: None,
+            structure_preview_ui: structure_preview::State::default(),
             structure_inspection: None,
             pointer_world: None,
             search_x: String::new(),
@@ -624,12 +659,12 @@ impl TerraLensApp {
 
     fn poll_worlds(&mut self, ctx: &egui::Context) {
         self.poll_source(ctx);
-        if !self.discovering {
-            if let Some((point, bpp)) = self.initial_view.take() {
-                self.prefs.center_x = point.x;
-                self.prefs.center_z = point.z;
-                self.prefs.blocks_per_point = bpp;
-            }
+        if !self.discovering
+            && let Some((point, bpp)) = self.initial_view.take()
+        {
+            self.prefs.center_x = point.x;
+            self.prefs.center_z = point.z;
+            self.prefs.blocks_per_point = bpp;
         }
     }
 
@@ -763,25 +798,44 @@ impl TerraLensApp {
         self.prefs.navigation.record(self.current_view());
     }
 
+    fn fit_structure_layout(&mut self, bounds: crate::model::StructureBounds) {
+        self.set_center(bounds.center());
+        let width = (bounds.max_x as f64 - bounds.min_x as f64 + 1.).max(1.);
+        let depth = (bounds.max_z as f64 - bounds.min_z as f64 + 1.).max(1.);
+        self.prefs.blocks_per_point = (width.max(depth) / 360.).clamp(0.125, 8.);
+        self.show_structure_layout = true;
+        self.selected_container = None;
+        self.structure_cut_y = None;
+        self.prefs.navigation.record(self.current_view());
+    }
+
     fn selected_marker_panel(&mut self, ui: &mut egui::Ui) {
+        self.sync_structure_selection();
         let Some(marker) = self.selected_marker.clone() else {
             return;
         };
+        if marker.kind == MarkerKind::Structure
+            && let Some(atlas) = self.atlas.as_mut()
+        {
+            atlas.inspect_structure(&marker);
+        }
         ui.horizontal(|ui| {
             ui.label(
-                RichText::new(tooltip::display_marker_name(&marker.label))
+                RichText::new(tooltip::marker_name(&marker))
                     .strong()
                     .color(TEXT),
             );
             ui.with_layout(Layout::right_to_left(Align::Center), |ui| {
                 if ui.small_button("×").on_hover_text("Unpin").clicked() {
                     self.selected_marker = None;
+                    self.selected_container = None;
                 }
             });
         });
         let classification = match marker.kind {
             MarkerKind::Structure if marker.confirmed => "saved",
             MarkerKind::Structure | MarkerKind::Ore => "",
+            MarkerKind::Volcano => "Volcano",
             MarkerKind::Spawn | MarkerKind::Player => "saved position",
             MarkerKind::Tree => "sampled habitat",
             _ => "sampled",
@@ -802,6 +856,12 @@ impl TerraLensApp {
                     String::new()
                 }
             });
+        let fit_bounds = marker.bounds.or_else(|| {
+            self.atlas
+                .as_ref()
+                .and_then(|atlas| atlas.structure_preview(&marker))
+                .and_then(|preview| preview.bounds)
+        });
         ui.label(
             RichText::new(format!(
                 "{}{} · {}, {}{}",
@@ -854,6 +914,15 @@ impl TerraLensApp {
             if ui.small_button("Center").clicked() {
                 self.set_center(marker_destination(&marker));
             }
+            if marker.kind == MarkerKind::Structure
+                && let Some(bounds) = fit_bounds
+                && ui
+                    .small_button("Fit layout")
+                    .on_hover_text("Center and zoom to the structure shape and containers")
+                    .clicked()
+            {
+                self.fit_structure_layout(bounds);
+            }
             if ui.small_button("Search here").clicked() {
                 let destination = marker_destination(&marker);
                 self.search_x = format!("{:.0}", destination.x);
@@ -862,6 +931,12 @@ impl TerraLensApp {
                 self.search_dirty = Some(Instant::now());
             }
             ui.menu_button("…", |ui| {
+                let destination = marker_destination(&marker);
+                if let Some(atlas) = self.atlas.as_mut()
+                    && atlas.probe_at(destination).is_none()
+                {
+                    atlas.request_destination_probe(destination);
+                }
                 if ui.button("Save spot").clicked() {
                     let mut view = self.current_view();
                     view.center = marker_destination(&marker);
@@ -878,20 +953,37 @@ impl TerraLensApp {
                     ));
                     ui.close();
                 }
+                if ui.button("Copy teleport command").clicked() {
+                    let probe = self
+                        .atlas
+                        .as_ref()
+                        .and_then(|atlas| atlas.probe_at(destination));
+                    let y = crate::exports::destination_y(
+                        destination,
+                        probe,
+                        self.prefs.dimension,
+                        self.prefs.slice_y,
+                        marker.y,
+                    );
+                    ui.ctx()
+                        .copy_text(crate::exports::teleport_command(destination, y));
+                    ui.close();
+                }
                 if ui.button("Copy Xaero waypoint").clicked() {
-                    let y = marker
-                        .y
-                        .map(|value| value.round() as i32)
-                        .unwrap_or_else(|| {
-                            if self.prefs.dimension == Dimension::Beneath {
-                                self.prefs.slice_y
-                            } else {
-                                64
-                            }
-                        });
+                    let probe = self
+                        .atlas
+                        .as_ref()
+                        .and_then(|atlas| atlas.probe_at(destination));
+                    let y = crate::exports::waypoint_y(
+                        destination,
+                        probe,
+                        self.prefs.dimension,
+                        self.prefs.slice_y,
+                        marker.y,
+                    );
                     ui.ctx().copy_text(crate::exports::xaero_share(
                         &marker.label,
-                        marker_destination(&marker),
+                        destination,
                         y,
                         11,
                     ));
@@ -899,6 +991,27 @@ impl TerraLensApp {
                 }
             });
         });
+        if marker.kind == MarkerKind::Structure {
+            let atlas = self.atlas.as_ref();
+            let preview = atlas.and_then(|atlas| atlas.structure_preview(&marker));
+            let error = atlas.and_then(|atlas| atlas.structure_preview_error(&marker));
+            let pending = atlas.is_some_and(|atlas| atlas.structure_preview_pending(&marker));
+            if structure_preview::show_details(
+                ui,
+                preview,
+                error,
+                pending,
+                &mut self.selected_container,
+                &mut self.show_structure_layout,
+                &mut self.structure_cut_y,
+            ) && let Some(atlas) = self.atlas.as_mut()
+            {
+                // A newly generated chunk can add containers ahead of the old list
+                // index. Re-select by clicking instead of inspecting a different chest.
+                self.selected_container = None;
+                atlas.reload_structure_preview(&marker);
+            }
+        }
         ui.collapsing("Details", |ui| tooltip::show_marker(ui, &marker));
         ui.separator();
     }
@@ -1190,7 +1303,10 @@ impl TerraLensApp {
                         }
                     } else if matches!(
                         marker.kind,
-                        MarkerKind::Structure | MarkerKind::Spawn | MarkerKind::Player
+                        MarkerKind::Structure
+                            | MarkerKind::Volcano
+                            | MarkerKind::Spawn
+                            | MarkerKind::Player
                     ) {
                         let texture = self.structure_icons.get(ui.ctx(), &marker.id);
                         painter.image(
@@ -1207,6 +1323,7 @@ impl TerraLensApp {
                     let source = match marker.kind {
                         MarkerKind::Structure if marker.confirmed => "Saved",
                         MarkerKind::Structure => "",
+                        MarkerKind::Volcano => "Volcano",
                         MarkerKind::Ore => "ore",
                         MarkerKind::Biome => "Biome",
                         MarkerKind::Rock => "Rock",
@@ -1229,7 +1346,7 @@ impl TerraLensApp {
                     painter.text(
                         name_rect.left_top(),
                         Align2::LEFT_TOP,
-                        tooltip::display_marker_name(&marker.label),
+                        tooltip::marker_name(marker),
                         FontId::proportional(11.),
                         TEXT,
                     );
@@ -1318,12 +1435,16 @@ impl TerraLensApp {
     }
 
     fn map_view(&mut self, ui: &mut egui::Ui) {
+        self.sync_structure_selection();
         let rect = ui.available_rect_before_wrap();
         let rect = Rect::from_min_max(
             rect.min,
             Pos2::new(rect.max.x, rect.max.y.max(rect.min.y + 120.)),
         );
         let response = ui.allocate_rect(rect, Sense::click_and_drag());
+        let map_pointer = response.hover_pos().filter(|pointer| {
+            rect.contains(*pointer) && ui.ctx().layer_id_at(*pointer) == Some(ui.layer_id())
+        });
         self.last_bounds = map_bounds(rect, self.current_center(), self.prefs.blocks_per_point);
         let center = self.current_center();
         if self.selected.is_none() && self.preview_seed.is_none() {
@@ -1331,10 +1452,10 @@ impl TerraLensApp {
                 .rect_filled(rect, CornerRadius::same(10), Color32::from_rgb(23, 34, 40));
             let message = if self.discovering {
                 "Reading Prism saves…"
-            } else if let Some(error) = self.discovery_error.as_deref() {
-                error
             } else {
-                "Choose a save or enter a seed from the top bar"
+                self.discovery_error
+                    .as_deref()
+                    .unwrap_or("Choose a save or enter a seed from the top bar")
             };
             ui.painter().text(
                 rect.center(),
@@ -1401,15 +1522,60 @@ impl TerraLensApp {
             self.structure_inspection = None;
         }
         atlas.set_structure_inspection(self.structure_inspection);
+        if let Some(marker) = self
+            .selected_marker
+            .as_ref()
+            .filter(|marker| marker.kind == MarkerKind::Structure)
+            .cloned()
+        {
+            atlas.inspect_structure(&marker);
+            let preview = atlas.structure_preview(&marker);
+            let reliable_bounds = preview.and_then(|preview| {
+                (preview.source == crate::structure_preview::PreviewSource::Saved
+                    || preview.source == crate::structure_preview::PreviewSource::SeedLayout
+                        && preview.complete)
+                    .then_some(preview.bounds)
+                    .flatten()
+            });
+            if let Some(bounds) = reliable_bounds
+                && let Some(selected) = self.selected_marker.as_mut()
+                && selected.id == marker.id
+                && selected.point() == marker.point()
+            {
+                selected.bounds = Some(bounds);
+            }
+            self.structure_preview_ui.update_texture(
+                ui.ctx(),
+                preview,
+                atlas.structure_preview_revision(),
+                self.structure_cut_y,
+            );
+        } else {
+            self.structure_preview_ui
+                .update_texture(ui.ctx(), None, 0, None);
+        }
         atlas.paint(ui, rect, center, self.prefs.blocks_per_point, layer);
-        let legend_snapshot = atlas.legend_snapshot(layer).clone();
+        let visible_layers: Vec<_> = self
+            .prefs
+            .display
+            .active_layers(layer, self.prefs.dimension)
+            .into_iter()
+            .filter(|blend| blend.opacity.is_finite() && blend.opacity > 0.0)
+            .collect();
+        let legend_layer = visible_layers
+            .iter()
+            .find(|blend| blend.layer == layer)
+            .or_else(|| visible_layers.last())
+            .map(|blend| blend.layer)
+            .unwrap_or(layer);
+        let legend_snapshot = atlas.legend_snapshot(legend_layer).clone();
         if let Some(layer) = self.legend.show(
             ui.ctx(),
             rect,
             &legend_snapshot,
             &mut self.prefs.display,
             self.prefs.dimension,
-            layer,
+            legend_layer,
         ) {
             self.prefs.layer = Layer::ALL
                 .iter()
@@ -1445,17 +1611,16 @@ impl TerraLensApp {
                 self.prefs.slice_y,
             )
         });
-        if let Some(marker) = &self.selected_marker {
-            if bounds.contains(marker.map_point().x, marker.map_point().z)
+        if let Some(marker) = &self.selected_marker
+            && (bounds.contains(marker.map_point().x, marker.map_point().z)
                 || marker.bounds.is_some_and(|b| {
                     b.min_x as f64 <= bounds.max_x
                         && b.max_x as f64 + 1. >= bounds.min_x
                         && b.min_z as f64 <= bounds.max_z
                         && b.max_z as f64 + 1. >= bounds.min_z
-                })
-            {
-                visible_markers.push(marker);
-            }
+                }))
+        {
+            visible_markers.push(marker);
         }
         let mut marker_keys = std::collections::HashSet::new();
         visible_markers.retain(|m| marker_keys.insert((m.id.as_str(), m.x as i64, m.z as i64)));
@@ -1468,8 +1633,23 @@ impl TerraLensApp {
             self.prefs.slice_y,
             &visible_markers,
             self.selected_marker.as_ref(),
-            response.hover_pos(),
+            map_pointer,
         );
+        if self.show_structure_layout
+            && let Some(marker) = self
+                .selected_marker
+                .as_ref()
+                .filter(|marker| marker.kind == MarkerKind::Structure)
+            && let Some(preview) = atlas.structure_preview(marker)
+        {
+            self.structure_preview_ui.paint_shape(
+                ui,
+                rect,
+                center,
+                self.prefs.blocks_per_point,
+                preview,
+            );
+        }
         // World-anchored groups retain their membership and centroid while panning.
         let screen_markers: Vec<_> = visible_markers
             .iter()
@@ -1485,7 +1665,7 @@ impl TerraLensApp {
             self.prefs.blocks_per_point,
             self.selected_marker.as_ref(),
         );
-        let pointer_pos = response.hover_pos().filter(|p| rect.contains(*p));
+        let pointer_pos = map_pointer;
         let mut hit: Option<(f32, MapHit)> =
             footprint_hit.map(|marker| (7., MapHit::Marker(marker)));
         for indices in &groups {
@@ -1515,6 +1695,9 @@ impl TerraLensApp {
                 let texture = representative.and_then(|marker| match marker.kind {
                     MarkerKind::Ore => self.ore_icons.get(ui.ctx(), &marker.id).map(|t| t.id()),
                     MarkerKind::Structure => {
+                        Some(self.structure_icons.get(ui.ctx(), &marker.id).id())
+                    }
+                    MarkerKind::Volcano => {
                         Some(self.structure_icons.get(ui.ctx(), &marker.id).id())
                     }
                     _ => None,
@@ -1550,12 +1733,11 @@ impl TerraLensApp {
                     FontId::monospace(11.),
                     color,
                 );
-                if let Some(pointer) = pointer_pos {
-                    if let Some(d) = hit_distance(pointer, average, 21.)
-                        && hit.as_ref().is_none_or(|(old, _)| d < *old)
-                    {
-                        hit = Some((d, MapHit::Cluster(group_point, count)));
-                    }
+                if let Some(pointer) = pointer_pos
+                    && let Some(d) = hit_distance(pointer, average, 21.)
+                    && hit.as_ref().is_none_or(|(old, _)| d < *old)
+                {
+                    hit = Some((d, MapHit::Cluster(group_point, count)));
                 }
                 continue;
             }
@@ -1566,6 +1748,14 @@ impl TerraLensApp {
                 .selected_marker
                 .as_ref()
                 .is_some_and(|m| m.id == marker.id && m.point() == marker.point());
+            let opacity = crate::structure_icons::map_opacity(
+                &marker.kind,
+                self.prefs.blocks_per_point,
+                selected,
+            );
+            if opacity == 0 {
+                continue;
+            }
             let size = if selected { 8. } else { 6. };
             match &marker.kind {
                 MarkerKind::Ore => {
@@ -1582,7 +1772,10 @@ impl TerraLensApp {
                         ui.painter().circle_filled(pos, size - 1., color);
                     }
                 }
-                MarkerKind::Structure | MarkerKind::Spawn | MarkerKind::Player => {
+                MarkerKind::Structure
+                | MarkerKind::Volcano
+                | MarkerKind::Spawn
+                | MarkerKind::Player => {
                     let icon_rect = Rect::from_center_size(
                         pos,
                         Vec2::splat(if selected {
@@ -1597,7 +1790,7 @@ impl TerraLensApp {
                         texture.id(),
                         icon_rect,
                         Rect::from_min_max(Pos2::ZERO, Pos2::new(1., 1.)),
-                        Color32::WHITE,
+                        Color32::from_white_alpha(opacity),
                     );
                 }
                 _ => {
@@ -1607,14 +1800,15 @@ impl TerraLensApp {
                     ui.painter().circle_filled(pos, 2., TEXT);
                 }
             }
-            if let Some(pointer) = pointer_pos {
-                if let Some(d) = hit_distance(
+            if let Some(pointer) = pointer_pos
+                && let Some(d) = hit_distance(
                     pointer,
                     pos,
                     if matches!(
                         marker.kind,
                         MarkerKind::Ore
                             | MarkerKind::Structure
+                            | MarkerKind::Volcano
                             | MarkerKind::Spawn
                             | MarkerKind::Player
                     ) {
@@ -1622,16 +1816,34 @@ impl TerraLensApp {
                     } else {
                         13.
                     },
-                ) && hit.as_ref().is_none_or(|(old, _)| d < *old)
-                {
-                    hit = Some((d, MapHit::Marker(marker.clone())));
-                }
+                )
+                && hit.as_ref().is_none_or(|(old, _)| d < *old)
+            {
+                hit = Some((d, MapHit::Marker(marker.clone())));
             }
         }
 
-        let pointer = response
-            .hover_pos()
-            .filter(|p| rect.contains(*p) && !response.dragged());
+        if self.show_structure_layout
+            && let Some(marker) = self
+                .selected_marker
+                .as_ref()
+                .filter(|marker| marker.kind == MarkerKind::Structure)
+            && let Some(preview) = atlas.structure_preview(marker)
+            && let Some((index, distance)) = self.structure_preview_ui.paint_containers(
+                ui,
+                rect,
+                center,
+                self.prefs.blocks_per_point,
+                preview,
+                self.selected_container,
+                map_pointer,
+            )
+            && hit.as_ref().is_none_or(|(old, _)| distance < *old)
+        {
+            hit = Some((distance, MapHit::Container(marker.clone(), index)));
+        }
+
+        let pointer = map_pointer.filter(|_| !response.dragged());
         self.pointer_world =
             pointer.map(|p| screen_to_world(rect, center, self.prefs.blocks_per_point, p));
         let surface_source = self.pointer_world.and_then(|p| atlas.surface_source(p));
@@ -1646,7 +1858,8 @@ impl TerraLensApp {
         );
         atlas.set_probe_options(
             (self.prefs.dimension == Dimension::Overworld || self.prefs.dimension.is_planetary())
-                && self.prefs.tooltip.height,
+                && (self.prefs.tooltip.height
+                    || self.prefs.dimension == Dimension::Overworld && self.prefs.tooltip.ground),
             self.prefs.dimension == Dimension::Overworld && self.prefs.tooltip.trees,
         );
         atlas.hover(
@@ -1680,29 +1893,30 @@ impl TerraLensApp {
             pending_fit = tools_output.selection;
             self.selection_drag_active = false;
         }
-        if self.show_search {
-            if let Ok(radius) = self.search_radius.parse::<f64>() {
-                let covered = match self.prefs.search_scope {
-                    Scope::Structures => {
-                        if self.prefs.show_predictions {
-                            radius.min(8192.)
-                        } else {
-                            radius
-                        }
+        if self.show_search
+            && let Ok(radius) = self.search_radius.parse::<f64>()
+        {
+            let covered = match self.prefs.search_scope {
+                Scope::Volcanoes => radius,
+                Scope::Structures => {
+                    if self.prefs.show_predictions {
+                        radius.min(8192.)
+                    } else {
+                        radius
                     }
-                    Scope::Ores | Scope::All => radius.min(2048.),
-                    _ => radius.min(4096.),
-                };
-                map_tools::paint_search_area(
-                    ui,
-                    rect,
-                    center,
-                    self.prefs.blocks_per_point,
-                    self.search_origin,
-                    radius,
-                    covered,
-                );
-            }
+                }
+                Scope::Ores | Scope::All => radius.min(2048.),
+                _ => radius.min(4096.),
+            };
+            map_tools::paint_search_area(
+                ui,
+                rect,
+                center,
+                self.prefs.blocks_per_point,
+                self.search_origin,
+                radius,
+                covered,
+            );
         }
         if response.dragged() && !tools_output.consumes_drag {
             let delta = ui.input(|i| i.pointer.delta());
@@ -1747,15 +1961,36 @@ impl TerraLensApp {
                 }
             }
             if response.clicked() {
-                if let Some((_, MapHit::Marker(marker))) = &hit {
+                if let Some((_, MapHit::Container(marker, index))) = &hit {
+                    self.selected_marker = Some(marker.clone());
+                    self.selected_container = Some(*index);
+                    self.structure_cut_y = atlas.structure_preview(marker).and_then(|preview| {
+                        let bounds = preview.bounds?;
+                        let container = preview.containers.get(*index)?;
+                        Some(
+                            container
+                                .pos
+                                .y
+                                .saturating_add(1)
+                                .clamp(bounds.min_y, bounds.max_y),
+                        )
+                    });
+                } else if let Some((_, MapHit::Marker(marker))) = &hit {
+                    self.selected_container = None;
+                    self.structure_cut_y = None;
+                    self.show_structure_layout = marker.kind == MarkerKind::Structure;
                     self.selected_marker = Some(marker.clone());
                 } else if let Some((_, MapHit::Cluster(point, _))) = &hit {
                     self.selected_marker = None;
+                    self.selected_container = None;
+                    self.structure_cut_y = None;
                     self.prefs.center_x = point.x;
                     self.prefs.center_z = point.z;
                     self.prefs.blocks_per_point = (self.prefs.blocks_per_point * 0.5).max(0.125);
                 } else {
                     self.selected_marker = None;
+                    self.selected_container = None;
+                    self.structure_cut_y = None;
                 }
             }
         }
@@ -1792,7 +2027,7 @@ impl TerraLensApp {
             painter.text(
                 tooltip_rect.left_top() + Vec2::new(11., 9.),
                 Align2::LEFT_TOP,
-                tooltip::display_marker_name(&marker.label),
+                tooltip::marker_name(marker),
                 FontId::proportional(12.),
                 TEXT,
             );
@@ -1835,37 +2070,41 @@ impl TerraLensApp {
                         );
                     });
             }
-        } else if self.selected_marker.is_none() {
-            if let (Some(probe), Some(pointer)) = (atlas.probe(), pointer) {
-                let p = pointer + Vec2::new(14., 14.);
-                let trees = if self.prefs.dimension == Dimension::Overworld {
-                    atlas.tree_estimate()
+        } else if self.selected_marker.is_none()
+            && let (Some(probe), Some(pointer)) = (atlas.probe(), pointer)
+        {
+            let p = pointer + Vec2::new(14., 14.);
+            let trees = if self.prefs.dimension == Dimension::Overworld {
+                atlas.tree_estimate()
+            } else {
+                None
+            };
+            let region_summary =
+                if self.prefs.dimension == Dimension::Overworld && self.prefs.tooltip.region {
+                    atlas.selection_summary()
                 } else {
                     None
                 };
-                let region_summary =
-                    if self.prefs.dimension == Dimension::Overworld && self.prefs.tooltip.region {
-                        atlas.selection_summary()
-                    } else {
-                        None
-                    };
-                egui::Area::new(Id::new("map-hover-card"))
-                    .fixed_pos(p)
-                    .order(egui::Order::Tooltip)
-                    .interactable(false)
-                    .show(ui.ctx(), |ui| {
-                        tooltip::show_probe(
-                            ui,
-                            probe,
-                            trees,
-                            region_summary,
-                            self.prefs.blocks_per_point >= 32.,
-                            self.prefs.dimension,
-                            self.prefs.slice_y,
-                            &self.prefs.tooltip,
-                        )
-                    });
-            }
+            egui::Area::new(Id::new("map-hover-card"))
+                .fixed_pos(p)
+                .order(egui::Order::Tooltip)
+                .interactable(false)
+                .show(ui.ctx(), |ui| {
+                    tooltip::show_probe(
+                        ui,
+                        probe,
+                        trees,
+                        region_summary,
+                        self.prefs.blocks_per_point >= 32.,
+                        self.prefs.dimension,
+                        Layer::ALL
+                            .get(self.prefs.layer)
+                            .copied()
+                            .unwrap_or(Layer::Biomes),
+                        self.prefs.slice_y,
+                        &self.prefs.tooltip,
+                    )
+                });
         }
         if atlas.is_loading() {
             let status = painter.layout(
@@ -2041,10 +2280,11 @@ impl eframe::App for TerraLensApp {
             self.select_search_result(0);
         }
         self.run_smoke_scenario(ctx);
-        if self.smoke_inspect && self.structure_inspection.is_none() {
-            if let Some(marker) = self.selected_marker.clone().filter(|m| m.bounds.is_some()) {
-                self.view_marker_blocks(&marker);
-            }
+        if self.smoke_inspect
+            && self.structure_inspection.is_none()
+            && let Some(marker) = self.selected_marker.clone().filter(|m| m.bounds.is_some())
+        {
+            self.view_marker_blocks(&marker);
         }
         self.run_qol_scenario(ctx);
         self.handle_screenshot(ctx);
@@ -2066,8 +2306,18 @@ impl eframe::App for TerraLensApp {
         {
             return;
         }
-        eframe::set_value(storage, "preferences", &self.prefs);
+        if let Ok(encoded) = serde_json::to_string(&self.prefs) {
+            storage.set_string("preferences", encoded);
+        }
     }
+}
+
+fn load_preferences(storage: &dyn eframe::Storage) -> Option<Preferences> {
+    let encoded = storage.get_string("preferences")?;
+    serde_json::from_str(&encoded)
+        .ok()
+        // Older installations may contain a RON value. Keep reading it when valid.
+        .or_else(|| eframe::get_value(storage, "preferences"))
 }
 
 pub fn run() -> eframe::Result {
@@ -2236,21 +2486,20 @@ impl TerraLensApp {
             }
             self.smoke_started = true;
             self.smoke_started_at = Some(Instant::now());
-        } else if self.selected_marker.is_none() {
-            if let Some(atlas) = &self.atlas {
-                if !atlas.is_loading() {
-                    let selected = atlas
-                        .search_results()
-                        .first()
-                        .or_else(|| atlas.saved_structures().first())
-                        .or_else(|| atlas.markers().first())
-                        .cloned();
-                    if let Some(marker) = selected {
-                        self.set_center(marker.map_point());
-                        self.selected_marker = Some(marker);
-                        self.smoke_selection_frame = Some(self.screenshot_frame);
-                    }
-                }
+        } else if self.selected_marker.is_none()
+            && let Some(atlas) = &self.atlas
+            && !atlas.is_loading()
+        {
+            let selected = atlas
+                .search_results()
+                .first()
+                .or_else(|| atlas.saved_structures().first())
+                .or_else(|| atlas.markers().first())
+                .cloned();
+            if let Some(marker) = selected {
+                self.set_center(marker.map_point());
+                self.selected_marker = Some(marker);
+                self.smoke_selection_frame = Some(self.screenshot_frame);
             }
         }
         if self
@@ -2304,10 +2553,9 @@ impl TerraLensApp {
                 if let Some(parent) = PathBuf::from(path)
                     .parent()
                     .filter(|p| !p.as_os_str().is_empty())
+                    && let Err(error) = std::fs::create_dir_all(parent)
                 {
-                    if let Err(error) = std::fs::create_dir_all(parent) {
-                        eprintln!("TerraLens screenshot directory failed: {error}");
-                    }
+                    eprintln!("TerraLens screenshot directory failed: {error}");
                 }
                 let mut rgba = Vec::with_capacity(image.pixels.len() * 4);
                 for pixel in &image.pixels {
@@ -2432,6 +2680,74 @@ fn screen_to_world(rect: Rect, center: Point, bpp: f64, p: Pos2) -> Point {
 #[cfg(test)]
 mod interaction_tests {
     use super::*;
+    use eframe::Storage as _;
+
+    #[derive(Default)]
+    struct MemoryStorage(std::collections::HashMap<String, String>);
+
+    impl eframe::Storage for MemoryStorage {
+        fn get_string(&self, key: &str) -> Option<String> {
+            self.0.get(key).cloned()
+        }
+
+        fn set_string(&mut self, key: &str, value: String) {
+            self.0.insert(key.to_owned(), value);
+        }
+
+        fn flush(&mut self) {}
+    }
+
+    #[test]
+    fn preference_storage_uses_json_when_dimension_names_are_not_valid_ron() {
+        let mut prefs = Preferences::default();
+        let mut storage = MemoryStorage::default();
+        eframe::set_value(&mut storage, "preferences", &prefs);
+        eframe::set_value(&mut storage, "dimension", &prefs.dimension);
+        assert!(
+            storage.get_string("dimension").is_none(),
+            "namespaced dimension variants cannot be encoded as RON identifiers"
+        );
+
+        storage.set_string(
+            "preferences",
+            serde_json::to_string(&prefs).expect("preferences serialize as JSON"),
+        );
+        let restored = load_preferences(&storage).expect("JSON preferences load");
+        assert_eq!(restored.dimension, prefs.dimension);
+
+        prefs.display.loading_filter = crate::display::LoadingFilter::Smooth;
+        prefs.display.max_detail = crate::display::MapDetail::FourBlocks;
+        storage.set_string(
+            "preferences",
+            serde_json::to_string(&prefs).expect("changed preferences serialize as JSON"),
+        );
+        let restored = load_preferences(&storage).expect("changed settings load");
+        assert_eq!(
+            restored.display.loading_filter,
+            prefs.display.loading_filter
+        );
+        assert_eq!(restored.display.max_detail, prefs.display.max_detail);
+    }
+
+    #[test]
+    fn legacy_preferences_keep_their_values_and_default_new_rendering_options() {
+        let mut storage = MemoryStorage::default();
+        storage.set_string(
+            "preferences",
+            "(center_x:123.5,center_z:-456.0,blocks_per_point:4.0,display:(height_shading:true))"
+                .into(),
+        );
+        let prefs = load_preferences(&storage).expect("existing RON settings must still load");
+        assert_eq!(prefs.center_x, 123.5);
+        assert_eq!(prefs.center_z, -456.);
+        assert_eq!(prefs.blocks_per_point, 4.);
+        assert!(prefs.display.height_shading);
+        assert_eq!(
+            prefs.display.loading_filter,
+            crate::display::LoadingFilter::Nearest
+        );
+        assert_eq!(prefs.display.max_detail, crate::display::MapDetail::Block);
+    }
 
     #[test]
     fn quieter_defaults_migrate_once_and_preserve_later_choices() {
@@ -2467,7 +2783,7 @@ mod interaction_tests {
         }))
         .unwrap();
         prefs.upgrade_defaults();
-        assert_eq!(prefs.defaults_version, 2);
+        assert_eq!(prefs.defaults_version, 4);
         assert!(prefs.connected_highlight && prefs.surface_detail && prefs.allow_detail_rendering);
         for id in [
             "tfg:mineshaft/mineshaft",
@@ -2503,6 +2819,42 @@ mod interaction_tests {
                 .hidden_structure_ids
                 .iter()
                 .any(|id| id == "tfg:aqueduct/aqueduct")
+        );
+    }
+
+    #[test]
+    fn reclassified_buildings_restore_visibility_once_without_enabling_lootless_ruins() {
+        let mut prefs: Preferences = serde_json::from_value(serde_json::json!({
+            "defaults_version": 2,
+            "show_legend": true,
+            "display": {"hidden_structure_ids": [
+                "tfg:illagers/norse_village_ruined", "tfc_ruins:ruin_small",
+                "tfg:aqueduct/aqueduct", "tfg:ocean/ocean_moai_0"
+            ]}
+        }))
+        .unwrap();
+        prefs.upgrade_defaults();
+        assert_eq!(prefs.defaults_version, 4);
+        assert!(!prefs.show_legend);
+        assert_eq!(
+            prefs.display.hidden_structure_ids,
+            ["tfg:aqueduct/aqueduct", "tfg:ocean/ocean_moai_0"]
+        );
+        prefs.display.set_feature_visible(
+            &MarkerKind::Structure,
+            "tfg:illagers/norse_village_ruined",
+            false,
+        );
+        let mut restored: Preferences =
+            serde_json::from_value(serde_json::to_value(prefs).unwrap()).unwrap();
+        restored.upgrade_defaults();
+        assert!(!restored.show_legend);
+        assert!(
+            restored
+                .display
+                .hidden_structure_ids
+                .iter()
+                .any(|id| id == "tfg:illagers/norse_village_ruined")
         );
     }
 

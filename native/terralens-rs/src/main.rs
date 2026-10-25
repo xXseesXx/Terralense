@@ -1,4 +1,5 @@
 //! Production entry point. Diagnostic commands require an explicit build feature.
+#![cfg_attr(target_os = "windows", windows_subsystem = "windows")]
 #[cfg(feature = "diagnostics")]
 mod diagnostics;
 
@@ -13,6 +14,19 @@ fn main() -> eframe::Result {
     }
     if args.as_slice() == ["--version"] || args.as_slice() == ["-V"] {
         println!("TerraLens {}", env!("CARGO_PKG_VERSION"));
+        return Ok(());
+    }
+    if args.as_slice() == ["--build-info"] {
+        println!(
+            "{}",
+            serde_json::json!({
+                "version": env!("CARGO_PKG_VERSION"),
+                "target": env!("TERRALENS_BUILD_TARGET"),
+                "official": env!("TERRALENS_OFFICIAL_BUILD") == "1",
+                "diagnostics": cfg!(feature = "diagnostics"),
+                "optional_game_artwork": !include_bytes!(concat!(env!("OUT_DIR"), "/ad-astra-cheese.png")).is_empty(),
+            })
+        );
         return Ok(());
     }
     #[cfg(feature = "diagnostics")]
@@ -32,7 +46,7 @@ fn main() -> eframe::Result {
     {
         if args.as_slice() == ["--help"] || args.as_slice() == ["-h"] {
             println!(
-                "TerraLens — TerraFirmaGreg world atlas\n\nUsage: terralens [--open PATH | PATH | --help | --version]\n\nOpen worlds and sessions through the File menu; drag a world onto the map to open it.\nDeveloper commands require a build with --features diagnostics."
+                "TerraLens — TerraFirmaGreg world atlas\n\nUsage: terralens [--open PATH | PATH | --help | --version | --build-info]\n\nOpen worlds and sessions through the File menu; drag a world onto the map to open it.\nDeveloper commands require a build with --features diagnostics."
             );
             return Ok(());
         }

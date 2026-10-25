@@ -1,0 +1,547 @@
+{
+  "ocean": {
+    "aquifer_offset": -24.0,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "ocean_reef": {
+    "aquifer_offset": -24.0,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "deep_ocean": {
+    "aquifer_offset": -24.0,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "deep_ocean_trench": {
+    "aquifer_offset": -24.0,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "plains": {
+    "aquifer_offset": null,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "hills": {
+    "aquifer_offset": null,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "lowlands": {
+    "aquifer_offset": -16.0,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "salt_marsh": {
+    "aquifer_offset": -16.0,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "low_canyons": {
+    "aquifer_offset": -16.0,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "rolling_hills": {
+    "aquifer_offset": null,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "highlands": {
+    "aquifer_offset": null,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "badlands": {
+    "aquifer_offset": null,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "plateau": {
+    "aquifer_offset": null,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "plateau_wide": {
+    "aquifer_offset": null,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "canyons": {
+    "aquifer_offset": null,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "mountains": {
+    "aquifer_offset": null,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "old_mountains": {
+    "aquifer_offset": null,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "oceanic_mountains": {
+    "aquifer_offset": -8.0,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "volcanic_mountains": {
+    "aquifer_offset": null,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "volcanic_oceanic_mountains": {
+    "aquifer_offset": -8.0,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "guano_island": {
+    "aquifer_offset": null,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "shore": {
+    "aquifer_offset": -16.0,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "tidal_flats": {
+    "aquifer_offset": -16.0,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "sea_stacks": {
+    "aquifer_offset": -40.0,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "terrace_upper": {
+    "aquifer_offset": -40.0,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "terrace_lower": {
+    "aquifer_offset": -40.0,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "setback_cliffs": {
+    "aquifer_offset": -40.0,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "coastal_dunes": {
+    "aquifer_offset": -40.0,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "rocky_shores": {
+    "aquifer_offset": -40.0,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "embayments": {
+    "aquifer_offset": -40.0,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "lake": {
+    "aquifer_offset": -16.0,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "river": {
+    "aquifer_offset": null,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "mountain_lake": {
+    "aquifer_offset": null,
+    "aquifer_fixed": 47.0,
+    "underground_lakes": true
+  },
+  "old_mountain_lake": {
+    "aquifer_offset": null,
+    "aquifer_fixed": 47.0,
+    "underground_lakes": true
+  },
+  "oceanic_mountain_lake": {
+    "aquifer_offset": null,
+    "aquifer_fixed": 47.0,
+    "underground_lakes": true
+  },
+  "volcanic_mountain_lake": {
+    "aquifer_offset": null,
+    "aquifer_fixed": 47.0,
+    "underground_lakes": true
+  },
+  "volcanic_oceanic_mountain_lake": {
+    "aquifer_offset": null,
+    "aquifer_fixed": 47.0,
+    "underground_lakes": true
+  },
+  "plateau_lake": {
+    "aquifer_offset": null,
+    "aquifer_fixed": 47.0,
+    "underground_lakes": true
+  },
+  "mud_flats": {
+    "aquifer_offset": -16.0,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "salt_flats": {
+    "aquifer_offset": -16.0,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "dune_sea": {
+    "aquifer_offset": -16.0,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "grassy_dunes": {
+    "aquifer_offset": -16.0,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "whorled_canyons": {
+    "aquifer_offset": -16.0,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "stair_step_canyons": {
+    "aquifer_offset": -16.0,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "mesas": {
+    "aquifer_offset": -16.0,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "buttes": {
+    "aquifer_offset": -16.0,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "hoodoos": {
+    "aquifer_offset": -16.0,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "rocky_plateau": {
+    "aquifer_offset": null,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "tower_karst_plains": {
+    "aquifer_offset": null,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "tower_karst_canyons": {
+    "aquifer_offset": null,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "tower_karst_hills": {
+    "aquifer_offset": null,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "tower_karst_highlands": {
+    "aquifer_offset": null,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "tower_karst_lake": {
+    "aquifer_offset": -16.0,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "tower_karst_bay": {
+    "aquifer_offset": -16.0,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "burren_plateau": {
+    "aquifer_offset": null,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "burren_badlands": {
+    "aquifer_offset": null,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "burren_badlands_tall": {
+    "aquifer_offset": null,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "burren_plains": {
+    "aquifer_offset": null,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "burren_roche_moutonee": {
+    "aquifer_offset": null,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "shilin_plains": {
+    "aquifer_offset": null,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "shilin_canyons": {
+    "aquifer_offset": null,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "shilin_hills": {
+    "aquifer_offset": null,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "shilin_highlands": {
+    "aquifer_offset": null,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "shilin_plateau": {
+    "aquifer_offset": null,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "doline_plains": {
+    "aquifer_offset": null,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "doline_hills": {
+    "aquifer_offset": null,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "doline_rolling_hills": {
+    "aquifer_offset": null,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "doline_highlands": {
+    "aquifer_offset": null,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "doline_plateau": {
+    "aquifer_offset": null,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "doline_canyons": {
+    "aquifer_offset": null,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "cenote_plains": {
+    "aquifer_offset": null,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "cenote_hills": {
+    "aquifer_offset": null,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "cenote_rolling_hills": {
+    "aquifer_offset": null,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "cenote_canyons": {
+    "aquifer_offset": null,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "cenote_highlands": {
+    "aquifer_offset": null,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "cenote_plateau": {
+    "aquifer_offset": null,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "extreme_doline_plateau": {
+    "aquifer_offset": null,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "extreme_doline_mountains": {
+    "aquifer_offset": null,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "active_shield_volcano": {
+    "aquifer_offset": -16.0,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "dormant_shield_volcano": {
+    "aquifer_offset": -16.0,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "extinct_shield_volcano": {
+    "aquifer_offset": -16.0,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "ancient_shield_volcano": {
+    "aquifer_offset": -16.0,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "sunken_shield_volcano": {
+    "aquifer_offset": -16.0,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "shield_volcano_shore": {
+    "aquifer_offset": null,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "old_shield_volcano_shore": {
+    "aquifer_offset": null,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "ice_sheet": {
+    "aquifer_offset": null,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "ice_sheet_mountains": {
+    "aquifer_offset": null,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "ice_sheet_oceanic_mountains": {
+    "aquifer_offset": null,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "ice_sheet_shield_volcano": {
+    "aquifer_offset": null,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "ice_sheet_tuyas": {
+    "aquifer_offset": null,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "subglacial_lake": {
+    "aquifer_offset": null,
+    "aquifer_fixed": 47.0,
+    "underground_lakes": true
+  },
+  "ice_sheet_edge": {
+    "aquifer_offset": null,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "ice_sheet_tuyas_edge": {
+    "aquifer_offset": null,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "ice_sheet_mountains_edge": {
+    "aquifer_offset": null,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "ice_sheet_oceanic_mountains_edge": {
+    "aquifer_offset": -24.0,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "meltwater_lake": {
+    "aquifer_offset": -16.0,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "ice_sheet_oceanic": {
+    "aquifer_offset": null,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "ice_sheet_shore": {
+    "aquifer_offset": -24.0,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "glaciated_mountains": {
+    "aquifer_offset": null,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "glaciated_oceanic_mountains": {
+    "aquifer_offset": -24.0,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "glaciated_shield_volcano": {
+    "aquifer_offset": null,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "glacially_carved_mountains": {
+    "aquifer_offset": null,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "glacially_carved_oceanic_mountains": {
+    "aquifer_offset": -24.0,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "drumlins": {
+    "aquifer_offset": null,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "tuyas": {
+    "aquifer_offset": null,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "knob_and_kettle": {
+    "aquifer_offset": null,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "patterned_ground": {
+    "aquifer_offset": null,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "inverted_patterned_ground": {
+    "aquifer_offset": null,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  },
+  "stone_circles": {
+    "aquifer_offset": null,
+    "aquifer_fixed": null,
+    "underground_lakes": false
+  }
+}
